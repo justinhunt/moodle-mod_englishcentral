@@ -1,0 +1,72 @@
+
+#mod_englishcentral_playercontainer {
+	text-align: center; 
+	margin-top: 1em; 
+	/*background: #F4C63f;*/
+	width: 640px;
+	height: 380px;
+}
+#mod_englishcentral_resultscontainer {
+	text-align: center; 
+	margin-top: 1em; 
+	background: #A4C63f;
+	width: 640px;
+	height: 420px;
+	display: none;
+	
+}
+
+.englishcentral_myattempts_headrow{
+	font-weight: bold;
+	text-align: center;
+}
+.englishcentral_myattempts_table{
+	border: 2px;
+}
+
+.mod_englishcentral_startfinish_button {
+width: 640px; 
+height: 80px; 
+font-size: xx-large;
+background-color: chartreuse;
+}
+
+.mod_englishcentral_startfinish_button:hover {
+	background-color: chartreuse;
+}
+.mod_englishcentral_startfinish_button:active {
+	background-color: chartreuse;
+}
+.mod_englishcentral_startfinish_button:focus {
+	background-color: chartreuse;
+}
+
+.mod_englishcentral_start_container {
+	width:100%; 
+	/*
+	margin-left: auto; 
+	margin-right: auto; 
+	*/
+	display: block;
+	}
+.mod_englishcentral_bigbutton {font-size: 32px; text-align: center;}
+.mod_englishcentral_container {
+/* text-align: center; */ 
+float: left; 
+padding-right: 20px;
+} 
+.mod_tquiz_englishcentral_container{margin-left: auto;margin-right: auto; padding-top: 5px}
+
+div.mod_englishcentral_listbuttons {
+	display: block;
+	/*float: left;*/
+}
+.mod_englishcentral_listbuttons input[type="submit"]{
+	width: 400px;
+	/*float: left;*/
+}
+
+div.mod_englishcentral_actionbuttons {
+	display: flex;
+	float: right;
+}
