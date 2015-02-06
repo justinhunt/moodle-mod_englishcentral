@@ -40,7 +40,7 @@ M.mod_englishcentral.playerhelper = {
      * @param preview, is this a quiz preview?
      */
     init: function(Y,opts) {
-    	console.log("entered init");
+    	//console.log("entered init");
     	M.mod_englishcentral.playerhelper.gY = Y;
 		M.mod_englishcentral.playerhelper.opts = opts;
     	M.mod_englishcentral.playerhelper.playerdiv = opts['playerdiv'];
