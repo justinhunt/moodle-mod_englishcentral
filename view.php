@@ -103,7 +103,7 @@ $jsmodule = array(
 );
 //here we set up any info we need to pass into javascript
 $opts =Array();
-$opts['appid'] =$consumer_key;
+$opts['appid'] ='moodleintegration';//$consumer_key;
 $opts['cmid'] = $cm->id;
 $opts['accesstoken'] =$accesstoken;
 $opts['requesttoken'] =$requesttoken; 
