@@ -123,6 +123,10 @@ $opts['resultsdiv'] ='mod_englishcentral_resultscontainer';
 //this inits the M.mod_englishcentral thingy, after the page has loaded.
 $PAGE->requires->js_init_call('M.mod_englishcentral.playerhelper.init', array($opts),false,$jsmodule);
 
+//this loads the strings we need into JS
+$PAGE->requires->strings_for_js(array('sessionresults','sessionscore','sessiongrade','lineswatched',
+						'linesrecorded','compositescore','activetime','totalactivetime'), 'englishcentral');
+
 //this loads any external JS libraries we need to call
 //$PAGE->requires->js("/mod/englishcentral/js/ec.js");
 $PAGE->requires->js(new moodle_url('http://www.englishcentral.com/platform/ec.js'),true);

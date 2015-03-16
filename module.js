@@ -95,23 +95,20 @@ M.mod_englishcentral.playerhelper = {
     }, 
     
     handleresults: function(results) {
-    	var txt = '<h2>Session Results</h2>';
+    	var txt = '<h2>' + M.util.get_string('sessionresults','englishcentral') + '</h2>';
     	txt += '<br />';
-    	txt += '<b>Session Active Time:  </b>' + results.activeTime  + ' seconds<br />';
-    	txt += '<b>Total Active Time:  </b>' + results.totalActiveTime + ' seconds<br />';
-    	if(results.totalActiveTime > 0){
-    		txt += '<b>Total Time on Task:  </b>' * results.timeOnTaskClock + '<br />';
-    	}
-    	txt += '<b>Lines Watched:  </b>' + results.linesWatched + '/' + results.linesTotal + '<br />';
-    	txt += '<b>Lines Recorded:  </b>' + results.linesRecorded + '<br />';
-    	txt += '<b>Session Score:  </b>' + Math.round(results.sessionScore * 100) + '%' + '<br />';
-    	txt += '<b>Session Grade:  </b>' + results.sessionGrade + '<br />';
+    	txt += '<b>' + M.util.get_string('sessionactivetime','englishcentral') + ':  </b>' + results.activeTime  + ' seconds<br />';
+    	txt += '<b>' + M.util.get_string('totalactivetime','englishcentral') + ':  </b>' + results.totalActiveTime + ' seconds<br />';
+    	txt += '<b>' + M.util.get_string('lineswatched','englishcentral') + ':  </b>' + results.linesWatched + '/' + results.linesTotal + '<br />';
+    	txt += '<b>' + M.util.get_string('linesrecorded','englishcentral') + ':  </b>' + results.linesRecorded + '<br />';
+    	txt += '<b>' + M.util.get_string('sessionscore','englishcentral') + ':  </b>' + Math.round(results.sessionScore * 100) + '%' + '<br />';
+    	txt += '<b>' + M.util.get_string('sessiongrade','englishcentral') + ':  </b>' + results.sessionGrade + '<br />';
     	var completionrate = results.recordingComplete ? 1 : 0;
     	//this won't work in litemode because linestotal != recordablelines
     	if(!M.mod_englishcentral.playerhelper.opts['speaklitemode'] && results.linesRecorded>0){
     		completionrate = results.linesRecorded /results.linesTotal;
     	}
-    	txt += '<b>Overall Score:  </b>' +Math.round(completionrate * (results.sessionScore * 100)) + '%<br />';
+    	txt += '<b>' + M.util.get_string('compositescore','englishcentral') + ':  </b>' +Math.round(completionrate * (results.sessionScore * 100)) + '%<br />';
     	
     	
     	/*
