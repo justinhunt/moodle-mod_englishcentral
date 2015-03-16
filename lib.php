@@ -193,9 +193,15 @@ function englishcentral_get_user_grades($englishcentral, $userid=0) {
 
     }
 
+	if($englishcentral->speaklitemode !=1){
+		$overallgrade = '(a.sessionscore * (a.linesrecorded * (1 / a.linestotal))';
+	}else{
+		$overallgrade = '(a.sessionscore * a.recordingcomplete)';
+	}
+
     if ($englishcentral->maxattempts==1 || $englishcentral->gradeoptions == MOD_ENGLISHCENTRAL_GRADELATEST) {
 
-        $sql = "SELECT u.id, u.id AS userid, a.sessionscore AS rawgrade
+        $sql = "SELECT u.id, u.id AS userid, $overallgrade AS rawgrade
                   FROM {user} u,  {englishcentral_attempt} a
                  WHERE u.id = a.userid AND a.englishcentralid = :englishcentralid
                        AND a.status = 1
@@ -204,21 +210,21 @@ function englishcentral_get_user_grades($englishcentral, $userid=0) {
 	}else{
 		switch($englishcentral->gradeoptions){
 			case MOD_ENGLISHCENTRAL_GRADEHIGHEST:
-				$sql = "SELECT u.id, u.id AS userid, MAX(a.sessionscore * a.recordingcomplete) AS rawgrade
+				$sql = "SELECT u.id, u.id AS userid, MAX( $overallgrade ) AS rawgrade
                       FROM {user} u, {englishcentral_attempt} a
                      WHERE u.id = a.userid AND a.englishcentralid = :englishcentralid
                            $user
                   GROUP BY u.id";
 				  break;
 			case MOD_ENGLISHCENTRAL_GRADELOWEST:
-				$sql = "SELECT u.id, u.id AS userid, MIN(a.sessionscore * a.recordingcomplete) AS rawgrade
+				$sql = "SELECT u.id, u.id AS userid, MIN(  $overallgrade ) AS rawgrade
                       FROM {user} u, {englishcentral_attempt} a
                      WHERE u.id = a.userid AND a.englishcentralid = :englishcentralid
                            $user
                   GROUP BY u.id";
 				  break;
 			case MOD_ENGLISHCENTRAL_GRADEAVERAGE:
-            $sql = "SELECT u.id, u.id AS userid, AVG(a.sessionscore * a.recordingcomplete) AS rawgrade
+            $sql = "SELECT u.id, u.id AS userid, AVG(  $overallgrade ) AS rawgrade
                       FROM {user} u, {englishcentral_attempt} a
                      WHERE u.id = a.userid AND a.englishcentralid = :englishcentralid
                            $user
