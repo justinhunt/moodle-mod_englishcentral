@@ -52,7 +52,7 @@ class backup_englishcentral_activity_structure_step extends backup_activity_stru
         $englishcentral = new backup_nested_element('englishcentral', array('id'), array(
             'course','name','intro','introformat','videotitle','videoid','watchmode','speakmode',
 			'learnmode','hiddenchallengemode','speaklitemode','simpleui','maxattempts','grade',
-			'gradeoptions','timecreated','timemodified'
+			'gradeoptions','timecreated','timemodified','lightboxmode'
 			));
 		
 		//attempts
