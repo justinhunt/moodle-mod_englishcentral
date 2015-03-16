@@ -194,7 +194,7 @@ function englishcentral_get_user_grades($englishcentral, $userid=0) {
     }
 
 	if($englishcentral->speaklitemode !=1){
-		$overallgrade = '(a.sessionscore * (a.linesrecorded * (1 / a.linestotal))';
+		$overallgrade = '(a.sessionscore * (a.linesrecorded * (1 / a.linestotal)))';
 	}else{
 		$overallgrade = '(a.sessionscore * a.recordingcomplete)';
 	}

@@ -45,8 +45,10 @@ abstract class mod_englishcentral_base_report {
 	protected $rawdata=null;
     protected $fields = array();
 	protected $dbcache=array();
+	protected $englishcentral=null;
 	
-	abstract function process_raw_data($formdata);
+	
+	abstract function process_raw_data($formdata,$englishcentral);
 	abstract function fetch_formatted_heading();
 	
 	public function fetch_fields(){
@@ -169,6 +171,7 @@ class mod_englishcentral_attemptdetails_report extends  mod_englishcentral_base_
 	protected $headingdata = null;
 	protected $qcache=array();
 	protected $ucache=array();
+	protected $englishcentral=null;
 	
 	public function fetch_formatted_field($field,$record,$withlinks){
 				global $DB;
@@ -208,10 +211,11 @@ class mod_englishcentral_attemptdetails_report extends  mod_englishcentral_base_
 		
 	}
 	
-	public function process_raw_data($formdata){
+	public function process_raw_data($formdata,$englishcentral){
 		global $DB;
 		
 		//heading data
+		$this->englishcentral = $englishcentral;
 		$this->headingdata = new stdClass();
 		$this->headingdata->attemptid=$formdata->attemptid;
 		$this->headingdata->userid=$formdata->userid;
@@ -246,6 +250,7 @@ class mod_englishcentral_allusers_report extends  mod_englishcentral_base_report
 	protected $headingdata = null;
 	protected $qcache=array();
 	protected $ucache=array();
+	protected $englishcentral=null;
 	
 	
 	public function fetch_formatted_field($field,$record,$withlinks){
@@ -287,8 +292,8 @@ class mod_englishcentral_allusers_report extends  mod_englishcentral_base_report
 				
 				case 'compositescore':
 						$completionrate = $record->recordingComplete ? 1 : 0;
-						//this won't work because linestotal is for watchable, not recordable
-						if(false && $record->linesrecorded > 0){
+						//this won't work in speaklitemode because linestotal is for watchable, not recordable
+						if(!$this->englishcentral->speaklitemode && $record->linesrecorded > 0){
 							$completionrate = $record->linesrecorded / $record->linestotal;
 						}
 						$ret = round($completionrate*$record->sessionscore,0) .'%';
@@ -308,11 +313,12 @@ class mod_englishcentral_allusers_report extends  mod_englishcentral_base_report
 		return get_string('allusers','englishcentral');
 	}
 	
-	public function process_raw_data($formdata){
+	public function process_raw_data($formdata,$englishcentral){
 		global $DB;
 
 		//no data in the heading, so an empty class even is overkill ..
 		$this->headingdata = new stdClass();
+		$this->englishcentral = $englishcentral;
 		
 		//the current attempts
 		$alldata = $DB->get_records('englishcentral_attempt',array('englishcentralid'=>$formdata->englishcentralid,'status'=>1));
@@ -338,6 +344,7 @@ class mod_englishcentral_allattempts_report extends  mod_englishcentral_base_rep
 	protected $headingdata = null;
 	protected $qcache=array();
 	protected $ucache=array();
+	protected $englishcentral=null;
 	
 	public function fetch_formatted_field($field,$record,$withlinks){
 				global $DB;
@@ -417,11 +424,12 @@ class mod_englishcentral_allattempts_report extends  mod_englishcentral_base_rep
 		return get_string('allattempts','englishcentral');
 	}
 	
-	public function process_raw_data($formdata){
+	public function process_raw_data($formdata,$englishcentral){
 		global $DB;
 
 		//no data in the heading, so an empty class even is overkill ..
 		$this->headingdata = new stdClass();
+		$this->englishcentral = $englishcentral;
 		
 		//the current attempts
 		$alldata = $DB->get_records('englishcentral_attempt',array('englishcentralid'=>$formdata->englishcentralid));
@@ -450,6 +458,7 @@ class mod_englishcentral_phonemes_report extends  mod_englishcentral_base_report
 	protected $headingdata = null;
 	protected $qcache=array();
 	protected $ucache=array();
+	protected $englishcentral=null;
 	
 	public function fetch_formatted_field($field,$record,$withlinks){
 				global $DB;
@@ -494,13 +503,14 @@ class mod_englishcentral_phonemes_report extends  mod_englishcentral_base_report
 		return get_string('phonemesheader','englishcentral',$a);
 	}
 	
-	public function process_raw_data($formdata){
+	public function process_raw_data($formdata,$englishcentral){
 		global $DB;
 
 		//The data to help display a meaningful heading
 		$hdata = new stdClass();
 		$hdata->attemptid = $formdata->attemptid;
 		$this->headingdata = $hdata;
+		$this->englishcentral = $englishcentral;
 		
 		
 		//the current attempts

@@ -146,7 +146,7 @@ switch ($showreport){
 5) call $reportrenderer->render_section_html($sectiontitle, $report->name, $report->get_head, $rows, $report->fields);
 */
 
-$report->process_raw_data($formdata);
+$report->process_raw_data($formdata, $englishcentral);
 $reportheading = $report->fetch_formatted_heading();
 
 switch($format){

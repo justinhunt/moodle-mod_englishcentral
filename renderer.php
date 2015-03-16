@@ -106,7 +106,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
 	 /**
      * Show all the attempts on this EC for logged in user(for arrival page)
      */
-	public function show_myattempts($attempts){
+	public function show_myattempts($englishcentral, $attempts){
 		global $CFG;
 		if(empty($attempts)){
 			return '';
@@ -149,8 +149,8 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
 			$htr->cells[] = $activetime;
 			//completed
 			$completionrate = $attempt->recordingcomplete ? 1 : 0;
-			//this won't work because linestotal is for watchable, not recordable
-			if(false && $attempt->linesrecorded > 0){
+			//this won't work in speaklitemode because linestotal is for watchable, not recordable
+			if( !$englishcentral->speaklitemode && $attempt->linesrecorded > 0){
 				$completionrate = $attempt->linesrecorded / $attempt->linestotal;
 			}
 			$completed = new html_table_cell($completionrate ? get_string('yes') : get_string('no'));

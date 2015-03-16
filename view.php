@@ -146,7 +146,7 @@ $hasattempts=false;
 	$attempts = $DB->get_records('englishcentral_attempt',array('userid'=>$USER->id,'englishcentralid'=>$englishcentral->id));
 	if($attempts){
 		$hasattempts=true;
-		echo $renderer->show_myattempts($attempts);
+		echo $renderer->show_myattempts($englishcentral, $attempts);
 	}
 //}
 
