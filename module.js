@@ -27,6 +27,7 @@ M.mod_englishcentral = M.mod_englishcentral || {};
 
 M.mod_englishcentral.playerhelper = {
 	gY: null,
+	resultsmode: null,
 	playerdiv: null,
 	resultsdiv: null,
 	accesstoken: null,
@@ -48,11 +49,32 @@ M.mod_englishcentral.playerhelper = {
     	M.mod_englishcentral.playerhelper.videoid = opts['videoid'];
 		M.mod_englishcentral.playerhelper.appid = opts['appid'];
 		M.mod_englishcentral.playerhelper.accesstoken = opts['accesstoken'];
+		M.mod_englishcentral.playerhelper.resultsmode = opts['resultsmode'];
+		
+		//default to show in div, but could be in lightbox
+		var usecontainer = M.mod_englishcentral.playerhelper.playerdiv;
+		var pdiv = Y.one('#' + M.mod_englishcentral.playerhelper.playerdiv);
+		var rdiv = Y.one('#' + M.mod_englishcentral.playerhelper.resultsdiv);
+		//no player div is loaded when the user os out of attempts, so we exit in this case
+		if(!pdiv){
+			return;
+		}
+		if(opts['lightbox']){
+			usecontainer = null;
+			/*
+			pdiv.addClass('englishcentral_hidediv');
+			rdiv.addClass('englishcentral_showdiv');
+			*/
+		}else{
+			pdiv.addClass('englishcentral_showdiv');
+			rdiv.addClass('englishcentral_hidediv');
+		}
+		
     	EC.init({
     		app: M.mod_englishcentral.playerhelper.appid,
     		accessToken: M.mod_englishcentral.playerhelper.accesstoken,
     		playOptions: {
-    			container: M.mod_englishcentral.playerhelper.playerdiv,
+    			container: usecontainer,
     			showCloseButton: true,
     			showWatchMode: opts['watchmode'],
     			showSpeakMode: opts['speakmode'],
@@ -60,10 +82,12 @@ M.mod_englishcentral.playerhelper = {
     			hiddenChallenge: opts['hiddenchallengemode'],
     			showLearnMode: opts['learnmode'],
     			simpleUI: opts['simpleui'],
-    			socialShareUrl: "http://www.facebook.com"
+    			socialShareUrl: "http://www.facebook.com",
+    			overrideNew: true,
+    			newPlayerMode: true
     		},
-    		resultFunc:	M.mod_englishcentral.playerhelper.handleresults,
-    		errorMsg:	M.mod_englishcentral.playerhelper.handleerror
+    		resultFunc:	function(results){ M.mod_englishcentral.playerhelper.handleresults(results);},
+    		errorMsg:	function(message){M.mod_englishcentral.playerhelper.handleerror(message);}
     	});
     	//console.log("finished init");
 		//console.log("accesstoken:" + M.mod_englishcentral.playerhelper.accesstoken);
@@ -71,13 +95,45 @@ M.mod_englishcentral.playerhelper = {
     }, 
     
     handleresults: function(results) {
-    	var txt = 'RESULTS<br />';
+    	var txt = '<h2>Session Results</h2>';
+    	txt += '<br />';
+    	txt += '<b>Session Active Time:  </b>' + results.activeTime  + ' seconds<br />';
+    	txt += '<b>Total Active Time:  </b>' + results.totalActiveTime + ' seconds<br />';
+    	if(results.totalActiveTime > 0){
+    		txt += '<b>Total Time on Task:  </b>' * results.timeOnTaskClock + '<br />';
+    	}
+    	txt += '<b>Lines Watched:  </b>' + results.linesWatched + '/' + results.linesTotal + '<br />';
+    	txt += '<b>Lines Recorded:  </b>' + results.linesRecorded + '<br />';
+    	txt += '<b>Session Score:  </b>' + Math.round(results.sessionScore * 100) + '%' + '<br />';
+    	txt += '<b>Session Grade:  </b>' + results.sessionGrade + '<br />';
+    	var completionrate = results.recordingComplete ? 1 : 0;
+    	//this won't work in litemode because linestotal != recordablelines
+    	if(!M.mod_englishcentral.playerhelper.opts['speaklitemode'] && results.linesRecorded>0){
+    		completionrate = results.linesRecorded /results.linesTotal;
+    	}
+    	txt += '<b>Overall Score:  </b>' +Math.round(completionrate * (results.sessionScore * 100)) + '%<br />';
+    	
+    	
+    	/*
 		for (i in results){
 			txt+= i +': '+results[i]+'<br />';
 		}
-		//console.log(results);
-		M.mod_englishcentral.playerhelper.showresponse(txt); 
-		M.mod_englishcentral.playerhelper.ajaxpost(results);		
+		*/
+		console.log(results);
+		M.mod_englishcentral.playerhelper.showresponse(txt);
+		if(M.mod_englishcentral.playerhelper.resultsmode=='form'){
+			M.mod_englishcentral.playerhelper.formpost(results);
+			//do the ui updates
+			var thebutton = this.gY.one('#mod_englishcentral_startfinish_button');
+			if(M.mod_englishcentral.playerhelper.opts['lightbox'] ){
+				thebutton.removeClass('englishcentral_hidediv');
+				thebutton.addClass('englishcentral_showdiv');
+			}
+			this.showresultsdiv(true);
+			thebutton.set('innerHTML','Try Again');	
+		}else{
+			M.mod_englishcentral.playerhelper.ajaxpost(results);
+		}	
     },
 	
 	handleerror: function(message) {
@@ -88,12 +144,36 @@ M.mod_englishcentral.playerhelper = {
 	startfinish: function(){
 		var thebutton = this.gY.one('#mod_englishcentral_startfinish_button');
 		if(thebutton.get('innerHTML') =='Start' || thebutton.get('innerHTML') =='Try Again'){
+			if(!EC.getReadyStatus()){return;}
 			this.play();
-			thebutton.set('innerHTML','Finish');
+			if(M.mod_englishcentral.playerhelper.resultsmode=='form' && M.mod_englishcentral.playerhelper.opts['lightbox'] ){
+				thebutton.removeClass('englishcentral_showdiv');
+				thebutton.addClass('englishcentral_hidediv');
+			}else{
+				thebutton.set('innerHTML','Finish');
+			}
+			this.showresultsdiv(false);
 		}else{
 			EC.getResults('M.mod_englishcentral.playerhelper.handleresults');
 		}
 	
+	},
+	
+	showresultsdiv: function(showresults){
+		var pdiv = Y.one('#' + M.mod_englishcentral.playerhelper.playerdiv);
+		var rdiv = Y.one('#' + M.mod_englishcentral.playerhelper.resultsdiv);
+		if(showresults){
+			pdiv.removeClass('englishcentral_showdiv');
+			pdiv.addClass('englishcentral_hidediv');
+			rdiv.removeClass('englishcentral_hidediv');
+			rdiv.addClass('englishcentral_showdiv');
+		}else{
+			rdiv.removeClass('englishcentral_showdiv');
+			rdiv.addClass('englishcentral_hidediv');
+			pdiv.removeClass('englishcentral_hidediv');
+			pdiv.addClass('englishcentral_showdiv');
+		}
+
 	},
 	
 	play: function(){
@@ -111,7 +191,6 @@ M.mod_englishcentral.playerhelper = {
     },
     
     showresponse: function(showtext){
-    //console.log('that was:' + showtext);
     	var resultscontainer = M.mod_englishcentral.playerhelper.gY.one('#' + M.mod_englishcentral.playerhelper.resultsdiv);
 		if((typeof showtext) != 'string'){
 			showtext = JSON.stringify(showtext);
@@ -132,6 +211,18 @@ M.mod_englishcentral.playerhelper = {
 			//console.log(result);
         }
     },
+    
+    formpost: function(resultobj){
+    	var Y = M.mod_englishcentral.playerhelper.gY;
+		var opts = M.mod_englishcentral.playerhelper.opts;
+		for (i in resultobj){
+			var elem = M.mod_englishcentral.playerhelper.gY.one('.' + 'englishcentral_' + i);
+			if(elem){
+				elem.set('value',resultobj[i]);
+			}
+		}
+		return;
+    },
 	
 	ajaxpost: function(resultobj){
     	var Y = M.mod_englishcentral.playerhelper.gY;
@@ -141,7 +232,7 @@ M.mod_englishcentral.playerhelper = {
 		//if(opts['preview']){return;}
 		
     	var uri  = 'ajaxfriend.php?id=' +  opts['cmid'] + 
-				'&ecresult=' +  JSON.stringify(resultobj) +
+				'&ecresult=' +  encodeURIComponent(JSON.stringify(resultobj)) +
     			'&sesskey=' + M.cfg.sesskey;
 		//we dhoul donly declare this callback once. but actually it blocks
 		Y.on('io:complete', M.mod_englishcentral.playerhelper.ajaxresult, Y,null);

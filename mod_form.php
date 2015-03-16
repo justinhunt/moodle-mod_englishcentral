@@ -50,6 +50,7 @@ class mod_englishcentral_mod_form extends moodleform_mod {
 		$config->speaklitemode=0;
 		$config->simpleui=0;
 		$config->learnmode=1;
+		$config->lightboxmode=0;
 		$config->hiddenchallengemode=0;
 
         //-------------------------------------------------------------------------------
@@ -93,6 +94,8 @@ class mod_englishcentral_mod_form extends moodleform_mod {
         $mform->setDefault('learnmode', $config->learnmode);
         $mform->addElement('advcheckbox', 'hiddenchallengemode', get_string('hiddenchallengemode', 'englishcentral'));
         $mform->setDefault('hiddenchallengemode', $config->hiddenchallengemode);
+       // $mform->addElement('advcheckbox', 'lightboxmode', get_string('lightboxmode', 'englishcentral'));
+       // $mform->setDefault('lightboxmode', $config->lightboxmode);
    
         // Grade.
         $this->standard_grading_coursemodule_elements();

@@ -132,6 +132,8 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
 		$htr->cells[] = $h_score;
 		$h_grade = new html_table_cell(get_string('sessiongrade','englishcentral'));
 		$htr->cells[] = $h_grade;
+		$h_compositescore = new html_table_cell(get_string('compositescore','englishcentral'));
+		$htr->cells[] = $h_compositescore;
 		$htmltable->data[]=$htr;
 
 		
@@ -146,7 +148,12 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
 			$activetime = new html_table_cell(gmdate("H:i:s",$attempt->activetime));
 			$htr->cells[] = $activetime;
 			//completed
-			$completed = new html_table_cell($attempt->recordingcomplete ? get_string('yes') : get_string('no'));
+			$completionrate = $attempt->recordingcomplete ? 1 : 0;
+			//this won't work because linestotal is for watchable, not recordable
+			if(false && $attempt->linesrecorded > 0){
+				$completionrate = $attempt->linesrecorded / $attempt->linestotal;
+			}
+			$completed = new html_table_cell($completionrate ? get_string('yes') : get_string('no'));
 			$htr->cells[] = $completed;
 			//Score
 			$score = new html_table_cell($attempt->sessionscore);
@@ -154,6 +161,9 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
 			//Grade
 			$grade = new html_table_cell($attempt->sessiongrade);
 			$htr->cells[] = $grade;
+			//Composite Score
+			$compositescore = new html_table_cell(round($completionrate*$attempt->sessionscore,0) .'%');
+			$htr->cells[] = $compositescore;
 			$htmltable->data[]=$htr;
 		}
 		$html = $this->output->heading(get_string('myattempts','englishcentral'), 4);
@@ -172,7 +182,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
 			$caption=get_string('start','englishcentral');
 		}
 		$bigbuttonhtml = html_writer::tag('button',$caption,  
-				array('class'=>'mod_englishcentral_bigbutton yui3-button mod_englishcentral_startfinish_button',
+				array('type'=>'button','class'=>'mod_englishcentral_bigbutton yui3-button mod_englishcentral_startfinish_button',
 				'id'=>'mod_englishcentral_startfinish_button','onclick'=>'M.mod_englishcentral.playerhelper.startfinish()'));	
 		return html_writer::tag('div', $bigbuttonhtml, array('class'=>'mod_tquiz_bigbutton_start_container','id'=>'mod_tquiz_bigbutton_start_container'));
 				
@@ -209,8 +219,8 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
      *  Show the Divs holding player and results box
      */
     public function show_ec_box(){
-		$playerdiv = html_writer::tag('div','',array('id'=>'mod_englishcentral_playercontainer'));
-		$resultsdiv = html_writer::tag('div','resultshere',array('id'=>'mod_englishcentral_resultscontainer'));
+		$playerdiv = html_writer::tag('div','English Central',array('id'=>'mod_englishcentral_playercontainer', 'class'=>'englishcentral_showdiv'));
+		$resultsdiv = html_writer::tag('div','',array('id'=>'mod_englishcentral_resultscontainer', 'class'=>'englishcentral_hidediv'));
 		return $playerdiv . $resultsdiv;
     }
 	

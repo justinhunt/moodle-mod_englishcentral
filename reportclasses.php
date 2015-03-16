@@ -242,7 +242,7 @@ class mod_englishcentral_attemptdetails_report extends  mod_englishcentral_base_
 class mod_englishcentral_allusers_report extends  mod_englishcentral_base_report {
 	
 	protected $report="allusers";
-	protected $fields = array('date','username','activetime','lineswatched','linesrecorded','sessionscore','sessiongrade');	
+	protected $fields = array('date','username','activetime','lineswatched','linesrecorded','sessionscore','sessiongrade','compositescore');	
 	protected $headingdata = null;
 	protected $qcache=array();
 	protected $ucache=array();
@@ -283,6 +283,15 @@ class mod_englishcentral_allusers_report extends  mod_englishcentral_base_report
 					
 				case 'sessionscore':
 						$ret = $record->sessionscore;
+					break;
+				
+				case 'compositescore':
+						$completionrate = $record->recordingComplete ? 1 : 0;
+						//this won't work because linestotal is for watchable, not recordable
+						if(false && $record->linesrecorded > 0){
+							$completionrate = $record->linesrecorded / $record->linestotal;
+						}
+						$ret = round($completionrate*$record->sessionscore,0) .'%';
 					break;
 				
 				default:

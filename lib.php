@@ -125,7 +125,7 @@ function englishcentral_grade_item_update($englishcentral, $grades=null) {
             if (!is_array($grade)) {
                 $grades[$key] = $grade = (array) $grade;
             }
-            //check raw grade isnt null otherwise we erroneously insert a grade of 0
+            //check raw grade isnt null otherwise we insert a grade of 0
             if ($grade['rawgrade'] !== null) {
                 $grades[$key]['rawgrade'] = ($grade['rawgrade'] * $params['grademax'] / 100);
             } else {
@@ -204,21 +204,21 @@ function englishcentral_get_user_grades($englishcentral, $userid=0) {
 	}else{
 		switch($englishcentral->gradeoptions){
 			case MOD_ENGLISHCENTRAL_GRADEHIGHEST:
-				$sql = "SELECT u.id, u.id AS userid, MAX(a.sessionscore) AS rawgrade
+				$sql = "SELECT u.id, u.id AS userid, MAX(a.sessionscore * a.recordingcomplete) AS rawgrade
                       FROM {user} u, {englishcentral_attempt} a
                      WHERE u.id = a.userid AND a.englishcentralid = :englishcentralid
                            $user
                   GROUP BY u.id";
 				  break;
 			case MOD_ENGLISHCENTRAL_GRADELOWEST:
-				$sql = "SELECT u.id, u.id AS userid, MIN(a.sessionscore) AS rawgrade
+				$sql = "SELECT u.id, u.id AS userid, MIN(a.sessionscore * a.recordingcomplete) AS rawgrade
                       FROM {user} u, {englishcentral_attempt} a
                      WHERE u.id = a.userid AND a.englishcentralid = :englishcentralid
                            $user
                   GROUP BY u.id";
 				  break;
 			case MOD_ENGLISHCENTRAL_GRADEAVERAGE:
-            $sql = "SELECT u.id, u.id AS userid, AVG(a.sessionscore) AS rawgrade
+            $sql = "SELECT u.id, u.id AS userid, AVG(a.sessionscore * a.recordingcomplete) AS rawgrade
                       FROM {user} u, {englishcentral_attempt} a
                      WHERE u.id = a.userid AND a.englishcentralid = :englishcentralid
                            $user

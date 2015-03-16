@@ -113,7 +113,10 @@ $opts['speakmode'] =$englishcentral->speakmode==1;
 $opts['speaklitemode'] =$englishcentral->speaklitemode==1; 
 $opts['learnmode'] =$englishcentral->learnmode==1; 
 $opts['hiddenchallengemode'] =$englishcentral->hiddenchallengemode==1; 
+$opts['lightbox'] = false;
+//$opts['lightbox'] =$englishcentral->lightboxmode==1;
 $opts['simpleui'] =$englishcentral->simpleui==1;
+$opts['resultsmode'] ='ajax';
 $opts['playerdiv'] ='mod_englishcentral_playercontainer';
 $opts['resultsdiv'] ='mod_englishcentral_resultscontainer';
 
@@ -155,7 +158,7 @@ if($englishcentral->maxattempts == 0|| count($attempts)<$englishcentral->maxatte
 	echo $renderer->show_bigbutton($hasattempts);
 	echo $renderer->show_ec_box();
 }else{
-	echo $renderer->show_exceeededattempts($englishcentral,$attempts);
+	echo $renderer->show_exceededattempts($englishcentral,$attempts);
 }
 
 // Finish the page

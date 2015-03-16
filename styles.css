@@ -1,20 +1,34 @@
 
 #mod_englishcentral_playercontainer {
 	text-align: center; 
-	margin-top: 1em; 
-	/*background: #F4C63f;*/
+	color: #FFF;
+	font-size: 64px;
+    font-style: oblique;
+	/* margin-top: 1em; */
+	background: #ACACAC;
 	width: 640px;
-	height: 380px;
+	height: 415px;
+	line-height: 415px;
+	/* -webkit-transition: height 1s; */
 }
+
+
+
 #mod_englishcentral_resultscontainer {
 	text-align: center; 
 	margin-top: 1em; 
 	background: #A4C63f;
 	width: 640px;
-	height: 420px;
-	display: none;
-	
+	height: 415px;
 }
+
+.englishcentral_hidediv {
+	display: none;
+}
+.englishcentral_showdiv {
+	display: block;
+}
+
 
 .englishcentral_myattempts_headrow{
 	font-weight: bold;
