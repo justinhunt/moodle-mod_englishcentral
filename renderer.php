@@ -184,7 +184,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
 		$bigbuttonhtml = html_writer::tag('button',$caption,  
 				array('type'=>'button','class'=>'mod_englishcentral_bigbutton yui3-button mod_englishcentral_startfinish_button',
 				'id'=>'mod_englishcentral_startfinish_button','onclick'=>'M.mod_englishcentral.playerhelper.startfinish()'));	
-		return html_writer::tag('div', $bigbuttonhtml, array('class'=>'mod_tquiz_bigbutton_start_container','id'=>'mod_tquiz_bigbutton_start_container'));
+		return html_writer::tag('div', $bigbuttonhtml, array('class'=>'mod_englishcentral_bigbutton_start_container','id'=>'mod_englishcentral_bigbutton_start_container'));
 				
 	 }
 	
@@ -193,8 +193,8 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
      */
     public function show_ec_options() {
 		$bigbuttonhtml = html_writer::tag('button','@@CAPTION@@',  
-				array('class'=>'mod_englishcentral_bigbutton yui3-button yui3-button-disabled mod_tquiz_@@SIZECLASS@@_button',
-				'id'=>'mod_englishcentral_@@ID@@_button','onclick'=>'M.mod_tquiz.helper.@@ONCLICK@@'));	
+				array('class'=>'mod_englishcentral_bigbutton yui3-button yui3-button-disabled mod_englishcentral_@@SIZECLASS@@_button',
+				'id'=>'mod_englishcentral_@@ID@@_button','onclick'=>'M.mod_englishcentral.helper.@@ONCLICK@@'));	
 				break;
 	
     	$results_callback = 'M.mod_englishcentral.playerhelper.showresponse()';
