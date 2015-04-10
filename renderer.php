@@ -154,6 +154,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
 				$completionrate = $attempt->linesrecorded / $attempt->linestotal;
 			}
 			$completed = new html_table_cell($completionrate ? get_string('yes') : get_string('no'));
+			//$completed = $attempt->linesrecorded . '/' . $attempt->linestotal;
 			$htr->cells[] = $completed;
 			//Score
 			$score = new html_table_cell($attempt->sessionscore);
