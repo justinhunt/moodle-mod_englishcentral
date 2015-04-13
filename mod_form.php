@@ -44,6 +44,7 @@ class mod_englishcentral_mod_form extends moodleform_mod {
         $mform = $this->_form;
 		
 		//just for now
+		/*
 		$config = new stdClass();
 		$config->watchmode=1;
 		$config->speakmode=1;
@@ -52,6 +53,9 @@ class mod_englishcentral_mod_form extends moodleform_mod {
 		$config->learnmode=1;
 		$config->lightboxmode=0;
 		$config->hiddenchallengemode=0;
+		*/
+		
+		$config= get_config('englishcentral');
 
         //-------------------------------------------------------------------------------
         // Adding the "general" fieldset, where all the common settings are showed
@@ -82,6 +86,9 @@ class mod_englishcentral_mod_form extends moodleform_mod {
         $mform->setType('videoid', PARAM_INT);
         
         //player options
+        $mform->addElement('advcheckbox', 'lightboxmode', get_string('lightboxmode', 'englishcentral'));
+        $mform->setDefault('lightboxmode', $config->lightboxmode);
+        
         $mform->addElement('advcheckbox', 'simpleui', get_string('simpleui', 'englishcentral'));
         $mform->setDefault('simpleui', $config->simpleui);
         $mform->addElement('advcheckbox', 'watchmode', get_string('watchmode', 'englishcentral'));
@@ -94,8 +101,7 @@ class mod_englishcentral_mod_form extends moodleform_mod {
         $mform->setDefault('learnmode', $config->learnmode);
         $mform->addElement('advcheckbox', 'hiddenchallengemode', get_string('hiddenchallengemode', 'englishcentral'));
         $mform->setDefault('hiddenchallengemode', $config->hiddenchallengemode);
-       // $mform->addElement('advcheckbox', 'lightboxmode', get_string('lightboxmode', 'englishcentral'));
-       // $mform->setDefault('lightboxmode', $config->lightboxmode);
+       
    
         // Grade.
         $this->standard_grading_coursemodule_elements();

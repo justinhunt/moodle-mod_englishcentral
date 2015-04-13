@@ -36,10 +36,13 @@ if ($ADMIN->fulltree) {
 	 $settings->add(new admin_setting_configtext('englishcentral/consumersecret',
         get_string('consumersecret', 'englishcentral'), get_string('consumersecretexplain', 'englishcentral'), 'YOUR CONSUMER SECRET', PARAM_TEXT));
 
+	$settings->add(new admin_setting_configcheckbox('englishcentral/lightboxmode', get_string('lightboxmode', 'englishcentral'), '', 1));
 	$settings->add(new admin_setting_heading('englishcentral/defaultsettings', get_string('defaultsettings', 'englishcentral'), ''));
 	$settings->add(new admin_setting_configcheckbox('englishcentral/watchmode', get_string('watchmode', 'englishcentral'), '', 1));
 	$settings->add(new admin_setting_configcheckbox('englishcentral/speakmode', get_string('speakmode', 'englishcentral'), '', 1));
 	$settings->add(new admin_setting_configcheckbox('englishcentral/learnmode', get_string('learnmode', 'englishcentral'), '', 0));
-	$settings->add(new admin_setting_configcheckbox('englishcentral/hiddenchallengmode', get_string('hiddenchallengemode', 'englishcentral'), '', 0));
+	$settings->add(new admin_setting_configcheckbox('englishcentral/simpleui', get_string('simpleui', 'englishcentral'), '', 0));
+	$settings->add(new admin_setting_configcheckbox('englishcentral/speaklitemode', get_string('speaklitemode', 'englishcentral'), '', 0));
+	$settings->add(new admin_setting_configcheckbox('englishcentral/hiddenchallengemode', get_string('hiddenchallengemode', 'englishcentral'), '', 0));
 
 }
