@@ -73,7 +73,11 @@ class mod_englishcentral_mod_form extends moodleform_mod {
         $mform->addHelpButton('name', 'englishcentralname', 'englishcentral');
 
         // Adding the standard "intro" and "introformat" fields
-        $this->add_intro_editor();
+        if($CFG->version < 2015051100){
+        	$this->add_intro_editor();
+        }else{
+        	$this->standard_intro_elements();
+		}
 
         //-------------------------------------------------------------------------------
         // Adding the rest of englishcentral settings, spreeading all them into this fieldset
