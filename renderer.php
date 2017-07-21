@@ -196,7 +196,8 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
 		$bigbuttonhtml = html_writer::tag('button','@@CAPTION@@',  
 				array('class'=>'mod_englishcentral_bigbutton yui3-button yui3-button-disabled mod_englishcentral_@@SIZECLASS@@_button',
 				'id'=>'mod_englishcentral_@@ID@@_button','onclick'=>'M.mod_englishcentral.helper.@@ONCLICK@@'));	
-				break;
+//why is this line even here				
+//break;
 	
     	$results_callback = 'M.mod_englishcentral.playerhelper.showresponse()';
     	$links = array(
@@ -329,7 +330,6 @@ class mod_englishcentral_report_renderer extends plugin_renderer_base {
 			 echo $datarow . $newline;
 		}
         exit();
-        break;
 	}
 
 	public function render_section_html($sectiontitle, $report, $head, $rows, $fields) {
