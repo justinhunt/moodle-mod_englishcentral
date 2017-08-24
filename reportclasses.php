@@ -291,7 +291,7 @@ class mod_englishcentral_allusers_report extends  mod_englishcentral_base_report
 					break;
 				
 				case 'compositescore':
-						$completionrate = $record->recordingComplete ? 1 : 0;
+						$completionrate = $record->recordingcomplete ? 1 : 0;
 						//this won't work in speaklitemode because linestotal is for watchable, not recordable
 						if(!$this->englishcentral->speaklitemode && $record->linesrecorded > 0){
 							$completionrate = $record->linesrecorded / $record->linestotal;

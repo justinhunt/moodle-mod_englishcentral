@@ -28,13 +28,17 @@ defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
 
-
+    $settings->add(new admin_setting_configtext('englishcentral/partnerid',
+        get_string('partnerid', 'englishcentral'), get_string('partneridexplain', 'englishcentral'), 'YOUR PARTNER ID', PARAM_TEXT));
 
 	  $settings->add(new admin_setting_configtext('englishcentral/consumerkey',
         get_string('consumerkey', 'englishcentral'), get_string('consumerkeyexplain', 'englishcentral'), 'YOUR CONSUMER KEY', PARAM_TEXT));
 		
 	 $settings->add(new admin_setting_configtext('englishcentral/consumersecret',
         get_string('consumersecret', 'englishcentral'), get_string('consumersecretexplain', 'englishcentral'), 'YOUR CONSUMER SECRET', PARAM_TEXT));
+
+    $settings->add(new admin_setting_configtext('englishcentral/encryptedsecret',
+        get_string('encryptedsecret', 'englishcentral'), get_string('encryptedsecretexplain', 'englishcentral'), 'YOUR ENCRYPTED SECRET', PARAM_TEXT));
 
 	$settings->add(new admin_setting_configcheckbox('englishcentral/lightboxmode', get_string('lightboxmode', 'englishcentral'), '', 1));
 	$settings->add(new admin_setting_heading('englishcentral/defaultsettings', get_string('defaultsettings', 'englishcentral'), ''));

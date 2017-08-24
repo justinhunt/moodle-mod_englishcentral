@@ -1,0 +1,3 @@
+Version 2017082000
+
+Moved from old OAuth based API to the JWT Auth one

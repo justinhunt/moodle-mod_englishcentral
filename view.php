@@ -28,8 +28,7 @@
 
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
-require_once(dirname(__FILE__).'/lib.php');
-require_once(dirname(__FILE__).'/englishcentral.php');
+require_once(dirname(__FILE__).'/lib.php');;
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // englishcentral instance ID - it should be named as the first character of the module
@@ -81,19 +80,14 @@ $PAGE->set_pagelayout('course');
 
 //authenticate with English Central, and get our API ready
 	$config = get_config('englishcentral');
-  	$consumer_key = $config->consumerkey;
-    $consumer_secret = $config->consumersecret;
-    $ec = new EnglishCentral($consumer_key,$consumer_secret);
-    $oauth_callback = $CFG->wwwroot. '/admin/oauth2callback.php';
 
-	$ec_user = $USER->username; //'justinhunt';
-    $requesttoken = $ec->getRequestToken($oauth_callback);
-    $accesstoken = $ec->getAccessToken($requesttoken,$ec_user);
-    //were using something like this with Bridge API
-    //$verifier = $ec->getVerifier();
-   // $accesstoken = $ec->getAccessToken($requesttoken,$verifier);
-   // die;
+    $ec = new \mod_englishcentral\englishcentral('test');
+	$ec_user = $USER;
+	$jwt = $ec->build_authorize_token($ec_user);
 
+	$sdk_token = $ec->login_and_auth($jwt,$ec_user);
+//print_r($sdk_token);
+//die;//
 
 //get our javascript all ready to go
 $jsmodule = array(
@@ -103,10 +97,9 @@ $jsmodule = array(
 );
 //here we set up any info we need to pass into javascript
 $opts =Array();
-$opts['appid'] =$consumer_key;
+$opts['consumerkey'] =$config->consumerkey;
 $opts['cmid'] = $cm->id;
-$opts['accesstoken'] =$accesstoken;
-$opts['requesttoken'] =$requesttoken; 
+$opts['sdktoken'] =$sdk_token;
 $opts['videoid'] =$englishcentral->videoid; 
 $opts['watchmode'] =$englishcentral->watchmode==1;
 $opts['speakmode'] =$englishcentral->speakmode==1; 
@@ -120,15 +113,29 @@ $opts['playerdiv'] ='mod_englishcentral_playercontainer';
 $opts['resultsdiv'] ='mod_englishcentral_resultscontainer';
 
 //this inits the M.mod_englishcentral thingy, after the page has loaded.
-$PAGE->requires->js_init_call('M.mod_englishcentral.playerhelper.init', array($opts),false,$jsmodule);
+//$PAGE->requires->js_init_call('M.mod_englishcentral.playerhelper.init', array($opts),false,$jsmodule);
+
+/*
+ *  20170819 Basically what we have done is to swap out init with a new function angular_init (just above)
+ * And just below we swapped out the API call to ec.js to the sdk.js so we are loading a new library
+ *
+ * Going forward we need to load with AMD in JS and use the firebase JWT sign on system to auth with EC
+ *
+ */
+
+$PAGE->requires->js_init_call('M.mod_englishcentral.playerhelper.angular_init', array($opts),false,$jsmodule);
+
+
 
 //this loads the strings we need into JS
 $PAGE->requires->strings_for_js(array('sessionresults','sessionscore','sessiongrade','lineswatched',
 						'linesrecorded','compositescore','activetime','totalactivetime'), 'englishcentral');
 
 //this loads any external JS libraries we need to call
-//$PAGE->requires->js("/mod/englishcentral/js/ec.js");
-$PAGE->requires->js(new moodle_url('https://www.englishcentral.com/platform/ec.js'),true);
+////$PAGE->requires->js("/mod/englishcentral/js/ec.js");
+//$PAGE->requires->js(new moodle_url('https://www.englishcentral.com/platform/ec.js'),true);
+$ec_js_url = $ec->fetch_js_url();
+$PAGE->requires->js(new moodle_url($ec_js_url),true);
 
 //This puts all our display logic into the renderer.php file in this plugin
 //theme developers can override classes there, so it makes it customizable for others
