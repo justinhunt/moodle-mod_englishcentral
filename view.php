@@ -81,7 +81,8 @@ $PAGE->set_pagelayout('course');
 //authenticate with English Central, and get our API ready
 	$config = get_config('englishcentral');
 
-    $ec = new \mod_englishcentral\englishcentral('test');
+    //change 'production' to test when developing here AND in ajaxhelper.php
+    $ec = new \mod_englishcentral\englishcentral('production');
 	$ec_user = $USER;
 	$jwt = $ec->build_authorize_token($ec_user);
 
@@ -123,7 +124,7 @@ $opts['resultsdiv'] ='mod_englishcentral_resultscontainer';
  *
  */
 
-$PAGE->requires->js_init_call('M.mod_englishcentral.playerhelper.angular_init', array($opts),false,$jsmodule);
+$PAGE->requires->js_init_call('M.mod_englishcentral.playerhelper.init', array($opts),false,$jsmodule);
 
 
 

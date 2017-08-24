@@ -35,68 +35,13 @@ M.mod_englishcentral.playerhelper = {
 	appid: null,
 	opts: null,
 
-	 /**
-     * @param Y the YUI object
-     * @param start, the timer starting time, in seconds.
-     * @param preview, is this a quiz preview?
-     */
-    init: function(Y,opts) {
-    	//console.log("entered init");
-    	this.gY = Y;
-		this.opts = opts;
-    	this.playerdiv = opts['playerdiv'];
-    	this.resultsdiv = opts['resultsdiv'];
-    	this.videoid = opts['videoid'];
-		this.appid = opts['appid'];
-		this.accesstoken = opts['accesstoken'];
-		this.resultsmode = opts['resultsmode'];
-
-		//create a rer for this, to survive function calbacks
-         var that = this;
-		
-		//default to show in div, but could be in lightbox
-		var usecontainer = this.playerdiv;
-		var pdiv = Y.one('#' + this.playerdiv);
-		var rdiv = Y.one('#' + this.resultsdiv);
-		//no player div is loaded when the user os out of attempts, so we exit in this case
-		if(!pdiv){
-			return;
-		}
-
-		pdiv.addClass('englishcentral_showdiv');
-		rdiv.addClass('englishcentral_hidediv');
-
-		
-    	EC.init({
-    		app: this.appid,
-    		accessToken: this.accesstoken,
-    		playOptions: {
-    			container: usecontainer,
-    			showCloseButton: true,
-    			showWatchMode: opts['watchmode'],
-    			showSpeakMode: opts['speakmode'],
-    			showSpeakLite: opts['speaklitemode'],
-    			hiddenChallenge: opts['hiddenchallengemode'],
-    			showLearnMode: opts['learnmode'],
-    			simpleUI: opts['simpleui'],
-    			socialShareUrl: "http://www.facebook.com",
-    			overrideNew: true,
-    			newPlayerMode: true
-    		},
-    		resultFunc:	function(results){ that.handleresults(results);},
-    		errorMsg:	function(message){that.handleerror(message);}
-    	});
-    	//console.log("finished init");
-		//console.log("accesstoken:" + this.accesstoken);
-		//console.log("requesttoken:" + opts['requesttoken']);
-    },
 
     /**
      * @param Y the YUI object
      * @param start, the timer starting time, in seconds.
      * @param preview, is this a quiz preview?
      */
-    angular_init: function(Y,opts) {
+    init: function(Y,opts) {
         //console.log("entered init");
         this.gY = Y;
         this.opts = opts;

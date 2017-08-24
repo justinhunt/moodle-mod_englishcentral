@@ -50,7 +50,8 @@ $context = context_module::instance($cm->id);
 
 global $DB,$USER;
 
-$ec = new \mod_englishcentral\englishcentral('test');
+//change 'production' to test when developing here AND in view.php
+$ec = new \mod_englishcentral\englishcentral('production');
 
 $actiondata=json_decode($action_data);
 $ret='';
