@@ -32,11 +32,10 @@
 defined('MOODLE_INTERNAL') || die();
 
 define('MOD_ENGLISHCENTRAL_GRADEHIGHEST', 0);
-define('MOD_ENGLISHCENTRAL_GRADELOWEST', 1);
-define('MOD_ENGLISHCENTRAL_GRADELATEST', 2);
+define('MOD_ENGLISHCENTRAL_GRADELOWEST',  1);
+define('MOD_ENGLISHCENTRAL_GRADELATEST',  2);
 define('MOD_ENGLISHCENTRAL_GRADEAVERAGE', 3);
-define('MOD_ENGLISHCENTRAL_GRADENONE', 4);
-
+define('MOD_ENGLISHCENTRAL_GRADENONE',    4);
 
 ////////////////////////////////////////////////////////////////////////////////
 // Moodle core API                                                            //
@@ -74,7 +73,8 @@ function englishcentral_supports($feature) {
  */
 function englishcentral_grade_item_update($englishcentral, $grades=null) {
     global $CFG;
-    if (!function_exists('grade_update')) { //workaround for buggy PHP versions
+
+    if (! function_exists('grade_update')) { //workaround for buggy PHP versions
         require_once($CFG->libdir.'/gradelib.php');
     }
 
@@ -166,7 +166,7 @@ function englishcentral_update_grades($englishcentral, $userid=0, $nullifnone=tr
     } else {
         englishcentral_grade_item_update($englishcentral);
     }
-	
+
 	//echo "updategrades" . $userid;
 }
 
@@ -175,14 +175,14 @@ function englishcentral_update_grades($englishcentral, $userid=0, $nullifnone=tr
  *
  * @global stdClass
  * @global object
- * @param int $englishcentralid id of englishcentral
+ * @param int $ecid id of englishcentral
  * @param int $userid optional user id, 0 means all users
  * @return array array of grades, false if none
  */
 function englishcentral_get_user_grades($englishcentral, $userid=0) {
     global $CFG, $DB;
 
-    $params = array("englishcentralid" => $englishcentral->id);
+    $params = array("ecid" => $englishcentral->id);
 
     if (!empty($userid)) {
         $params["userid"] = $userid;
@@ -193,7 +193,11 @@ function englishcentral_get_user_grades($englishcentral, $userid=0) {
 
     }
 
-	if($englishcentral->speaklitemode !=1){
+    $englishcentral->speaklitemode = 0;
+    $englishcentral->maxattempts = 0;
+    $englishcentral->gradeoptions = 0;
+
+	if($englishcentral->speaklitemode != 1){
 		$overallgrade = '(a.sessionscore * (a.linesrecorded * (1 / a.linestotal)))';
 	}else{
 		$overallgrade = '(a.sessionscore * a.recordingcomplete)';
@@ -202,41 +206,41 @@ function englishcentral_get_user_grades($englishcentral, $userid=0) {
     if ($englishcentral->maxattempts==1 || $englishcentral->gradeoptions == MOD_ENGLISHCENTRAL_GRADELATEST) {
 
         $sql = "SELECT u.id, u.id AS userid, $overallgrade AS rawgrade
-                  FROM {user} u,  {englishcentral_attempt} a
-                 WHERE u.id = a.userid AND a.englishcentralid = :englishcentralid
+                  FROM {user} u,  {englishcentral_attempts} a
+                 WHERE u.id = a.userid AND a.ecid = :ecid
                        AND a.status = 1
                        $user";
-	
+
 	}else{
 		switch($englishcentral->gradeoptions){
 			case MOD_ENGLISHCENTRAL_GRADEHIGHEST:
 				$sql = "SELECT u.id, u.id AS userid, MAX( $overallgrade ) AS rawgrade
-                      FROM {user} u, {englishcentral_attempt} a
-                     WHERE u.id = a.userid AND a.englishcentralid = :englishcentralid
+                      FROM {user} u, {englishcentral_attempts} a
+                     WHERE u.id = a.userid AND a.ecid = :ecid
                            $user
                   GROUP BY u.id";
 				  break;
 			case MOD_ENGLISHCENTRAL_GRADELOWEST:
 				$sql = "SELECT u.id, u.id AS userid, MIN(  $overallgrade ) AS rawgrade
-                      FROM {user} u, {englishcentral_attempt} a
-                     WHERE u.id = a.userid AND a.englishcentralid = :englishcentralid
+                      FROM {user} u, {englishcentral_attempts} a
+                     WHERE u.id = a.userid AND a.ecid = :ecid
                            $user
                   GROUP BY u.id";
 				  break;
 			case MOD_ENGLISHCENTRAL_GRADEAVERAGE:
             $sql = "SELECT u.id, u.id AS userid, AVG(  $overallgrade ) AS rawgrade
-                      FROM {user} u, {englishcentral_attempt} a
-                     WHERE u.id = a.userid AND a.englishcentralid = :englishcentralid
+                      FROM {user} u, {englishcentral_attempts} a
+                     WHERE u.id = a.userid AND a.ecid = :ecid
                            $user
                   GROUP BY u.id";
 				  break;
 
         }
 
-    } 
+    }
 	/*
 echo $sql;
-print_r($params);	
+print_r($params);
 print_r($DB->get_records_sql($sql, $params));
 */
     return $DB->get_records_sql($sql, $params);
@@ -306,8 +310,8 @@ function englishcentral_reset_userdata($data) {
                         WHERE l.course=:course";
 
         $params = array ("course" => $data->courseid);
-        $DB->delete_records_select('englishcentral_attempt', "englishcentralid IN ($englishcentralssql)", $params);
-        $DB->delete_records_select('englishcentral_phs', "englishcentralid IN ($englishcentralssql)", $params);
+        $DB->delete_records_select('englishcentral_attempts', "ecid IN ($englishcentralssql)", $params);
+        $DB->delete_records_select('englishcentral_phs', "ecid IN ($englishcentralssql)", $params);
 
         // remove all grades from gradebook
         if (empty($data->reset_gradebook_grades)) {
@@ -339,22 +343,8 @@ function englishcentral_reset_userdata($data) {
  * @param mod_englishcentral_mod_form $mform
  * @return int The id of the newly inserted englishcentral record
  */
-function englishcentral_add_instance(stdClass $englishcentral, mod_englishcentral_mod_form $mform = null) {
-    global $DB;
-
-    $englishcentral->timecreated = time();
-
-    # You may have to add extra stuff in here #
-
-    $ecid =  $DB->insert_record('englishcentral', $englishcentral);
-	$englishcentral->id = $ecid;
-	
-	  // update grade item definition
-    englishcentral_grade_item_update($englishcentral);
-	
-	return $ecid;
-
-
+function englishcentral_add_instance(stdClass $formdata, mod_englishcentral_mod_form $mform = null) {
+    return englishcentral_form_postprocessing($formdata, $mform);
 }
 
 /**
@@ -364,27 +354,60 @@ function englishcentral_add_instance(stdClass $englishcentral, mod_englishcentra
  * (defined by the form in mod_form.php) this function
  * will update an existing instance with new data.
  *
- * @param object $englishcentral An object from the form in mod_form.php
+ * @param object $formdata An object from the form in mod_form.php
  * @param mod_englishcentral_mod_form $mform
  * @return boolean Success/Fail
  */
-function englishcentral_update_instance(stdClass $englishcentral, mod_englishcentral_mod_form $mform = null) {
+function englishcentral_update_instance(stdClass $formdata, mod_englishcentral_mod_form $mform = null) {
+    return englishcentral_form_postprocessing($formdata, $mform);
+}
+
+/**
+ * update fields in recently submitted form data
+ *
+ * @param stdClass $formdata recently submitted formdata
+ * @return boolean Success/Failure
+ */
+function englishcentral_form_postprocessing(stdClass $formdata, mod_englishcentral_mod_form $mform) {
     global $DB;
 
-    $englishcentral->timemodified = time();
-    $englishcentral->id = $englishcentral->instance;
+    $name = 'periodtype';
+    if (empty($formdata->$name)) {
+        $formdata->$name = $mform::PERIOD_NONE;
+    }
+    switch ($formdata->$name) {
+        case $mform::PERIOD_WEEKLY:
+            $formdata->goalperiod = -intval($formdata->weekday);
+            break;
+        case $mform::PERIOD_MONTHLY:
+            $formdata->goalperiod = intval($formdata->monthday);
+            break;
+        case $mform::PERIOD_ENDDATE:
+            $formdata->goalperiod = intval($formdata->enddate);
+            break;
+        case $mform::PERIOD_NONE:
+            $formdata->goalperiod = 0;
+            break;
+    }
+    unset($formdata->weekday);
+    unset($formdata->monthday);
+    unset($formdata->enddate);
 
-    # You may have to add extra stuff in here #
+    $formdata->timemodified = time();
 
-   $DB->update_record('englishcentral', $englishcentral);
-	
-	// update grade item definition
-    englishcentral_grade_item_update($englishcentral);
-
-    // update grades - TODO: do it only when grading style changes
-    englishcentral_update_grades($englishcentral, 0, false);
-	
-	return true;
+    if (empty($formdata->instance)) {
+        // add new instance
+        $formdata->timecreated = $formdata->timemodified;
+        $formdata->id = $DB->insert_record('englishcentral', $formdata);
+        englishcentral_grade_item_update($formdata);
+    } else {
+        // update exisiting instance
+        $formdata->id = $formdata->instance;
+        $DB->update_record('englishcentral', $formdata);
+        englishcentral_grade_item_update($formdata);
+        englishcentral_update_grades($formdata, 0, false);
+    }
+    return $formdata->id;
 }
 
 /**
@@ -399,15 +422,11 @@ function englishcentral_update_instance(stdClass $englishcentral, mod_englishcen
  */
 function englishcentral_delete_instance($id) {
     global $DB;
-
-    if (! $englishcentral = $DB->get_record('englishcentral', array('id' => $id))) {
-        return false;
-    }
-
-    # Delete any dependent records here #
-
-    $DB->delete_records('englishcentral', array('id' => $englishcentral->id));
-
+    $params = array('ecid' => $id);
+    $DB->delete_records('englishcentral_videos', $params);
+    $DB->delete_records('englishcentral_attempts', $params);
+    $DB->delete_records('englishcentral_phonemes', $params);
+    $DB->delete_records('englishcentral', array('id' => $id));
     return true;
 }
 
@@ -421,7 +440,6 @@ function englishcentral_delete_instance($id) {
  * @return stdClass|null
  */
 function englishcentral_user_outline($course, $user, $mod, $englishcentral) {
-
     $return = new stdClass();
     $return->time = 0;
     $return->info = '';
@@ -513,14 +531,14 @@ function englishcentral_get_extra_capabilities() {
  * modified if necessary. See forum, glossary or journal modules
  * as reference.
  *
- * @param int $englishcentralid ID of an instance of this module
+ * @param int $ecid ID of an instance of this module
  * @return bool true if the scale is used by the given englishcentral instance
  */
-function englishcentral_scale_used($englishcentralid, $scaleid) {
+function englishcentral_scale_used($ecid, $scaleid) {
     global $DB;
 
     /** @example */
-    if ($scaleid and $DB->record_exists('englishcentral', array('id' => $englishcentralid, 'grade' => -$scaleid))) {
+    if ($scaleid and $DB->record_exists('englishcentral', array('id' => $ecid, 'grade' => -$scaleid))) {
         return true;
     } else {
         return false;

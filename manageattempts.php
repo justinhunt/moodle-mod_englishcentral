@@ -16,7 +16,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Action for adding/editing a englishcentral attempt. 
+ * Action for adding/editing a englishcentral attempt.
  *
  * @package mod_englishcentral
  * @copyright  2014 Justin Hunt
@@ -30,7 +30,7 @@ global $USER,$DB;
 
 // first get the nfo passed in to set up the page
 $attemptid = optional_param('attemptid',0 ,PARAM_INT);
-$id     = required_param('id', PARAM_INT);         // Course Module ID
+$id = required_param('id', PARAM_INT); // course_module ID
 $action = optional_param('action','confirmdelete',PARAM_TEXT);
 
 // get the objects we need
@@ -52,7 +52,7 @@ $PAGE->set_pagelayout('course');
 
 //are we in new or edit mode?
 if ($attemptid) {
-    $attempt = $DB->get_record('englishcentral_attempt', array('id'=>$attemptid,'englishcentralid' => $cm->instance), '*', MUST_EXIST);
+    $attempt = $DB->get_record('englishcentral_attempts', array('id'=>$attemptid,'ecid' => $cm->instance), '*', MUST_EXIST);
 	if(!$attempt){
 		print_error('could not find attempt of id:' . $attemptid);
 	}
@@ -68,8 +68,8 @@ switch($action){
 	case 'confirmdelete':
 		$renderer = $PAGE->get_renderer('mod_englishcentral');
 		echo $renderer->header($englishcentral, $cm, '', null, get_string('confirmattemptdeletetitle', 'englishcentral'));
-		echo $renderer->confirm(get_string("confirmattemptdelete","englishcentral"), 
-			new moodle_url('manageattempts.php', array('action'=>'delete','id'=>$cm->id,'attemptid'=>$attemptid)), 
+		echo $renderer->confirm(get_string("confirmattemptdelete","englishcentral"),
+			new moodle_url('manageattempts.php', array('action'=>'delete','id'=>$cm->id,'attemptid'=>$attemptid)),
 			$redirecturl);
 		echo $renderer->footer();
 		return;
@@ -77,7 +77,7 @@ switch($action){
 /////// Delete attempt NOW////////
 	case 'delete':
 		require_sesskey();
-		if (!$DB->delete_records("englishcentral_attempt", array('id'=>$attemptid))){
+		if (!$DB->delete_records("englishcentral_attempts", array('id'=>$attemptid))){
 			print_error("Could not delete attempt");
 			if (!$DB->delete_records("englishcentral_phs", array('attemptid'=>$attemptid))){
 				print_error("Could not delete phonemes");
@@ -85,22 +85,22 @@ switch($action){
 		}
 		redirect($redirecturl);
 		return;
-	
+
 	case 'confirmdeleteall':
 		$renderer = $PAGE->get_renderer('mod_englishcentral');
 		echo $renderer->header($englishcentral, $cm, '', null, get_string('confirmattemptdeletealltitle', 'englishcentral'));
-		echo $renderer->confirm(get_string("confirmattemptdeleteall","englishcentral"), 
-			new moodle_url('manageattempts.php', array('action'=>'deleteall','id'=>$cm->id)), 
+		echo $renderer->confirm(get_string("confirmattemptdeleteall","englishcentral"),
+			new moodle_url('manageattempts.php', array('action'=>'deleteall','id'=>$cm->id)),
 			$redirecturl);
 		echo $renderer->footer();
 		return;
-	
+
 	/////// Delete ALL attempts ////////
 	case 'deleteall':
 		require_sesskey();
-		if (!$DB->delete_records("englishcentral_attempt", array('englishcentralid'=>$englishcentral->id))){
+		if (!$DB->delete_records("englishcentral_attempts", array('ecid'=>$englishcentral->id))){
 			print_error("Could not delete attempts (all)");
-			if (!$DB->delete_records("englishcentral_phs", array('englishcentralid'=>$englishcentral->id))){
+			if (!$DB->delete_records("englishcentral_phs", array('ecid'=>$englishcentral->id))){
 				print_error("Could not delete logs (all)");
 			}
 		}

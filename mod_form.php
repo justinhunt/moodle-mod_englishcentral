@@ -36,100 +36,187 @@ require_once($CFG->dirroot.'/mod/englishcentral/lib.php');
  */
 class mod_englishcentral_mod_form extends moodleform_mod {
 
+    const PERIOD_NONE    = 0;
+    const PERIOD_WEEKLY  = 1;
+    const PERIOD_MONTHLY = 2;
+    const PERIOD_ENDDATE = 3;
+
     /**
      * Defines forms elements
      */
     public function definition() {
-        global $CFG;
+
+        // cache the name of this plugin
+        $plugin = 'mod_englishcentral';
 
         $mform = $this->_form;
-		
-		//just for now
-		/*
-		$config = new stdClass();
-		$config->watchmode=1;
-		$config->speakmode=1;
-		$config->speaklitemode=0;
-		$config->simpleui=0;
-		$config->learnmode=1;
-		$config->lightboxmode=0;
-		$config->hiddenchallengemode=0;
-		*/
-		
-		$config= get_config('englishcentral');
+
+		$config = get_config('englishcentral');
+
+        $str = (object)array(
+            'maximumchars' => get_string('maximumchars', '', 255),
+            'unlimited' => get_string('unlimited'),
+            'monthly' => get_string('monthly', 'calendar'),
+            'weekly' => get_string('weekly', 'calendar'),
+            'date' => get_string('date')
+        );
+
 
         //-------------------------------------------------------------------------------
-        // Adding the "general" fieldset, where all the common settings are showed
-        $mform->addElement('header', 'general', get_string('general', 'form'));
+        $name = 'general';
+        $label = get_string($name, 'form');
+        $mform->addElement('header', $name, $label);
+        //-------------------------------------------------------------------------------
 
         // Adding the standard "name" field
-        $mform->addElement('text', 'name', get_string('englishcentralname', 'englishcentral'), array('size'=>'64'));
-        if (!empty($CFG->formatstringstriptags)) {
-            $mform->setType('name', PARAM_TEXT);
+        $name = 'name';
+        $label = get_string('englishcentralname', $plugin);
+        $mform->addElement('text', $name, $label, array('size'=>'64'));
+        if (empty($CFG->formatstringstriptags)) {
+            $mform->setType($name, PARAM_CLEAN);
         } else {
-            $mform->setType('name', PARAM_CLEAN);
+            $mform->setType($name, PARAM_TEXT);
         }
-        $mform->addRule('name', null, 'required', null, 'client');
-        $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
-        $mform->addHelpButton('name', 'englishcentralname', 'englishcentral');
+        $mform->addRule($name, null, 'required', null, 'client');
+        $mform->addRule($name, $str->maximumchars, 'maxlength', 255, 'client');
+        $mform->addHelpButton($name, 'englishcentralname', $plugin);
 
         // Adding the standard "intro" and "introformat" fields
-        if($CFG->version < 2015051100){
-        	$this->add_intro_editor();
-        }else{
-        	$this->standard_intro_elements();
-		}
+        $this->standard_intro_elements();
 
         //-------------------------------------------------------------------------------
-        // Adding the rest of englishcentral settings, spreeading all them into this fieldset
-        // or adding more fieldsets ('header' elements) if needed for better logic
-        $mform->addElement('text', 'videotitle', get_string('videotitle', 'englishcentral'), array('size'=>'64'));
-        $mform->addElement('text', 'videoid', get_string('videoid', 'englishcentral'), array('size'=>'24'));
-        $mform->addRule('videotitle', null, 'required', null, 'client');
-        $mform->addRule('videoid', null, 'required', null, 'client');
-        $mform->setType('videotitle', PARAM_TEXT);
-        $mform->setType('videoid', PARAM_INT);
-        
-        //player options
-        $mform->addElement('advcheckbox', 'lightboxmode', get_string('lightboxmode', 'englishcentral'));
-        $mform->setDefault('lightboxmode', $config->lightboxmode);
-        
-        $mform->addElement('advcheckbox', 'simpleui', get_string('simpleui', 'englishcentral'));
-        $mform->setDefault('simpleui', $config->simpleui);
-        $mform->addElement('advcheckbox', 'watchmode', get_string('watchmode', 'englishcentral'));
-        $mform->setDefault('watchmode', $config->watchmode);
-        $mform->addElement('advcheckbox', 'speakmode', get_string('speakmode', 'englishcentral'));
-        $mform->setDefault('speakmode', $config->speakmode);
-        $mform->addElement('advcheckbox', 'speaklitemode', get_string('speaklitemode', 'englishcentral'));
-        $mform->setDefault('speaklitemode', $config->speaklitemode);
-        $mform->addElement('advcheckbox', 'learnmode', get_string('learnmode', 'englishcentral'));
-        $mform->setDefault('learnmode', $config->learnmode);
-        $mform->addElement('advcheckbox', 'hiddenchallengemode', get_string('hiddenchallengemode', 'englishcentral'));
-        $mform->setDefault('hiddenchallengemode', $config->hiddenchallengemode);
-       
-   
-        // Grade.
+        $name = 'goals';
+        $label = get_string($name, $plugin);
+        $mform->addElement('header', $name, $label);
+        $mform->setExpanded($name, true);
+        //-------------------------------------------------------------------------------
+
+        $options = array('size' => '3');
+        $names = array('watchgoal' => 10,
+                       'learngoal' => 20,
+                       'speakgoal' => 10,
+                       'studygoal' => 60);
+        foreach ($names as $name => $default) {
+            $label = get_string($name, $plugin);
+            $units = get_string($name.'units', $plugin);
+            $elements = array(
+                $mform->createElement('text', $name, '', $options),
+                $mform->createElement('static', '', '', $units)
+            );
+            $mform->addElement('group', $name.'group', $label, $elements, ' ', false);
+            $mform->setType($name, PARAM_INT);
+            $mform->setDefault($name, $default);
+            $mform->addHelpButton($name.'group', $name, $plugin);
+        }
+
+        $name = 'goalperiod';
+        $label = get_string($name, $plugin);
+        $newline = html_writer::empty_tag('br');
+        $elements = array(
+            $mform->createElement('radio', 'periodtype', '', $str->unlimited, self::PERIOD_NONE),
+            $mform->createElement('static', '', '', $newline),
+            $mform->createElement('radio', 'periodtype', '', $str->weekly, self::PERIOD_WEEKLY),
+            $mform->createElement('select', 'weekday', '', self::weekday_options($plugin)),
+            $mform->createElement('static', '', '', $newline),
+            $mform->createElement('radio', 'periodtype', '', $str->monthly, self::PERIOD_MONTHLY),
+            $mform->createElement('select', 'monthday', '', self::monthday_options($plugin)),
+            $mform->createElement('static', '', '', $newline),
+            $mform->createElement('radio', 'periodtype', '', $str->date, self::PERIOD_ENDDATE),
+            $mform->createElement('date_selector', 'enddate')
+        );
+        $mform->addElement('group', $name, $label, $elements, ' ', false);
+        $mform->addHelpButton($name, $name, $plugin);
+        $mform->setType($name, PARAM_INT);
+
+        $mform->disabledIf('weekday',        'periodtype', 'neq', self::PERIOD_WEEKLY);
+        $mform->disabledIf('monthday',       'periodtype', 'neq', self::PERIOD_MONTHLY);
+        $mform->disabledIf('enddate[day]',   'periodtype', 'neq', self::PERIOD_ENDDATE);
+        $mform->disabledIf('enddate[month]', 'periodtype', 'neq', self::PERIOD_ENDDATE);
+        $mform->disabledIf('enddate[year]',  'periodtype', 'neq', self::PERIOD_ENDDATE);
+
+        // add grade elements
         $this->standard_grading_coursemodule_elements();
-		
-        //attempts
-        $attemptoptions = array(0 => get_string('unlimited', 'englishcentral'),
-                            1 => '1',2 => '2',3 => '3',4 => '4',5 => '5',);
-        $mform->addElement('select', 'maxattempts', get_string('maxattempts', 'englishcentral'), $attemptoptions);
-        
-        //grade options
-        $gradeoptions = array(MOD_ENGLISHCENTRAL_GRADEHIGHEST => get_string('gradehighest', 'englishcentral'),
-                            MOD_ENGLISHCENTRAL_GRADELOWEST => get_string('gradelowest', 'englishcentral'),
-                            MOD_ENGLISHCENTRAL_GRADELATEST => get_string('gradelatest', 'englishcentral'),
-                            MOD_ENGLISHCENTRAL_GRADEAVERAGE => get_string('gradeaverage', 'englishcentral'),
-							MOD_ENGLISHCENTRAL_GRADENONE => get_string('gradenone', 'englishcentral'));
-        $mform->addElement('select', 'gradeoptions', get_string('gradeoptions', 'englishcentral'), $gradeoptions);
-        
 
-        //-------------------------------------------------------------------------------
-        // add standard elements, common to all modules
+        // add standard elements
         $this->standard_coursemodule_elements();
-        //-------------------------------------------------------------------------------
-        // add standard buttons, common to all modules
+
+        // add standard buttons
         $this->add_action_buttons();
+    }
+
+    public function data_preprocessing(&$defaultvalues) {
+
+        $name = 'goalperiod';
+        if (empty($defaultvalues[$name])) {
+            $value = 0;
+        } else {
+            $value = intval($defaultvalues[$name]);
+        }
+
+        $name = 'periodtype';
+        switch (true) {
+
+            case ($value==0):
+                $defaultvalues[$name] = self::PERIOD_NONE;
+                break;
+
+            case ($value < 0):
+                $defaultvalues['weekday'] = abs($value);
+                $defaultvalues[$name] = self::PERIOD_WEEKLY;
+                break;
+
+            case ($value <= 31):
+                $defaultvalues['monthday'] = $value;
+                $defaultvalues[$name] = self::PERIOD_MONTHLY;
+                break;
+
+            default:
+                $defaultvalues['enddate'] = $value;
+                $defaultvalues[$name] = self::PERIOD_ENDDATE;
+        }
+    }
+
+	/**
+	 * get options for weekdays
+	 */
+	static protected function weekday_options($plugin) {
+		$days = array('0' => get_string('sunday',    'calendar'),
+                      '1' => get_string('monday',    'calendar'),
+                      '2' => get_string('tuesday',   'calendar'),
+                      '3' => get_string('wednesday', 'calendar'),
+                      '4' => get_string('thursday',  'calendar'),
+                      '5' => get_string('friday',    'calendar'),
+                      '6' => get_string('saturday',  'calendar'));
+
+        $firstday = get_string('firstdayofweek', 'langconfig');
+        for ($i=0; $i < $firstday; $i++) {
+            $day = $days["$i"];
+            unset($days["$i"]);
+            $days["$i"] = $day;
+        }
+
+        return self::due_options($plugin, $days);
+    }
+
+	/**
+	 * get options for monthdays
+	 */
+	static protected function monthday_options($plugin) {
+	    $fmt = get_string('duedateformat', $plugin);
+	    $dates = array();
+        for ($i=0; $i<=30; $i++) {
+            $dates["$i"] = date($fmt, $i * DAYSECS);
+        }
+        return self::due_options($plugin, $dates);
+    }
+
+	/**
+	 * get options for menu of due days/dates
+	 */
+	static protected function due_options($plugin, $options) {
+        foreach ($options as $i => $option) {
+            $options[$i] = get_string('due', $plugin, $option);
+        }
+        return $options;
     }
 }

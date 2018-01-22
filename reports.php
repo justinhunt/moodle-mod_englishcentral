@@ -31,7 +31,7 @@ require_once(dirname(__FILE__).'/reportclasses.php');
 
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
-$n  = optional_param('n', 0, PARAM_INT);  // englishcentral instance ID - it should be named as the first character of the module
+$ecid  = optional_param('ecid', 0, PARAM_INT);  // englishcentral instance ID - it should be named as the first character of the module
 $format = optional_param('format', 'html', PARAM_TEXT); //export format csv or html
 $showreport = optional_param('report', 'menu', PARAM_TEXT); // report type
 $questionid = optional_param('questionid', 0, PARAM_INT); // report type
@@ -43,8 +43,8 @@ if ($id) {
     $cm         = get_coursemodule_from_id('englishcentral', $id, 0, false, MUST_EXIST);
     $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
     $englishcentral  = $DB->get_record('englishcentral', array('id' => $cm->instance), '*', MUST_EXIST);
-} elseif ($n) {
-    $englishcentral  = $DB->get_record('englishcentral', array('id' => $n), '*', MUST_EXIST);
+} elseif ($ecid) {
+    $englishcentral  = $DB->get_record('englishcentral', array('id' => $ecid), '*', MUST_EXIST);
     $course     = $DB->get_record('course', array('id' => $englishcentral->course), '*', MUST_EXIST);
     $cm         = get_coursemodule_from_instance('englishcentral', $englishcentral->id, $course->id, false, MUST_EXIST);
 } else {
@@ -67,7 +67,7 @@ if($CFG->version<2014051200){
 	$event->add_record_snapshot('course', $course);
 	$event->add_record_snapshot('englishcentral', $englishcentral);
 	$event->trigger();
-} 
+}
 
 
 /// Set up the page header
@@ -77,7 +77,7 @@ $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
 $PAGE->set_pagelayout('course');
 
-	//Get an admin settings 
+	//Get an admin settings
 	$config = get_config('mod_englishcentral');
 
 
@@ -99,39 +99,39 @@ switch ($showreport){
 		// Finish the page
 		echo $renderer->footer();
 		return;
-	
+
 	case 'phonemes':
 		$report = new mod_englishcentral_phonemes_report();
 		$formdata = new stdClass();
-		$formdata->englishcentralid=$englishcentral->id;
+		$formdata->ecid=$englishcentral->id;
 		$formdata->attemptid=$attemptid;
 		$formdata->userid=$userid;
 		break;
-		
+
 	case 'allattempts':
 		$report = new mod_englishcentral_allattempts_report();
 		$formdata = new stdClass();
-		$formdata->englishcentralid=$englishcentral->id;
+		$formdata->ecid=$englishcentral->id;
 		$formdata->cmid=$cm->id;
 		$extraheader = $reportrenderer->render_delete_allattempts($cm);
 		break;
-	
-	
+
+
 	case 'allusers':
 		$report = new mod_englishcentral_allusers_report();
 		$formdata = new stdClass();
-		$formdata->englishcentralid=$englishcentral->id;
-		break;	
-		
+		$formdata->ecid=$englishcentral->id;
+		break;
+
 	case 'attemptdetails':
 		$report = new mod_englishcentral_attemptdetails_report();
 		$formdata = new stdClass();
-		$formdata->englishcentralid=$englishcentral->id;
+		$formdata->ecid=$englishcentral->id;
 		$formdata->attemptid=$attemptid;
 		$formdata->userid=$userid;
 		break;
-		
-		
+
+
 	default:
 		echo $renderer->header($englishcentral, $cm, $mode, null, get_string('reports', 'englishcentral'));
 		echo "unknown report type.";
@@ -155,7 +155,7 @@ switch($format){
 		$reportrenderer->render_section_csv($reportheading, $report->fetch_name(), $report->fetch_head(), $reportrows, $report->fetch_fields());
 		exit;
 	default:
-		
+
 		$reportrows = $report->fetch_formatted_rows(true);
 		echo $renderer->header($englishcentral, $cm, $mode, null, get_string('reports', 'englishcentral'));
 		echo $extraheader;

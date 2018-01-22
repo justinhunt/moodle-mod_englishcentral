@@ -16,7 +16,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * 
+ *
  *
  *
  * @package    mod_englishcentral
@@ -38,8 +38,8 @@ $action_data = optional_param('actiondata', '', PARAM_RAW); // JSON Data relayed
 require_sesskey();
 
 if ($id) {
-    $cm         = get_coursemodule_from_id('englishcentral', $id, 0, false, MUST_EXIST);
-    $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
+    $cm = get_coursemodule_from_id('englishcentral', $id, 0, false, MUST_EXIST);
+    $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
     $englishcentral  = $DB->get_record('englishcentral', array('id' => $cm->instance), '*', MUST_EXIST);
 } else {
     error('You must specify a course_module ID or an instance ID');
@@ -51,7 +51,9 @@ $context = context_module::instance($cm->id);
 global $DB,$USER;
 
 //change 'production' to test when developing here AND in view.php
-$ec = new \mod_englishcentral\englishcentral('production');
+$config = get_config('englishcentral');
+$mode = ($config->developmentmode ? 'test' : 'production');
+$ec = new \mod_englishcentral\englishcentral($mode);
 
 $actiondata=json_decode($action_data);
 $ret='';
@@ -109,14 +111,14 @@ function update_attempt($englishcentral, $dd, $dialogID){
 
     $updatetime = time();
     //flag the current attempt, by resetting old attempts to 0 (and current attempt to 1)
-    $wheresql = "englishcentralid=? AND userid=?";
+    $wheresql = "ecid=? AND userid=?";
     $params   = array($englishcentral->id, $USER->id);
-    $DB->set_field_select('englishcentral_attempt', 'status',0, $wheresql, $params);
+    $DB->set_field_select('englishcentral_attempts', 'status',0, $wheresql, $params);
 
     //create a new attempt
     $attempt = new stdClass();
     $attempt->status=1;//This is the current, ie most recent, attempt
-    $attempt->englishcentralid=$englishcentral->id;
+    $attempt->ecid=$englishcentral->id;
     $attempt->userid=$USER->id;
     $attempt->datecompleted=$updatetime;
     $attempt->watchedcomplete=$dd['watchedComplete'];
@@ -139,7 +141,7 @@ function update_attempt($englishcentral, $dd, $dialogID){
     $attempt->sessiongrade=$dd['sessionGrade'];
     $attempt->sessionscore=(100* $dd['sessionScore']);
 
-    $attemptid = $DB->insert_record('englishcentral_attempt',$attempt,true);
+    $attemptid = $DB->insert_record('englishcentral_attempts',$attempt,true);
     if($attemptid){
         $attempt->id = $attemptid;
     }else{

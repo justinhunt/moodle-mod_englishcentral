@@ -32,7 +32,7 @@ require_once("$CFG->dirroot/user/profile/lib.php");
  *	The important functions are:
 *  process_raw_data : turns log data for one thig (question attempt) into one row
  * fetch_formatted_fields: uses data prepared in process_raw_data to make each field in fields full of formatted data
- * The allusers report is the simplest example 
+ * The allusers report is the simplest example
  *
  * @package    englishcentral
  * @copyright  2014 Justin Hunt <poodllsupport@gmail.com>
@@ -46,11 +46,11 @@ abstract class mod_englishcentral_base_report {
     protected $fields = array();
 	protected $dbcache=array();
 	protected $englishcentral=null;
-	
-	
+
+
 	abstract function process_raw_data($formdata,$englishcentral);
 	abstract function fetch_formatted_heading();
-	
+
 	public function fetch_fields(){
 		return $this->fields;
 	}
@@ -84,45 +84,45 @@ abstract class mod_englishcentral_base_report {
 	}
 
 	public function fetch_formatted_time($seconds){
-			
+
 			//return empty string if the timestamps are not both present.
 			if(!$seconds){return '';}
-			
+
 			return $this->fetch_time_difference($time, $time + $seconds);
 	}
-	
+
 	public function fetch_time_difference($starttimestamp,$endtimestamp){
-			
+
 			//return empty string if the timestamps are not both present.
 			if(!$starttimestamp || !$endtimestamp){return '';}
-			
+
 			$s = $date = new DateTime();
 			$s->setTimestamp($starttimestamp);
-						
+
 			$e =$date = new DateTime();
 			$e->setTimestamp($endtimestamp);
-						
+
 			$diff = $e->diff($s);
 			$ret = $diff->format("%H:%I:%S");
 			return $ret;
 	}
-	
+
 	public function fetch_time_difference_js($starttimestamp,$endtimestamp){
-			
+
 			//return empty string if the timestamps are not both present.
 			if(!$starttimestamp || !$endtimestamp){return '';}
-			
-			$s = $date = new DateTime(); 
+
+			$s = $date = new DateTime();
 			$s->setTimestamp($starttimestamp / 1000);
-						
+
 			$e =$date = new DateTime();
 			$e->setTimestamp($endtimestamp / 1000);
-						
+
 			$diff = $e->diff($s);
 			$ret = $diff->format("%H:%I:%S");
 			return $ret;
 	}
-	
+
 	public function fetch_formatted_rows($withlinks=true){
 		$records = $this->rawdata;
 		$fields = $this->fields;
@@ -136,7 +136,7 @@ abstract class mod_englishcentral_base_report {
 		}//end of for each record
 		return $returndata;
 	}
-	
+
 	public function fetch_formatted_field($field,$record,$withlinks){
 				global $DB;
 			switch($field){
@@ -156,34 +156,34 @@ abstract class mod_englishcentral_base_report {
 			}
 			return $ret;
 	}
-	
+
 }
 
 /*
-* mod_englishcentral_attempt_report 
+* mod_englishcentral_attempt_report
 *
 *
 */
 class mod_englishcentral_attemptdetails_report extends  mod_englishcentral_base_report {
-	
+
 	protected $report="attemptdetils";
-	protected $fields = array('item','value');	
+	protected $fields = array('item','value');
 	protected $headingdata = null;
 	protected $qcache=array();
 	protected $ucache=array();
 	protected $englishcentral=null;
-	
+
 	public function fetch_formatted_field($field,$record,$withlinks){
 				global $DB;
 			switch($field){
 				case 'item':
 						$ret = $record->item;
 						break;
-				
+
 				case 'value':
 						$ret = $record->value;
 					break;
-					
+
 				default:
 					if(property_exists($record,$field)){
 						$ret=$record->{$field};
@@ -193,43 +193,43 @@ class mod_englishcentral_attemptdetails_report extends  mod_englishcentral_base_
 			}
 			return $ret;
 	}
-	
+
 	public function fetch_formatted_heading(){
 		$record = $this->headingdata;
 		$ret='';
 		if(!$record){return $ret;}
-		$ec = $this->fetch_cache('englishcentral',$record->englishcentralid);
-		
-		
-		$at = $this->fetch_cache('englishcentral_attempt',$record->attemptid);
+		$ec = $this->fetch_cache('englishcentral',$record->ecid);
+
+
+		$at = $this->fetch_cache('englishcentral_attempts',$record->attemptid);
 		$u = $this->fetch_cache('user',$record->userid);
 		$a = new stdClass();
 		$a->name=$ec->name;
 		$a->username = fullname($u);
 		$a->date= date("Y-m-d H:i:s",$at->timecreated);
 		return get_string('attemptdetails','englishcentral',$a);
-		
+
 	}
-	
+
 	public function process_raw_data($formdata,$englishcentral){
 		global $DB;
-		
+
 		//heading data
 		$this->englishcentral = $englishcentral;
 		$this->headingdata = new stdClass();
 		$this->headingdata->attemptid=$formdata->attemptid;
 		$this->headingdata->userid=$formdata->userid;
-		$this->headingdata->englishcentralid=$formdata->englishcentralid;
-		
+		$this->headingdata->ecid=$formdata->ecid;
+
 		$attemptdata = array();
-		$adata = $DB->get_record('englishcentral_attempt',array('id'=>$formdata->attemptid));
+		$adata = $DB->get_record('englishcentral_attempts',array('id'=>$formdata->attemptid));
 		if($adata){
 			$adata_array = (array)$adata;
 			foreach($adata_array as $key=>$value){
 				$item = new stdClass();
 				$item->item = $key;
 				$item->value = $value;
-				$attemptdata[] = $item;			
+				$attemptdata[] = $item;
 			}
 		}
 		$this->rawdata= $attemptdata;
@@ -238,21 +238,21 @@ class mod_englishcentral_attemptdetails_report extends  mod_englishcentral_base_
 }
 
 /*
-* mod_englishcentral_allusers_report 
+* mod_englishcentral_allusers_report
 *
 *
 */
 
 class mod_englishcentral_allusers_report extends  mod_englishcentral_base_report {
-	
+
 	protected $report="allusers";
-	protected $fields = array('date','username','activetime','lineswatched','linesrecorded','sessionscore','sessiongrade','compositescore');	
+	protected $fields = array('date','username','activetime','lineswatched','linesrecorded','sessionscore','sessiongrade','compositescore');
 	protected $headingdata = null;
 	protected $qcache=array();
 	protected $ucache=array();
 	protected $englishcentral=null;
-	
-	
+
+
 	public function fetch_formatted_field($field,$record,$withlinks){
 				global $DB;
 			switch($field){
@@ -266,39 +266,39 @@ class mod_englishcentral_allusers_report extends  mod_englishcentral_base_report
 				case 'username':
 						$theuser = $this->fetch_cache('user',$record->userid);
 						$ret = fullname($theuser);
-						
+
 					break;
-				
+
 				case 'linesrecorded':
 						$ret = $record->linesrecorded;
 						if($withlinks){
-							$phonemesurl = new moodle_url('/mod/englishcentral/reports.php', 
-								array('n'=>$record->englishcentralid,
+							$phonemesurl = new moodle_url('/mod/englishcentral/reports.php',
+								array('ecid'=>$record->ecid,
 								'report'=>'phonemes',
 								'userid'=>$record->userid,
 								'attemptid'=>$record->id));
 							$ret = html_writer::link($phonemesurl,$ret);
 						}
-						
+
 					break;
-				
+
 				case 'sessiongrade':
 						$ret = $record->sessiongrade;
 					break;
-					
+
 				case 'sessionscore':
 						$ret = $record->sessionscore;
 					break;
-				
+
 				case 'compositescore':
 						$completionrate = $record->recordingcomplete ? 1 : 0;
 						//this won't work in speaklitemode because linestotal is for watchable, not recordable
-						if(!$this->englishcentral->speaklitemode && $record->linesrecorded > 0){
+						if(empty($this->englishcentral->speaklitemode) && $record->linesrecorded > 0){
 							$completionrate = $record->linesrecorded / $record->linestotal;
 						}
 						$ret = round($completionrate*$record->sessionscore,0) .'%';
 					break;
-				
+
 				default:
 					if(property_exists($record,$field)){
 						$ret=$record->{$field};
@@ -308,20 +308,20 @@ class mod_englishcentral_allusers_report extends  mod_englishcentral_base_report
 			}
 			return $ret;
 	}
-	
+
 	public function fetch_formatted_heading(){
 		return get_string('allusers','englishcentral');
 	}
-	
+
 	public function process_raw_data($formdata,$englishcentral){
 		global $DB;
 
 		//no data in the heading, so an empty class even is overkill ..
 		$this->headingdata = new stdClass();
 		$this->englishcentral = $englishcentral;
-		
+
 		//the current attempts
-		$alldata = $DB->get_records('englishcentral_attempt',array('englishcentralid'=>$formdata->englishcentralid,'status'=>1));
+		$alldata = $DB->get_records('englishcentral_attempts',array('ecid'=>$formdata->ecid,'status'=>1));
 
 		//At this point we have an event object per question from the log to process.
 		//eg timetaken = $question->selectanswer - $question->endplayquestion;
@@ -332,20 +332,20 @@ class mod_englishcentral_allusers_report extends  mod_englishcentral_base_report
 }
 
 /*
-* mod_englishcentral_allusers_report 
+* mod_englishcentral_allusers_report
 *
 *
 */
 
 class mod_englishcentral_allattempts_report extends  mod_englishcentral_base_report {
-	
+
 	protected $report="allattempts";
 	protected $fields = array('date', 'username','status','activetime','points','details','phonemes','delete');
 	protected $headingdata = null;
 	protected $qcache=array();
 	protected $ucache=array();
 	protected $englishcentral=null;
-	
+
 	public function fetch_formatted_field($field,$record,$withlinks){
 				global $DB;
 			switch($field){
@@ -359,8 +359,8 @@ class mod_englishcentral_allattempts_report extends  mod_englishcentral_base_rep
 						$theuser = $this->fetch_cache('user',$record->userid);
 						$ret = fullname($theuser);
 						if($withlinks){
-							$detailsurl = new moodle_url('/mod/englishcentral/reports.php', 
-								array('n'=>$record->englishcentralid,
+							$detailsurl = new moodle_url('/mod/englishcentral/reports.php',
+								array('ecid'=>$record->ecid,
 								'report'=>'attemptdetails',
 								'userid'=>$record->userid,
 								'attemptid'=>$record->id));
@@ -370,15 +370,15 @@ class mod_englishcentral_allattempts_report extends  mod_englishcentral_base_rep
 						$ret = fullname($theuser);
 					}
 					break;
-				
+
 				case 'status':
 						$ret = $record->status ? 'current':'old';
 					break;
-					
+
 				case 'details':
 						if($withlinks){
-							$detailsurl = new moodle_url('/mod/englishcentral/reports.php', 
-								array('n'=>$record->englishcentralid,
+							$detailsurl = new moodle_url('/mod/englishcentral/reports.php',
+								array('ecid'=>$record->ecid,
 								'report'=>'attemptdetails',
 								'userid'=>$record->userid,
 								'attemptid'=>$record->id));
@@ -389,8 +389,8 @@ class mod_englishcentral_allattempts_report extends  mod_englishcentral_base_rep
 					break;
 				case 'phonemes':
 					if($withlinks){
-						$phonemesurl =  new moodle_url('/mod/englishcentral/reports.php', 
-								array('n'=>$record->englishcentralid,
+						$phonemesurl =  new moodle_url('/mod/englishcentral/reports.php',
+								array('ecid'=>$record->ecid,
 								'report'=>'phonemes',
 								'userid'=>$record->userid,
 								'attemptid'=>$record->id));
@@ -398,7 +398,7 @@ class mod_englishcentral_allattempts_report extends  mod_englishcentral_base_rep
 					}else{
 						$ret="";
 					}
-					
+
 					break;
 				case 'delete':
 					if($withlinks){
@@ -408,8 +408,8 @@ class mod_englishcentral_allattempts_report extends  mod_englishcentral_base_rep
 					}else{
 						$ret="";
 					}
-					break;	
-				
+					break;
+
 				default:
 					if(property_exists($record,$field)){
 						$ret=$record->{$field};
@@ -419,20 +419,20 @@ class mod_englishcentral_allattempts_report extends  mod_englishcentral_base_rep
 			}
 			return $ret;
 	}
-	
+
 	public function fetch_formatted_heading(){
 		return get_string('allattempts','englishcentral');
 	}
-	
+
 	public function process_raw_data($formdata,$englishcentral){
 		global $DB;
 
 		//no data in the heading, so an empty class even is overkill ..
 		$this->headingdata = new stdClass();
 		$this->englishcentral = $englishcentral;
-		
+
 		//the current attempts
-		$alldata = $DB->get_records('englishcentral_attempt',array('englishcentralid'=>$formdata->englishcentralid));
+		$alldata = $DB->get_records('englishcentral_attempts',array('ecid'=>$formdata->ecid));
 		foreach($alldata as $adata){
 			$adata->cmid = $formdata->cmid;
 		}
@@ -446,20 +446,20 @@ class mod_englishcentral_allattempts_report extends  mod_englishcentral_base_rep
 }
 
 /*
-* mod_englishcentral_allusers_report 
+* mod_englishcentral_allusers_report
 *
 *
 */
 
 class mod_englishcentral_phonemes_report extends  mod_englishcentral_base_report {
-	
+
 	protected $report="phonemes";
 	protected $fields = array('phoneme','badcount','goodcount','total');
 	protected $headingdata = null;
 	protected $qcache=array();
 	protected $ucache=array();
 	protected $englishcentral=null;
-	
+
 	public function fetch_formatted_field($field,$record,$withlinks){
 				global $DB;
 			switch($field){
@@ -468,19 +468,19 @@ class mod_englishcentral_phonemes_report extends  mod_englishcentral_base_report
 				case 'phoneme':
 					$ret = $record->phoneme;
 					break;
-				
+
 				case 'goodcount':
 					$ret = $record->goodcount;
 					break;
-				
+
 				case 'badcount':
 					$ret = $record->badcount;
 					break;
-				
+
 				case 'total':
 					$ret = $record->badcount + $record->goodcount;
-					break;;	
-				
+					break;;
+
 				default:
 					if(property_exists($record,$field)){
 						$ret=$record->{$field};
@@ -490,11 +490,11 @@ class mod_englishcentral_phonemes_report extends  mod_englishcentral_base_report
 			}
 			return $ret;
 	}
-	
+
 	public function fetch_formatted_heading(){
-		$attempt = $this->fetch_cache('englishcentral_attempt',$this->headingdata->attemptid);
+		$attempt = $this->fetch_cache('englishcentral_attempts',$this->headingdata->attemptid);
 		$user = $this->fetch_cache('user',$attempt->userid);
-		$englishcentral = $this->fetch_cache('englishcentral',$attempt->englishcentralid);
+		$englishcentral = $this->fetch_cache('englishcentral',$attempt->ecid);
 		$a = new stdClass();
 		$a->englishcentralname = $englishcentral->name;
 		$a->username = fullname($user);
@@ -502,7 +502,7 @@ class mod_englishcentral_phonemes_report extends  mod_englishcentral_base_report
 		$a->attemptdate = date("Y-m-d H:i:s",$attempt->timecreated);
 		return get_string('phonemesheader','englishcentral',$a);
 	}
-	
+
 	public function process_raw_data($formdata,$englishcentral){
 		global $DB;
 
@@ -511,8 +511,8 @@ class mod_englishcentral_phonemes_report extends  mod_englishcentral_base_report
 		$hdata->attemptid = $formdata->attemptid;
 		$this->headingdata = $hdata;
 		$this->englishcentral = $englishcentral;
-		
-		
+
+
 		//the current attempts
 		//the current attempts
 		$logs = $DB->get_records('englishcentral_phs',array('attemptid'=>$formdata->attemptid));
