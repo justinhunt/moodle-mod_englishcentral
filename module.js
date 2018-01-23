@@ -41,7 +41,7 @@ M.mod_englishcentral.playerhelper = {
      * @param start, the timer starting time, in seconds.
      * @param preview, is this a quiz preview?
      */
-    init: function(Y,opts) {
+    init: function(Y, opts) {
         //console.log("entered init");
         this.gY = Y;
         this.opts = opts;
@@ -52,19 +52,16 @@ M.mod_englishcentral.playerhelper = {
         this.sdktoken = opts['sdktoken'];
         this.resultsmode = opts['resultsmode'];
 
-
         //default to show in div, but could be in lightbox
         var usecontainer = this.playerdiv;
         var pdiv = Y.one('#' + this.playerdiv);
         var rdiv = Y.one('#' + this.resultsdiv);
         //no player div is loaded when the user os out of attempts, so we exit in this case
-        if(!pdiv){
+        if(! pdiv){
             return;
         }
-
-            pdiv.addClass('englishcentral_showdiv');
-            rdiv.addClass('englishcentral_hidediv');
-
+        pdiv.addClass('englishcentral_showdiv');
+        rdiv.addClass('englishcentral_hidediv');
     },
 
 
@@ -83,7 +80,7 @@ M.mod_englishcentral.playerhelper = {
             completionrate = results.linesRecorded /results.linesTotal;
         }
         txt += '<b>' + M.util.get_string('compositescore','englishcentral') + ':  </b>' +Math.round(completionrate * (results.sessionScore * 100)) + '%<br />';
-        
+
 
         /*
         for (i in results){
@@ -96,12 +93,12 @@ M.mod_englishcentral.playerhelper = {
         this.showresultsdiv(true);
         thebutton.set('innerHTML','Try Again');
     },
-    
+
     handleerror: function(message) {
         //console.log(message);
         this.showresponse("ERRORMSG <br />" + message);
     },
-    
+
     startfinish: function(){
         var thebutton = this.gY.one('#mod_englishcentral_startfinish_button');
         var theplayerdiv = this.gY.one('#' + this.playerdiv);
@@ -120,9 +117,9 @@ M.mod_englishcentral.playerhelper = {
             var actiondata= {dialogID: this.videoid, sdkToken: this.sdktoken};
             this.ajaxpost('dialogprogress',actiondata);
         }
-    
+
     },
-    
+
     showresultsdiv: function(showresults){
         var pdiv = Y.one('#' + this.playerdiv);
         var rdiv = Y.one('#' + this.resultsdiv);
@@ -147,7 +144,7 @@ M.mod_englishcentral.playerhelper = {
         }
         resultscontainer.setContent(showtext);
     },
-    
+
     // Define a function to handle the AJAX response.
     ajaxresult: function(id,o,args) {
         var id = id; // Transaction ID.
@@ -158,17 +155,15 @@ M.mod_englishcentral.playerhelper = {
             location.reload(true);
         }
     },
-    
 
-    
     ajaxpost: function(action,actiondata){
         var Y = this.gY;
         var opts = this.opts;
-        
+
         //bail if we are in preview mode
         //if(opts['preview']){return;}
 
-        var uri  = 'ajaxhelper.php?id=' +  opts['cmid'] +
+        var uri = 'ajaxhelper.php?id=' +  opts['cmid'] +
             '&ecaction=' +  action +
             '&actiondata=' + encodeURIComponent(JSON.stringify(actiondata))+
             '&sesskey=' + M.cfg.sesskey;
@@ -177,6 +172,4 @@ M.mod_englishcentral.playerhelper = {
         Y.io(uri);
         return;
     },
-    
-    
 };

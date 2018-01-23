@@ -32,5 +32,5 @@ defined('MOODLE_INTERNAL') || die();
 $plugin->component = 'mod_englishcentral';
 $plugin->maturity  = MATURITY_STABLE;
 $plugin->requires  = 2015051100; // Moodle 2.9
-$plugin->version   = 2018012201;
-$plugin->release   = '2018-01-22 (01)';
+$plugin->version   = 2018012302;
+$plugin->release   = '2018-01-23 (02)';

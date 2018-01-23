@@ -344,7 +344,7 @@ function englishcentral_reset_userdata($data) {
  * @return int The id of the newly inserted englishcentral record
  */
 function englishcentral_add_instance(stdClass $formdata, mod_englishcentral_mod_form $mform = null) {
-    return englishcentral_form_postprocessing($formdata, $mform);
+    return englishcentral_process_formdata($formdata, $mform);
 }
 
 /**
@@ -358,56 +358,45 @@ function englishcentral_add_instance(stdClass $formdata, mod_englishcentral_mod_
  * @param mod_englishcentral_mod_form $mform
  * @return boolean Success/Fail
  */
-function englishcentral_update_instance(stdClass $formdata, mod_englishcentral_mod_form $mform = null) {
-    return englishcentral_form_postprocessing($formdata, $mform);
+function englishcentral_update_instance(stdClass $data, mod_englishcentral_mod_form $mform = null) {
+    return englishcentral_process_formdata($data, $mform);
 }
 
 /**
  * update fields in recently submitted form data
  *
- * @param stdClass $formdata recently submitted formdata
+ * @param stdClass $data recently submitted formdata
  * @return boolean Success/Failure
  */
-function englishcentral_form_postprocessing(stdClass $formdata, mod_englishcentral_mod_form $mform) {
+function englishcentral_process_formdata(stdClass $data, mod_englishcentral_mod_form $mform) {
     global $DB;
 
-    $name = 'periodtype';
-    if (empty($formdata->$name)) {
-        $formdata->$name = $mform::PERIOD_NONE;
-    }
-    switch ($formdata->$name) {
-        case $mform::PERIOD_WEEKLY:
-            $formdata->goalperiod = -intval($formdata->weekday);
-            break;
-        case $mform::PERIOD_MONTHLY:
-            $formdata->goalperiod = intval($formdata->monthday);
-            break;
-        case $mform::PERIOD_ENDDATE:
-            $formdata->goalperiod = intval($formdata->enddate);
-            break;
-        case $mform::PERIOD_NONE:
-            $formdata->goalperiod = 0;
-            break;
-    }
-    unset($formdata->weekday);
-    unset($formdata->monthday);
-    unset($formdata->enddate);
+    // fix up secondary fields
+    $mform->form_postprocessing($data);
 
-    $formdata->timemodified = time();
-
-    if (empty($formdata->instance)) {
+    // add/update record in main EC table
+    $table = 'englishcentral';
+    $update_grades = false;
+    if (empty($data->instance)) {
         // add new instance
-        $formdata->timecreated = $formdata->timemodified;
-        $formdata->id = $DB->insert_record('englishcentral', $formdata);
-        englishcentral_grade_item_update($formdata);
+        $data->id = $DB->insert_record($table, $data);
     } else {
         // update exisiting instance
-        $formdata->id = $formdata->instance;
-        $DB->update_record('englishcentral', $formdata);
-        englishcentral_grade_item_update($formdata);
-        englishcentral_update_grades($formdata, 0, false);
+        $data->id = $data->instance;
+        $DB->update_record($table, $data);
+
+        $params = array('id' => $data->instance);
+        $grade = $DB->get_field($table, 'grade', $params);
+        $update_grades = ($data->grade == $grade ? false : true);
     }
-    return $formdata->id;
+
+    englishcentral_grade_item_update($data);
+
+    if ($update_grades) {
+        englishcentral_update_grades($data, 0, false);
+    }
+
+    return $data->id;
 }
 
 /**

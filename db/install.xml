@@ -26,11 +26,12 @@
         <KEY NAME="engl_course" TYPE="foreign" FIELDS="course" REFTABLE="course" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="englishcentral_videos" COMMENT="specify one or more videos that are associated with a given ecid">
+    <TABLE NAME="englishcentral_videos" COMMENT="map which videos are associated with which EC activities">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="ecid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="videoid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="id of video on englishcentral.com"/>
+        <FIELD NAME="videotitle" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="title of video on englishcentral.com"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -40,7 +41,7 @@
         <INDEX NAME="englvide_videoid" UNIQUE="false" FIELDS="videoid"/>
       </INDEXES>
     </TABLE>
-    <TABLE NAME="englishcentral_attempts" COMMENT="englishcentral_attempt table retrofitted from MySQL">
+    <TABLE NAME="englishcentral_attempts" COMMENT="information about attempts at EC videos">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="ecid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>

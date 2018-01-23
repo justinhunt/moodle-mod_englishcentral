@@ -144,36 +144,77 @@ class mod_englishcentral_mod_form extends moodleform_mod {
         $this->add_action_buttons();
     }
 
-    public function data_preprocessing(&$defaultvalues) {
+    /**
+     * Defines default values for form elements
+     */
+    public function data_preprocessing(&$values) {
 
         $name = 'goalperiod';
-        if (empty($defaultvalues[$name])) {
+        if (empty($values[$name])) {
             $value = 0;
         } else {
-            $value = intval($defaultvalues[$name]);
+            $value = intval($values[$name]);
         }
 
         $name = 'periodtype';
         switch (true) {
 
             case ($value==0):
-                $defaultvalues[$name] = self::PERIOD_NONE;
+                $values[$name] = self::PERIOD_NONE;
                 break;
 
             case ($value < 0):
-                $defaultvalues['weekday'] = abs($value);
-                $defaultvalues[$name] = self::PERIOD_WEEKLY;
+                $values['weekday'] = abs($value);
+                $values[$name] = self::PERIOD_WEEKLY;
                 break;
 
             case ($value <= 31):
-                $defaultvalues['monthday'] = $value;
-                $defaultvalues[$name] = self::PERIOD_MONTHLY;
+                $values['monthday'] = $value;
+                $values[$name] = self::PERIOD_MONTHLY;
                 break;
 
             default:
-                $defaultvalues['enddate'] = $value;
-                $defaultvalues[$name] = self::PERIOD_ENDDATE;
+                $values['enddate'] = $value;
+                $values[$name] = self::PERIOD_ENDDATE;
         }
+    }
+
+    /**
+     * Process $data from a recently submitted form
+     */
+    public function form_postprocessing($data) {
+
+        if (empty($data->instance)) {
+            $data->timecreated = time();
+        } else {
+            $data->timemodified = time();
+        }
+
+        if (isset($data->periodtype)) {
+            $type = $data->periodtype;
+        } else {
+            $type = self::PERIOD_NONE;
+        }
+
+        switch ($type) {
+            case self::PERIOD_WEEKLY:
+                $data->goalperiod = -intval($data->weekday);
+                break;
+            case self::PERIOD_MONTHLY:
+                $data->goalperiod = intval($data->monthday);
+                break;
+            case self::PERIOD_ENDDATE:
+                $data->goalperiod = intval($data->enddate);
+                break;
+            case self::PERIOD_NONE:
+                $data->goalperiod = 0;
+                break;
+        }
+
+        unset($data->periodtype);
+        unset($data->weekday);
+        unset($data->monthday);
+        unset($data->enddate);
     }
 
 	/**

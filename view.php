@@ -34,21 +34,19 @@ $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $ecid  = optional_param('ecid', 0, PARAM_INT);  // englishcentral instance ID - it should be named as the first character of the module
 
 if ($id) {
-    $cm         = get_coursemodule_from_id('englishcentral', $id, 0, false, MUST_EXIST);
-    $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
-    $englishcentral  = $DB->get_record('englishcentral', array('id' => $cm->instance), '*', MUST_EXIST);
+    $cm = get_coursemodule_from_id('englishcentral', $id, 0, false, MUST_EXIST);
+    $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
+    $englishcentral = $DB->get_record('englishcentral', array('id' => $cm->instance), '*', MUST_EXIST);
 } elseif ($ecid) {
-    $englishcentral  = $DB->get_record('englishcentral', array('id' => $ecid), '*', MUST_EXIST);
-    $course     = $DB->get_record('course', array('id' => $englishcentral->course), '*', MUST_EXIST);
-    $cm         = get_coursemodule_from_instance('englishcentral', $englishcentral->id, $course->id, false, MUST_EXIST);
+    $englishcentral = $DB->get_record('englishcentral', array('id' => $ecid), '*', MUST_EXIST);
+    $course = $DB->get_record('course', array('id' => $englishcentral->course), '*', MUST_EXIST);
+    $cm = get_coursemodule_from_instance('englishcentral', $englishcentral->id, $course->id, false, MUST_EXIST);
 } else {
     error('You must specify a course_module ID or an instance ID');
 }
 
 require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
-
-global $USER;
 
 // Trigger module viewed event.
 $event = \mod_englishcentral\event\course_module_viewed::create(array(
@@ -79,6 +77,15 @@ $mode = ($config->developmentmode ? 'test' : 'production');
 $ec = new \mod_englishcentral\englishcentral($mode);
 $jwt = $ec->build_authorize_token($USER);
 $sdk_token = $ec->login_and_auth($jwt, $USER);
+
+// ec: mod_englishcentral\englishcentral Object
+//     [consumer_key]     => (string)
+//     [consumer_secret]  => (string)
+//     [encrypted_secret] => (string)
+//     [partnerid]        => (integer)
+//     [domain] => qaenglishcentral.com
+// jwt: (string)
+// sdk_token: (string)
 
 // setup javascript all ready to go
 $jsmodule = array('name'     => 'mod_englishcentral',

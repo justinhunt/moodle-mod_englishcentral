@@ -61,7 +61,7 @@ switch($ec_action){
 
     case 'dialogprogress':
         $actionurl = 'https://reportcard.' . $ec->domain . '/rest/report/dialog/' . $actiondata->dialogID . '/progress';
-        $ret = $ec->doGet($actiondata->sdkToken,$actionurl, \mod_englishcentral\englishcentral::ACCEPT_V2 );
+        $ret = $ec->doGet($actiondata->sdkToken, $actionurl, \mod_englishcentral\englishcentral::ACCEPT_V2);
 
         $newformat_dd = json_decode($ret);
         $oldformat_dd = translate_results($ret);
@@ -148,12 +148,10 @@ function update_attempt($englishcentral, $dd, $dialogID){
         $attempt =false;
     }
 
-
 //update the gradebook
     if($attempt){
         englishcentral_update_grades($englishcentral, $attempt->userid);
     }
 
     return;
-
 }
