@@ -16,14 +16,14 @@
 /**
  * load the EnglishCentral player
  *
- * @module      mod_englishcentral/englishcentralview
+ * @module      mod_englishcentral/view
  * @category    output
  * @copyright   Gordon Bateson
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 define(['jquery'], function($) {
 
-    /** @alias module:mod_englishcentral/englishcentralview */ 
+    /** @alias module:mod_englishcentral/view */ 
     return {
         init: function() {
             var i = $("body").length;

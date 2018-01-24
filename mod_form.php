@@ -36,31 +36,24 @@ require_once($CFG->dirroot.'/mod/englishcentral/lib.php');
  */
 class mod_englishcentral_mod_form extends moodleform_mod {
 
-    const PERIOD_NONE    = 0;
-    const PERIOD_WEEKLY  = 1;
-    const PERIOD_MONTHLY = 2;
-    const PERIOD_ENDDATE = 3;
+    /** size of numeric text boxes */
+    const TEXT_NUM_SIZE = 4;
 
     /**
      * Defines forms elements
      */
     public function definition() {
+        global $PAGE;
 
-        // cache the name of this plugin
         $plugin = 'mod_englishcentral';
+        $config = get_config($plugin);
+
+        $PAGE->requires->js_call_amd("$plugin/form", 'init');
 
         $mform = $this->_form;
 
-		$config = get_config('englishcentral');
-
-        $str = (object)array(
-            'maximumchars' => get_string('maximumchars', '', 255),
-            'unlimited' => get_string('unlimited'),
-            'monthly' => get_string('monthly', 'calendar'),
-            'weekly' => get_string('weekly', 'calendar'),
-            'date' => get_string('date')
-        );
-
+        $dateoptions = array('optional' => true);
+        $textoptions = array('size' => self::TEXT_NUM_SIZE);
 
         //-------------------------------------------------------------------------------
         $name = 'general';
@@ -70,7 +63,7 @@ class mod_englishcentral_mod_form extends moodleform_mod {
 
         // Adding the standard "name" field
         $name = 'name';
-        $label = get_string('englishcentralname', $plugin);
+        $label = get_string('activityname', $plugin);
         $mform->addElement('text', $name, $label, array('size'=>'64'));
         if (empty($CFG->formatstringstriptags)) {
             $mform->setType($name, PARAM_CLEAN);
@@ -78,11 +71,42 @@ class mod_englishcentral_mod_form extends moodleform_mod {
             $mform->setType($name, PARAM_TEXT);
         }
         $mform->addRule($name, null, 'required', null, 'client');
-        $mform->addRule($name, $str->maximumchars, 'maxlength', 255, 'client');
-        $mform->addHelpButton($name, 'englishcentralname', $plugin);
+        $mform->addRule($name, get_string('maximumchars', null, 255), 'maxlength', 255, 'client');
+        $mform->addHelpButton($name, 'activityname', $plugin);
 
         // Adding the standard "intro" and "introformat" fields
         $this->standard_intro_elements();
+
+        //-----------------------------------------------------------------------------
+        $name = 'timing';
+        $label = get_string($name, 'form');
+        $mform->addElement('header', $name, $label);
+        $mform->setExpanded($name, true);
+        //-----------------------------------------------------------------------------
+
+        $name = 'availablefrom';
+        $label = get_string($name, $plugin);
+        $mform->addElement('date_time_selector', $name, $label, $dateoptions);
+        $mform->addHelpButton($name, $name, $plugin);
+        $this->set_type_default_advanced($mform, $config, $name, PARAM_INT);
+
+        $name = 'availableuntil';
+        $label = get_string($name, $plugin);
+        $mform->addElement('date_time_selector', $name, $label, $dateoptions);
+        $mform->addHelpButton($name, $name, $plugin);
+        $this->set_type_default_advanced($mform, $config, $name, PARAM_INT);
+
+        $name = 'readonlyuntil';
+        $label = get_string($name, $plugin);
+        $mform->addElement('date_time_selector', $name, $label, $dateoptions);
+        $mform->addHelpButton($name, $name, $plugin);
+        $this->set_type_default_advanced($mform, $config, $name, PARAM_INT);
+
+        $name = 'readonlyfrom';
+        $label = get_string($name, $plugin);
+        $mform->addElement('date_time_selector', $name, $label, $dateoptions);
+        $mform->addHelpButton($name, $name, $plugin);
+        $this->set_type_default_advanced($mform, $config, $name, PARAM_INT);
 
         //-------------------------------------------------------------------------------
         $name = 'goals';
@@ -91,7 +115,6 @@ class mod_englishcentral_mod_form extends moodleform_mod {
         $mform->setExpanded($name, true);
         //-------------------------------------------------------------------------------
 
-        $options = array('size' => '3');
         $names = array('watchgoal' => 10,
                        'learngoal' => 20,
                        'speakgoal' => 10,
@@ -100,7 +123,7 @@ class mod_englishcentral_mod_form extends moodleform_mod {
             $label = get_string($name, $plugin);
             $units = get_string($name.'units', $plugin);
             $elements = array(
-                $mform->createElement('text', $name, '', $options),
+                $mform->createElement('text', $name, '', $textoptions),
                 $mform->createElement('static', '', '', $units)
             );
             $mform->addElement('group', $name.'group', $label, $elements, ' ', false);
@@ -108,31 +131,6 @@ class mod_englishcentral_mod_form extends moodleform_mod {
             $mform->setDefault($name, $default);
             $mform->addHelpButton($name.'group', $name, $plugin);
         }
-
-        $name = 'goalperiod';
-        $label = get_string($name, $plugin);
-        $newline = html_writer::empty_tag('br');
-        $elements = array(
-            $mform->createElement('radio', 'periodtype', '', $str->unlimited, self::PERIOD_NONE),
-            $mform->createElement('static', '', '', $newline),
-            $mform->createElement('radio', 'periodtype', '', $str->weekly, self::PERIOD_WEEKLY),
-            $mform->createElement('select', 'weekday', '', self::weekday_options($plugin)),
-            $mform->createElement('static', '', '', $newline),
-            $mform->createElement('radio', 'periodtype', '', $str->monthly, self::PERIOD_MONTHLY),
-            $mform->createElement('select', 'monthday', '', self::monthday_options($plugin)),
-            $mform->createElement('static', '', '', $newline),
-            $mform->createElement('radio', 'periodtype', '', $str->date, self::PERIOD_ENDDATE),
-            $mform->createElement('date_selector', 'enddate')
-        );
-        $mform->addElement('group', $name, $label, $elements, ' ', false);
-        $mform->addHelpButton($name, $name, $plugin);
-        $mform->setType($name, PARAM_INT);
-
-        $mform->disabledIf('weekday',        'periodtype', 'neq', self::PERIOD_WEEKLY);
-        $mform->disabledIf('monthday',       'periodtype', 'neq', self::PERIOD_MONTHLY);
-        $mform->disabledIf('enddate[day]',   'periodtype', 'neq', self::PERIOD_ENDDATE);
-        $mform->disabledIf('enddate[month]', 'periodtype', 'neq', self::PERIOD_ENDDATE);
-        $mform->disabledIf('enddate[year]',  'periodtype', 'neq', self::PERIOD_ENDDATE);
 
         // add grade elements
         $this->standard_grading_coursemodule_elements();
@@ -145,119 +143,41 @@ class mod_englishcentral_mod_form extends moodleform_mod {
     }
 
     /**
-     * Defines default values for form elements
+     * set_type_default_advanced
+     *
+     * @param $mform
+     * @param $config
+     * @param $name of field
+     * @param $type PARAM_xxx constant value
+     * @param $default (optional, default = null)
+     * @todo Finish documenting this function
      */
-    public function data_preprocessing(&$values) {
-
-        $name = 'goalperiod';
-        if (empty($values[$name])) {
-            $value = 0;
-        } else {
-            $value = intval($values[$name]);
+    private function set_type_default_advanced($mform, $config, $name, $type, $default=null) {
+        $mform->setType($name, $type);
+        if (isset($config->$name)) {
+            $mform->setDefault($name, $config->$name);
+        } else if ($default) {
+            $mform->setDefault($name, $default);
         }
-
-        $name = 'periodtype';
-        switch (true) {
-
-            case ($value==0):
-                $values[$name] = self::PERIOD_NONE;
-                break;
-
-            case ($value < 0):
-                $values['weekday'] = abs($value);
-                $values[$name] = self::PERIOD_WEEKLY;
-                break;
-
-            case ($value <= 31):
-                $values['monthday'] = $value;
-                $values[$name] = self::PERIOD_MONTHLY;
-                break;
-
-            default:
-                $values['enddate'] = $value;
-                $values[$name] = self::PERIOD_ENDDATE;
+        $adv_name = 'adv'.$name;
+        if (isset($config->$adv_name)) {
+            $mform->setAdvanced($name, $config->$adv_name);
         }
     }
 
     /**
-     * Process $data from a recently submitted form
+     * return a field value from the original record
+     * this function is useful to see if a value has changed
+     *
+     * @param string the $field name
+     * @param mixed the $default value (optional, default=null)
+     * @return mixed the field value if it exists, $default otherwise
      */
-    public function form_postprocessing($data) {
-
-        if (empty($data->instance)) {
-            $data->timecreated = time();
+    public function get_originalvalue($field, $default=null) {
+        if (isset($this->current->$field)) {
+            return $this->current->$field;
         } else {
-            $data->timemodified = time();
+            return $default;
         }
-
-        if (isset($data->periodtype)) {
-            $type = $data->periodtype;
-        } else {
-            $type = self::PERIOD_NONE;
-        }
-
-        switch ($type) {
-            case self::PERIOD_WEEKLY:
-                $data->goalperiod = -intval($data->weekday);
-                break;
-            case self::PERIOD_MONTHLY:
-                $data->goalperiod = intval($data->monthday);
-                break;
-            case self::PERIOD_ENDDATE:
-                $data->goalperiod = intval($data->enddate);
-                break;
-            case self::PERIOD_NONE:
-                $data->goalperiod = 0;
-                break;
-        }
-
-        unset($data->periodtype);
-        unset($data->weekday);
-        unset($data->monthday);
-        unset($data->enddate);
-    }
-
-	/**
-	 * get options for weekdays
-	 */
-	static protected function weekday_options($plugin) {
-		$days = array('0' => get_string('sunday',    'calendar'),
-                      '1' => get_string('monday',    'calendar'),
-                      '2' => get_string('tuesday',   'calendar'),
-                      '3' => get_string('wednesday', 'calendar'),
-                      '4' => get_string('thursday',  'calendar'),
-                      '5' => get_string('friday',    'calendar'),
-                      '6' => get_string('saturday',  'calendar'));
-
-        $firstday = get_string('firstdayofweek', 'langconfig');
-        for ($i=0; $i < $firstday; $i++) {
-            $day = $days["$i"];
-            unset($days["$i"]);
-            $days["$i"] = $day;
-        }
-
-        return self::due_options($plugin, $days);
-    }
-
-	/**
-	 * get options for monthdays
-	 */
-	static protected function monthday_options($plugin) {
-	    $fmt = get_string('duedateformat', $plugin);
-	    $dates = array();
-        for ($i=0; $i<=30; $i++) {
-            $dates["$i"] = date($fmt, $i * DAYSECS);
-        }
-        return self::due_options($plugin, $dates);
-    }
-
-	/**
-	 * get options for menu of due days/dates
-	 */
-	static protected function due_options($plugin, $options) {
-        foreach ($options as $i => $option) {
-            $options[$i] = get_string('due', $plugin, $option);
-        }
-        return $options;
     }
 }

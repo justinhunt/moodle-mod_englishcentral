@@ -1,86 +1,128 @@
+/* styles for goals on EDIT form  */
+
+#page-mod-englishcentral-mod #fgroup_id_watchgoalgroup {
+    background:       #fec;
+    border: 2px solid #fc8;
+}
+
+#page-mod-englishcentral-mod #fgroup_id_learngoalgroup {
+    background:       #fef;
+    border: 2px solid #f9f;
+}
+
+#page-mod-englishcentral-mod #fgroup_id_speakgoalgroup {
+    background:       #eff;
+    border: 2px solid #9ff;
+}
+
+#page-mod-englishcentral-mod #fgroup_id_studygoalgroup {
+    background:       #fee;
+    border: 2px solid #f99;
+}
+
+#page-mod-englishcentral-mod .mathsymbol {
+    display:  inline-block;
+    font-size:       2.0em;
+    margin-top:       40px;
+    margin-left:       3px;
+    margin-right:      3px;
+}
+
+@media (min-width: 1200px) {
+    #page-mod-englishcentral-mod #id_goals .fcontainer {
+        margin-left:    120px; 
+    }
+}
+
+#page-mod-englishcentral-mod #id_goals .fitem_fgroup {
+    border-radius:    4px;
+    display: inline-block;
+    height:          64px;
+    padding:     6px 12px;
+    vertical-align:   top;
+}
+
+#page-mod-englishcentral-mod #id_goals .fitemtitle {
+    float:           none;
+    text-align:      left;
+    width:        initial;
+}
+
+#page-mod-englishcentral-mod #id_goals .fgroup {
+    margin-left:      0px;
+}
+
+/* styles on VIEW page */
 
 #mod_englishcentral_playercontainer {
-	text-align: center; 
-	color: #FFF;
-	font-size: 64px;
-    font-style: oblique;
-	/* margin-top: 1em; */
-	background: #ACACAC;
-	width: 640px;
-	height: 415px;
-	line-height: 415px;
-	/* -webkit-transition: height 1s; */
+     background:  #acacac;
+     color:          #fff;
+     font-size:      64px;
+     font-style:  oblique;
+     height:        415px;
+     line-height:   415px;
+     text-align:   center;
+     width:         640px;
 }
-
-
-
 #mod_englishcentral_resultscontainer {
-	text-align: center; 
-	margin-top: 1em; 
-	background: #A4C63f;
-	width: 640px;
-	height: 415px;
+     background:  #a4c63f;
+     height:        415px;
+     margin-top:      1em;
+     text-align:  center;
+     width:         640px;
 }
-
 .englishcentral_hidediv {
-	display: none;
+     display:        none;
 }
 .englishcentral_showdiv {
-	display: block;
+     display:       block;
 }
-
-
-.englishcentral_myattempts_headrow{
-	font-weight: bold;
-	text-align: center;
+.englishcentral_myattempts_headrow {
+     font-weight:    bold;
+     text-align:   center;
 }
-.englishcentral_myattempts_table{
-	border: 2px;
+.englishcentral_myattempts_table {
+     border:          2px;
 }
-
 .mod_englishcentral_startfinish_button {
-width: 640px; 
-height: 80px; 
-font-size: xx-large;
-background-color: chartreuse;
+     background:  #7fff00; /* chartreuse */
+     font-size:  xx-large;
+     height:         80px;
+     width:         640px;
 }
-
 .mod_englishcentral_startfinish_button:hover {
-	background-color: chartreuse;
+     background:  #7fff00; /* chartreuse */
 }
 .mod_englishcentral_startfinish_button:active {
-	background-color: chartreuse;
+     background:  #7fff00; /* chartreuse */
 }
 .mod_englishcentral_startfinish_button:focus {
-	background-color: chartreuse;
+     background:  #7fff00; /* chartreuse */
 }
-
 .mod_englishcentral_start_container {
-	width:100%; 
-	/*
-	margin-left: auto; 
-	margin-right: auto; 
-	*/
-	display: block;
-	}
-.mod_englishcentral_bigbutton {font-size: 32px; text-align: center;}
+     width:          100%;
+     display:       block;
+}
+.mod_englishcentral_bigbutton {
+    font-size:       32px;
+    text-align:    center;
+}
 .mod_englishcentral_container {
-/* text-align: center; */ 
-float: left; 
-padding-right: 20px;
-} 
-.mod_englishcentral_englishcentral_container{margin-left: auto;margin-right: auto; padding-top: 5px}
-
+     float:          left;
+     padding-right:  20px;
+}
+.mod_englishcentral_englishcentral_container {
+    margin-left:     auto;
+    margin-right:    auto;
+    padding-top:      5px;
+}
 div.mod_englishcentral_listbuttons {
-	display: block;
-	/*float: left;*/
+     display:       block;
 }
-.mod_englishcentral_listbuttons input[type="submit"]{
-	width: 400px;
-	/*float: left;*/
+.mod_englishcentral_listbuttons input[type="submit"] {
+     width:         400px;
 }
-
 div.mod_englishcentral_actionbuttons {
-	display: flex;
-	float: right;
+     display:        flex;
+     float:         right;
 }

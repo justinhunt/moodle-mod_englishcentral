@@ -59,8 +59,25 @@ function xmldb_englishcentral_upgrade($oldversion) {
         upgrade_mod_savepoint(true, "$newversion", 'englishcentral');
     }
 
-    $newversion = 2018012302;
+    $newversion = 2018012403;
     if ($oldversion < $newversion) {
+
+        // =============================================
+        // create USERIDS table
+        // =============================================
+
+        $table = new xmldb_table('englishcentral_userids');
+
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('ecuserid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('engluser_userid', XMLDB_KEY_FOREIGN, array('userid'), 'user', array('id'));
+
+        $table->add_index('engluser_ecuserid', XMLDB_INDEX_UNIQUE, array('ecuserid'));
+
+        xmldb_englishcentral_create_table($dbman, $table);
 
         // =============================================
         // create VIDEOS table
@@ -71,7 +88,6 @@ function xmldb_englishcentral_upgrade($oldversion) {
         $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
         $table->add_field('ecid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
         $table->add_field('videoid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
-        $table->add_field('videotitle', XMLDB_TYPE_CHAR, '255');
 
         $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
         $table->add_key('englvide_ecid', XMLDB_KEY_FOREIGN, array('ecid'), 'englishcentral', array('id'));
@@ -95,7 +111,6 @@ function xmldb_englishcentral_upgrade($oldversion) {
                 if ($DB->record_exists($table, $params)) {
                     continue;
                 }
-                $params['videotitle'] = $record->videotitle;
                 $DB->insert_record($table, $params);
             }
         }
@@ -105,7 +120,7 @@ function xmldb_englishcentral_upgrade($oldversion) {
         // =============================================
 
         $table = new xmldb_table('englishcentral');
-        $fields = array('videotitle', 'videoid',
+        $fields = array('videotitle', 'videoid', 'goalperiod',
                         'watchmode', 'speakmode', 'learnmode',
                         'hiddenchallengemode', 'speaklitemode',
                         'lightboxmode', 'simpleui', 'maxattempts');
@@ -126,7 +141,10 @@ function xmldb_englishcentral_upgrade($oldversion) {
             new xmldb_field('learngoal',  XMLDB_TYPE_INTEGER,  '6', null, XMLDB_NOTNULL, null, '0', 'watchgoal'),
             new xmldb_field('speakgoal',  XMLDB_TYPE_INTEGER,  '6', null, XMLDB_NOTNULL, null, '0', 'learngoal'),
             new xmldb_field('studygoal',  XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'speakgoal'),
-            new xmldb_field('goalperiod', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'studygoal')
+            new xmldb_field('availablefrom',  XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'studygoal'),
+            new xmldb_field('availableuntil', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'availablefrom'),
+            new xmldb_field('readonlyfrom',   XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'availableuntil'),
+            new xmldb_field('readonlyuntil',  XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'readonlyfrom')
         );
 
         foreach ($fields as $field) {
@@ -140,7 +158,6 @@ function xmldb_englishcentral_upgrade($oldversion) {
         // =============================================
         // replace ATTEMPTS table
         // =============================================
-
 
         $table = new xmldb_table('englishcentral_attempts');
         $fields = array('englishcentralid' => 'ecid');

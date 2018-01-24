@@ -52,9 +52,10 @@ $string['developmentmodeexplain'] = 'On development sites, this setting should b
 $string['encryptedsecret'] = 'Encrypted Secret';
 $string['encryptedsecretdefault'] = 'YOUR ENCRYPTED SECRET';
 $string['encryptedsecretexplain'] = 'Your encrypted secret is available from EnglishCentral.com';
+$string['partnerid'] = 'Partner ID';
+$string['partneriddefault'] = 'YOUR PARTNER ID';
+$string['partneridexplain'] = 'Your partnerid is available from EnglishCentral.com';
 
-$string['due'] = 'Due on {$a}';
-$string['duedateformat'] = '\\t\\h\\e jS';
 $string['goals_help'] = 'Define goals for Watch, Learn, Speak and Study time';
 $string['goals'] = 'Goals';
 $string['learngoal_help'] = 'Specify the target number of words to learn.';
@@ -67,27 +68,44 @@ $string['speakgoal_help'] = 'Specify the target number of lines to speak.';
 $string['speakgoal'] = 'Speak';
 $string['speakgoalunits'] = '(lines)';
 $string['speaklines'] = '{$a} lines';
-$string['studygoal_help'] = 'Specify the target number of minutes/hours to study.';
-$string['studygoal'] = 'Study';
+$string['studygoal_help'] = 'Specify the target number of minutes/hours to study.
+
+The study time is calculated using the following formula:
+
+(number of videos watched) x 6 minutes  
++ (number of words learned) x 1 minute  
++ (number of lines spoken) x 1 minute';
+$string['studygoal'] = 'Study time';
 $string['studygoalunits'] = '(minutes)';
 $string['watchgoal_help'] = 'Specify the target number of videos to watch.';
 $string['watchgoal'] = 'Watch';
 $string['watchgoalunits'] = '(videos)';
 $string['watchvideos'] = '{$a} videos';
 
+$string['activityname_help'] = 'This is the content of the help tooltip associated with the englishcentralname field. Markdown syntax is supported.';
+$string['activityname'] = 'Activity Name';
+
+$string['availablefrom'] = 'Available from';
+$string['availablefrom_help'] = 'Students can only to access this activity after the date and time specified here. Before this date and time, it will not be available.';
+$string['availableuntil'] = 'Available until';
+$string['availableuntil_help'] = 'Students can only to access this activity up until the date and time specified here. After this date and time, it will not be available.';
+$string['readonlyfrom'] = 'Read-only from';
+$string['readonlyfrom_help'] = 'After this date and time, students may view their main Reader page, but they cannot take any more quizes via this Reader activity.';
+$string['readonlymode'] = 'Read-only mode';
+$string['readonlymode_desc'] = 'This activity is currently in read-only mode. You can view the information on the first page of this Reader activity, but you cannot take any Reader quizzes.';
+$string['readonlysincedate'] = 'This activity has been in read-only mode since {$a}.';
+$string['readonlyuntil'] = 'Read-only until';
+$string['readonlyuntil_help'] = 'Before this date and time, students may view their main Reader page, but they cannot take any quizzes via this Reader activity.';
+$string['readonlyuntildate'] = 'This activity will stay in read-only mode until {$a}.';
+
 // deprecated strings
 
 $string['englishcentral'] = 'English Central';
 $string['englishcentralfieldset'] = 'Custom example fieldset';
-$string['englishcentralname_help'] = 'This is the content of the help tooltip associated with the englishcentralname field. Markdown syntax is supported.';
-$string['englishcentralname'] = 'Activity Name';
 $string['englishcentralsettings'] = 'Enter English Central Video Title and ID';
 $string['hiddenchallengemode'] ='Hidden challenge';
 $string['learnmode'] ='Learn mode';
 $string['lightboxmode'] ='Lightbox mode';
-$string['partnerid'] = 'Partner ID';
-$string['partneriddefault'] = 'YOUR PARTNER ID';
-$string['partneridexplain'] = 'Your partnerid is available from EnglishCentral.com';
 $string['playersettings'] = 'Player settings';
 $string['simpleui'] ='Simple UI';
 $string['speaklitemode'] ='SpeakLite mode';

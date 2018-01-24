@@ -72,9 +72,7 @@ $PAGE->set_pagelayout('course');
 //authenticate with English Central, and get our API ready
 $config = get_config('englishcentral');
 
-//change 'production' to test when developing here AND in ajaxhelper.php
-$mode = ($config->developmentmode ? 'test' : 'production');
-$ec = new \mod_englishcentral\englishcentral($mode);
+$ec = new \mod_englishcentral\englishcentral();
 $jwt = $ec->build_authorize_token($USER);
 $sdk_token = $ec->login_and_auth($jwt, $USER);
 
@@ -112,8 +110,6 @@ $opts = array('consumerkey' => $config->consumerkey,
  */
 
 $PAGE->requires->js_init_call('M.mod_englishcentral.playerhelper.init', array($opts),false,$jsmodule);
-
-
 
 //this loads the strings we need into JS
 $names = array('sessionresults', 'sessionscore', 'sessiongrade',

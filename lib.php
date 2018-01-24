@@ -371,9 +371,6 @@ function englishcentral_update_instance(stdClass $data, mod_englishcentral_mod_f
 function englishcentral_process_formdata(stdClass $data, mod_englishcentral_mod_form $mform) {
     global $DB;
 
-    // fix up secondary fields
-    $mform->form_postprocessing($data);
-
     // add/update record in main EC table
     $table = 'englishcentral';
     $update_grades = false;
