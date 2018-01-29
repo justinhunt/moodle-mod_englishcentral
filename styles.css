@@ -1,17 +1,17 @@
 /* styles for goals on EDIT form  */
 
 #page-mod-englishcentral-mod #fgroup_id_watchgoalgroup {
-    background:       #fec;
+    background:    #23a1da; // #fec;
     border: 2px solid #fc8;
 }
 
 #page-mod-englishcentral-mod #fgroup_id_learngoalgroup {
-    background:       #fef;
+    background:    #eb6613; // #fef;
     border: 2px solid #f9f;
 }
 
 #page-mod-englishcentral-mod #fgroup_id_speakgoalgroup {
-    background:       #eff;
+    background:    #a4d05c; // #eff;
     border: 2px solid #9ff;
 }
 
@@ -30,7 +30,7 @@
 
 @media (min-width: 1200px) {
     #page-mod-englishcentral-mod #id_goals .fcontainer {
-        margin-left:    120px; 
+        margin-left:    120px;
     }
 }
 
@@ -54,75 +54,3 @@
 
 /* styles on VIEW page */
 
-#mod_englishcentral_playercontainer {
-     background:  #acacac;
-     color:          #fff;
-     font-size:      64px;
-     font-style:  oblique;
-     height:        415px;
-     line-height:   415px;
-     text-align:   center;
-     width:         640px;
-}
-#mod_englishcentral_resultscontainer {
-     background:  #a4c63f;
-     height:        415px;
-     margin-top:      1em;
-     text-align:  center;
-     width:         640px;
-}
-.englishcentral_hidediv {
-     display:        none;
-}
-.englishcentral_showdiv {
-     display:       block;
-}
-.englishcentral_myattempts_headrow {
-     font-weight:    bold;
-     text-align:   center;
-}
-.englishcentral_myattempts_table {
-     border:          2px;
-}
-.mod_englishcentral_startfinish_button {
-     background:  #7fff00; /* chartreuse */
-     font-size:  xx-large;
-     height:         80px;
-     width:         640px;
-}
-.mod_englishcentral_startfinish_button:hover {
-     background:  #7fff00; /* chartreuse */
-}
-.mod_englishcentral_startfinish_button:active {
-     background:  #7fff00; /* chartreuse */
-}
-.mod_englishcentral_startfinish_button:focus {
-     background:  #7fff00; /* chartreuse */
-}
-.mod_englishcentral_start_container {
-     width:          100%;
-     display:       block;
-}
-.mod_englishcentral_bigbutton {
-    font-size:       32px;
-    text-align:    center;
-}
-.mod_englishcentral_container {
-     float:          left;
-     padding-right:  20px;
-}
-.mod_englishcentral_englishcentral_container {
-    margin-left:     auto;
-    margin-right:    auto;
-    padding-top:      5px;
-}
-div.mod_englishcentral_listbuttons {
-     display:       block;
-}
-.mod_englishcentral_listbuttons input[type="submit"] {
-     width:         400px;
-}
-div.mod_englishcentral_actionbuttons {
-     display:        flex;
-     float:         right;
-}

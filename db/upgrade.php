@@ -55,7 +55,6 @@ function xmldb_englishcentral_upgrade($oldversion) {
             $dbman->add_field($table, $field);
         }
 
-        // Another save point reached
         upgrade_mod_savepoint(true, "$newversion", 'englishcentral');
     }
 
@@ -212,6 +211,18 @@ function xmldb_englishcentral_upgrade($oldversion) {
         $table->add_key('englphs_userid', XMLDB_KEY_FOREIGN, array('userid'), 'user', array('id'));
 
         xmldb_englishcentral_replace_table($dbman, $table, $fields, $oldname);
+
+        upgrade_mod_savepoint(true, "$newversion", 'englishcentral');
+    }
+
+    $newversion = 2018012805;
+    if ($oldversion < $newversion) {
+
+        $config = get_config('englishcentral');
+        foreach ($config as $name => $value) {
+            set_config($name, $value, 'mod_englishcentral');
+            unset_config($name, 'englishcentral');
+        }
 
         upgrade_mod_savepoint(true, "$newversion", 'englishcentral');
     }

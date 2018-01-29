@@ -39,6 +39,8 @@ $string['pluginname'] = 'English Central Activity';
 // capabilities
 $string['englishcentral:addinstance'] = 'Add a new English Central activity';
 $string['englishcentral:view'] = 'View English Central activity';
+$string['englishcentral:manage'] = 'Manage an English Central activity';
+$string['englishcentral:manageattempts'] = 'Manage attempts at an English Central activity';
 
 // activity settings
 $string['consumerkey'] = 'Consumer Key';
@@ -72,8 +74,8 @@ $string['studygoal_help'] = 'Specify the target number of minutes/hours to study
 
 The study time is calculated using the following formula:
 
-(number of videos watched) x 6 minutes  
-+ (number of words learned) x 1 minute  
+(number of videos watched) x 6 minutes
++ (number of words learned) x 1 minute
 + (number of lines spoken) x 1 minute';
 $string['studygoal'] = 'Study time';
 $string['studygoalunits'] = '(minutes)';
@@ -91,12 +93,29 @@ $string['availableuntil'] = 'Available until';
 $string['availableuntil_help'] = 'Students can only to access this activity up until the date and time specified here. After this date and time, it will not be available.';
 $string['readonlyfrom'] = 'Read-only from';
 $string['readonlyfrom_help'] = 'After this date and time, students may view their main Reader page, but they cannot take any more quizes via this Reader activity.';
-$string['readonlymode'] = 'Read-only mode';
-$string['readonlymode_desc'] = 'This activity is currently in read-only mode. You can view the information on the first page of this Reader activity, but you cannot take any Reader quizzes.';
-$string['readonlysincedate'] = 'This activity has been in read-only mode since {$a}.';
 $string['readonlyuntil'] = 'Read-only until';
 $string['readonlyuntil_help'] = 'Before this date and time, students may view their main Reader page, but they cannot take any quizzes via this Reader activity.';
-$string['readonlyuntildate'] = 'This activity will stay in read-only mode until {$a}.';
+
+$string['consultadmin'] = 'For further help, please consult the administrator of this Moodle site.';
+$string['invalidconfig'] = 'Sorry, we cannot proceed because the settings for the English Central activity module on this Moodle site are not valid:';
+$string['missingconfig'] = 'Sorry, we cannot proceed because the following settings are not yet defined for the English Central activity module on this Moodle site:';
+$string['updatesettings'] = 'Click on the following link to add/edit these settings: {$a}';
+
+$string['readonlymode'] = 'Read-only mode';
+$string['readonlymode_desc'] = 'This activity is currently in read-only mode. You can view the information on the first page of this EnglishCentral activity, but you cannot view any of the videos.';
+$string['timeondate'] = '%l:%M %p on %b %d (%a) %Y';
+
+$string['futureavailablefrom'] = 'This activity will open at {$a}';
+$string['futureavailableuntil'] = 'This activity will close at {$a}';
+$string['futurereadonlyfrom'] = 'The videos will be available until {$a}';
+$string['futurereadonlyuntil'] = 'The videos will be available from {$a}';
+$string['pastavailablefrom'] = 'This activity opened at {$a}';
+$string['pastavailableuntil'] = 'This activity closed at {$a}';
+$string['pastreadonlyfrom'] = 'The videos were available until {$a}';
+$string['pastreadonlyuntil'] = 'The videos became available at {$a}';
+
+$string['notavailable'] = 'Sorry, this activity is not currently avialable to you.';
+$string['notviewable'] = 'Sorry, the videos for this actiity are not currently avialable to you.';
 
 // deprecated strings
 

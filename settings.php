@@ -33,29 +33,29 @@ if ($ADMIN->fulltree) {
     $label = get_string($name, $plugin);
     $explain = get_string($name.'explain', $plugin);
     $default = get_string($name.'default', $plugin);
-    $settings->add(new admin_setting_configtext("englishcentral/$name", $label, $explain, $default, PARAM_TEXT));
+    $settings->add(new admin_setting_configtext("$plugin/$name", $label, $explain, $default, PARAM_TEXT));
 
     $name = 'consumerkey';
     $label = get_string($name, $plugin);
     $explain = get_string($name.'explain', $plugin);
     $default = get_string($name.'default', $plugin);
-    $settings->add(new admin_setting_configtext("englishcentral/$name", $label, $explain, $default, PARAM_TEXT));
+    $settings->add(new admin_setting_configtext("$plugin/$name", $label, $explain, $default, PARAM_TEXT));
 
     $name = 'consumersecret';
 	$label = get_string($name, $plugin);
 	$explain = get_string($name.'explain', $plugin);
     $default = get_string($name.'default', $plugin);
-    $settings->add(new admin_setting_configtext("englishcentral/$name", $label, $explain, $default, PARAM_TEXT));
+    $settings->add(new admin_setting_configtext("$plugin/$name", $label, $explain, $default, PARAM_TEXT));
 
     $name = 'encryptedsecret';
     $label = get_string($name, $plugin);
     $explain = get_string($name.'explain', $plugin);
     $default = get_string($name.'default', $plugin);
-    $settings->add(new admin_setting_configtext("englishcentral/$name", $label, $explain, $default, PARAM_TEXT));
+    $settings->add(new admin_setting_configtext("$plugin/$name", $label, $explain, $default, PARAM_TEXT));
 
     $name = 'developmentmode';
     $label = get_string($name, $plugin);
     $explain = get_string($name.'explain', $plugin);
     $default = (strpos($CFG->wwwroot, '/localhost/')===false ? 0 : 1);
-    $settings->add(new admin_setting_configcheckbox("englishcentral/$name", $label, $explain, $default, PARAM_INT));
+    $settings->add(new admin_setting_configcheckbox("$plugin/$name", $label, $explain, $default));
 }

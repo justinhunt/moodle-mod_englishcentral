@@ -90,12 +90,6 @@ class mod_englishcentral_mod_form extends moodleform_mod {
         $mform->addHelpButton($name, $name, $plugin);
         $this->set_type_default_advanced($mform, $config, $name, PARAM_INT);
 
-        $name = 'availableuntil';
-        $label = get_string($name, $plugin);
-        $mform->addElement('date_time_selector', $name, $label, $dateoptions);
-        $mform->addHelpButton($name, $name, $plugin);
-        $this->set_type_default_advanced($mform, $config, $name, PARAM_INT);
-
         $name = 'readonlyuntil';
         $label = get_string($name, $plugin);
         $mform->addElement('date_time_selector', $name, $label, $dateoptions);
@@ -103,6 +97,12 @@ class mod_englishcentral_mod_form extends moodleform_mod {
         $this->set_type_default_advanced($mform, $config, $name, PARAM_INT);
 
         $name = 'readonlyfrom';
+        $label = get_string($name, $plugin);
+        $mform->addElement('date_time_selector', $name, $label, $dateoptions);
+        $mform->addHelpButton($name, $name, $plugin);
+        $this->set_type_default_advanced($mform, $config, $name, PARAM_INT);
+
+        $name = 'availableuntil';
         $label = get_string($name, $plugin);
         $mform->addElement('date_time_selector', $name, $label, $dateoptions);
         $mform->addHelpButton($name, $name, $plugin);

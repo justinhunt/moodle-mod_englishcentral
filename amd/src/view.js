@@ -21,13 +21,13 @@
  * @copyright   Gordon Bateson
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-define(['jquery'], function($) {
-
-    /** @alias module:mod_englishcentral/view */ 
+define(['jquery', 'jqueryui'], function($) {
+    /** @alias module:mod_englishcentral/view */
     return {
-        init: function() {
-            var i = $("body").length;
-            return ("Hello, and welcome to the EC module: " + i);
+        "init": function (opts) {
+            for (var i in opts) {
+                window.console.log("received opts[" + i + "]: " + opts[i]);
+            };
         }
     };
 });

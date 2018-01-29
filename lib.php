@@ -1,17 +1,17 @@
 <?php
 
 // This file is part of Moodle - http://moodle.org/
-//
+
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-//
+
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//
+
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -21,7 +21,7 @@
  * All the core Moodle functions, neeeded to allow the module to work
  * integrated in Moodle should be placed here.
  * All the englishcentral specific functions, needed to implement all the module
- * logic, should go to locallib.php. This will help to save some memory when
+ * logic, should go to classes/activity.php. This will save some memory when
  * Moodle is performing actions across all modules.
  *
  * @package    mod_englishcentral
@@ -37,9 +37,9 @@ define('MOD_ENGLISHCENTRAL_GRADELATEST',  2);
 define('MOD_ENGLISHCENTRAL_GRADEAVERAGE', 3);
 define('MOD_ENGLISHCENTRAL_GRADENONE',    4);
 
-////////////////////////////////////////////////////////////////////////////////
-// Moodle core API                                                            //
-////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+// Moodle core API
+//////////////////////////////////////////////////////////////////////////////
 
 /**
  * Returns the information on whether the module supports a feature
@@ -49,7 +49,7 @@ define('MOD_ENGLISHCENTRAL_GRADENONE',    4);
  * @return mixed true if the feature is supported, null if unknown
  */
 function englishcentral_supports($feature) {
-    switch($feature) {
+    switch ($feature) {
         case FEATURE_MOD_INTRO:         return true;
         case FEATURE_SHOW_DESCRIPTION:  return true;
 		case FEATURE_GRADE_HAS_GRADE:         return true;
@@ -60,6 +60,101 @@ function englishcentral_supports($feature) {
     }
 }
 
+//////////////////////////////////////////////////////////////////////////////
+// API to add/edit/delete instance
+//////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Saves a new instance of the englishcentral into the database
+ *
+ * Given an object containing all the necessary data,
+ * (defined by the form in mod_form.php) this function
+ * will create a new instance and return the id number
+ * of the new instance.
+ *
+ * @param object $englishcentral An object from the form in mod_form.php
+ * @param mod_englishcentral_mod_form $mform
+ * @return int The id of the newly inserted englishcentral record
+ */
+function englishcentral_add_instance(stdClass $formdata, mod_englishcentral_mod_form $mform = null) {
+    return englishcentral_process_formdata($formdata, $mform);
+}
+
+/**
+ * Updates an instance of the englishcentral in the database
+ *
+ * Given an object containing all the necessary data,
+ * (defined by the form in mod_form.php) this function
+ * will update an existing instance with new data.
+ *
+ * @param object $formdata An object from the form in mod_form.php
+ * @param mod_englishcentral_mod_form $mform
+ * @return boolean Success/Fail
+ */
+function englishcentral_update_instance(stdClass $data, mod_englishcentral_mod_form $mform = null) {
+    return englishcentral_process_formdata($data, $mform);
+}
+
+/**
+ * update fields in recently submitted form data
+ *
+ * @param stdClass $data recently submitted formdata
+ * @return boolean Success/Failure
+ */
+function englishcentral_process_formdata(stdClass $data, mod_englishcentral_mod_form $mform) {
+    global $DB;
+
+    // add/update record in main EC table
+    $table = 'englishcentral';
+    $update_grades = false;
+    if (empty($data->instance)) {
+        // add new instance
+        $data->timecreated = time();
+        $data->timemodified = $data->timecreated;
+        $data->id = $DB->insert_record($table, $data);
+    } else {
+        // update exisiting instance
+        $data->id = $data->instance;
+        $data->timemodified = time();
+        $DB->update_record($table, $data);
+
+        $params = array('id' => $data->instance);
+        $grade = $DB->get_field($table, 'grade', $params);
+        $update_grades = ($data->grade == $grade ? false : true);
+    }
+
+    englishcentral_grade_item_update($data);
+
+    if ($update_grades) {
+        englishcentral_update_grades($data, 0, false);
+    }
+
+    return $data->id;
+}
+
+/**
+ * Removes an instance of the englishcentral from the database
+ *
+ * Given an ID of an instance of this module,
+ * this function will permanently delete the instance
+ * and any data that depends on it.
+ *
+ * @param int $id Id of the module instance
+ * @return boolean Success/Failure
+ */
+function englishcentral_delete_instance($id) {
+    global $DB;
+    $params = array('ecid' => $id);
+    $DB->delete_records('englishcentral_videos', $params);
+    $DB->delete_records('englishcentral_attempts', $params);
+    $DB->delete_records('englishcentral_phonemes', $params);
+    $DB->delete_records('englishcentral', array('id' => $id));
+    return true;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// API to update/select grades
+//////////////////////////////////////////////////////////////////////////////
 
 /**
  * Create grade item for given Englsh Central
@@ -135,7 +230,6 @@ function englishcentral_grade_item_update($englishcentral, $grades=null) {
         }
     }
 
-
     return grade_update('mod/englishcentral', $englishcentral->course, 'mod', 'englishcentral', $englishcentral->id, 0, $grades, $params);
 }
 
@@ -197,38 +291,38 @@ function englishcentral_get_user_grades($englishcentral, $userid=0) {
     $englishcentral->maxattempts = 0;
     $englishcentral->gradeoptions = 0;
 
-	if($englishcentral->speaklitemode != 1){
+	if ($englishcentral->speaklitemode != 1) {
 		$overallgrade = '(a.sessionscore * (a.linesrecorded * (1 / a.linestotal)))';
-	}else{
+	} else {
 		$overallgrade = '(a.sessionscore * a.recordingcomplete)';
 	}
 
     if ($englishcentral->maxattempts==1 || $englishcentral->gradeoptions == MOD_ENGLISHCENTRAL_GRADELATEST) {
 
         $sql = "SELECT u.id, u.id AS userid, $overallgrade AS rawgrade
-                  FROM {user} u,  {englishcentral_attempts} a
+                  FROM {user} u, {englishcentral_attempts} a
                  WHERE u.id = a.userid AND a.ecid = :ecid
                        AND a.status = 1
                        $user";
 
-	}else{
-		switch($englishcentral->gradeoptions){
+	} else {
+		switch ($englishcentral->gradeoptions) {
 			case MOD_ENGLISHCENTRAL_GRADEHIGHEST:
-				$sql = "SELECT u.id, u.id AS userid, MAX( $overallgrade ) AS rawgrade
+				$sql = "SELECT u.id, u.id AS userid, MAX($overallgrade) AS rawgrade
                       FROM {user} u, {englishcentral_attempts} a
                      WHERE u.id = a.userid AND a.ecid = :ecid
                            $user
                   GROUP BY u.id";
 				  break;
 			case MOD_ENGLISHCENTRAL_GRADELOWEST:
-				$sql = "SELECT u.id, u.id AS userid, MIN(  $overallgrade ) AS rawgrade
+				$sql = "SELECT u.id, u.id AS userid, MIN($overallgrade) AS rawgrade
                       FROM {user} u, {englishcentral_attempts} a
                      WHERE u.id = a.userid AND a.ecid = :ecid
                            $user
                   GROUP BY u.id";
 				  break;
 			case MOD_ENGLISHCENTRAL_GRADEAVERAGE:
-            $sql = "SELECT u.id, u.id AS userid, AVG(  $overallgrade ) AS rawgrade
+                $sql = "SELECT u.id, u.id AS userid, AVG($overallgrade) AS rawgrade
                       FROM {user} u, {englishcentral_attempts} a
                      WHERE u.id = a.userid AND a.ecid = :ecid
                            $user
@@ -238,14 +332,9 @@ function englishcentral_get_user_grades($englishcentral, $userid=0) {
         }
 
     }
-	/*
-echo $sql;
-print_r($params);
-print_r($DB->get_records_sql($sql, $params));
-*/
+
     return $DB->get_records_sql($sql, $params);
 }
-
 
 /**
  * Implementation of the function for printing the form elements that control
@@ -328,92 +417,6 @@ function englishcentral_reset_userdata($data) {
     }
 
     return $status;
-}
-
-
-/**
- * Saves a new instance of the englishcentral into the database
- *
- * Given an object containing all the necessary data,
- * (defined by the form in mod_form.php) this function
- * will create a new instance and return the id number
- * of the new instance.
- *
- * @param object $englishcentral An object from the form in mod_form.php
- * @param mod_englishcentral_mod_form $mform
- * @return int The id of the newly inserted englishcentral record
- */
-function englishcentral_add_instance(stdClass $formdata, mod_englishcentral_mod_form $mform = null) {
-    return englishcentral_process_formdata($formdata, $mform);
-}
-
-/**
- * Updates an instance of the englishcentral in the database
- *
- * Given an object containing all the necessary data,
- * (defined by the form in mod_form.php) this function
- * will update an existing instance with new data.
- *
- * @param object $formdata An object from the form in mod_form.php
- * @param mod_englishcentral_mod_form $mform
- * @return boolean Success/Fail
- */
-function englishcentral_update_instance(stdClass $data, mod_englishcentral_mod_form $mform = null) {
-    return englishcentral_process_formdata($data, $mform);
-}
-
-/**
- * update fields in recently submitted form data
- *
- * @param stdClass $data recently submitted formdata
- * @return boolean Success/Failure
- */
-function englishcentral_process_formdata(stdClass $data, mod_englishcentral_mod_form $mform) {
-    global $DB;
-
-    // add/update record in main EC table
-    $table = 'englishcentral';
-    $update_grades = false;
-    if (empty($data->instance)) {
-        // add new instance
-        $data->id = $DB->insert_record($table, $data);
-    } else {
-        // update exisiting instance
-        $data->id = $data->instance;
-        $DB->update_record($table, $data);
-
-        $params = array('id' => $data->instance);
-        $grade = $DB->get_field($table, 'grade', $params);
-        $update_grades = ($data->grade == $grade ? false : true);
-    }
-
-    englishcentral_grade_item_update($data);
-
-    if ($update_grades) {
-        englishcentral_update_grades($data, 0, false);
-    }
-
-    return $data->id;
-}
-
-/**
- * Removes an instance of the englishcentral from the database
- *
- * Given an ID of an instance of this module,
- * this function will permanently delete the instance
- * and any data that depends on it.
- *
- * @param int $id Id of the module instance
- * @return boolean Success/Failure
- */
-function englishcentral_delete_instance($id) {
-    global $DB;
-    $params = array('ecid' => $id);
-    $DB->delete_records('englishcentral_videos', $params);
-    $DB->delete_records('englishcentral_attempts', $params);
-    $DB->delete_records('englishcentral_phonemes', $params);
-    $DB->delete_records('englishcentral', array('id' => $id));
-    return true;
 }
 
 /**
@@ -505,9 +508,9 @@ function englishcentral_get_extra_capabilities() {
     return array();
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Gradebook API                                                              //
-////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+// Gradebook API
+//////////////////////////////////////////////////////////////////////////////
 
 /**
  * Is a given scale used by the instance of englishcentral?
@@ -550,10 +553,9 @@ function englishcentral_scale_used_anywhere($scaleid) {
     }
 }
 
-
-////////////////////////////////////////////////////////////////////////////////
-// File API                                                                   //
-////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+// File API
+//////////////////////////////////////////////////////////////////////////////
 
 /**
  * Returns the lists of all browsable file areas within the given module context
@@ -617,9 +619,9 @@ function englishcentral_pluginfile($course, $cm, $context, $filearea, array $arg
     send_file_not_found();
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Navigation API                                                             //
-////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+// Navigation API
+//////////////////////////////////////////////////////////////////////////////
 
 /**
  * Extends the global navigation tree by adding englishcentral nodes if there is a relevant content

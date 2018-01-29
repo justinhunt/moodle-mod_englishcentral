@@ -36,26 +36,26 @@ $ecid  = optional_param('ecid', 0, PARAM_INT);  // englishcentral instance ID - 
 if ($id) {
     $cm = get_coursemodule_from_id('englishcentral', $id, 0, false, MUST_EXIST);
     $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
-    $englishcentral = $DB->get_record('englishcentral', array('id' => $cm->instance), '*', MUST_EXIST);
+    $instance = $DB->get_record('englishcentral', array('id' => $cm->instance), '*', MUST_EXIST);
 } elseif ($ecid) {
-    $englishcentral = $DB->get_record('englishcentral', array('id' => $ecid), '*', MUST_EXIST);
-    $course = $DB->get_record('course', array('id' => $englishcentral->course), '*', MUST_EXIST);
-    $cm = get_coursemodule_from_instance('englishcentral', $englishcentral->id, $course->id, false, MUST_EXIST);
+    $instance = $DB->get_record('englishcentral', array('id' => $ecid), '*', MUST_EXIST);
+    $course = $DB->get_record('course', array('id' => $instance->course), '*', MUST_EXIST);
+    $cm = get_coursemodule_from_instance('englishcentral', $instance->id, $course->id, false, MUST_EXIST);
 } else {
     error('You must specify a course_module ID or an instance ID');
 }
 
 require_login($course, true, $cm);
-$modulecontext = context_module::instance($cm->id);
+$context = context_module::instance($cm->id);
 
 // Trigger module viewed event.
 $event = \mod_englishcentral\event\course_module_viewed::create(array(
-   'objectid' => $englishcentral->id,
-   'context' => $modulecontext
+   'objectid' => $instance->id,
+   'context' => $context
 ));
 $event->add_record_snapshot('course_modules', $cm);
 $event->add_record_snapshot('course', $course);
-$event->add_record_snapshot('englishcentral', $englishcentral);
+$event->add_record_snapshot('englishcentral', $instance);
 $event->trigger();
 
 //if we got this far, we can consider the activity "viewed"
@@ -64,97 +64,56 @@ $completion->set_module_viewed($cm);
 
 /// Set up the page header
 $PAGE->set_url('/mod/englishcentral/view.php', array('id' => $cm->id));
-$PAGE->set_title(format_string($englishcentral->name));
-$PAGE->set_heading(format_string($course->fullname));
-$PAGE->set_context($modulecontext);
+$PAGE->set_context($context);
 $PAGE->set_pagelayout('course');
 
-//authenticate with English Central, and get our API ready
-$config = get_config('englishcentral');
+$ec = \mod_englishcentral\activity::create($instance, $cm, $course, $context);
+$auth = \mod_englishcentral\auth::create($ec);
 
-$ec = new \mod_englishcentral\englishcentral();
-$jwt = $ec->build_authorize_token($USER);
-$sdk_token = $ec->login_and_auth($jwt, $USER);
+$renderer = $PAGE->get_renderer($ec->plugin);
+$renderer->attach_activity($ec);
 
-// ec: mod_englishcentral\englishcentral Object
-//     [consumer_key]     => (string)
-//     [consumer_secret]  => (string)
-//     [encrypted_secret] => (string)
-//     [partnerid]        => (integer)
-//     [domain] => qaenglishcentral.com
-// jwt: (string)
-// sdk_token: (string)
+echo $renderer->header($ec->get_string('view'));
 
-// setup javascript all ready to go
-$jsmodule = array('name'     => 'mod_englishcentral',
-                  'fullpath' => '/mod/englishcentral/module.js',
-                  'requires' => array('io','json','button'));
-
-// we set up any info we need to pass into javascript
-$opts = array('consumerkey' => $config->consumerkey,
-              'cmid'        => $cm->id,
-              'sdktoken'    => $sdk_token,
-              'videoid'     => '28864',
-              'resultsmode' => 'ajax',
-              'playerdiv'   => 'mod_englishcentral_playercontainer',
-              'resultsdiv'  => 'mod_englishcentral_resultscontainer');
-
-//this inits the M.mod_englishcentral thingy, after the page has loaded.
-//$PAGE->requires->js_init_call('M.mod_englishcentral.playerhelper.init', array($opts),false,$jsmodule);
-
-/*
- *  20170819 Basically what we have done is to swap out init with a new function angular_init (just above)
- * And just below we swapped out the API call to ec.js to the sdk.js so we are loading a new library
- *
- * Going forward we need to load with AMD in JS and use the firebase JWT sign on system to auth with EC
- */
-
-$PAGE->requires->js_init_call('M.mod_englishcentral.playerhelper.init', array($opts),false,$jsmodule);
-
-//this loads the strings we need into JS
-$names = array('sessionresults', 'sessionscore', 'sessiongrade',
-               'lineswatched', 'linesrecorded', 'compositescore',
-               'activetime', 'totalactivetime');
-$PAGE->requires->strings_for_js($names, 'englishcentral');
-
-//this loads any external JS libraries we need to call
-////$PAGE->requires->js("/mod/englishcentral/js/ec.js");
-//$PAGE->requires->js(new moodle_url('https://www.englishcentral.com/platform/ec.js'),true);
-$ec_js_url = $ec->fetch_js_url();
-$PAGE->requires->js(new moodle_url($ec_js_url),true);
-
-// This puts all our display logic into the renderer.php file in this plugin
-//theme developers can override classes there, so it makes it customizable for others
-//to do it this way.
-$renderer = $PAGE->get_renderer('mod_englishcentral');
-
-echo $renderer->header($englishcentral, $cm, 'view',null, get_string('view', 'englishcentral'));
-
-// From here we actually display the page.
-//echo "RT:" . $requesttoken . '<BR />';
-//echo "AT:" . $accesstoken . '<BR />';
-echo $renderer->show_intro($englishcentral, $cm);
-
-//if we have attempts and we are not a manager/teacher then lets show a summary of them
-$hasattempts=false;
-//if(!has_capability('mod/englishcentral:manageattempts', $module_context)){
-    $attempts = $DB->get_records('englishcentral_attempts',array('userid'=>$USER->id,'ecid'=>$englishcentral->id));
-    if($attempts){
-        $hasattempts=true;
-        echo $renderer->show_myattempts($englishcentral, $attempts);
-    }
-//}
-
-// Replace the following lines with your own code
-//echo $renderer->show_ec_options();
-//$thumburl="http://demo.poodll.com/pluginfile.php/10/course/summary/pdclogo.jpg";
-//echo $renderer->show_ec_link($englishcentral->videotitle, $thumburl, $englishcentral->videoid);
-if(empty($englishcentral->maxattempts) || count($attempts)<$englishcentral->maxattempts){
-    echo $renderer->show_bigbutton($hasattempts);
-    echo $renderer->show_ec_box();
-}else{
-    echo $renderer->show_exceededattempts($englishcentral,$attempts);
+if ($msg = $auth->missing_config()) {
+    echo $renderer->show_missingconfig($msg);
+    die;
 }
 
-// Finish the page
+if ($msg = $auth->invalid_config()) {
+    echo $renderer->show_invalidconfig($msg);
+    die;
+}
+
+if ($ec->not_available()) {
+    echo $renderer->show_notavailable();
+    die;
+}
+
+echo $renderer->show_intro();
+echo $renderer->show_dates_available();
+
+$PAGE->requires->js($auth->fetch_js_url(), true);
+$opts = array('resultsmode' => 'ajax',
+              'cmid'        => $ec->cm->id,
+              'sdktoken'    => $auth->get_sdk_token(),
+              'consumerkey' => $auth->consumerkey,
+              'playerdiv'   => $ec->plugin.'_playercontainer',
+              'resultsdiv'  => $ec->plugin.'_resultscontainer');
+$PAGE->requires->js_call_amd("$ec->plugin/view", 'init', array($opts));
+
+echo $renderer->show_progress();
+
+if ($ec->not_viewable()) {
+    echo $renderer->show_notviewable();
+    die;
+}
+
+if ($ec->readonly) {
+    echo $renderer->show_notviewable($ec);
+} else {
+    echo $renderer->show_videos($ec);
+}
+
+echo html_writer::tag('p', 'Your EC usersid is: '.$auth->get_ecuserid());
 echo $renderer->footer();
