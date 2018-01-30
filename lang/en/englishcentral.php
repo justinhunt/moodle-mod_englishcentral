@@ -29,106 +29,180 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+// required plugin strings
 $string['modulename'] = 'English Central';
 $string['modulenameplural'] = 'English Central Activities';
 $string['modulename_help'] = 'Use the English Central Activity module to allow your students to use Englosh Central from within Moodle Courses';
-$string['englishcentralfieldset'] = 'Custom example fieldset';
-$string['englishcentralname'] = 'Activity Name';
-$string['englishcentralname_help'] = 'This is the content of the help tooltip associated with the englishcentralname field. Markdown syntax is supported.';
-$string['englishcentral'] = 'English Central';
 $string['pluginadministration'] = 'English Central Module Administration';
 $string['pluginname'] = 'English Central Activity';
-$string['partnerid'] = 'Partner ID';
-$string['consumerkey'] = 'Consumer Key';
-$string['consumersecret'] = 'Consumer Secret';
-$string['encryptedsecret'] = 'Encrypted Secret';
-$string['consumerkeyexplain'] = 'Your consumer key is available from EnglishCentral.com';
-$string['consumersecretexplain'] = 'Your consumer secret is available from EnglishCentral.com';
-$string['partneridexplain'] = 'Your partnerid is available from EnglishCentral.com';
-$string['encryptedsecretexplain'] = 'Your encrypted secret is available from EnglishCentral.com';
-$string['videotitle'] = 'Video Title';
-$string['videoid'] = 'Video ID';
-$string['englishcentralsettings'] = 'Enter English Central Video Title and ID';
+
+// capabilities
 $string['englishcentral:addinstance'] = 'Add a new English Central activity';
 $string['englishcentral:view'] = 'View English Central activity';
+$string['englishcentral:manage'] = 'Manage an English Central activity';
+$string['englishcentral:manageattempts'] = 'Manage attempts at an English Central activity';
+
+// activity settings
+$string['consumerkey'] = 'Consumer Key';
+$string['consumerkeydefault'] = 'YOUR CONSUMER KEY';
+$string['consumerkeyexplain'] = 'Your consumer key is available from EnglishCentral.com';
+$string['consumersecret'] = 'Consumer Secret';
+$string['consumersecretdefault'] = 'YOUR CONSUMER SECRET';
+$string['consumersecretexplain'] = 'Your consumer secret is available from EnglishCentral.com';
+$string['developmentmode'] = 'Development mode';
+$string['developmentmodeexplain'] = 'On development sites, this setting should be enabled. On production sites, it should be disabled.';
+$string['encryptedsecret'] = 'Encrypted Secret';
+$string['encryptedsecretdefault'] = 'YOUR ENCRYPTED SECRET';
+$string['encryptedsecretexplain'] = 'Your encrypted secret is available from EnglishCentral.com';
+$string['partnerid'] = 'Partner ID';
+$string['partneriddefault'] = 'YOUR PARTNER ID';
+$string['partneridexplain'] = 'Your partnerid is available from EnglishCentral.com';
+
+$string['goals_help'] = 'Define goals for Watch, Learn, Speak and Study time';
+$string['goals'] = 'Goals';
+$string['learngoal_help'] = 'Specify the target number of words to learn.';
+$string['learngoal'] = 'Learn';
+$string['learngoalunits'] = '(words)';
+$string['learnwords'] = '{$a} words';
+$string['goalperiod_help'] = 'Specify the time period and the day or date by which these goals should be achieved.';
+$string['goalperiod'] = 'Goal period';
+$string['speakgoal_help'] = 'Specify the target number of lines to speak.';
+$string['speakgoal'] = 'Speak';
+$string['speakgoalunits'] = '(lines)';
+$string['speaklines'] = '{$a} lines';
+$string['studygoal_help'] = 'Specify the target number of minutes/hours to study.
+
+The study time is calculated using the following formula:
+
+(number of videos watched) x 6 minutes
++ (number of words learned) x 1 minute
++ (number of lines spoken) x 1 minute';
+$string['studygoal'] = 'Study time';
+$string['studygoalunits'] = '(minutes)';
+$string['watchgoal_help'] = 'Specify the target number of videos to watch.';
+$string['watchgoal'] = 'Watch';
+$string['watchgoalunits'] = '(videos)';
+$string['watchvideos'] = '{$a} videos';
+
+$string['activityname_help'] = 'This is the content of the help tooltip associated with the englishcentralname field. Markdown syntax is supported.';
+$string['activityname'] = 'Activity Name';
+
+$string['availablefrom'] = 'Available from';
+$string['availablefrom_help'] = 'Students can only to access this activity after the date and time specified here. Before this date and time, it will not be available.';
+$string['availableuntil'] = 'Available until';
+$string['availableuntil_help'] = 'Students can only to access this activity up until the date and time specified here. After this date and time, it will not be available.';
+$string['readonlyfrom'] = 'Read-only from';
+$string['readonlyfrom_help'] = 'After this date and time, students may view their main Reader page, but they cannot take any more quizes via this Reader activity.';
+$string['readonlyuntil'] = 'Read-only until';
+$string['readonlyuntil_help'] = 'Before this date and time, students may view their main Reader page, but they cannot take any quizzes via this Reader activity.';
+
+$string['consultadmin'] = 'For further help, please consult the administrator of this Moodle site.';
+$string['invalidconfig'] = 'Sorry, we cannot proceed because the settings for the English Central activity module on this Moodle site are not valid:';
+$string['missingconfig'] = 'Sorry, we cannot proceed because the following settings are not yet defined for the English Central activity module on this Moodle site:';
+$string['updatesettings'] = 'Click on the following link to add/edit these settings: {$a}';
+
+$string['readonlymode'] = 'Read-only mode';
+$string['readonlymode_desc'] = 'This activity is currently in read-only mode. You can view the information on the first page of this EnglishCentral activity, but you cannot view any of the videos.';
+$string['timeondate'] = '%l:%M %p on %b %d (%a) %Y';
+
+$string['futureavailablefrom'] = 'This activity will open at {$a}';
+$string['futureavailableuntil'] = 'This activity will close at {$a}';
+$string['futurereadonlyfrom'] = 'The videos will be available until {$a}';
+$string['futurereadonlyuntil'] = 'The videos will be available from {$a}';
+$string['pastavailablefrom'] = 'This activity opened at {$a}';
+$string['pastavailableuntil'] = 'This activity closed at {$a}';
+$string['pastreadonlyfrom'] = 'The videos were available until {$a}';
+$string['pastreadonlyuntil'] = 'The videos became available at {$a}';
+
+$string['notavailable'] = 'Sorry, this activity is not currently avialable to you.';
+$string['notviewable'] = 'Sorry, the videos for this actiity are not currently avialable to you.';
+
+// deprecated strings
+
+$string['englishcentral'] = 'English Central';
+$string['englishcentralfieldset'] = 'Custom example fieldset';
+$string['englishcentralsettings'] = 'Enter English Central Video Title and ID';
+$string['hiddenchallengemode'] ='Hidden challenge';
+$string['learnmode'] ='Learn mode';
+$string['lightboxmode'] ='Lightbox mode';
+$string['playersettings'] = 'Player settings';
+$string['simpleui'] ='Simple UI';
+$string['speaklitemode'] ='SpeakLite mode';
+$string['speakmode'] ='Speak mode';
+$string['videoid'] = 'Video ID';
+$string['videotitle'] = 'Video Title';
+$string['watchmode'] ='Watch mode';
+
 //tabs
 $string['overview'] ='Overview';
 $string['overview_help'] ='Overview Help';
 $string['preview'] ='Preview';
 $string['previewenglishcentral'] ='Preview English Central';
 $string['view'] ='View';
+
 //reports
-$string['viewreports'] ='View Reports';
-$string['returntoreports'] ='Return to Reports';
+$string['activetime'] ='Active Time';
+$string['allattempts'] = 'Attempts Manager';
 $string['allusers'] ='All Users (most recent attempt)';
 $string['allusersreport'] ='All Users Report';
-$string['nodataavailable'] ='No Data Available';
-$string['reports'] ='Reports';
-$string['reporttitle'] ='Report Title {$a}';
+$string['attemptdetails'] = 'Attempt Details';
+$string['attemptdetailsheader'] = '{$a->name} attempt details for {$a->username} on {$a->date}';
+$string['attemptsmanager'] = 'Attempts Manager';
+$string['badcount'] ='Bad Count';
+$string['completed'] ='Completed';
+$string['compositescore'] = 'Overall Score';
+$string['confirmattemptdelete'] ='Are you sure you want to delete this attempt?';
+$string['confirmattemptdeleteall'] ='Are you sure you want to delete ALL attempts?';
+$string['confirmattemptdeletealltitle'] ='Delete ALL attempts?';
+$string['confirmattemptdeletetitle'] ='Delete attempt?';
+$string['date'] ='Date';
+$string['defaultsettings'] ='Default Settings';
+$string['delete'] ='Delete';
+$string['deleteallattempts'] ='Delete All Attempts';
+$string['deleteattempt'] ='delete';
+$string['details'] ='Details';
+$string['email'] ='Email';
+$string['exceededattempts'] ='You have completed the maximum {$a} attempts.';
 $string['exportcsv'] ='Export to CSV';
 $string['exportexcel'] ='Export to Excel(csv)';
 $string['exportpdf'] ='Export to PDF';
-$string['selectanother'] ='Back to Course';
-$string['fullname'] ='Full Name';
-$string['username'] ='Username';
-$string['email'] ='Email';
-$string['lastaccess'] ='Last Access';
-$string['points'] ='Points';
-$string['sessionscore'] ='Av. Score';
-$string['deleteattempt'] ='delete';
-$string['deleteallattempts'] ='Delete All Attempts';
-$string['confirmattemptdeletetitle'] ='Delete attempt?';
-$string['confirmattemptdelete'] ='Are you sure you want to delete this attempt?';
-$string['confirmattemptdeletealltitle'] ='Delete ALL attempts?';
-$string['confirmattemptdeleteall'] ='Are you sure you want to delete ALL attempts?';
-$string['details'] ='Details';
-$string['phonemes'] ='Phonemes';
-$string['delete'] ='Delete';
-$string['date'] ='Date';
-$string['points'] ='Points';
-$string['start'] ='Start';
-$string['reattempt'] ='Try Again';
-$string['myattempts'] ='My Attempts';
 $string['finish'] ='Finish';
-$string['completed'] ='Completed';
-$string['status'] ='Status';
-$string['phoneme'] ='Phoneme';
+$string['fullname'] ='Full Name';
 $string['goodcount'] ='Good Count';
-$string['badcount'] ='Bad Count';
-$string['total'] ='Total';
-$string['status'] ='Status';
-$string['item'] ='Item';
-$string['value'] ='Value';
-$string['viewreport'] ='details';
-$string['attemptsmanager'] = 'Attempts Manager';
-$string['allattempts'] = 'Attempts Manager';
-$string['attemptdetails'] = 'Attempt Details';
-$string['phonemesheader'] = '{$a->englishcentralname} Phonemes for {$a->username} attempt on {$a->attemptdate}';
-$string['attemptdetailsheader'] = '{$a->name} attempt details for {$a->username} on {$a->date}';
-$string['watchmode'] ='Watch mode';
-$string['speakmode'] ='Speak mode';
-$string['speaklitemode'] ='Speak Lite mode';
-$string['learnmode'] ='Learn mode';
-$string['lightboxmode'] ='Lightbox mode';
-$string['hiddenchallengemode'] ='Hidden challenge';
-$string['simpleui'] ='Simple UI';
-$string['maxattempts'] ='Max. Attempts';
-$string['unlimited'] ='unlimited';
-$string['gradeoptions'] ='Grade Options';
-$string['gradenone'] ='No grade';
-$string['gradelowest'] ='lowest scoring attempt';
+$string['gradeaverage'] ='average score of all attempts';
 $string['gradehighest'] ='highest scoring attempt';
 $string['gradelatest'] ='score of latest attempt';
-$string['gradeaverage'] ='average score of all attempts';
-$string['defaultsettings'] ='Default Settings';
-$string['exceededattempts'] ='You have completed the maximum {$a} attempts.';
-$string['sessionresults'] ='Session Results';
-$string['compositescore'] = 'Overall Score';
-$string['lineswatched'] ='Lines Watched';
-$string['linesrecorded'] ='Lines Recorded';
+$string['gradelowest'] ='lowest scoring attempt';
+$string['gradenone'] ='No grade';
+$string['gradeoptions'] ='Grade Options';
+$string['item'] ='Item';
+$string['lastaccess'] ='Last Access';
+$string['linesrecorded'] ='Lines recorded';
+$string['lineswatched'] ='Lines watched';
+$string['maxattempts'] ='Maximum attempts';
+$string['myattempts'] ='My Attempts';
+$string['nodataavailable'] ='No data available';
+$string['phoneme'] ='Phoneme';
+$string['phonemes'] ='Phonemes';
+$string['phonemesheader'] = '{$a->englishcentralname} Phonemes for {$a->username} attempt on {$a->attemptdate}';
+$string['points'] ='Points';
+$string['points'] ='Points';
+$string['reattempt'] ='Try Again';
+$string['reports'] ='Reports';
+$string['reporttitle'] ='Report Title {$a}';
+$string['returntoreports'] ='Return to reports';
+$string['selectanother'] ='Back to Course';
+$string['sessionactivetime'] ='Session active time';
+$string['sessiongrade'] ='Session grade';
+$string['sessionresults'] ='Session gesults';
+$string['sessionscore'] ='Average score';
 $string['sessionscore'] ='Session Score';
-$string['sessiongrade'] ='Session Grade';
-$string['activetime'] ='Active Time';
-$string['sessionactivetime'] ='Session Active Time';
-$string['totalactivetime'] ='Total Active Time';
-
+$string['start'] ='Start';
+$string['status'] ='Status';
+$string['total'] ='Total';
+$string['totalactivetime'] ='Total active time';
+$string['unlimited'] ='unlimited';
+$string['username'] ='Username';
+$string['value'] ='Value';
+$string['viewreport'] ='Details';
+$string['viewreports'] ='View reports';

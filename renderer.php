@@ -27,357 +27,192 @@ defined('MOODLE_INTERNAL') || die();
  */
 class mod_englishcentral_renderer extends plugin_renderer_base {
 
-     /**
+    protected $ec = null;
+
+    /**
+     * attach the $ec object so it is accessible throughout this class
+     *
+     * @param object $ec a \mod_englishcentral/activity Object.
+     * @return void
+     */
+    public function attach_activity($ec) {
+        $this->ec = $ec;
+    }
+
+    /**
      * Returns the header for the englishcentral module
      *
-     * @param lesson $englishcentral a englishcentral Object.
-     * @param string $currenttab current tab that is shown.
-     * @param int    $question id of the question that needs to be displayed.
      * @param string $extrapagetitle String to append to the page title.
      * @return string
      */
-    public function header($englishcentral, $cm, $currenttab = 'view', $questionid = null, $extrapagetitle = null) {
-        global $CFG;
-
-        $activityname = format_string($englishcentral->name, true, $englishcentral->course);
-        if (empty($extrapagetitle)) {
-            $title = $this->page->course->shortname.": ".$activityname;
-        } else {
-            $title = $this->page->course->shortname.": ".$activityname.": ".$extrapagetitle;
+    public function header($extrapagetitle=null) {
+        $activityname = format_string($this->ec->name, true, $this->ec->course);
+        $title = $this->ec->course->shortname.': '.$activityname;
+        if ($extrapagetitle) {
+            $title .= ': '.$extrapagetitle;
         }
-
-        // Build the buttons
-        $context = context_module::instance($cm->id);
-
-    /// Header setup
         $this->page->set_title($title);
-        $this->page->set_heading($this->page->course->fullname);
-       // lesson_add_header_buttons($cm, $context, $extraeditbuttons, $lessonpageid);
+        $this->page->set_heading($this->ec->course->fullname);
+
         $output = $this->output->header();
-
-        if (has_capability('mod/englishcentral:manage', $context)) {
+        if ($this->ec->can_manage()) {
             $output .= $this->output->heading_with_help($activityname, 'overview', 'englishcentral');
-
-            if (!empty($currenttab)) {
-                ob_start();
-                include($CFG->dirroot.'/mod/englishcentral/tabs.php');
-                $output .= ob_get_contents();
-                ob_end_clean();
-            }
         } else {
             $output .= $this->output->heading($activityname);
         }
-
-
         return $output;
     }
 
-    
     /**
      * Return HTML to display limited header
      */
-      public function notabsheader(){
-      	return $this->output->header();
-      }
+    public function notabsheader() {
+        return $this->output->header();
+    }
 
-	 /**
+    /**
+     * Return HTML to display message about missing config settings
+     */
+    public function show_missingconfig($msg) {
+		$output = '';
+        $output .= $this->output->box_start('englishcentral_missingconfig');
+        $output .= html_writer::tag('p', $this->ec->get_string('missingconfig'));
+        $output .= $this->notification(html_writer::alist($msg), 'warning');
+        $output .= $this->link_to_config_settings();
+        $output .= $this->output->box_end();
+        $output .= $this->footer();
+		return $output;
+    }
+
+    /**
+     * Return HTML to display message about missing config settings
+     */
+    public function show_invalidconfig($msg) {
+		$output = '';
+        $output .= $this->output->box_start('englishcentral_invalidconfig');
+        $output .= html_writer::tag('p', $this->ec->get_string('invalidconfig'));
+        $output .= $this->notification($msg, 'warning');
+        $output .= $this->link_to_config_settings();
+        $output .= $this->output->box_end();
+        $output .= $this->footer();
+		return $output;
+    }
+
+    /**
+     * generate link to config settings page
+     */
+	public function link_to_config_settings() {
+        // moodle/site:config, moodle/category:manage
+        if ($this->ec->can('config', 'moodle/site', context_system::instance())) {
+            $link = array('section' => 'modsetting'.$this->ec->pluginname);
+            $link = new moodle_url('/admin/settings.php', $link);
+            $link = html_writer::link($link, get_string('settings'));
+            return $this->ec->get_string('updatesettings', $link);
+        } else {
+            return $this->ec->get_string('consultadmin');
+        }
+	}
+
+    /**
      * Show the introduction as entered on edit page
      */
-	public function show_intro($englishcentral,$cm){
-		$ret = "";
-		if (trim(strip_tags($englishcentral->intro))) {
-			$ret.= $this->output->box_start('mod_introbox');
-			$ret.=  format_module_intro('englishcentral', $englishcentral, $cm->id);
-			$ret.=  $this->output->box_end();
+	public function show_intro() {
+		$output = '';
+		if (trim(strip_tags($this->ec->intro))) {
+			$output .= $this->output->box_start('mod_introbox');
+			$output .= format_module_intro('englishcentral', $this->ec, $this->ec->cm->id);
+			$output .= $this->output->box_end();
 		}
-		return $ret;
+		return $output;
 	}
-	
-	/**
-     * Show a message to state that the maximum number of attempts has been exceeded
-     */
-	public function show_exceededattempts($englishcentral,$attempts){
-		$ret= $this->output->box_start('mod_englishcentral_exceededattempts');
-		$ret.= $this->output->heading(get_string('exceededattempts','englishcentral',$englishcentral->maxattempts));
-		$ret.=  $this->output->box_end();
-		return $ret;
-	}
-	
-	 /**
-     * Show all the attempts on this EC for logged in user(for arrival page)
-     */
-	public function show_myattempts($englishcentral, $attempts){
-		global $CFG;
-		if(empty($attempts)){
-			return '';
-		}
-		
-		//set up our table and head attributes
-		$tableattributes = array('class'=>'generaltable englishcentral_table englishcentral_myattempts_table');
-		$headrow_attributes = array('class'=>'englishcentral_myattempts_headrow');
-		
-		$htmltable = new html_table();
-		$htmltable->attributes = $tableattributes;
-		
 
-		$htr = new html_table_row();
-		$htr->attributes = $headrow_attributes;
-		$h_date = new html_table_cell(get_string('date','englishcentral'));
-		$htr->cells[] = $h_date;
-		$h_activetime = new html_table_cell(get_string('activetime','englishcentral'));
-		$htr->cells[] = $h_activetime;
-		$h_completed = new html_table_cell(get_string('completed','englishcentral'));
-		$htr->cells[] = $h_completed;
-		$h_score = new html_table_cell(get_string('sessionscore','englishcentral'));
-		$htr->cells[] = $h_score;
-		$h_grade = new html_table_cell(get_string('sessiongrade','englishcentral'));
-		$htr->cells[] = $h_grade;
-		$h_compositescore = new html_table_cell(get_string('compositescore','englishcentral'));
-		$htr->cells[] = $h_compositescore;
-		$htmltable->data[]=$htr;
-
-		
-		foreach($attempts as $attempt){
-			$htr = new html_table_row();
-			//set up descrption cell
-			$cells = array();
-			//time created
-			$date = new html_table_cell(date("Y-m-d H:i:s",$attempt->timecreated));
-			$htr->cells[] = $date;
-			//active time
-			$activetime = new html_table_cell(gmdate("H:i:s",$attempt->activetime));
-			$htr->cells[] = $activetime;
-			//completed
-			$completionrate = $attempt->recordingcomplete ? 1 : 0;
-			//this won't work in speaklitemode because linestotal is for watchable, not recordable
-			if( !$englishcentral->speaklitemode && $attempt->linesrecorded > 0){
-				$completionrate = $attempt->linesrecorded / $attempt->linestotal;
-			}
-			$completed = new html_table_cell($completionrate ? get_string('yes') : get_string('no'));
-			//$completed = $attempt->linesrecorded . '/' . $attempt->linestotal;
-			$htr->cells[] = $completed;
-			//Score
-			$score = new html_table_cell($attempt->sessionscore);
-			$htr->cells[] = $score;
-			//Grade
-			$grade = new html_table_cell($attempt->sessiongrade);
-			$htr->cells[] = $grade;
-			//Composite Score
-			$compositescore = new html_table_cell(round($completionrate*$attempt->sessionscore,0) .'%');
-			$htr->cells[] = $compositescore;
-			$htmltable->data[]=$htr;
-		}
-		$html = $this->output->heading(get_string('myattempts','englishcentral'), 4);
-		$html .= html_writer::table($htmltable);
-		return $html;
-		
-	}
-	
-	/**
-     * Show the start/finish button on arrival page
-     */
-	  public function show_bigbutton($hasattempts) {
-		if($hasattempts){
-			$caption=get_string('reattempt','englishcentral');
-		}else{
-			$caption=get_string('start','englishcentral');
-		}
-		$bigbuttonhtml = html_writer::tag('button',$caption,  
-				array('type'=>'button','class'=>'mod_englishcentral_bigbutton yui3-button mod_englishcentral_startfinish_button',
-				'id'=>'mod_englishcentral_startfinish_button','onclick'=>'M.mod_englishcentral.playerhelper.startfinish()'));	
-		return html_writer::tag('div', $bigbuttonhtml, array('class'=>'mod_englishcentral_bigbutton_start_container','id'=>'mod_englishcentral_bigbutton_start_container'));
-				
-	 }
-	
-	/**
-     * OLD Show links into API
-     */
-    public function show_ec_options() {
-		$bigbuttonhtml = html_writer::tag('button','@@CAPTION@@',  
-				array('class'=>'mod_englishcentral_bigbutton yui3-button yui3-button-disabled mod_englishcentral_@@SIZECLASS@@_button',
-				'id'=>'mod_englishcentral_@@ID@@_button','onclick'=>'M.mod_englishcentral.helper.@@ONCLICK@@'));	
-//why is this line even here				
-//break;
-	
-    	$results_callback = 'M.mod_englishcentral.playerhelper.showresponse()';
-    	$links = array(
-    	'Get Status'=>'EC.getStatus(' . $results_callback . ')',
-    	'Play'=>'M.mod_englishcentral.playerhelper.play()',
-    	'Get Results'=>'EC.getResults(' . $results_callback . ')',
-    	'Get Phonemes Count'=>'EC.getPhonemesCount(' . $results_callback . ')',
-    	'Log In'=>'M.mod_englishcentral.playerhelper.login()',
-    	'Log Out'=>'M.mod_englishcentral.playerhelper.logout()'
-    	);
-		
-		$ret = "";
-		foreach($links as $title=>$action){
-			$ret .= html_writer::link('#', $title,array('class'=>'mod_english-link','onclick'=>$action)) . '<br />';
-		}
-        return $ret;
+    public function show_notavailable() {
+        $output = $this->notification($this->ec->get_string('notavailable'), 'warning');
+        $output .= $this->show_dates_available();
+        $output .= $this->course_continue_button();
+        $output .= $this->footer();
+        return $output;
     }
-	
-	
-	/**
-     *  Show the Divs holding player and results box
-     */
-    public function show_ec_box(){
-		$playerdiv = html_writer::tag('div','English Central',array('id'=>'mod_englishcentral_playercontainer', 'class'=>'englishcentral_showdiv'));
-		$resultsdiv = html_writer::tag('div','',array('id'=>'mod_englishcentral_resultscontainer', 'class'=>'englishcentral_hidediv'));
-		return $playerdiv . $resultsdiv;
+
+    public function show_notviewable() {
+        $output = $this->notification($this->ec->get_string('notviewable'), 'warning');
+        $output .= $this->show_dates_readonly();
+        $output .= $this->course_continue_button();
+        $output .= $this->footer();
+        return $output;
     }
-	
-	
-	/**
-     * OLD Show divs holding player and resuts box
-     */
-    public function show_ec_link($videotitle, $thumburl, $videoid){
-    	
-    	$itemlabelurl = "EC.play('" . $videoid . "')";
-    	$itemlabel = 'Click to See Player and Have Fun';//;get_string($ratearea . '_' . $rating, 'block_ratings');
-		$itemlink = html_writer::link('#', $itemlabel,array('class'=>'mod_english-link','onclick'=>$itemlabelurl));
-		
-	
-		
-		$playerdiv = html_writer::tag('div','playerhere',array('id'=>'mod_englishcentral_playercontainer'));
-		$resultsdiv = html_writer::tag('div','resultshere',array('id'=>'mod_englishcentral_resultscontainer'));
-		return $itemlink . $playerdiv . $resultsdiv;
+
+    public function course_continue_button() {
+        $url = new moodle_url('/course/view.php', array('id' => $this->ec->course->id));
+        return $this->output->continue_button($url);
     }
-  
-}//end of class
 
-class mod_englishcentral_report_renderer extends plugin_renderer_base {
-
-
-	public function render_reportmenu($englishcentral,$cm) {
-		
-		$allusers = new single_button(
-			new moodle_url('/mod/englishcentral/reports.php',array('report'=>'allusers','id'=>$cm->id,'n'=>$englishcentral->id)), 
-			get_string('allusersreport','mod_englishcentral'), 'get');
-		$allattempts = new single_button(
-			new moodle_url('/mod/englishcentral/reports.php',array('report'=>'allattempts','id'=>$cm->id,'n'=>$englishcentral->id)), 
-			get_string('allattempts','mod_englishcentral'), 'get');
-			
-		$ret = html_writer::div($this->render($allusers) .'<br />' . $this->render($allattempts) ,'mod_englishcentral_listbuttons');
-
-		return $ret;
+    /**
+     * Show a list of availability time restrictions
+     */
+	public function show_dates_available() {
+	    return $this->show_dates('available', array('from', 'until'));
 	}
 
-	public function render_delete_allattempts($cm){
-		$deleteallbutton = new single_button(
-				new moodle_url('/mod/englishcentral/manageattempts.php',array('id'=>$cm->id,'action'=>'confirmdeleteall')), 
-				get_string('deleteallattempts','englishcentral'), 'get');
-		$ret =  html_writer::div( $this->render($deleteallbutton) ,'mod_englishcentral_actionbuttons');
-		return $ret;
+    /**
+     * Show a list of readonly time restrictions
+     */
+	public function show_dates_readonly() {
+	    return $this->show_dates('readonly', array('until', 'from'));
 	}
 
-	public function render_reporttitle_html($course,$username) {
-		$ret = $this->output->heading(format_string($course->fullname),2);
-		$ret .= $this->output->heading(get_string('reporttitle','mod_englishcentral',$username),3);
-		return $ret;
+    /**
+     * Show a list of timing restrictions
+     */
+	public function show_dates($type, $suffixes) {
+	    $output = array();
+
+        $fmt = 'timeondate';
+	    $fmt = $this->ec->get_string($fmt);
+
+        foreach ($suffixes as $suffix) {
+            $name = $type.$suffix;
+            if (empty($this->ec->$name)) {
+                continue;
+            }
+            $date = userdate($this->ec->$name, $fmt);
+            $date = html_writer::tag('b', $date);
+            if ($this->ec->$name < $this->ec->time) {
+                $prefix = 'past';
+            } else {
+                $prefix = 'future';
+            }
+            $output[] = $this->ec->get_string($prefix.$name, $date);
+        }
+
+	    if (empty($output)) {
+	        return '';
+	    } else {
+            $output = html_writer::alist($output);
+            return $this->output->box($output, 'englishcentral_timing');
+	    }
 	}
 
-	public function render_empty_section_html($sectiontitle) {
-		global $CFG;
-		return $this->output->heading(get_string('nodataavailable','mod_englishcentral'),3);
-	}
-	
-	public function render_exportbuttons_html($cm,$formdata,$showreport){
-		//convert formdata to array
-		$formdata = (array) $formdata;
-		$formdata['id']=$cm->id;
-		$formdata['report']=$showreport;
-		/*
-		$formdata['format']='pdf';
-		$pdf = new single_button(
-			new moodle_url('/mod/englishcentral/reports.php',$formdata),
-			get_string('exportpdf','englishcentral'), 'get');
-		*/
-		$formdata['format']='csv';
-		$excel = new single_button(
-			new moodle_url('/mod/englishcentral/reports.php',$formdata), 
-			get_string('exportexcel','englishcentral'), 'get');
-
-		return html_writer::div( $this->render($excel),'mod_englishcentral_actionbuttons');
-	}
-	
-
-	
-	public function render_section_csv($sectiontitle, $report, $head, $rows, $fields) {
-
-        // Use the sectiontitle as the file name. Clean it and change any non-filename characters to '_'.
-        $name = clean_param($sectiontitle, PARAM_FILE);
-        $name = preg_replace("/[^A-Z0-9]+/i", "_", trim($name));
-		$quote = '"';
-		$delim= ",";//"\t";
-		$newline = "\r\n";
-
-		header("Content-Disposition: attachment; filename=$name.csv");
-		header("Content-Type: text/comma-separated-values");
-
-		//echo header
-		$heading="";	
-		foreach($head as $headfield){
-			$heading .= $quote . $headfield . $quote . $delim ;
-		}
-		echo $heading. $newline;
-		
-		//echo data rows
-        foreach ($rows as $row) {
-			$datarow = "";
-			foreach($fields as $field){
-				$datarow .= $quote . $row->{$field} . $quote . $delim ;
-			}
-			 echo $datarow . $newline;
-		}
-        exit();
+    /**
+     * Show the EC progress element
+     */
+	public function show_progress() {
+		$output = '';
+        $output .= $this->output->box_start('englishcentral_progress');
+        $output .= 'PROGRESS goes here';
+        $output .= $this->output->box_end();
+		return $output;
 	}
 
-	public function render_section_html($sectiontitle, $report, $head, $rows, $fields) {
-		global $CFG;
-		if(empty($rows)){
-			return $this->render_empty_section_html($sectiontitle);
-		}
-		
-		//set up our table and head attributes
-		$tableattributes = array('class'=>'generaltable englishcentral_table');
-		$headrow_attributes = array('class'=>'englishcentral_headrow');
-		
-		$htmltable = new html_table();
-		$htmltable->attributes = $tableattributes;
-		
-		
-		$htr = new html_table_row();
-		$htr->attributes = $headrow_attributes;
-		foreach($head as $headcell){
-			$htr->cells[]=new html_table_cell($headcell);
-		}
-		$htmltable->data[]=$htr;
-		
-		foreach($rows as $row){
-			$htr = new html_table_row();
-			//set up descrption cell
-			$cells = array();
-			foreach($fields as $field){
-				$cell = new html_table_cell($row->{$field});
-				$cell->attributes= array('class'=>'englishcentral_cell_' . $report . '_' . $field);
-				$htr->cells[] = $cell;
-			}
-
-			$htmltable->data[]=$htr;
-		}
-		$html = $this->output->heading($sectiontitle, 4);
-		$html .= html_writer::table($htmltable);
-		return $html;
-		
+    /**
+     * Show the EC videos element
+     */
+	public function show_videos() {
+		$output = '';
+        $output .= $this->output->box_start('englishcentral_videos');
+        $output .= 'VIDEOS go here';
+        $output .= $this->output->box_end();
+		return $output;
 	}
-	
-	function show_reports_footer($englishcentral,$cm,$formdata,$showreport){
-		// print's a popup link to your custom page
-		$link = new moodle_url('/mod/englishcentral/reports.php',array('report'=>'menu','id'=>$cm->id,'n'=>$englishcentral->id));
-		$ret =  html_writer::link($link, get_string('returntoreports','mod_englishcentral'));
-		$ret .= $this->render_exportbuttons_html($cm,$formdata,$showreport);
-		return $ret;
-	}
-
-}//end of class
+}
 

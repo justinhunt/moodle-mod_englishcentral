@@ -1,5 +1,3 @@
-<?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -16,24 +14,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Internal library of functions for module englishcentral
+ * load the EnglishCentral player
  *
- * All the englishcentral specific functions, needed to implement the module
- * logic, should go here. Never include this file from your lib.php!
- *
- * @package    mod_englishcentral
- * @copyright  2014 Justin Hunt
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @module      mod_englishcentral/view
+ * @category    output
+ * @copyright   Gordon Bateson
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-defined('MOODLE_INTERNAL') || die();
-
-/**
- * Does something really useful with the passed things
- *
- * @param array $things
- * @return object
- */
-//function englishcentral_do_something_useful(array $things) {
-//    return new stdClass();
-//}
+define(['jquery', 'jqueryui'], function($) {
+    /** @alias module:mod_englishcentral/view */
+    return {
+        "init": function (opts) {
+            for (var i in opts) {
+                window.console.log("received opts[" + i + "]: " + opts[i]);
+            };
+        }
+    };
+});

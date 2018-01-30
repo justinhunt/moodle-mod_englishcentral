@@ -23,14 +23,14 @@
  * /admin/index.php
  *
  * @package    mod_englishcentral
- * @copyright  2014 Justin Hunt
+ * @copyright  2014 Justin Hunt, 2018 Gordon Bateson
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2017082000;               // If version == 0 then module will not be installed
-//$plugin->version   = 2010032200;      // The current module version (Date: YYYYMMDDXX)
-$plugin->requires  = 2010031900;      // Requires this Moodle version
-$plugin->cron      = 0;               // Period for cron to check this module (secs)
-$plugin->component = 'mod_englishcentral'; // To check on upgrade, that module sits in correct place
+$plugin->component = 'mod_englishcentral';
+$plugin->maturity  = MATURITY_STABLE;
+$plugin->requires  = 2015051100; // Moodle 2.9
+$plugin->version   = 2018012906;
+$plugin->release   = '2018-01-29 (06)';

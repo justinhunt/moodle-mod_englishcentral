@@ -27,26 +27,35 @@
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
+    $plugin = 'mod_englishcentral';
 
-    $settings->add(new admin_setting_configtext('englishcentral/partnerid',
-        get_string('partnerid', 'englishcentral'), get_string('partneridexplain', 'englishcentral'), 'YOUR PARTNER ID', PARAM_TEXT));
+    $name = 'partnerid';
+    $label = get_string($name, $plugin);
+    $explain = get_string($name.'explain', $plugin);
+    $default = get_string($name.'default', $plugin);
+    $settings->add(new admin_setting_configtext("$plugin/$name", $label, $explain, $default, PARAM_TEXT));
 
-	  $settings->add(new admin_setting_configtext('englishcentral/consumerkey',
-        get_string('consumerkey', 'englishcentral'), get_string('consumerkeyexplain', 'englishcentral'), 'YOUR CONSUMER KEY', PARAM_TEXT));
-		
-	 $settings->add(new admin_setting_configtext('englishcentral/consumersecret',
-        get_string('consumersecret', 'englishcentral'), get_string('consumersecretexplain', 'englishcentral'), 'YOUR CONSUMER SECRET', PARAM_TEXT));
+    $name = 'consumerkey';
+    $label = get_string($name, $plugin);
+    $explain = get_string($name.'explain', $plugin);
+    $default = get_string($name.'default', $plugin);
+    $settings->add(new admin_setting_configtext("$plugin/$name", $label, $explain, $default, PARAM_TEXT));
 
-    $settings->add(new admin_setting_configtext('englishcentral/encryptedsecret',
-        get_string('encryptedsecret', 'englishcentral'), get_string('encryptedsecretexplain', 'englishcentral'), 'YOUR ENCRYPTED SECRET', PARAM_TEXT));
+    $name = 'consumersecret';
+	$label = get_string($name, $plugin);
+	$explain = get_string($name.'explain', $plugin);
+    $default = get_string($name.'default', $plugin);
+    $settings->add(new admin_setting_configtext("$plugin/$name", $label, $explain, $default, PARAM_TEXT));
 
-	$settings->add(new admin_setting_configcheckbox('englishcentral/lightboxmode', get_string('lightboxmode', 'englishcentral'), '', 1));
-	$settings->add(new admin_setting_heading('englishcentral/defaultsettings', get_string('defaultsettings', 'englishcentral'), ''));
-	$settings->add(new admin_setting_configcheckbox('englishcentral/watchmode', get_string('watchmode', 'englishcentral'), '', 1));
-	$settings->add(new admin_setting_configcheckbox('englishcentral/speakmode', get_string('speakmode', 'englishcentral'), '', 1));
-	$settings->add(new admin_setting_configcheckbox('englishcentral/learnmode', get_string('learnmode', 'englishcentral'), '', 0));
-	$settings->add(new admin_setting_configcheckbox('englishcentral/simpleui', get_string('simpleui', 'englishcentral'), '', 0));
-	$settings->add(new admin_setting_configcheckbox('englishcentral/speaklitemode', get_string('speaklitemode', 'englishcentral'), '', 0));
-	$settings->add(new admin_setting_configcheckbox('englishcentral/hiddenchallengemode', get_string('hiddenchallengemode', 'englishcentral'), '', 0));
+    $name = 'encryptedsecret';
+    $label = get_string($name, $plugin);
+    $explain = get_string($name.'explain', $plugin);
+    $default = get_string($name.'default', $plugin);
+    $settings->add(new admin_setting_configtext("$plugin/$name", $label, $explain, $default, PARAM_TEXT));
 
+    $name = 'developmentmode';
+    $label = get_string($name, $plugin);
+    $explain = get_string($name.'explain', $plugin);
+    $default = (strpos($CFG->wwwroot, '/localhost/')===false ? 0 : 1);
+    $settings->add(new admin_setting_configcheckbox("$plugin/$name", $label, $explain, $default));
 }

@@ -36,100 +36,148 @@ require_once($CFG->dirroot.'/mod/englishcentral/lib.php');
  */
 class mod_englishcentral_mod_form extends moodleform_mod {
 
+    /** size of numeric text boxes */
+    const TEXT_NUM_SIZE = 4;
+
     /**
      * Defines forms elements
      */
     public function definition() {
-        global $CFG;
+        global $PAGE;
+
+        $plugin = 'mod_englishcentral';
+        $config = get_config($plugin);
+
+        $PAGE->requires->js_call_amd("$plugin/form", 'init');
 
         $mform = $this->_form;
-		
-		//just for now
-		/*
-		$config = new stdClass();
-		$config->watchmode=1;
-		$config->speakmode=1;
-		$config->speaklitemode=0;
-		$config->simpleui=0;
-		$config->learnmode=1;
-		$config->lightboxmode=0;
-		$config->hiddenchallengemode=0;
-		*/
-		
-		$config= get_config('englishcentral');
+
+        $dateoptions = array('optional' => true);
+        $textoptions = array('size' => self::TEXT_NUM_SIZE);
 
         //-------------------------------------------------------------------------------
-        // Adding the "general" fieldset, where all the common settings are showed
-        $mform->addElement('header', 'general', get_string('general', 'form'));
+        $name = 'general';
+        $label = get_string($name, 'form');
+        $mform->addElement('header', $name, $label);
+        //-------------------------------------------------------------------------------
 
         // Adding the standard "name" field
-        $mform->addElement('text', 'name', get_string('englishcentralname', 'englishcentral'), array('size'=>'64'));
-        if (!empty($CFG->formatstringstriptags)) {
-            $mform->setType('name', PARAM_TEXT);
+        $name = 'name';
+        $label = get_string('activityname', $plugin);
+        $mform->addElement('text', $name, $label, array('size'=>'64'));
+        if (empty($CFG->formatstringstriptags)) {
+            $mform->setType($name, PARAM_CLEAN);
         } else {
-            $mform->setType('name', PARAM_CLEAN);
+            $mform->setType($name, PARAM_TEXT);
         }
-        $mform->addRule('name', null, 'required', null, 'client');
-        $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
-        $mform->addHelpButton('name', 'englishcentralname', 'englishcentral');
+        $mform->addRule($name, null, 'required', null, 'client');
+        $mform->addRule($name, get_string('maximumchars', null, 255), 'maxlength', 255, 'client');
+        $mform->addHelpButton($name, 'activityname', $plugin);
 
         // Adding the standard "intro" and "introformat" fields
-        if($CFG->version < 2015051100){
-        	$this->add_intro_editor();
-        }else{
-        	$this->standard_intro_elements();
-		}
+        $this->standard_intro_elements();
+
+        //-----------------------------------------------------------------------------
+        $name = 'timing';
+        $label = get_string($name, 'form');
+        $mform->addElement('header', $name, $label);
+        $mform->setExpanded($name, true);
+        //-----------------------------------------------------------------------------
+
+        $name = 'availablefrom';
+        $label = get_string($name, $plugin);
+        $mform->addElement('date_time_selector', $name, $label, $dateoptions);
+        $mform->addHelpButton($name, $name, $plugin);
+        $this->set_type_default_advanced($mform, $config, $name, PARAM_INT);
+
+        $name = 'readonlyuntil';
+        $label = get_string($name, $plugin);
+        $mform->addElement('date_time_selector', $name, $label, $dateoptions);
+        $mform->addHelpButton($name, $name, $plugin);
+        $this->set_type_default_advanced($mform, $config, $name, PARAM_INT);
+
+        $name = 'readonlyfrom';
+        $label = get_string($name, $plugin);
+        $mform->addElement('date_time_selector', $name, $label, $dateoptions);
+        $mform->addHelpButton($name, $name, $plugin);
+        $this->set_type_default_advanced($mform, $config, $name, PARAM_INT);
+
+        $name = 'availableuntil';
+        $label = get_string($name, $plugin);
+        $mform->addElement('date_time_selector', $name, $label, $dateoptions);
+        $mform->addHelpButton($name, $name, $plugin);
+        $this->set_type_default_advanced($mform, $config, $name, PARAM_INT);
 
         //-------------------------------------------------------------------------------
-        // Adding the rest of englishcentral settings, spreeading all them into this fieldset
-        // or adding more fieldsets ('header' elements) if needed for better logic
-        $mform->addElement('text', 'videotitle', get_string('videotitle', 'englishcentral'), array('size'=>'64'));
-        $mform->addElement('text', 'videoid', get_string('videoid', 'englishcentral'), array('size'=>'24'));
-        $mform->addRule('videotitle', null, 'required', null, 'client');
-        $mform->addRule('videoid', null, 'required', null, 'client');
-        $mform->setType('videotitle', PARAM_TEXT);
-        $mform->setType('videoid', PARAM_INT);
-        
-        //player options
-        $mform->addElement('advcheckbox', 'lightboxmode', get_string('lightboxmode', 'englishcentral'));
-        $mform->setDefault('lightboxmode', $config->lightboxmode);
-        
-        $mform->addElement('advcheckbox', 'simpleui', get_string('simpleui', 'englishcentral'));
-        $mform->setDefault('simpleui', $config->simpleui);
-        $mform->addElement('advcheckbox', 'watchmode', get_string('watchmode', 'englishcentral'));
-        $mform->setDefault('watchmode', $config->watchmode);
-        $mform->addElement('advcheckbox', 'speakmode', get_string('speakmode', 'englishcentral'));
-        $mform->setDefault('speakmode', $config->speakmode);
-        $mform->addElement('advcheckbox', 'speaklitemode', get_string('speaklitemode', 'englishcentral'));
-        $mform->setDefault('speaklitemode', $config->speaklitemode);
-        $mform->addElement('advcheckbox', 'learnmode', get_string('learnmode', 'englishcentral'));
-        $mform->setDefault('learnmode', $config->learnmode);
-        $mform->addElement('advcheckbox', 'hiddenchallengemode', get_string('hiddenchallengemode', 'englishcentral'));
-        $mform->setDefault('hiddenchallengemode', $config->hiddenchallengemode);
-       
-   
-        // Grade.
+        $name = 'goals';
+        $label = get_string($name, $plugin);
+        $mform->addElement('header', $name, $label);
+        $mform->setExpanded($name, true);
+        //-------------------------------------------------------------------------------
+
+        $names = array('watchgoal' => 10,
+                       'learngoal' => 20,
+                       'speakgoal' => 10,
+                       'studygoal' => 60);
+        foreach ($names as $name => $default) {
+            $label = get_string($name, $plugin);
+            $units = get_string($name.'units', $plugin);
+            $elements = array(
+                $mform->createElement('text', $name, '', $textoptions),
+                $mform->createElement('static', '', '', $units)
+            );
+            $mform->addElement('group', $name.'group', $label, $elements, ' ', false);
+            $mform->setType($name, PARAM_INT);
+            $mform->setDefault($name, $default);
+            $mform->addHelpButton($name.'group', $name, $plugin);
+        }
+
+        // add grade elements
         $this->standard_grading_coursemodule_elements();
-		
-        //attempts
-        $attemptoptions = array(0 => get_string('unlimited', 'englishcentral'),
-                            1 => '1',2 => '2',3 => '3',4 => '4',5 => '5',);
-        $mform->addElement('select', 'maxattempts', get_string('maxattempts', 'englishcentral'), $attemptoptions);
-        
-        //grade options
-        $gradeoptions = array(MOD_ENGLISHCENTRAL_GRADEHIGHEST => get_string('gradehighest', 'englishcentral'),
-                            MOD_ENGLISHCENTRAL_GRADELOWEST => get_string('gradelowest', 'englishcentral'),
-                            MOD_ENGLISHCENTRAL_GRADELATEST => get_string('gradelatest', 'englishcentral'),
-                            MOD_ENGLISHCENTRAL_GRADEAVERAGE => get_string('gradeaverage', 'englishcentral'),
-							MOD_ENGLISHCENTRAL_GRADENONE => get_string('gradenone', 'englishcentral'));
-        $mform->addElement('select', 'gradeoptions', get_string('gradeoptions', 'englishcentral'), $gradeoptions);
-        
 
-        //-------------------------------------------------------------------------------
-        // add standard elements, common to all modules
+        // add standard elements
         $this->standard_coursemodule_elements();
-        //-------------------------------------------------------------------------------
-        // add standard buttons, common to all modules
+
+        // add standard buttons
         $this->add_action_buttons();
+    }
+
+    /**
+     * set_type_default_advanced
+     *
+     * @param $mform
+     * @param $config
+     * @param $name of field
+     * @param $type PARAM_xxx constant value
+     * @param $default (optional, default = null)
+     * @todo Finish documenting this function
+     */
+    private function set_type_default_advanced($mform, $config, $name, $type, $default=null) {
+        $mform->setType($name, $type);
+        if (isset($config->$name)) {
+            $mform->setDefault($name, $config->$name);
+        } else if ($default) {
+            $mform->setDefault($name, $default);
+        }
+        $adv_name = 'adv'.$name;
+        if (isset($config->$adv_name)) {
+            $mform->setAdvanced($name, $config->$adv_name);
+        }
+    }
+
+    /**
+     * return a field value from the original record
+     * this function is useful to see if a value has changed
+     *
+     * @param string the $field name
+     * @param mixed the $default value (optional, default=null)
+     * @return mixed the field value if it exists, $default otherwise
+     */
+    public function get_originalvalue($field, $default=null) {
+        if (isset($this->current->$field)) {
+            return $this->current->$field;
+        } else {
+            return $default;
+        }
     }
 }
