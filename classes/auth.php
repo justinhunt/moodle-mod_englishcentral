@@ -148,6 +148,30 @@ class auth {
         }
     }
 
+    public function get_partner_account() {
+        $account_match_exists = false; // change this to point to moodle internal tracking of moodleID to EC accountID match
+        if (false && !$account_match_exists) {
+            $accountInfo = $this->create_partner_account();
+            // save $accountInfo['accountID'] to a moodleID EC AccountID match table
+            return $accountInfo;
+        } else {
+            return $this->fetch_partner_account();
+        }
+    }
+
+    public function fetch_partner_account() {
+        global $USER;
+        $sdk = $this->get_sdk_token();
+        $url = 'https://bridge.' . $this->domain . '/rest/identity/account';
+        $fields = array('partnerID' => $this->partnerid,
+            'partnerAccountID' => $this->get_fake_userid(),
+        );
+        $url = new \moodle_url($url, $fields);
+        $response = $this->doGet($sdk, $url->out(false), self::ACCEPT_V2);
+        print_object($response);
+        die;
+    }
+
     public function create_partner_account() {
         global $USER;
         $sdk = $this->get_sdk_token();
@@ -163,7 +187,7 @@ class auth {
                         'country' => '', // $USER->country,
                         'fields' => 'amountID,partnerAccountID');
         $url = new \moodle_url($url, $fields);
-        $response = $this->doGet($sdk, $url->out(false), self::ACCEPT_V2);
+        $response = $this->doPost($sdk, $url->out(false), self::ACCEPT_V2);
         print_object($response);
         die;
     }
@@ -260,7 +284,7 @@ class auth {
         if ($this->ecuserid===null) {
             $this->ecuserid = $DB->get_field('englishcentral_userids', 'ecuserid', array('userid' => $USER->id));
             if (empty($this->ecuserid)) {
-                $this->ecuserid = $this->create_partner_account();
+                $this->ecuserid = $this->get_partner_account();
                 $DB->set_field('englishcentral_userids', 'ecuserid', $this->ecuserid, array('userid' => $USER->id));
             }
         }
