@@ -227,19 +227,44 @@ function xmldb_englishcentral_upgrade($oldversion) {
         upgrade_mod_savepoint(true, "$newversion", 'englishcentral');
     }
 
+    $newversion = 2018013007;
+    if ($oldversion < $newversion) {
+
+        // =============================================
+        // create ACCOUNTIDS table
+        // =============================================
+
+        $table = new xmldb_table('englishcentral_accountids');
+        $fields = array('ecuserid' => 'accountid');
+        $oldname = 'englishcentral_userids';
+
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('accountid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('engluser_userid', XMLDB_KEY_FOREIGN, array('userid'), 'user', array('id'));
+
+        $table->add_index('engluser_accountid', XMLDB_INDEX_UNIQUE, array('accountid'));
+
+        xmldb_englishcentral_replace_table($dbman, $table, $fields, $oldname);
+
+        upgrade_mod_savepoint(true, "$newversion", 'englishcentral');
+    }
+
     return true;
 }
 
 function xmldb_englishcentral_replace_table($dbman, $table, $fields, $oldname) {
     global $DB;
 
-    $tableexists = $dbman->table_exists($table);
+    $table_exists = $dbman->table_exists($table);
     xmldb_englishcentral_create_table($dbman, $table);
 
     if ($dbman->table_exists($oldname)) {
         if ($records = $DB->get_records($oldname, null)) {
             foreach ($records as $record) {
-                if ($tablexists && $DB->record_exists($table->getName(), array('id' => $record->id))) {
+                if ($table_exists && $DB->record_exists($table->getName(), array('id' => $record->id))) {
                     continue; // record has already been transferred
                 }
                 foreach ($fields as $oldfield => $newfield) {

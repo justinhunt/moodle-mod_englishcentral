@@ -22,12 +22,12 @@
  * @copyright   Gordon Bateson
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-define(["jquery"], function($) { 
+define(["jquery"], function($) {
     return {
         "init": function() {
 
-            $("#id_studygoal" + id).prop("type", "hidden");
-            $("#id_studygoal" + id).after('<span id="id_studygoaltext"></span>');
+            $("#id_studygoal").prop("type", "hidden");
+            $("#id_studygoal").after('<span id="id_studygoaltext"></span>');
 
             $("#id_watchgoal, #id_learngoal, #id_speakgoal").change(function(){
                 var watch = $("#id_watchgoal").val();

@@ -115,5 +115,5 @@ if ($ec->readonly) {
     echo $renderer->show_videos($ec);
 }
 
-echo html_writer::tag('p', 'Your EC usersid is: '.$auth->get_ecuserid());
+echo html_writer::tag('p', 'Your EC accountid is: '.$auth->get_accountid());
 echo $renderer->footer();

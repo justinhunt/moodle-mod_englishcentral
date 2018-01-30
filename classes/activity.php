@@ -258,17 +258,17 @@ class activity {
         return array();
     }
 
-    public function get_ecuserid() {
+    public function get_accountid() {
         global $DB, $USER;
-        return $DB->get_field('englishcentral_userids', 'ecuserid', array('userid' => $USER->id));
+        return $DB->get_field('englishcentral_accountids', 'accountid', array('userid' => $USER->id));
     }
 
-    public function get_ecuserids($groupid=0) {
+    public function get_accountids($groupid=0) {
         global $DB;
         $groupid = 0;
         if ($userids = $this->get_userids($groupid)) {
             list($select, $params) = $DB->get_in_or_equal($userids);
-            return $DB->get_records_select_menu('englishcentral_userids', "userid $select", $params, 'userid, ecuserid');
+            return $DB->get_records_select_menu('englishcentral_accountids', "userid $select", $params, 'userid, accountid');
         }
         return false;
     }

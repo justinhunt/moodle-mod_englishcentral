@@ -1,23 +1,23 @@
 /* styles for goals on EDIT form  */
 
 #page-mod-englishcentral-mod #fgroup_id_watchgoalgroup {
-    background:    #23a1da; // #fec;
-    border: 2px solid #fc8;
+    background:       #d4edf7; // #fec;
+    border: 2px solid #23a1da; // #fc8
 }
 
 #page-mod-englishcentral-mod #fgroup_id_learngoalgroup {
-    background:    #eb6613; // #fef;
-    border: 2px solid #f9f;
+    background:       #fdf0e8; // #fef;
+    border: 2px solid #eb6613; // #f9f
 }
 
 #page-mod-englishcentral-mod #fgroup_id_speakgoalgroup {
-    background:    #a4d05c; // #eff;
-    border: 2px solid #9ff;
+    background:       #e9f4d7; // #eff;
+    border: 2px solid #a4d05c; // #9ff
 }
 
 #page-mod-englishcentral-mod #fgroup_id_studygoalgroup {
-    background:       #fee;
-    border: 2px solid #f99;
+    background:       #fef;
+    border: 2px solid #f9f;
 }
 
 #page-mod-englishcentral-mod .mathsymbol {
