@@ -214,37 +214,34 @@ class auth {
                             'siteLanguage' => $this->get_site_language(),
                             'nativeLanguage' => $this->get_user_language(),
                             'applicationBuildDate' => '2017-08-19T13:33:14.000Z');
-            $post_fields = http_build_query($fields, '', '&', PHP_QUERY_RFC1738);
+            $fields = http_build_query($fields, '', '&', PHP_QUERY_RFC1738);
 
-            $http_header = array('Accept: ' . self::ACCEPT_V1,
-                                 'AuthorizeRequest: ' . $jwt_token,
-                                 'Content-Length: ' . strlen($post_fields),
-                                 'Content-Type: application/x-www-form-urlencoded');
+            $header = array('Accept: ' . self::ACCEPT_V1,
+                            'AuthorizeRequest: ' . $jwt_token,
+                            'Content-Length: ' . strlen($fields),
+                            'Content-Type: application/x-www-form-urlencoded');
+
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION,     true);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER,     true);
-            curl_setopt($ch, CURLOPT_AUTOREFERER,        true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER,    false);
-            curl_setopt($ch, CURLOPT_POST,               true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $post_fields);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $http_header);
-
+            curl_setopt($ch, CURLOPT_URL,             $url);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION,  true);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER,  true);
+            curl_setopt($ch, CURLOPT_AUTOREFERER,     true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_POST,            true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS,   $fields);
+            curl_setopt($ch, CURLOPT_HTTPHEADER,   $header);
             $this->sdk_token = curl_exec($ch);
+            curl_close($ch);
         }
         return $this->sdk_token;
     }
 
     public function get_jwt_token() {
-        global $USER;
         if ($this->jwt_token===null) {
             $exp = round((microtime(true) + 10000) * 1000);
             $consumersecret = \mod_englishcentral\jwt\JWT::urlsafeB64Decode($this->encryptedsecret);
             $payload = array('consumerKey' => $this->consumerkey,
-                             // probably we don't want to reveal any private data
-                             //'userID' => $USER->id,
-                             //'name' => fullname($USER),
-                             //'email' => $USER->email,
+                             'userID' => $this->get_fake_userid(),
                              'exp' => $exp);
             $this->jwt_token = \mod_englishcentral\jwt\JWT::encode($payload, $consumersecret);
         }
@@ -285,11 +282,14 @@ class auth {
 
     public function invalid_config() {
         $sdk_token = $this->get_sdk_token();
-        if (strpos($sdk_token, '<!DOCTYPE html>')===false) {
-            return '';
-        } else {
+        if (substr($sdk_token, 0, 1)=='{' && substr($sdk_token, -1)=='}') {
+            $sdk_token = json_decode($sdk_token);
+            return $sdk_token->log;
+        }
+        if (strpos($sdk_token, '<!DOCTYPE html>')===0) {
             return preg_replace('/^(.*?<body[^>]*>)|(<\/body>.*$)/', '', $sdk_token);
         }
+        return '';
     }
 
     public function fetch_js_url() {

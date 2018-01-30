@@ -93,11 +93,15 @@ if ($ec->not_available()) {
 echo $renderer->show_intro();
 echo $renderer->show_dates_available();
 
-$PAGE->requires->js($auth->fetch_js_url(), true);
+// get ECSDK javascript object
+// https://www.qaenglishcentral.com/partnersdk/sdk.js
+$PAGE->requires->js($auth->fetch_js_url());
+
 $opts = array('resultsmode' => 'ajax',
               'cmid'        => $ec->cm->id,
-              'sdktoken'    => $auth->get_sdk_token(),
               'consumerkey' => $auth->consumerkey,
+              'accountid'   => $auth->get_accountid(),
+              'sdktoken'    => $auth->get_sdk_token(),
               'playerdiv'   => $ec->plugin.'_playercontainer',
               'resultsdiv'  => $ec->plugin.'_resultscontainer');
 $PAGE->requires->js_call_amd("$ec->plugin/view", 'init', array($opts));

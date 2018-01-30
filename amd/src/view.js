@@ -27,7 +27,7 @@ define(['jquery', 'jqueryui'], function($) {
         "init": function (opts) {
             for (var i in opts) {
                 window.console.log("received opts[" + i + "]: " + opts[i]);
-            };
+            }
         }
     };
 });
