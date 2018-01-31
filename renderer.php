@@ -76,34 +76,34 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
      * Return HTML to display message about missing config settings
      */
     public function show_missingconfig($msg) {
-		$output = '';
+        $output = '';
         $output .= $this->output->box_start('englishcentral_missingconfig');
         $output .= html_writer::tag('p', $this->ec->get_string('missingconfig'));
         $output .= $this->notification(html_writer::alist($msg), 'warning');
         $output .= $this->link_to_config_settings();
         $output .= $this->output->box_end();
         $output .= $this->footer();
-		return $output;
+        return $output;
     }
 
     /**
      * Return HTML to display message about missing config settings
      */
     public function show_invalidconfig($msg) {
-		$output = '';
+        $output = '';
         $output .= $this->output->box_start('englishcentral_invalidconfig');
         $output .= html_writer::tag('p', $this->ec->get_string('invalidconfig'));
         $output .= $this->notification($msg, 'warning');
         $output .= $this->link_to_config_settings();
         $output .= $this->output->box_end();
         $output .= $this->footer();
-		return $output;
+        return $output;
     }
 
     /**
      * generate link to config settings page
      */
-	public function link_to_config_settings() {
+    public function link_to_config_settings() {
         // moodle/site:config, moodle/category:manage
         if ($this->ec->can('config', 'moodle/site', context_system::instance())) {
             $link = array('section' => 'modsetting'.$this->ec->pluginname);
@@ -113,20 +113,20 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         } else {
             return $this->ec->get_string('consultadmin');
         }
-	}
+    }
 
     /**
      * Show the introduction as entered on edit page
      */
-	public function show_intro() {
-		$output = '';
-		if (trim(strip_tags($this->ec->intro))) {
-			$output .= $this->output->box_start('mod_introbox');
-			$output .= format_module_intro('englishcentral', $this->ec, $this->ec->cm->id);
-			$output .= $this->output->box_end();
-		}
-		return $output;
-	}
+    public function show_intro() {
+        $output = '';
+        if (trim(strip_tags($this->ec->intro))) {
+            $output .= $this->output->box_start('mod_introbox');
+            $output .= format_module_intro('englishcentral', $this->ec, $this->ec->cm->id);
+            $output .= $this->output->box_end();
+        }
+        return $output;
+    }
 
     public function show_notavailable() {
         $output = $this->notification($this->ec->get_string('notavailable'), 'warning');
@@ -152,25 +152,25 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
     /**
      * Show a list of availability time restrictions
      */
-	public function show_dates_available() {
-	    return $this->show_dates('available', array('from', 'until'));
-	}
+    public function show_dates_available() {
+        return $this->show_dates('available', array('from', 'until'));
+    }
 
     /**
      * Show a list of readonly time restrictions
      */
-	public function show_dates_readonly() {
-	    return $this->show_dates('readonly', array('until', 'from'));
-	}
+    public function show_dates_readonly() {
+        return $this->show_dates('readonly', array('until', 'from'));
+    }
 
     /**
      * Show a list of timing restrictions
      */
-	public function show_dates($type, $suffixes) {
-	    $output = array();
+    public function show_dates($type, $suffixes) {
+        $output = array();
 
         $fmt = 'timeondate';
-	    $fmt = $this->ec->get_string($fmt);
+        $fmt = $this->ec->get_string($fmt);
 
         foreach ($suffixes as $suffix) {
             $name = $type.$suffix;
@@ -187,30 +187,30 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
             $output[] = $this->ec->get_string($prefix.$name, $date);
         }
 
-	    if (empty($output)) {
-	        return '';
-	    } else {
+        if (empty($output)) {
+            return '';
+        } else {
             $output = html_writer::alist($output);
             return $this->output->box($output, 'englishcentral_timing');
-	    }
-	}
+        }
+    }
 
     /**
      * Show the EC progress element
      */
-	public function show_progress() {
-		$output = '';
+    public function show_progress() {
+        $output = '';
         $output .= $this->output->box_start('englishcentral_progress');
         $output .= 'PROGRESS goes here';
         $output .= $this->output->box_end();
-		return $output;
-	}
+        return $output;
+    }
 
     /**
      * Show the EC videos element
      */
-	public function show_videos() {
-		$output = '';
+    public function show_videos() {
+        $output = '';
         $output .= $this->output->box_start('englishcentral_videos');
         if ($videoids = $this->ec->get_videoids()) {
             $videos = $this->auth->fetch_dialog_list($videoids);
@@ -221,11 +221,11 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
             $output .= $ec->get_string('novideos');
         }
         $output .= $this->output->box_end();
-		return $output;
-	}
+        return $output;
+    }
 
-	protected function show_video($video) {
-	    $output = '';
+    protected function show_video($video) {
+        $output = '';
 
         switch (true) {
             case ($video->difficulty <= 2): $difficulty = 'beginner';     break;
@@ -239,45 +239,37 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
             $video->duration = substr($video->duration, 3);
         }
 
-	    $params = array('class' => 'activity-thumbnail');
-	    $output .= html_writer::start_tag('div', $params);
+        $output .= html_writer::start_tag('div', array('class' => 'activity-thumbnail'));
 
-        $params = array('class' => 'thumb-outline');
-	    $output .= html_writer::start_tag('div', $params);
+        $output .= html_writer::start_tag('div', array('class' => 'thumb-outline'));
    
-        $params = array('class' => 'activity-title', 'href' => $video->dialogURL);
-        $output .= html_writer::tag('a', $video->title, $params);
+        $output .= html_writer::tag('a', $video->title, array('class' => 'activity-title',
+                                                              'href' => $video->dialogURL));
     
-        $params = array('class' => 'thumb-frame',
-                        'click' => 'emitClick()',
-                        'href'  => $video->dialogURL,
-                        'style' => 'background-image: url("'.$video->thumbnailURL.'");');
-        $output .= html_writer::start_tag('a', $params);
+        $output .= html_writer::start_tag('a', array('class' => 'thumb-frame',
+                                                     'href'  => $video->dialogURL,
+                        'style' => 'background-image: url("'.$video->thumbnailURL.'");'));
         $output .= html_writer::tag('span', '', array('class' => 'play-icon'));
         $output .= html_writer::end_tag('a');
 
         $output .= html_writer::start_tag('span', array('class' => 'difficulty-level-indicator '.$difficulty));
 
-        $params = array('class' => 'difficulty-level text-center difficulty-icon');
-        $text = $this->ec->get_string('levelx', $video->difficulty);
-        $output .= html_writer::tag('span', $text, $params);
+        $output .= html_writer::tag('span', $this->ec->get_string('levelx', $video->difficulty),
+                                            array('class' => 'difficulty-level text-center difficulty-icon'));
 
         $output .= html_writer::start_tag('span', array('class' => 'difficulty-label'));
-        if ($difficulty) {
-            $difficulty = $this->ec->get_string($difficulty);
-        }
-        $output .= html_writer::tag('span', $difficulty);
-	    $output .= html_writer::end_tag('span'); // difficulty-label
+        $output .= html_writer::tag('span', $this->ec->get_string($difficulty));
+        $output .= html_writer::end_tag('span'); // difficulty-label
 
-	    $output .= html_writer::end_tag('span'); // difficulty-level-indicator
+        $output .= html_writer::end_tag('span'); // difficulty-level-indicator
       
         $output .= html_writer::tag('span', $video->duration, array('class' => 'duration'));
 
-	    $output .= html_writer::end_tag('div'); // activity-outline
+        $output .= html_writer::end_tag('div'); // activity-outline
 
-	    $output .= html_writer::end_tag('div'); // activity-thumbnail
+        $output .= html_writer::end_tag('div'); // activity-thumbnail
 
-	    return $output;
-	}
+        return $output;
+    }
 }
 

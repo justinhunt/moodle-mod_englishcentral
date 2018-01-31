@@ -117,5 +117,6 @@ if ($ec->readonly) {
 } else {
     echo $renderer->show_videos($ec);
 }
+echo '<div id="'.$ec->plugin.'_playercontainer"></div>';
 
 echo $renderer->footer();

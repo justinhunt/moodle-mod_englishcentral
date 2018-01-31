@@ -178,7 +178,7 @@ class auth {
                             'Content-Length: ' . strlen($fields),
                             'Content-Type: application/x-www-form-urlencoded');
 
-        	$this->sdk_token = $this->doCurl($url, $header, false, true, $fields);
+            $this->sdk_token = $this->doCurl($url, $header, false, true, $fields);
         }
         return $this->sdk_token;
     }
@@ -195,7 +195,7 @@ class auth {
         return $this->jwt_token;
     }
 
-	public function doCurl($url, $header, $json_decode=false, $post=null, $fields=null) {
+    public function doCurl($url, $header, $json_decode=false, $post=null, $fields=null) {
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL,             $url);
@@ -206,25 +206,25 @@ class auth {
         curl_setopt($ch, CURLOPT_HTTPHEADER,   $header);
 
         if ($post) {
-			curl_setopt($ch, CURLOPT_POST, $post);
-			if ($fields) {
-				curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
-			}
+            curl_setopt($ch, CURLOPT_POST, $post);
+            if ($fields) {
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
+            }
         }
 
         $response = curl_exec($ch);
         curl_close($ch);
 
         if ($json_decode && $this->is_json($response)) {
-        	$response = json_decode($response);
+            $response = json_decode($response);
         }
 
-		return $response;
-	}
+        return $response;
+    }
 
-	public function is_json($response) {
-		return (substr($response, 0, 1)=='{' && substr($response, -1)=='}');
-	}
+    public function is_json($response) {
+        return (substr($response, 0, 1)=='{' && substr($response, -1)=='}');
+    }
 
     public function get_url($endpoint, $fields=array()) {
         $url = 'https://bridge.' . $this->domain . '/' . $endpoint;
@@ -295,14 +295,14 @@ class auth {
         // the token is usually 189 chars long and split into 3 parts delimited by [\.].
         // Parts 1 & 2 contain [0-9a-zA-Z]. The 3rd part can additionally contain [_-].
         if (preg_match('/^[0-9a-zA-Z\._-]{180,200}$/', $sdk_token)) {
-        	return ''; // token is valid - YAY!
+            return ''; // token is valid - YAY!
         }
         if ($this->is_json($sdk_token)) {
-        	// JSON error message from EC server
+            // JSON error message from EC server
             return json_decode($sdk_token)->log;
         }
         if (strpos($sdk_token, '<!DOCTYPE html>')===0) {
-        	// HTML error message, maybe a wrong URL or the EC server is unavailable
+            // HTML error message, maybe a wrong URL or the EC server is unavailable
             return preg_replace('/^(.*?<body[^>]*>)|(<\/body>.*$)/', '', $sdk_token);
         }
         // some other problematic token

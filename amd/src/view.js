@@ -28,9 +28,26 @@ define(['jquery', 'jqueryui'], function($) {
     /** @alias module:mod_englishcentral/view */
     return {
         "init": function (opts) {
-            for (var i in opts) {
-                window.console.log("received opts[" + i + "]: " + opts[i]);
-            }
+            $(".activity-title, .thumb-frame").each(function(){
+                var prefix = new RegExp("^.*/");
+                var player = opts["playerdiv"];
+                var sdktoken = opts["sdktoken"];
+                var partnerKey = opts["consumerkey"];
+                $(this).click(function(evt){
+                    var dialogID = $(this).prop("href")
+                                          .replace(prefix, "");
+                    window.ECSDK.loadWidget("player", {
+                        "partnerKey":      partnerKey,
+                        "partnerSdkToken": sdktoken,
+                        "dialogId":        dialogID,
+                        "container":       player
+                    });
+                    $(function(){
+                        $("#" + opts["playerdiv"]).dialog();
+                    });
+                    evt.preventDefault();
+                });
+            });
         }
     };
 });
