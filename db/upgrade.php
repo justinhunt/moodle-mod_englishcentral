@@ -63,6 +63,7 @@ function xmldb_englishcentral_upgrade($oldversion) {
 
         // =============================================
         // create USERIDS table
+        // (this will be replaced in a later update)
         // =============================================
 
         $table = new xmldb_table('englishcentral_userids');

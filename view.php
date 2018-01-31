@@ -26,9 +26,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
-require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
-require_once(dirname(__FILE__).'/lib.php');;
+require_once('../../config.php');
+require_once($CFG->dirroot.'/mod/englishcentral/lib.php');;
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $ecid  = optional_param('ecid', 0, PARAM_INT);  // englishcentral instance ID - it should be named as the first character of the module
@@ -71,7 +70,7 @@ $ec = \mod_englishcentral\activity::create($instance, $cm, $course, $context);
 $auth = \mod_englishcentral\auth::create($ec);
 
 $renderer = $PAGE->get_renderer($ec->plugin);
-$renderer->attach_activity($ec);
+$renderer->attach_activity_and_auth($ec, $auth);
 
 echo $renderer->header($ec->get_string('view'));
 
@@ -119,5 +118,4 @@ if ($ec->readonly) {
     echo $renderer->show_videos($ec);
 }
 
-echo html_writer::tag('p', 'Your EC accountid is: '.$auth->get_accountid());
 echo $renderer->footer();

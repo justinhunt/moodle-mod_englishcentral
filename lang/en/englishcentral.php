@@ -117,6 +117,14 @@ $string['pastreadonlyuntil'] = 'The videos became available at {$a}';
 $string['notavailable'] = 'Sorry, this activity is not currently avialable to you.';
 $string['notviewable'] = 'Sorry, the videos for this actiity are not currently avialable to you.';
 
+$string['editvideos'] = 'Edit videos';
+$string['novideos'] = 'There are no videos to watch at the moment.';
+$string['beginner'] = 'Beginner';
+$string['intermediate'] = 'Intermediate';
+$string['advanced'] = 'Advanced';
+$string['levelx'] = 'Level {$a}';
+
+
 // deprecated strings
 
 $string['englishcentral'] = 'English Central';

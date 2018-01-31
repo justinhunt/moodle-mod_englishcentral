@@ -13,6 +13,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+// disable warnings from the JS parser, jshint
+/* globals ECSDK:false */
+
 /**
  * load the EnglishCentral player
  *

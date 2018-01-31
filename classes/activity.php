@@ -252,10 +252,7 @@ class activity {
 
     public function get_videoids() {
         global $DB;
-        if ($videos = $DB->get_records('englishcentral_videos', array('ecid' => $this->id))) {
-            return array_keys($videos);
-        }
-        return array();
+        return $DB->get_records_menu('englishcentral_videos', array('ecid' => $this->id), 'id', 'id,videoid');
     }
 
     public function get_accountid() {

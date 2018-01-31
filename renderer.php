@@ -28,6 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 class mod_englishcentral_renderer extends plugin_renderer_base {
 
     protected $ec = null;
+    protected $auth = null;
 
     /**
      * attach the $ec object so it is accessible throughout this class
@@ -35,8 +36,9 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
      * @param object $ec a \mod_englishcentral/activity Object.
      * @return void
      */
-    public function attach_activity($ec) {
+    public function attach_activity_and_auth($ec, $auth) {
         $this->ec = $ec;
+        $this->auth = $auth;
     }
 
     /**
@@ -210,9 +212,72 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
 	public function show_videos() {
 		$output = '';
         $output .= $this->output->box_start('englishcentral_videos');
-        $output .= 'VIDEOS go here';
+        if ($videoids = $this->ec->get_videoids()) {
+            $videos = $this->auth->fetch_dialog_list($videoids);
+            foreach ($videos as $video) {
+                $output .= $this->show_video($video);
+            }
+        } else {
+            $output .= $ec->get_string('novideos');
+        }
         $output .= $this->output->box_end();
 		return $output;
+	}
+
+	protected function show_video($video) {
+	    $output = '';
+
+        switch (true) {
+            case ($video->difficulty <= 2): $difficulty = 'beginner';     break;
+            case ($video->difficulty <= 4): $difficulty = 'intermediate'; break;
+            case ($video->difficulty >= 5): $difficulty = 'advanced';     break;
+            default: $difficulty = '';
+        }
+
+        // remove leading 00: from duration
+        if (substr($video->duration, 0, 3)=='00:') {
+            $video->duration = substr($video->duration, 3);
+        }
+
+	    $params = array('class' => 'activity-thumbnail');
+	    $output .= html_writer::start_tag('div', $params);
+
+        $params = array('class' => 'thumb-outline');
+	    $output .= html_writer::start_tag('div', $params);
+   
+        $params = array('class' => 'activity-title', 'href' => $video->dialogURL);
+        $output .= html_writer::tag('a', $video->title, $params);
+    
+        $params = array('class' => 'thumb-frame',
+                        'click' => 'emitClick()',
+                        'href'  => $video->dialogURL,
+                        'style' => 'background-image: url("'.$video->thumbnailURL.'");');
+        $output .= html_writer::start_tag('a', $params);
+        $output .= html_writer::tag('span', '', array('class' => 'play-icon'));
+        $output .= html_writer::end_tag('a');
+
+        $output .= html_writer::start_tag('span', array('class' => 'difficulty-level-indicator '.$difficulty));
+
+        $params = array('class' => 'difficulty-level text-center difficulty-icon');
+        $text = $this->ec->get_string('levelx', $video->difficulty);
+        $output .= html_writer::tag('span', $text, $params);
+
+        $output .= html_writer::start_tag('span', array('class' => 'difficulty-label'));
+        if ($difficulty) {
+            $difficulty = $this->ec->get_string($difficulty);
+        }
+        $output .= html_writer::tag('span', $difficulty);
+	    $output .= html_writer::end_tag('span'); // difficulty-label
+
+	    $output .= html_writer::end_tag('span'); // difficulty-level-indicator
+      
+        $output .= html_writer::tag('span', $video->duration, array('class' => 'duration'));
+
+	    $output .= html_writer::end_tag('div'); // activity-outline
+
+	    $output .= html_writer::end_tag('div'); // activity-thumbnail
+
+	    return $output;
 	}
 }
 
