@@ -123,7 +123,8 @@ $string['beginner'] = 'Beginner';
 $string['intermediate'] = 'Intermediate';
 $string['advanced'] = 'Advanced';
 $string['levelx'] = 'Level {$a}';
-
+$string['addvideos'] = 'Add videos';
+$string['searchterms'] = 'Search term(s)';
 
 // deprecated strings
 

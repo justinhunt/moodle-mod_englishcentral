@@ -125,6 +125,27 @@ class activity {
     }
 
     ////////////////////////////////////////////////////////////////////////////////
+    // URLs API
+    ////////////////////////////////////////////////////////////////////////////////
+
+    public function get_view_url($escaped=null) {
+        return $this->url('view.php');
+    }
+
+    public function get_viewajax_url($escaped=null) {
+        return $this->url('view.ajax.php');
+    }
+
+    public function url($filepath, $escaped=null, $params=array()) {
+        $url = '/'.$this->plugintype.'/'.$this->pluginname.'/'.$filepath;
+        $url = new \moodle_url($filepath, $params);
+        if (is_bool($escaped)) {
+            $url = $url->out($escaped);
+        }
+        return $url;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////
     // capabilities API
     ////////////////////////////////////////////////////////////////////////////////
 

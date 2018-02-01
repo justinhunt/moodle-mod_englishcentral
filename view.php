@@ -96,13 +96,18 @@ echo $renderer->show_dates_available();
 // https://www.qaenglishcentral.com/partnersdk/sdk.js
 $PAGE->requires->js($auth->fetch_js_url());
 
-$opts = array('resultsmode' => 'ajax',
-              'cmid'        => $ec->cm->id,
-              'consumerkey' => $auth->consumerkey,
-              'accountid'   => $auth->get_accountid(),
-              'sdktoken'    => $auth->get_sdk_token(),
-              'playerdiv'   => $ec->plugin.'_playercontainer',
-              'resultsdiv'  => $ec->plugin.'_resultscontainer');
+$opts = array('accept'        => \mod_englishcentral\auth::ACCEPT_V1,
+              'authorization' => $auth->get_authorization(),
+              'searchurl'     => $auth->get_search_url(),
+              'sdktoken'      => $auth->get_sdk_token(),
+              'consumerkey'   => $auth->consumerkey,
+              'playercontainer' => 'id_playercontainer',
+              'resultscontainer' => 'id_resultscontainer',
+              'resultsmode' => 'ajax',
+              'cmid'          => $ec->cm->id,
+              'moodlesession' => sesskey(),
+              'addvideourl'   => $ec->get_viewajax_url(false),
+              'storeresultsurl' => $ec->get_viewajax_url(false));
 $PAGE->requires->js_call_amd("$ec->plugin/view", 'init', array($opts));
 
 echo $renderer->show_progress();
@@ -117,6 +122,8 @@ if ($ec->readonly) {
 } else {
     echo $renderer->show_videos($ec);
 }
-echo '<div id="'.$ec->plugin.'_playercontainer"></div>';
+
+echo '<div id="id_playercontainer">PLAYER goes here</div>';
+echo '<div id="id_resultscontainer">RESULTS go here</div>';
 
 echo $renderer->footer();

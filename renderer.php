@@ -220,6 +220,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         } else {
             $output .= $ec->get_string('novideos');
         }
+        $output .= $this->add_videos_button();
         $output .= $this->output->box_end();
         return $output;
     }
@@ -270,6 +271,12 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         $output .= html_writer::end_tag('div'); // activity-thumbnail
 
         return $output;
+    }
+
+    protected function add_videos_button() {
+        $text = $this->ec->get_string('addvideos');
+        $icon = $this->pix_icon('t/addfile', $text);
+        return html_writer::tag('div', $icon.$text, array('class' => 'addvideos'));
     }
 }
 

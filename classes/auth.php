@@ -226,6 +226,10 @@ class auth {
         return (substr($response, 0, 1)=='{' && substr($response, -1)=='}');
     }
 
+	public function get_search_url() {
+		return $this->get_url('rest/content/dialog/search/fulltext');
+	}
+
     public function get_url($endpoint, $fields=array()) {
         $url = 'https://bridge.' . $this->domain . '/' . $endpoint;
         $url = new \moodle_url($url, $fields);
