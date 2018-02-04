@@ -13,9 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-// disable warnings from the JS parser, jshint
-/* globals ECSDK:false */
-
 /**
  * load object to produce HTML tags
  *
@@ -25,99 +22,101 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since       2.9
  */
-define(["jquery"], function() {
+define([], function() {
+
     /** @alias module:mod_englishcentral/html */
-    var t = {
+    var HTML = {};
 
-        "htmlescape" : function(value) {
-            value += ""; // convert to String
-            return value.replace(new RegExp("&", "g"), "&amp;")
-                        .replace(new RegExp("'", "g"), "&apos;")
-                        .replace(new RegExp('"', "g"), "&quot;")
-                        .replace(new RegExp("<", "g"), "&lt;")
-                        .replace(new RegExp(">", "g"), "&gt;");
-        },
-
-        "attribute" : function(name, value) {
-            if (name = name.replace(new RegExp("^a-zA-Z0-9_-"), "g")) {
-                name = " " + name + '="' + t.htmlescape(value) + '"';
-            }
-            return name;
-        },
-
-        "attributes" : function(attr) {
-            var html = "";
-            if (attr) {
-                for (var name in attr) {
-                    html += t.attribute(name, attr[name]);
-                }
-            }
-            return html;
-        },
-
-        "starttag" : function(tag, attr) {
-            return "<" + tag + t.attributes(attr) + ">";
-        },
-
-        "endtag" : function(tag) {
-            return "</" + tag + ">";
-        },
-
-        "emptytag" : function(tag, attr) {
-            return "<" + tag + t.attributes(attr) + "/>";
-        },
-
-        "tag" : function(tag, content, attr) {
-            return (t.starttag(tag, attr) + content + t.endtag(tag));
-        },
-
-        "input" : function(name, type, attr) {
-            attr.type = type;
-            attr.name = name;
-            attr.id = "id_" + name;
-            return t.emptytag("input", attr);
-        },
-
-        "hidden" : function(name, value) {
-            var attr = {"value" : (value || "")};
-            return t.input(name, "hidden", attr);
-        },
-
-        "text" : function(name, value, size) {
-            var attr = {"value" : (value || ""),
-                        "size" : (size || "15")};
-            return t.input(name, "text", attr);
-        },
-
-        "checkbox" : function(name, checked) {
-            var attr = {"value" : "1"};
-            if (checked) {
-                attr.checked = "checked";
-            }
-            return t.input(name, "checkbox", attr);
-        },
-
-        "alist" : function(tag, items) {
-            var alist = "";
-            for (var i in items) {
-                alist += t.tag("li", items[i]);
-            }
-            return t.tag(tag, alist, {});
-        },
-
-        "select" : function(name, options, selected, attr) {
-            var html = "";
-            for (var value in options) {
-                var a = {"value" : value};
-                if (value==selected) {
-                    a["selected"] = "selected";
-                }
-                html += t.tag("option", options[value], a);
-            }
-            attr.name = name;
-            attr.id = "id_" + name;
-            return t.tag("select", html, attr);
-        }
+    HTML.htmlescape = function(value) {
+        value += ""; // convert to String
+        return value.replace(new RegExp("&", "g"), "&amp;")
+                    .replace(new RegExp("'", "g"), "&apos;")
+                    .replace(new RegExp('"', "g"), "&quot;")
+                    .replace(new RegExp("<", "g"), "&lt;")
+                    .replace(new RegExp(">", "g"), "&gt;");
     };
-    return t;
+
+    HTML.attribute = function(name, value) {
+        var attr = name.replace(new RegExp("^a-zA-Z0-9_-"), "g");
+        if (attr) {
+            attr = " " + attr + '="' + HTML.htmlescape(value) + '"';
+        }
+        return attr;
+    };
+
+    HTML.attributes = function(attr) {
+        var html = "";
+        if (attr) {
+            for (var name in attr) {
+                html += HTML.attribute(name, attr[name]);
+            }
+        }
+        return html;
+    };
+
+    HTML.starttag = function(tag, attr) {
+        return "<" + tag + HTML.attributes(attr) + ">";
+    };
+
+    HTML.endtag = function(tag) {
+        return "</" + tag + ">";
+    };
+
+    HTML.emptytag = function(tag, attr) {
+        return "<" + tag + HTML.attributes(attr) + "/>";
+    };
+
+    HTML.tag = function(tag, content, attr) {
+        return (HTML.starttag(tag, attr) + content + HTML.endtag(tag));
+    };
+
+    HTML.input = function(name, type, attr) {
+        attr.type = type;
+        attr.name = name;
+        attr.id = "id_" + name;
+        return HTML.emptytag("input", attr);
+    };
+
+    HTML.hidden = function(name, value) {
+        var attr = {"value" : (value || "")};
+        return HTML.input(name, "hidden", attr);
+    };
+
+    HTML.text = function(name, value, size) {
+        var attr = {"value" : (value || ""),
+                    "size" : (size || "15")};
+        return HTML.input(name, "text", attr);
+    };
+
+    HTML.checkbox = function(name, checked) {
+        var attr = {"value" : "1"};
+        if (checked) {
+            attr.checked = "checked";
+        }
+        return HTML.input(name, "checkbox", attr);
+    };
+
+    HTML.alist = function(tag, items) {
+        var alist = "";
+        for (var i in items) {
+            alist += HTML.tag("li", items[i]);
+        }
+        return HTML.tag(tag, alist, {});
+    };
+
+    HTML.select = function(name, options, selected, attr) {
+        var html = "";
+        for (var value in options) {
+            var a = {"value" : value};
+            if (value==selected) {
+                a["selected"] = "selected";
+            }
+            html += HTML.tag("option", options[value], a);
+        }
+        attr.name = name;
+        attr.id = "id_" + name;
+        return HTML.tag("select", html, attr);
+    };
+
+    return HTML;
 });

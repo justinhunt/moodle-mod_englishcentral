@@ -21,9 +21,8 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since      2.9
  */
-define(function() {
+define([], function() {
     // This module exposes only the global ECSDK instance.
     /** @alias module:mod_englishcentral/ecsdk */
-    /* global ECSDK */
     return window.ECSDK;
 });

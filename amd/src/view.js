@@ -13,9 +13,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-// disable warnings from the JS parser, jshint
-/* globals ECSDK:false */
-
 /**
  * load the EnglishCentral player
  *
@@ -25,7 +22,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since       2.9
  */
-define(["jquery", "core/str", "mod_englishcentral/html", "mod_englishcentral/ecsdk"], function($, STR, HTML, ECSDK) {
+define(["jquery", "core/str", "mod_englishcentral/html"], function($, STR, HTML) {
 
     /** @alias module:mod_englishcentral/view */
     var VIEW = {};
@@ -151,7 +148,7 @@ define(["jquery", "core/str", "mod_englishcentral/html", "mod_englishcentral/ecs
 
     VIEW.get_videoid = function(elm) {
         // sample href: https://www.qaenglishcentral.com/video/28864
-        return $(elm).prop("href").replace(new RegExp("^.*/"), "")
+        return $(elm).prop("href").replace(new RegExp("^.*/"), "");
     };
 
     VIEW.add_video = function(evt, elm) {
@@ -234,7 +231,7 @@ define(["jquery", "core/str", "mod_englishcentral/html", "mod_englishcentral/ecs
     };
 
     VIEW.format_details = function(r) {
-        html =  "";
+        var html =  "";
         html += VIEW.format_topics(r.value.topics);
         html += VIEW.format_description(r.value.description);
         html += VIEW.format_transcript(r.highlights.transcript);
@@ -253,19 +250,19 @@ define(["jquery", "core/str", "mod_englishcentral/html", "mod_englishcentral/ecs
     };
 
     VIEW.format_description = function(description) {
-        if (description==null || description=="") {
-            return "";
+        if (description && description) {
+            return VIEW.format_detail("Description", description);
         }
-        return VIEW.format_detail("Description", description);
+        return "";
     };
 
     VIEW.format_transcript = function(transcript) {
-        if (transcript==null || transcript.length==0) {
-            return "";
+        if (transcript && transcript.length) {
+            var dots = "...";
+            var slashes = new RegExp("//", "g");
+            return VIEW.format_detail("Transcript", dots + transcript[0].replace(slashes, dots) + dots);
         }
-        var dots = "...";
-        var slashes = new RegExp("//", "g");
-        return VIEW.format_detail("Transcript", dots + transcript[0].replace(slashes, dots) + dots);
+        return "";
     };
 
     VIEW.format_detail = function(label, value) {

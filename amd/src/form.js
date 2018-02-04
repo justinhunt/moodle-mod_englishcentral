@@ -25,28 +25,30 @@
  */
 define(["jquery"], function($) {
     /** @alias module:mod_englishcentral/form */
-    return {
-        "init": function() {
+    FORM = {};
 
-            $("#id_studygoal").prop("type", "hidden");
-            $("#id_studygoal").after('<span id="id_studygoaltext"></span>');
+    FORM.init = function() {
 
-            $("#id_watchgoal, #id_learngoal, #id_speakgoal").change(function(){
-                var watch = $("#id_watchgoal").val();
-                var learn = $("#id_learngoal").val();
-                var speak = $("#id_speakgoal").val();
-                var mins = (isNaN(watch) ? 0 : parseInt(watch) * 6) // 6 mins per video watched
-                         + (isNaN(learn) ? 0 : parseInt(learn))     // 1 min per word learned
-                         + (isNaN(speak) ? 0 : parseInt(speak));    // 1 min per line spoken
-                $("#id_studygoal").val(mins);
-                $("#id_studygoaltext").text(mins);
-            });
+        $("#id_studygoal").prop("type", "hidden");
+        $("#id_studygoal").after('<span id="id_studygoaltext"></span>');
 
-            $("#id_watchgoal").trigger("change");
+        $("#id_watchgoal, #id_learngoal, #id_speakgoal").change(function(){
+            var watch = $("#id_watchgoal").val();
+            var learn = $("#id_learngoal").val();
+            var speak = $("#id_speakgoal").val();
+            var mins = (isNaN(watch) ? 0 : parseInt(watch) * 6) // 6 mins per video watched
+                     + (isNaN(learn) ? 0 : parseInt(learn))     // 1 min per word learned
+                     + (isNaN(speak) ? 0 : parseInt(speak));    // 1 min per line spoken
+            $("#id_studygoal").val(mins);
+            $("#id_studygoaltext").text(mins);
+        });
 
-            $("#fgroup_id_watchgoalgroup").after('<div class="mathsymbol"> + </div>');
-            $("#fgroup_id_learngoalgroup").after('<div class="mathsymbol"> + </div>');
-            $("#fgroup_id_speakgoalgroup").after('<div class="mathsymbol"> = </div>');
-        }
+        $("#id_watchgoal").trigger("change");
+
+        $("#fgroup_id_watchgoalgroup").after('<div class="mathsymbol"> + </div>');
+        $("#fgroup_id_learngoalgroup").after('<div class="mathsymbol"> + </div>');
+        $("#fgroup_id_speakgoalgroup").after('<div class="mathsymbol"> = </div>');
     };
+
+    return FORM;
 });
