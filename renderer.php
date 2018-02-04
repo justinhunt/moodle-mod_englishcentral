@@ -138,7 +138,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
 
     public function show_notviewable() {
         $output = $this->notification($this->ec->get_string('notviewable'), 'warning');
-        $output .= $this->show_dates_readonly();
+        $output .= $this->show_dates_viewable();
         $output .= $this->course_continue_button();
         $output .= $this->footer();
         return $output;
@@ -153,14 +153,14 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
      * Show a list of availability time restrictions
      */
     public function show_dates_available() {
-        return $this->show_dates('available', array('from', 'until'));
+        return $this->show_dates('activity', array('open', 'close'));
     }
 
     /**
-     * Show a list of readonly time restrictions
+     * Show a list of viewable time restrictions
      */
-    public function show_dates_readonly() {
-        return $this->show_dates('readonly', array('until', 'from'));
+    public function show_dates_viewable() {
+        return $this->show_dates('viewable', array('open', 'close'));
     }
 
     /**
@@ -291,4 +291,3 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         return html_writer::tag('div', $icon.$text, array('class' => 'addvideos'));
     }
 }
-

@@ -87,14 +87,14 @@ $string['watchvideos'] = '{$a} videos';
 $string['activityname_help'] = 'This is the content of the help tooltip associated with the englishcentralname field. Markdown syntax is supported.';
 $string['activityname'] = 'Activity Name';
 
-$string['availablefrom'] = 'Available from';
-$string['availablefrom_help'] = 'Students can only to access this activity after the date and time specified here. Before this date and time, it will not be available.';
-$string['availableuntil'] = 'Available until';
-$string['availableuntil_help'] = 'Students can only to access this activity up until the date and time specified here. After this date and time, it will not be available.';
-$string['readonlyfrom'] = 'Read-only from';
-$string['readonlyfrom_help'] = 'After this date and time, students may view their main Reader page, but they cannot take any more quizes via this Reader activity.';
-$string['readonlyuntil'] = 'Read-only until';
-$string['readonlyuntil_help'] = 'Before this date and time, students may view their main Reader page, but they cannot take any quizzes via this Reader activity.';
+$string['activityopen'] = 'Activity available from';
+$string['activityopen_help'] = 'Students can access this activity starting from this date and time. Before this date and time, the activity will not be available.';
+$string['activityclose'] = 'Activity avialable until';
+$string['activityclose_help'] = 'Students can to access this activity up until the date and time specified here. After this date and time, the activity will not be available.';
+$string['videoopen'] = 'Videos viewable from';
+$string['videoopen_help'] = 'Students can view and interact with videos starting from this date and time. Before this date, the videos will not be viewable.';
+$string['videoclose'] = 'Videos viewable until';
+$string['videoclose_help'] = 'Students can view and interact with videos until this date and time. After this date, students cannot view the videos, but they can still view their results.';
 
 $string['consultadmin'] = 'For further help, please consult the administrator of this Moodle site.';
 $string['invalidconfig'] = 'Sorry, we cannot proceed because the settings for the English Central activity module on this Moodle site are not valid:';
@@ -105,17 +105,17 @@ $string['readonlymode'] = 'Read-only mode';
 $string['readonlymode_desc'] = 'This activity is currently in read-only mode. You can view the information on the first page of this EnglishCentral activity, but you cannot view any of the videos.';
 $string['timeondate'] = '%l:%M %p on %b %d (%a) %Y';
 
-$string['futureavailablefrom'] = 'This activity will open at {$a}';
-$string['futureavailableuntil'] = 'This activity will close at {$a}';
-$string['futurereadonlyfrom'] = 'The videos will be available until {$a}';
-$string['futurereadonlyuntil'] = 'The videos will be available from {$a}';
-$string['pastavailablefrom'] = 'This activity opened at {$a}';
-$string['pastavailableuntil'] = 'This activity closed at {$a}';
-$string['pastreadonlyfrom'] = 'The videos were available until {$a}';
-$string['pastreadonlyuntil'] = 'The videos became available at {$a}';
+$string['futureactivityopen'] = 'This activity will open at {$a}';
+$string['futureactivityclose'] = 'This activity will close at {$a}';
+$string['futurevideoclose'] = 'The videos will be available until {$a}';
+$string['futurevideoopen'] = 'The videos will be available from {$a}';
+$string['pastactivityopen'] = 'This activity opened at {$a}';
+$string['pastactivityclose'] = 'This activity closed at {$a}';
+$string['pastvideoclose'] = 'The videos were available until {$a}';
+$string['pastvideoopen'] = 'The videos became available at {$a}';
 
 $string['notavailable'] = 'Sorry, this activity is not currently avialable to you.';
-$string['notviewable'] = 'Sorry, the videos for this actiity are not currently avialable to you.';
+$string['notviewable'] = 'Sorry, the videos for this actiity are not currently available to you.';
 
 $string['editvideos'] = 'Edit videos';
 $string['novideos'] = 'There are no videos to watch at the moment.';

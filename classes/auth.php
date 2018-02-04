@@ -380,7 +380,8 @@ class auth {
         return $sdk_token;
     }
 
-    public function fetch_js_url() {
-        return new \moodle_url('https://www.' . $this->domain . '/partnersdk/sdk.js');
+    public function get_js_url() {
+        $url = $this->get_url('www', 'partnersdk/sdk.js');
+        return new \moodle_url($url);
     }
 }

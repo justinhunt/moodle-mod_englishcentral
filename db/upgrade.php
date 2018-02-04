@@ -253,6 +253,37 @@ function xmldb_englishcentral_upgrade($oldversion) {
         upgrade_mod_savepoint(true, "$newversion", 'englishcentral');
     }
 
+    $newversion = 2018020417;
+    if ($oldversion < $newversion) {
+        $table = new xmldb_table('englishcentral');
+        $fields = array(
+            'activityopen'  => new xmldb_field('availablefrom',  XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0'),
+            'activityclose' => new xmldb_field('availableuntil', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0'),
+            'videoopen'     => new xmldb_field('readonlyfrom',   XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0'),
+            'videoclose'    => new xmldb_field('readonlyuntil',  XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0')
+        );
+        foreach ($fields as $newname => $field) {
+            $oldexists = $dbman->field_exists($table, $field);
+            $newexists = $dbman->field_exists($table, $newname);
+            if ($oldexists) {
+                if ($newexists) {
+                    $dbman->drop_field($table, $field);
+                    $oldexists = false;
+                } else {
+                    $dbman->rename_field($table, $field, $newname);
+                    $newexists = true;
+                }
+            }
+            $field->setName($newname);
+            if ($newexists) {
+                $dbman->change_field_type($table, $field);
+            } else {
+                $dbman->add_field($table, $field);
+            }
+        }
+        upgrade_mod_savepoint(true, "$newversion", 'englishcentral');
+    }
+
     return true;
 }
 

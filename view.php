@@ -94,7 +94,7 @@ echo $renderer->show_dates_available();
 
 // get ECSDK javascript object
 // https://www.qaenglishcentral.com/partnersdk/sdk.js
-$PAGE->requires->js($auth->fetch_js_url());
+$PAGE->requires->js($auth->get_js_url(), true);
 
 $opts = array('accept'        => \mod_englishcentral\auth::ACCEPT_V1,
               'authorization' => $auth->get_authorization(),
@@ -103,7 +103,7 @@ $opts = array('accept'        => \mod_englishcentral\auth::ACCEPT_V1,
               'consumerkey'   => $auth->consumerkey,
               'playercontainer' => 'id_playercontainer',
               'resultscontainer' => 'id_resultscontainer',
-              'resultsmode' => 'ajax',
+              'resultsmode'   => 'ajax',
               'cmid'          => $ec->cm->id,
               'moodlesesskey' => sesskey(),
               'addvideourl'   => $ec->get_viewajax_url(false),
@@ -118,18 +118,12 @@ $PAGE->requires->js_call_amd("$ec->plugin/view", 'init', array($opts));
 
 echo $renderer->show_progress();
 
-if ($ec->not_viewable()) {
-    echo $renderer->show_notviewable();
-    die;
-}
-
-if ($ec->readonly) {
-    echo $renderer->show_notviewable($ec);
-} else {
+if ($ec->viewable) {
     echo $renderer->show_videos($ec);
+    echo '<div id="id_playercontainer">PLAYER goes here</div>';
+    echo '<div id="id_resultscontainer">RESULTS go here</div>';
+} else {
+    echo $renderer->show_notviewable($ec);
 }
-
-echo '<div id="id_playercontainer">PLAYER goes here</div>';
-echo '<div id="id_resultscontainer">RESULTS go here</div>';
 
 echo $renderer->footer();
