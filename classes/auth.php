@@ -112,13 +112,15 @@ class auth {
             if (empty($this->uniqueid)) {
                 $record = (object)array('userid' => $USER->id,
                                         'accountid' => 0);
-                $this->uniqueid = $DB->insert_record($table, $record);
+                $this->uniqueid = ''.$DB->insert_record($table, $record);
+                // we need '' to convert the id to a string
             }
         }
         return $this->uniqueid;
     }
 
     public function create_accountid() {
+        $subdomain = 'bridge';
         $endpoint = 'rest/identity/account';
         $fields = array('partnerID' => $this->partnerid,
                         'partnerAccountID' => $this->get_uniqueid(),
@@ -127,36 +129,95 @@ class auth {
                         'isTeacher' => (int)$this->ec->can_manage(),
                         'timezone' => \core_date::get_user_timezone(),
                         'fields' => 'accountID');
-        $response = $this->doPost($endpoint, $fields, self::ACCEPT_V1);
+        $response = $this->doPost($subdomain, $endpoint, $fields, self::ACCEPT_V1);
         return $this->return_value($response, 'accountID', 0);
     }
 
     public function fetch_accountid() {
-        global $USER;
+        $subdomain = 'bridge';
         $endpoint = 'rest/identity/account';
         $fields = array('partnerID' => $this->partnerid,
                         'partnerAccountID' => $this->get_uniqueid(),
                         'fields' => 'accountID');
-        $response = $this->doPost($endpoint, $fields, self::ACCEPT_V1);
+        $response = $this->doPost($subdomain, $endpoint, $fields, self::ACCEPT_V1);
         return $this->return_value($response, 'accountID', 0);
     }
 
     public function fetch_dialog_list($videoids) {
+        $subdomain = 'bridge';
         $endpoint = 'rest/content/dialog';
         $fields = array('dialogIDs' => implode(',', $videoids),
                         'siteLanguage' => $this->get_site_language(),
                         'fields' => 'dialogID,title,difficulty,duration,dialogURL,thumbnailURL');
-        return json_decode($this->doGet($endpoint, $fields, self::ACCEPT_V1));
+        return $this->doGet($subdomain, $endpoint, $fields, self::ACCEPT_V1);
     }
 
-    public function doGet($endpoint, $fields, $accept) {
-        $url = $this->get_url($endpoint, $fields);
+    public function fetch_dialog_progress($videoids) {
+        $subdomain = 'reportcard';
+        $type = 0;
+        switch ($type) {
+            case 0:
+                // Get dialog activity history for the user accessing this operation.
+                $endpoint = 'rest/report/activity/dialog';
+                $fields = array('dialogIDs' => implode(',', $videoids));
+                $accept = self::ACCEPT_V1;
+                break;
+            case 1:
+                // Return history of completed dialog activities of an Account.
+                $endpoint = 'rest/report/dialog/summary';
+                $fields = array('accountID' => $this->get_accountid(),
+                                'dialogIDs' => implode(',', $videoids));
+                $accept = self::ACCEPT_V2;
+                break;
+            case 2:
+                // a list of dialog completions that the caller has recorded activity
+                $endpoint = 'rest/report/dialog/activity/summary';
+                $fields = array('completionCriteria' => 'watch'); // "watch", "speak", or "learn"
+                $accept = self::ACCEPT_V1;
+                break;
+            case 3:
+                // Return dialog activity reports for an Account.
+                // Error 401: Visitor may not access Account 2894077
+                $endpoint = 'rest/report/dialog/activity/account/'.$this->get_accountid();
+                $fields = array();
+                $accept = self::ACCEPT_V1;
+                break;
+            case 4:
+                // Provides the most recent Dialog progress activity for given parameters
+                $endpoint = 'rest/report/dialog/progress/recent';
+                $fields = array();
+                $accept = self::ACCEPT_V1;
+                break;
+            case 5:
+                $endpoint = 'rest/report/dialog/progress/summaries';
+                $fields = array('dialogIDs' => implode(',', $videoids),
+                                //'startDate' => '',
+                                //'endDate' => ''
+                                );
+                $accept = self::ACCEPT_V1;
+                break;
+            case 5:
+                // Visitor may not access Account 2894077
+                $endpoint = 'rest/report/dialog/progress/summaries';
+                $fields = array('dialogIDs' => implode(',', $videoids),
+                                //'startDate' => '',
+                                //'endDate' => ''
+                                );
+                $accept = self::ACCEPT_V1;
+                break;
+            default: return null;
+        }
+        return $this->doGet($subdomain, $endpoint, $fields, $accept);
+    }
+
+    public function doGet($subdomain, $endpoint, $fields, $accept) {
+        $url = $this->get_url($subdomain, $endpoint, $fields);
         $header = $this->get_header($accept);
         return $this->doCurl($url, $header, true, false);
     }
 
-    public function doPost($endpoint, $fields, $accept) {
-        $url = $this->get_url($endpoint, $fields);
+    public function doPost($subdomain, $endpoint, $fields, $accept) {
+        $url = $this->get_url($subdomain, $endpoint, $fields);
         $header = $this->get_header($accept);
         return $this->doCurl($url, $header, true, true);
     }
@@ -165,7 +226,7 @@ class auth {
         if ($this->sdk_token===null) {
             $jwt_token = $this->get_jwt_token();
 
-            $url = $this->get_url('rest/identity/authorize');
+            $url = $this->get_url('bridge', 'rest/identity/authorize');
 
             $fields = array('partnerID' => $this->partnerid,
                             'siteLanguage' => $this->get_site_language(),
@@ -223,15 +284,21 @@ class auth {
     }
 
     public function is_json($response) {
-        return (substr($response, 0, 1)=='{' && substr($response, -1)=='}');
+        if (substr($response, 0, 1)=='{' && substr($response, -1)=='}') {
+            return true;
+        }
+        if (substr($response, 0, 1)=='[' && substr($response, -1)==']') {
+            return true;
+        }
+        return false;
     }
 
 	public function get_search_url() {
-		return $this->get_url('rest/content/dialog/search/fulltext');
+		return $this->get_url('bridge', 'rest/content/dialog/search/fulltext');
 	}
 
-    public function get_url($endpoint, $fields=array()) {
-        $url = 'https://bridge.' . $this->domain . '/' . $endpoint;
+    public function get_url($subdomain, $endpoint, $fields=array()) {
+        $url = "https://$subdomain.$this->domain/$endpoint";
         $url = new \moodle_url($url, $fields);
         return $url->out(false); // join with "&" not "&amp;"
     }

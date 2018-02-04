@@ -54,7 +54,7 @@
 
 /** styles on VIEW page */
 
-.addvideos {
+#page-mod-englishcentral-view .addvideos {
     background:             #efc;
     border-radius:           4px;
     border:    2px solid #74cc00;
@@ -63,25 +63,130 @@
     font-family: "Comic Sans MS",
                Ariel, sans-serif;
     font-size:              30px;
-    height:                 50px;
-    margin:                 .7em;
+    margin:                .62em;
+    max-width:             100px;
     padding:   8px 12px 14px 2px;
     text-align:            right;
     vertical-align:          top;
-    width:                 100px;
 }
 
-.addvideos:hover {
+#page-mod-englishcentral-view .addvideos:hover {
     background:   #579900;
     border-color: #579900;
     color:           #efc;
 }
 
-.addvideos img.icon {
+#page-mod-englishcentral-view .addvideos img.icon {
     height:        30px;
     width:         30px;
 }
-/** thumbnail styles (https://gist.github.com/jetlogs/fc728be500ba72714e8a4dafdc4bf21e) */
+
+#page-mod-englishcentral-view .result-add,
+#page-mod-englishcentral-view .result-thumb,
+#page-mod-englishcentral-view .result-info {
+    display: inline-block;
+    vertical-align: top;
+}
+
+#page-mod-englishcentral-view .search-prompt:after {
+    content: ": ";
+}
+
+#page-mod-englishcentral-view .result-item {
+    /*
+    float:            left;
+    max-width:       480px;
+    */
+    margin:           12px;
+    padding:          12px;
+    background:    #f8f8f8;
+    border: 1px solid #ccc;
+    border-radius:     4px;
+}
+
+#page-mod-englishcentral-view .result-add img {
+    height:           36px;
+    width:            36px;
+    margin:           24px;
+    vertical-align: center;
+}
+
+#page-mod-englishcentral-view .result-thumb {
+    min-height:       80px;
+    min-width:       160px;
+}
+
+#page-mod-englishcentral-view .search-results .result-thumb {
+    position:     relative;
+}
+
+#page-mod-englishcentral-view .result-difficulty,
+#page-mod-englishcentral-view .result-duration {
+    background:       #000;
+    bottom:            5px;
+    color:            #ccc;
+    font-size:       0.8em;
+    position:     absolute;
+    text-align:     center;
+}
+
+#page-mod-englishcentral-view .result-difficulty {
+    border-radius:     0px 4px 0px 4px;
+    left:              0px;
+    width:            16px;
+}
+
+#page-mod-englishcentral-view .result-duration {
+    border-radius:     4px 0px 4px 0px;
+    right:            10px;
+    width:            38px;
+}
+
+#page-mod-englishcentral-view .result-title {
+    font-size:        18px;
+    line-height:   initial;
+    margin:            0px;
+}
+
+#page-mod-englishcentral-view .result-details {
+    clear:            both;
+    font-size:       0.9em;
+    margin:            0px;
+}
+
+#page-mod-englishcentral-view .result-label,
+#page-mod-englishcentral-view .result-value {
+    float:            left;
+}
+
+#page-mod-englishcentral-view .result-label {
+    clear:            both;
+    color:            #933;
+    font-weight:      bold;
+    /*
+    width:            80px;
+    */
+}
+
+#page-mod-englishcentral-view .result-label:after {
+    content: ":";
+}
+
+#page-mod-englishcentral-view .result-value {
+    /*
+    width: calc(100% - 100px);
+    */
+}
+
+#page-mod-englishcentral-view .result-value em {
+    background-color: #f9f9c7;
+    font-style:        normal;
+}
+
+/**
+ * EC thumbnail styles
+ * (https://gist.github.com/jetlogs/fc728be500ba72714e8a4dafdc4bf21e)
+**/
 
 #page-mod-englishcentral-view .activity-thumbnail {
     position: relative;

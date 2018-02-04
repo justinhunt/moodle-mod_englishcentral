@@ -36,7 +36,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
      * @param object $ec a \mod_englishcentral/activity Object.
      * @return void
      */
-    public function attach_activity_and_auth($ec, $auth) {
+    public function attach_activity_and_auth($ec=null, $auth=null) {
         $this->ec = $ec;
         $this->auth = $auth;
     }
@@ -201,7 +201,19 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
     public function show_progress() {
         $output = '';
         $output .= $this->output->box_start('englishcentral_progress');
-        $output .= 'PROGRESS goes here';
+        if ($videoids = $this->ec->get_videoids()) {
+            $progress = $this->auth->fetch_dialog_progress($videoids);
+            $debug = false; // enable this during development
+            if ($debug) {
+                print_object($progress);
+            }
+            /////////////////////////////////////////////////////////
+            // code to format progress data goes here
+            /////////////////////////////////////////////////////////
+            $output .= 'PROGRESS data goes here';
+        } else {
+            $output .= 'No progress to report so far';
+        }
         $output .= $this->output->box_end();
         return $output;
     }
@@ -218,14 +230,14 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
                 $output .= $this->show_video($video);
             }
         } else {
-            $output .= $ec->get_string('novideos');
+            $output .= $this->ec->get_string('novideos');
         }
         $output .= $this->add_videos_button();
         $output .= $this->output->box_end();
         return $output;
     }
 
-    protected function show_video($video) {
+    public function show_video($video) {
         $output = '';
 
         switch (true) {
@@ -243,10 +255,10 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         $output .= html_writer::start_tag('div', array('class' => 'activity-thumbnail'));
 
         $output .= html_writer::start_tag('div', array('class' => 'thumb-outline'));
-   
+
         $output .= html_writer::tag('a', $video->title, array('class' => 'activity-title',
                                                               'href' => $video->dialogURL));
-    
+
         $output .= html_writer::start_tag('a', array('class' => 'thumb-frame',
                                                      'href'  => $video->dialogURL,
                         'style' => 'background-image: url("'.$video->thumbnailURL.'");'));
@@ -263,7 +275,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         $output .= html_writer::end_tag('span'); // difficulty-label
 
         $output .= html_writer::end_tag('span'); // difficulty-level-indicator
-      
+
         $output .= html_writer::tag('span', $video->duration, array('class' => 'duration'));
 
         $output .= html_writer::end_tag('div'); // activity-outline

@@ -129,11 +129,11 @@ class activity {
     ////////////////////////////////////////////////////////////////////////////////
 
     public function get_view_url($escaped=null) {
-        return $this->url('view.php');
+        return $this->url('view.php', $escaped);
     }
 
     public function get_viewajax_url($escaped=null) {
-        return $this->url('view.ajax.php');
+        return $this->url('view.ajax.php', $escaped);
     }
 
     public function url($filepath, $escaped=null, $params=array()) {

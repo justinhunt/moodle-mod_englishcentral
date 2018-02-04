@@ -21,8 +21,10 @@
  * @category    output
  * @copyright   Gordon Bateson
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @since       2.9
  */
 define(["jquery"], function($) {
+    /** @alias module:mod_englishcentral/form */
     return {
         "init": function() {
 

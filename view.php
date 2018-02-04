@@ -105,10 +105,16 @@ $opts = array('accept'        => \mod_englishcentral\auth::ACCEPT_V1,
               'resultscontainer' => 'id_resultscontainer',
               'resultsmode' => 'ajax',
               'cmid'          => $ec->cm->id,
-              'moodlesession' => sesskey(),
+              'moodlesesskey' => sesskey(),
               'addvideourl'   => $ec->get_viewajax_url(false),
               'storeresultsurl' => $ec->get_viewajax_url(false));
+
 $PAGE->requires->js_call_amd("$ec->plugin/view", 'init', array($opts));
+
+// We could preload the string cache - it might speed things up.
+// Otherwise, the strings will be fetched as need by "core/str".
+//$strings = array();
+//$PAGE->strings_for_js($strings, $ec->plugin);
 
 echo $renderer->show_progress();
 
