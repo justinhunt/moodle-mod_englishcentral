@@ -79,22 +79,22 @@ class activity {
 
         if ($this->can_manage()) {
             $this->available = true;
-        } else if ($this->availableuntil && $this->availableuntil < $this->time) {
+        } else if ($this->activityopen && $this->activityopen > $this->time) {
             $this->available = false;
-        } else if ($this->availablefrom && $this->availablefrom > $this->time) {
+        } else if ($this->activityclose && $this->activityclose < $this->time) {
             $this->available = false;
         } else {
             $this->available = true;
         }
 
         if ($this->can_manage()) {
-            $this->readonly = false;
-        } else if ($this->readonlyuntil && $this->readonlyuntil > $this->time) {
-            $this->readonly = true;
-        } else if ($this->readonlyfrom && $this->readonlyfrom < $this->time) {
-            $this->readonly = true;
+            $this->viewable = true;
+        } else if ($this->videoopen && $this->videoopen > $this->time) {
+            $this->viewable = false;
+        } else if ($this->videoclose && $this->videoclose < $this->time) {
+            $this->viewable = false;
         } else {
-            $this->readonly = false;
+            $this->viewable = true;
         }
 
         $this->config = get_config($this->plugin);
@@ -121,7 +121,28 @@ class activity {
     }
 
     public function not_viewable() {
-        return ($this->readonly ? true : false);
+        return ($this->viewable ? false : true);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////
+    // URLs API
+    ////////////////////////////////////////////////////////////////////////////////
+
+    public function get_view_url($escaped=null) {
+        return $this->url('view.php', $escaped);
+    }
+
+    public function get_viewajax_url($escaped=null) {
+        return $this->url('view.ajax.php', $escaped);
+    }
+
+    public function url($filepath, $escaped=null, $params=array()) {
+        $url = '/'.$this->plugintype.'/'.$this->pluginname.'/'.$filepath;
+        $url = new \moodle_url($filepath, $params);
+        if (is_bool($escaped)) {
+            $url = $url->out($escaped);
+        }
+        return $url;
     }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -252,23 +273,20 @@ class activity {
 
     public function get_videoids() {
         global $DB;
-        if ($videos = $DB->get_records('englishcentral_videos', array('ecid' => $this->id))) {
-            return array_keys($videos);
-        }
-        return array();
+        return $DB->get_records_menu('englishcentral_videos', array('ecid' => $this->id), 'id', 'id,videoid');
     }
 
-    public function get_ecuserid() {
+    public function get_accountid() {
         global $DB, $USER;
-        return $DB->get_field('englishcentral_userids', 'ecuserid', array('userid' => $USER->id));
+        return $DB->get_field('englishcentral_accountids', 'accountid', array('userid' => $USER->id));
     }
 
-    public function get_ecuserids($groupid=0) {
+    public function get_accountids($groupid=0) {
         global $DB;
         $groupid = 0;
         if ($userids = $this->get_userids($groupid)) {
             list($select, $params) = $DB->get_in_or_equal($userids);
-            return $DB->get_records_select_menu('englishcentral_userids', "userid $select", $params, 'userid, ecuserid');
+            return $DB->get_records_select_menu('englishcentral_accountids', "userid $select", $params, 'userid, accountid');
         }
         return false;
     }

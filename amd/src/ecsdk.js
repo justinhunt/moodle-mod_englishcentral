@@ -1,5 +1,3 @@
-<?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,22 +13,16 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-
 /**
- * Defines the version of englishcentral
- *
- * This code fragment is called by moodle_needs_upgrading() and
- * /admin/index.php
- *
- * @package    mod_englishcentral
- * @copyright  2014 Justin Hunt, 2018 Gordon Bateson
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * Expose the global ECSDK variable.
+ * @module      mod_englishcentral
+ * @category    output
+ * @copyright   Gordon Bateson
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @since      2.9
  */
-
-defined('MOODLE_INTERNAL') || die();
-
-$plugin->component = 'mod_englishcentral';
-$plugin->maturity  = MATURITY_STABLE;
-$plugin->requires  = 2015051100; // Moodle 2.9
-$plugin->version   = 2018020417;
-$plugin->release   = '2018-02-04 (17)';
+define([], function() {
+    // This module exposes only the global ECSDK instance.
+    /** @alias module:mod_englishcentral/ecsdk */
+    return window.ECSDK;
+});

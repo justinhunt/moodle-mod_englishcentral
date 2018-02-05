@@ -84,25 +84,25 @@ class mod_englishcentral_mod_form extends moodleform_mod {
         $mform->setExpanded($name, true);
         //-----------------------------------------------------------------------------
 
-        $name = 'availablefrom';
+        $name = 'activityopen';
         $label = get_string($name, $plugin);
         $mform->addElement('date_time_selector', $name, $label, $dateoptions);
         $mform->addHelpButton($name, $name, $plugin);
         $this->set_type_default_advanced($mform, $config, $name, PARAM_INT);
 
-        $name = 'readonlyuntil';
+        $name = 'videoopen';
         $label = get_string($name, $plugin);
         $mform->addElement('date_time_selector', $name, $label, $dateoptions);
         $mform->addHelpButton($name, $name, $plugin);
         $this->set_type_default_advanced($mform, $config, $name, PARAM_INT);
 
-        $name = 'readonlyfrom';
+        $name = 'videoclose';
         $label = get_string($name, $plugin);
         $mform->addElement('date_time_selector', $name, $label, $dateoptions);
         $mform->addHelpButton($name, $name, $plugin);
         $this->set_type_default_advanced($mform, $config, $name, PARAM_INT);
 
-        $name = 'availableuntil';
+        $name = 'activityclose';
         $label = get_string($name, $plugin);
         $mform->addElement('date_time_selector', $name, $label, $dateoptions);
         $mform->addHelpButton($name, $name, $plugin);
