@@ -346,6 +346,48 @@ class auth {
         }
     }
 
+    public function generateVideoProgress($reportCardData) {
+        $videoProgress = array();
+        if (empty($reportCardData)) {
+            return $videoProgress;
+        }
+
+        foreach($reportCardData as $dialogProgress) {
+            $videoProgress[$dialogProgress['dialogID']] = array();
+            if ($dialogProgress['activities']) {
+                foreach($dialogProgress['activities'] as $activity) {
+                    switch ($activity['activityTypeID']) {
+                        case self::ACTIVITYTYPE_WATCHING:
+                            $videoProgress[$dialogProgress['dialogID']]['watch'] = $activity['completed'] ? 1 : 0;
+                            break;
+
+                        case self::ACTIVITYTYPE_LEARNING:
+                            $learnedWords = array();
+                            foreach($videoProgress[$dialogProgress['dialogID']]['learnedDialogLines'] as $learnedDialogLine) {
+                                foreach($learnedDialogLine['learnedWords'] as $learnedWord) {
+                                    if ($learnedWord['completed'] && !$learnedWord['incorrect']) {
+                                        $learnedWords[$learnedWord['wordHeadID']] = $learnedWord['wordHeadID'];
+                                    }
+                                }
+                            }
+
+                            $videoProgress[$dialogProgress['dialogID']]['learn'] = sizeof($learnedWords);
+
+                            // pass the wordHeadIDs to Reportcard GET /report/word/my/progress?wordHeadIDs=123,456,789 to get Word orthography and individual word progress
+                            $videoProgress[$dialogProgress['dialogID']]['learnedWordHeadIDs'] = $learnedWords;
+                            break;
+
+                        case self::ACTIVITYTYPE_SPEAKING:
+                            $videoProgress[$dialogProgress['dialogID']]['speak'] = sizeof($activity['spokenDialogLines']);
+                            break;
+                    }
+                }
+            }
+        }
+
+        return $videoProgress;
+    }
+
     public function missing_config() {
         $missing = array('partnerid' => '/^[0-9]+$/',
                          'consumerkey' => '/^[0-9a-fA-F]{32}$/',
