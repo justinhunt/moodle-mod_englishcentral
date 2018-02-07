@@ -27,14 +27,36 @@ define(["jquery", "core/str", "mod_englishcentral/html"], function($, STR, HTML)
     /** @alias module:mod_englishcentral/view */
     var VIEW = {};
 
-    /* set up strings */
+    // cache full plugin name
     VIEW.plugin = "mod_englishcentral";
+
+    // initialize string cache
     VIEW.str = {};
+
+    // set up strings
     STR.get_strings([
-        // TODO: add other strings here as required
-        {"key" : 'searchterm', "component" : VIEW.plugin},
+        {"key" : "addthisvideo",      "component" : VIEW.plugin},
+        {"key" : "advanced",          "component" : VIEW.plugin},
+        {"key" : "beginner",          "component" : VIEW.plugin},
+        {"key" : "clickwhenfinished", "component" : VIEW.plugin},
+        {"key" : "description",       "component" : VIEW.plugin},
+        {"key" : "entersearchterm",   "component" : VIEW.plugin},
+        {"key" : "intermediate",      "component" : VIEW.plugin},
+        {"key" : "searchterm",        "component" : VIEW.plugin},
+        {"key" : "topics",            "component" : VIEW.plugin},
+        {"key" : "transcript",        "component" : VIEW.plugin}
     ]).done(function(s) {
-        VIEW.str.searchterm = s[0];
+        var i = 0
+        VIEW.str.addthisvideo      = s[i++];
+        VIEW.str.advanced          = s[i++];
+        VIEW.str.beginner          = s[i++];
+        VIEW.str.clickwhenfinished = s[i++];
+        VIEW.str.description       = s[i++];
+        VIEW.str.entersearchterm   = s[i++];
+        VIEW.str.intermediate      = s[i++];
+        VIEW.str.searchterm        = s[i++];
+        VIEW.str.topics            = s[i++];
+        VIEW.str.transcript        = s[i++];
     });
 
     VIEW.init = function(opts) {
@@ -50,8 +72,15 @@ define(["jquery", "core/str", "mod_englishcentral/html"], function($, STR, HTML)
 
         $(".addvideos").click(function(){
 
-            // remove previous EC player
-            $("#" + VIEW.playercontainer).html("");
+            var container = document.getElementById(VIEW.playercontainer);
+            if (container) {
+                // remove previous EC player
+                $("#" + VIEW.playercontainer).html("");
+            } else {
+                container = document.createElement("DIV");
+                container.setAttribute("id", VIEW.playercontainer);
+                $(VIEW.progresscontainer).after(container);
+            }
 
             // create search box/results
             var html = "";
@@ -66,7 +95,7 @@ define(["jquery", "core/str", "mod_englishcentral/html"], function($, STR, HTML)
             $("#id_searchbutton").click(function(){
                 var term = $("#id_searchterm").val();
                 if (term=="") {
-                    $(".search-results").html("Please enter one or more search term.");
+                    $(".search-results").html(VIEW.str.entersearchterm);
                 } else {
                     VIEW.search_videos(term);
                 }
@@ -79,6 +108,52 @@ define(["jquery", "core/str", "mod_englishcentral/html"], function($, STR, HTML)
         // remove previous player
         $("#" + VIEW.playercontainer).html("");
 
+        // set handler for end of session
+        var usebutton = true;
+        if (usebutton) {
+            $("#id_sendresultsbutton").remove();
+            VIEW.dialogID = VIEW.get_videoid(elm);
+            var btn = HTML.tag("button", VIEW.str.clickwhenfinished, {"type" : "button", "id" : "id_sendresultsbutton"});
+            $(btn).click(function(){
+                $.ajax({
+                    "url" : VIEW.storeresultsurl,
+                    "data" : {"id"      : VIEW.cmid,
+                              "data"    : {"dialogID" : VIEW.dialogID,
+                                           "sdktoken" : VIEW.sdktoken},
+                              "action"  : "storeresults",
+                              "sesskey" : VIEW.moodlesesskey},
+                    "dataType" : "html",
+                    "success" : function(html){
+                        if (html.indexOf("englishcentral_progress") < 0) {
+                            $(".englishcentral_progress").html(html);
+                        } else {
+                            $(".englishcentral_progress").replaceWith(html);
+                        }
+                    }
+                });
+            }).insertBefore("#" + VIEW.playercontainer)
+        } else {
+            window.ECSDK.setOnSessionEndHandler(function(data) {
+                // AJAX call to send the data.dialogID to the Moodle server
+                // and receive the html for the updated Progress pie-charts
+                $.ajax({
+                    "url" : VIEW.storeresultsurl,
+                    "data" : {"id"      : VIEW.cmid,
+                              "data"    : {"dialogID" : data.dialogID,
+                                           "sdktoken" : VIEW.sdktoken},
+                              "action"  : "storeresults",
+                              "sesskey" : VIEW.moodlesesskey},
+                    "dataType" : "html",
+                    "success" : function(html){
+                        if (html.indexOf("englishcentral_progress") < 0) {
+                            $(".englishcentral_progress").html(html);
+                        } else {
+                            $(".englishcentral_progress").replaceWith(html);
+                        }
+                    }
+                });
+            });
+        }
 
         // initialize EC player
         window.ECSDK.loadWidget("player", {
@@ -113,7 +188,6 @@ define(["jquery", "core/str", "mod_englishcentral/html"], function($, STR, HTML)
     VIEW.format_results = function(info) {
         var videoids = VIEW.get_videoids();
         var html = "";
-        html += HTML.tag("p", info.count + " items found");
         for (var i=0; i<info.results.length; i++) {
             // skip videos that are already displayed
             var id = info.results[i].value.dialogID.toString();
@@ -122,6 +196,9 @@ define(["jquery", "core/str", "mod_englishcentral/html"], function($, STR, HTML)
             }
         }
         $(".search-results").html(html);
+        STR.get_string("xitemsfound", VIEW.plugin, info.count).done(function(s){
+            $(".search-results").prepend(HTML.tag("p", s));
+        });
         for (var i=0; i<info.results.length; i++) {
             var v = info.results[i].value;
             var data = {"dialogId"     : v.dialogID,
@@ -206,7 +283,7 @@ define(["jquery", "core/str", "mod_englishcentral/html"], function($, STR, HTML)
 
     VIEW.format_add = function(r) {
         var html = HTML.emptytag("img", {"src" : $(".addvideos .icon").prop("src"),
-                                         "title" : "Add this video"});
+                                         "title" : VIEW.str.addthisvideo});
         return HTML.tag("div", html, {"class" : "result-add",
                                       "id" : "id_add_video_" + r.value.dialogID});
     };
@@ -251,7 +328,7 @@ define(["jquery", "core/str", "mod_englishcentral/html"], function($, STR, HTML)
 
     VIEW.format_description = function(description) {
         if (description && description) {
-            return VIEW.format_detail("Description", description);
+            return VIEW.format_detail(VIEW.str.description, description);
         }
         return "";
     };
@@ -260,7 +337,7 @@ define(["jquery", "core/str", "mod_englishcentral/html"], function($, STR, HTML)
         if (transcript && transcript.length) {
             var dots = "...";
             var slashes = new RegExp("//", "g");
-            return VIEW.format_detail("Transcript", dots + transcript[0].replace(slashes, dots) + dots);
+            return VIEW.format_detail(VIEW.str.transcript, dots + transcript[0].replace(slashes, dots) + dots);
         }
         return "";
     };

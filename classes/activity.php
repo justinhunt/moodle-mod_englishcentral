@@ -70,9 +70,11 @@ class activity {
         if ($context) {
             $this->context = $context;
         } else if ($cm) {
-            $this->context = context_module($cm->id);;
+            $this->context = \context_module::instance($cm->id);;
+        } else if ($course) {
+            $this->context = \context_course::instance($course->id);
         } else {
-            $this->context = context_course($this->course->id);
+            $this->context = \context_system::instance();
         }
 
         $this->time = time();
@@ -108,7 +110,7 @@ class activity {
      * @param stdclass $course a row from the course table
      * @return reader the new reader object
      */
-    static public function create($instance, $cm, $course, $context=null) {
+    static public function create($instance=null, $cm=null, $course=null, $context=null) {
         return new activity($instance, $cm, $course, $context);
     }
 
@@ -333,4 +335,145 @@ class activity {
         }
         return NOGROUPS;
     }
+
+    public function get_progress() {
+        global $DB, $USER;
+        $progress = (object)array(
+            'watch' => 0,
+            'learn' => 0,
+            'speak' => 0,
+        );
+        $table = 'englishcentral_attempts';
+        $params = array('ecid' => $this->id,
+                        'userid' => $USER->id);
+        if ($attempts = $DB->get_records($table, $params)) {
+            foreach ($attempts as $attempt) {
+                $progress->watch += $attempt->watchcomplete;
+                $progress->learn += $attempt->learncount;
+                $progress->speak += $attempt->speakcount;
+            }
+        }
+        return $progress;
+    }
+
+    public function update_progress($dialog) {
+        global $DB, $USER;
+        $progress = $this->extract_progress($dialog);
+
+        // extract/create $attempt
+        $table = 'englishcentral_attempts';
+        $params = array('ecid' => $this-id,
+                        'userid' => $USER->id,
+                        'videoid' => $progress['dialogID']);
+        if ($attempt = $DB->get_record($table, $params)) {
+            // $USER has attempted this video before
+        } else {
+            $attempt = (object)$params;
+            $attempt->timecreated = $this->time;
+        }
+
+        foreach ($progress as $name => $value) {
+            $attempt->$name = $value;
+        }
+
+        if (empty($attempt->id)) {
+            return $DB->insert_record($table, $attempt);
+        } else {
+            return $DB->update_record($table, $attempt);
+        }
+    }
+
+	/**
+	 * Format data about dialog activities returned from EC ReportCard api
+	 * e.g. /rest/report/dialog/dialogID/progress
+	 *
+	 * @param array $dialog JSON data returned from EC REST call
+	 * @return array of $progress data
+	 */
+    public function extract_progress($dialog) {
+
+        // initialize totals for goals
+        $progress = array(
+            'dialogID' => $dialog->dialogID,
+
+            'watchcomplete' => 0,
+            'watchtotal'    => 0,
+            'watchcount'    => 0,
+            'watchlineids'  => array(), // dialogLineID's of lines watched,
+
+            'learncomplete' => 0,
+            'learntotal'    => 0,
+            'learncount'    => 0,
+            'learnwordids'  => array(), // wordHeadID's of words learned,
+
+            'speakcomplete' => 0,
+            'speaktotal'    => 0,
+            'speakcount'    => 0,
+            'speaklineids'  => array(), // dialogLineID's of lines spoken,
+
+            'totalpoints'   => 0,
+            'sessionScore'  => 0,
+            'sessionGrade'  => '', // A-F
+
+            'activetime'    => 0,
+            'totaltime'     => 0,
+        );
+
+        if (empty($dialog->activities)) {
+            return $progress;
+        }
+
+        foreach($dialog->activities as $activity) {
+
+            // activityType     : watchActivity
+            // activityID       : 208814
+            // activityPoints   : 10
+            // activityProgress : 1
+            // completed        : 1
+            
+            $progress['totalActiveTime'] = 0;
+            $progress['activeTime']      = 0;
+            $progress['totalpoints']     = $activity->totalPoints;
+
+            // extract DB fields
+            switch ($activity->activityTypeID) {
+
+                case \mod_englishcentral\auth::ACTIVITYTYPE_WATCHING: // =9
+                    $progress['watchcomplete'] = $activity->completed;
+                    foreach ($activity->watchedDialogLines as $line) {
+                        $progress['watchlineids'][$line->dialogLineID] = 1;
+                    }
+                    break;
+
+                case \mod_englishcentral\auth::ACTIVITYTYPE_LEARNING: // =10
+                    $progress['learncomplete'] = ($activity->completed ? 1 : 0);
+                    foreach ($activity->learnedDialogLines as $line) {
+                        foreach($line->learnedWords as $word) {
+                            if ($word->completed && ! $word->incorrect) {
+                                $progress['learnwordids'][$word->wordHeadID] = 1;
+                            }
+                        }
+                    }
+                    break;
+
+                case \mod_englishcentral\auth::ACTIVITYTYPE_SPEAKING: // =11
+                    $progress['speakcomplete'] = ($activity->completed ? 1 : 0);
+                    foreach ($activity->spokenDialogLines as $line) {
+                        $progress['speaklineids'][$line->dialogLineID] = 1;
+                    }
+                    break;
+            }
+        }
+
+        $progress['watchcount'] += count($progress['watchlineids']);
+        $progress['learncount'] += count($progress['learnwordids']);
+        $progress['speakcount'] += count($progress['speaklineids']);
+
+        $progress['watchlineids'] = implode(',', array_keys($progress['watchlineids']));
+        $progress['learnwordids'] = implode(',', array_keys($progress['learnwordids']));
+        $progress['speaklineids'] = implode(',', array_keys($progress['speaklineids']));
+
+        return $progress;
+    }
+
 }

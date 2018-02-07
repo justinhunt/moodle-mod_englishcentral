@@ -1,23 +1,23 @@
 /** styles for goals on EDIT form  */
 
 #page-mod-englishcentral-mod #fgroup_id_watchgoalgroup {
-    background:       #d4edf7; // #fec;
-    border: 2px solid #23a1da; // #fc8
+    background:       #d4edf7;
+    border: 2px solid #23a1da; /* BLUE */
 }
 
 #page-mod-englishcentral-mod #fgroup_id_learngoalgroup {
-    background:       #fdf0e8; // #fef;
-    border: 2px solid #eb6613; // #f9f
+    background:       #fbe0d0;
+    border: 2px solid #eb6613; /* RED */
 }
 
 #page-mod-englishcentral-mod #fgroup_id_speakgoalgroup {
-    background:       #e9f4d7; // #eff;
-    border: 2px solid #a4d05c; // #9ff
+    background:       #e9f4d7;
+    border: 2px solid #a4d05c; /* GREEN */
 }
 
 #page-mod-englishcentral-mod #fgroup_id_studygoalgroup {
-    background:       #fef;
-    border: 2px solid #f9f;
+    background:       #f8f8f8;
+    border: 2px solid    #aaa; /* GREY */
 }
 
 #page-mod-englishcentral-mod .mathsymbol {
@@ -53,6 +53,88 @@
 }
 
 /** styles on VIEW page */
+
+#page-mod-englishcentral-view #id_progresscontainer {
+    background:    #fffff8;
+    border-radius:     6px;
+    border: 2px solid #ccc;
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.16),
+                0 2px 10px 0 rgba(0,0,0,0.12);
+    margin:       12px 6px;
+    max-width:       800px;
+    padding:      6px 18px;
+}
+
+#page-mod-englishcentral-view .timing {
+    display: inline-block;
+    width:          180px;
+}
+
+#page-mod-englishcentral-view .timing h4 {
+    margin:       8px 0px;
+}
+
+#page-mod-englishcentral-view .timing dl {
+    clear:           both;
+    font-size:      0.9em;
+    margin:           0px;
+}
+
+#page-mod-englishcentral-view .timing dt,
+#page-mod-englishcentral-view .timing dd {
+    float:           left;
+    margin:           0px;
+    padding:          0px;
+}
+
+#page-mod-englishcentral-view .timing dt {
+    max-width:       34px;
+    margin-right:     6px;
+}
+
+#page-mod-englishcentral-view .timing dt:after {
+    content:          ":";
+}
+
+#page-mod-englishcentral-view .timing dd {
+    max-width: calc(100% - 60px);
+}
+
+#page-mod-englishcentral-view .total,
+#page-mod-englishcentral-view .watch,
+#page-mod-englishcentral-view .learn,
+#page-mod-englishcentral-view .speak {
+    border-radius:    50%;
+    border-style:   solid;
+    border-width:    20px;
+    display: inline-block;
+    height:          70px;
+    margin:           6px;
+    padding-top:     30px;
+    text-align:    center;
+    vertical-align:   top;
+    width:          100px;
+}
+
+#page-mod-englishcentral-view .total {
+    background:   #f0f0f0;
+    border-color:    #aaa; /* GREY */
+}
+
+#page-mod-englishcentral-view .watch {
+    background:   #d4edf7;
+    border-color: #23a1da; /* BLUE */
+}
+
+#page-mod-englishcentral-view .learn {
+    background:   #fbe0d0;
+    border-color: #eb6613; /* RED */
+}
+
+#page-mod-englishcentral-view .speak {
+    background:   #e9f4d7;
+    border-color: #a4d05c; /* GREEN */
+}
 
 #page-mod-englishcentral-view .addvideos {
     background:             #efc;
@@ -185,7 +267,7 @@
 
 /**
  * EC thumbnail styles
- * (https://gist.github.com/jetlogs/fc728be500ba72714e8a4dafdc4bf21e)
+ * (https:gist.github.com/jetlogs/fc728be500ba72714e8a4dafdc4bf21e)
 **/
 
 #page-mod-englishcentral-view .activity-thumbnail {
@@ -195,6 +277,7 @@
     line-height: 1;
     margin: 0.35em 1.0em;
     max-width: 160px; /* 195px; */
+    min-width: 120px;
 }
 
 #page-mod-englishcentral-view .activity-progress {
@@ -225,7 +308,7 @@
 }
 
 #page-mod-englishcentral-view .activity-thumbnail .play-icon {
-    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAAnFBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGBgYMDAwREREXFxccHBwiIiIsLCw1NTU/Pz9NTU1ZWVllZWVwcHB+fn6FhYWLi4uXl5ejo6OxsbG2tra6urq/v7/ExMTNzc3V1dXh4eHm5ubs7Ozv7+/y8vL29vb5+fn6+vr8/Pz9/f3///8PYru4AAAAM3RSTlMAAyMkMDIzWVpcbm9xfX6AgYOEhoeJjI+SlpufpKqtsLa8w8bJzM/V2+Tp7fDz9vn7/P6SVZHeAAAA7UlEQVRIx7XW2VLCQBCF4TMMgZCEjIiiuCFugAsu5/3fjQv1Ri3Jn6qcy1R9FzPp6W5JUugPi7Q3xbAf9JVYpoYp46fI6tQ4dSZJPSBSqntSKBNKETRIMAPllIxUUVJpTMlYv79Njv83f5Cjp1NMvD3HxO8LTOzbA0y8nmLixxNM/HKGid8uMbGXnHh1iIk3M0z8PMfErxeY+OMaE/t+gskDJsvuj88vmf9KXjA3uPivun9i/CHzdnFHm9LP4u2iwfI2vndYtBhJLQbfiI/XFkOcrgplkCJbSGK7tUeKjW+tit8LWcjyBqrKsyBJO3XAtmsmt1NVAAAAAElFTkSuQmCC");
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAAnFBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGBgYMDAwREREXFxccHBwiIiIsLCw1NTU/Pz9NTU1ZWVllZWVwcHB+fn6FhYWLi4uXl5ejo6OxsbG2tra6urq/v7/ExMTNzc3V1dXh4eHm5ubs7Ozv7+/y8vL29vb5+fn6+vr8/Pz9/f3/*/8PYru4AAAAM3RSTlMAAyMkMDIzWVpcbm9xfX6AgYOEhoeJjI+SlpufpKqtsLa8w8bJzM/V2+Tp7fDz9vn7/P6SVZHeAAAA7UlEQVRIx7XW2VLCQBCF4TMMgZCEjIiiuCFugAsu5/3fjQv1Ri3Jn6qcy1R9FzPp6W5JUugPi7Q3xbAf9JVYpoYp46fI6tQ4dSZJPSBSqntSKBNKETRIMAPllIxUUVJpTMlYv79Njv83f5Cjp1NMvD3HxO8LTOzbA0y8nmLixxNM/HKGid8uMbGXnHh1iIk3M0z8PMfErxeY+OMaE/t+gskDJsvuj88vmf9KXjA3uPivun9i/CHzdnFHm9LP4u2iwfI2vndYtBhJLQbfiI/XFkOcrgplkCJbSGK7tUeKjW+tit8LWcjyBqrKsyBJO3XAtmsmt1NVAAAAAElFTkSuQmCC");
     background-repeat: no-repeat;
     background-position: center center;
     width: 100%;

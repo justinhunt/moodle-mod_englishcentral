@@ -60,17 +60,17 @@ $string['partneridexplain'] = 'Your partnerid is available from EnglishCentral.c
 
 $string['goals_help'] = 'Define goals for Watch, Learn, Speak and Study time';
 $string['goals'] = 'Goals';
-$string['learngoal_help'] = 'Specify the target number of words to learn.';
+$string['learngoal_help'] = 'The target number of words to learn.';
 $string['learngoal'] = 'Learn';
-$string['learngoalunits'] = '(words)';
+$string['learngoalunits'] = 'words';
 $string['learnwords'] = '{$a} words';
-$string['goalperiod_help'] = 'Specify the time period and the day or date by which these goals should be achieved.';
+$string['goalperiod_help'] = 'The time period and the day or date by which these goals should be achieved.';
 $string['goalperiod'] = 'Goal period';
-$string['speakgoal_help'] = 'Specify the target number of lines to speak.';
+$string['speakgoal_help'] = 'The target number of lines to speak.';
 $string['speakgoal'] = 'Speak';
-$string['speakgoalunits'] = '(lines)';
+$string['speakgoalunits'] = 'lines';
 $string['speaklines'] = '{$a} lines';
-$string['studygoal_help'] = 'Specify the target number of minutes/hours to study.
+$string['studygoal_help'] = 'The target number of minutes/hours to study.
 
 The study time is calculated using the following formula:
 
@@ -78,11 +78,16 @@ The study time is calculated using the following formula:
 + (number of words learned) x 1 minute
 + (number of lines spoken) x 1 minute';
 $string['studygoal'] = 'Study time';
-$string['studygoalunits'] = '(minutes)';
-$string['watchgoal_help'] = 'Specify the target number of videos to watch.';
+$string['studygoalunits'] = 'minutes';
+$string['watchgoal_help'] = 'The target number of videos to watch.';
 $string['watchgoal'] = 'Watch';
-$string['watchgoalunits'] = '(videos)';
+$string['watchgoalunits'] = 'videos';
 $string['watchvideos'] = '{$a} videos';
+$string['achieved'] = 'achieved';
+$string['yourprogress'] = 'Your progress';
+
+$string['from'] = 'From';
+$string['until'] = 'Until';
 
 $string['activityname_help'] = 'This is the content of the help tooltip associated with the englishcentralname field. Markdown syntax is supported.';
 $string['activityname'] = 'Activity Name';
@@ -123,8 +128,16 @@ $string['beginner'] = 'Beginner';
 $string['intermediate'] = 'Intermediate';
 $string['advanced'] = 'Advanced';
 $string['levelx'] = 'Level {$a}';
+
 $string['addvideos'] = 'Add videos';
 $string['searchterm'] = 'Search term(s)';
+$string['entersearchterm'] = 'Please enter one or more search terms.';
+$string['xitemsfound'] = '{$a} items found';
+$string['clickwhenfinished'] = "Click me when you've finished";
+$string['addthisvideo'] = 'Add this video';
+$string['description'] = 'Description';
+$string['topics'] = 'Topic(s)';
+$string['transcript'] = 'Transcript';
 
 // deprecated strings
 

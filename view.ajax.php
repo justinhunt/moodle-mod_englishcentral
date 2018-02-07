@@ -54,6 +54,10 @@ if ($action=='storeresults') {
     $ec->req('manage'); // teacher
 }
 
+// initialize the renderer
+$renderer = $PAGE->get_renderer($ec->plugin);
+$renderer->attach_activity_and_auth($ec, $auth);
+
 switch ($action) {
 
     case 'addvideo':
@@ -68,13 +72,16 @@ switch ($action) {
                 unset($record['id']);
                 $record['id'] = $DB->insert_record($table, $record);
             }
-
-            $ec = \mod_englishcentral\activity::create($instance, $cm, $course, $context);
-            $auth = \mod_englishcentral\auth::create($ec);
-
-            $renderer = $PAGE->get_renderer($ec->plugin);
-            $renderer->attach_activity_and_auth($ec, $auth);
             echo $renderer->show_video($data);
+        }
+        break;
+
+    case 'storeresults':
+        if (is_array($data) && array_key_exists('dialogID', $data)) {
+            $data = (object)$data;
+            $dialog = $auth->fetch_dialog_progress($data->dialogID, $data->sdk_token);
+            $ec->update_progress($dialog);
+            echo $renderer->show_progress();
         }
         break;
 }

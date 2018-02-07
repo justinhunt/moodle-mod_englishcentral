@@ -68,7 +68,7 @@ function xmldb_englishcentral_upgrade($oldversion) {
 
         $table = new xmldb_table('englishcentral_userids');
 
-        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE);
         $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
         $table->add_field('ecuserid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
 
@@ -85,7 +85,7 @@ function xmldb_englishcentral_upgrade($oldversion) {
 
         $table = new xmldb_table('englishcentral_videos');
 
-        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE);
         $table->add_field('ecid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
         $table->add_field('videoid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
 
@@ -163,21 +163,21 @@ function xmldb_englishcentral_upgrade($oldversion) {
         $fields = array('englishcentralid' => 'ecid');
         $oldname = 'englishcentral_attempt';
 
-        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
-        $table->add_field('ecid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
-        $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
-        $table->add_field('videoid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
-        $table->add_field('linestotal', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
-        $table->add_field('totalactivetime', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
-        $table->add_field('watchedcomplete', XMLDB_TYPE_INTEGER, '2', null, null, null, null);
-        $table->add_field('activetime', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
-        $table->add_field('datecompleted', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
-        $table->add_field('linesrecorded', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
-        $table->add_field('lineswatched', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
-        $table->add_field('points', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
-        $table->add_field('recordingcomplete', XMLDB_TYPE_INTEGER, '2', null, null, null, null);
-        $table->add_field('sessiongrade', XMLDB_TYPE_CHAR, '255', null, null, null, null);
-        $table->add_field('sessionscore', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE);
+        $table->add_field('ecid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL);
+        $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL);
+        $table->add_field('videoid', XMLDB_TYPE_INTEGER, '10');
+        $table->add_field('linestotal', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL);
+        $table->add_field('totalactivetime', XMLDB_TYPE_INTEGER, '10');
+        $table->add_field('watchedcomplete', XMLDB_TYPE_INTEGER, '2');
+        $table->add_field('activetime', XMLDB_TYPE_INTEGER, '10');
+        $table->add_field('datecompleted', XMLDB_TYPE_INTEGER, '10');
+        $table->add_field('linesrecorded', XMLDB_TYPE_INTEGER, '10');
+        $table->add_field('lineswatched', XMLDB_TYPE_INTEGER, '10');
+        $table->add_field('points', XMLDB_TYPE_INTEGER, '10');
+        $table->add_field('recordingcomplete', XMLDB_TYPE_INTEGER, '2');
+        $table->add_field('sessiongrade', XMLDB_TYPE_CHAR, '255');
+        $table->add_field('sessionscore', XMLDB_TYPE_INTEGER, '10');
         $table->add_field('status', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, '0');
         $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
 
@@ -197,10 +197,10 @@ function xmldb_englishcentral_upgrade($oldversion) {
         $fields = array('englishcentralid' => 'ecid');
         $oldname = 'englishcentral_phs';
 
-        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
-        $table->add_field('ecid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
-        $table->add_field('attemptid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
-        $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE);
+        $table->add_field('ecid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL);
+        $table->add_field('attemptid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL);
+        $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL);
         $table->add_field('phoneme', XMLDB_TYPE_CHAR, '255', null, null, null, '');
         $table->add_field('badcount', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
         $table->add_field('goodcount', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
@@ -239,7 +239,7 @@ function xmldb_englishcentral_upgrade($oldversion) {
         $fields = array('ecuserid' => 'accountid');
         $oldname = 'englishcentral_userids';
 
-        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE);
         $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
         $table->add_field('accountid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
 
@@ -255,6 +255,8 @@ function xmldb_englishcentral_upgrade($oldversion) {
 
     $newversion = 2018020417;
     if ($oldversion < $newversion) {
+
+        // rename timing fields in main "englishcentral" table
         $table = new xmldb_table('englishcentral');
         $fields = array(
             'activityopen'  => new xmldb_field('availablefrom',  XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0'),
@@ -284,6 +286,71 @@ function xmldb_englishcentral_upgrade($oldversion) {
         upgrade_mod_savepoint(true, "$newversion", 'englishcentral');
     }
 
+    $newversion = 2018020718;
+    if ($oldversion < $newversion) {
+
+        // Define table englishcentral_attempts to be created.
+        $table = new xmldb_table('englishcentral_attempts');
+
+        // define modified  field names (OLD => NEW)
+        $fields = array(
+            'lineswatched'      => 'watchcount',
+            'watchedcomplete'   => 'watchcomplete',
+            'linestotal'        => 'speaktotal',
+            'linesrecorded'     => 'speakcount',
+            'recordingcomplete' => 'speakcomplete',
+            'points'            => 'totalpoints',
+            'totalactivetime'   => 'totaltime',
+            'datecompleted'     => 'timecompleted',
+        );
+
+        $table->add_field('id',            XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE);
+        $table->add_field('ecid',          XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL);
+        $table->add_field('userid',        XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL);
+        $table->add_field('videoid',       XMLDB_TYPE_INTEGER, '10');
+
+        $table->add_field('watchcomplete', XMLDB_TYPE_INTEGER,  '2');
+        $table->add_field('watchtotal',    XMLDB_TYPE_INTEGER, '10'); // number of watchable lines
+        $table->add_field('watchcount',    XMLDB_TYPE_INTEGER, '10'); // number of lines watched
+        $table->add_field('watchlineids',  XMLDB_TYPE_CHAR,   '255'); // list of comma-separated ids
+
+        $table->add_field('learncomplete', XMLDB_TYPE_INTEGER,  '2');
+        $table->add_field('learntotal',    XMLDB_TYPE_INTEGER, '10'); // number of learnable words
+        $table->add_field('learncount',    XMLDB_TYPE_INTEGER, '10'); // number of words learned
+        $table->add_field('learnwordids',  XMLDB_TYPE_CHAR,   '255'); // list of comma-separated ids
+
+        $table->add_field('speakcomplete', XMLDB_TYPE_INTEGER,  '2');
+        $table->add_field('speaktotal',    XMLDB_TYPE_INTEGER, '10'); // number of speakable lines
+        $table->add_field('speakcount',    XMLDB_TYPE_INTEGER, '10'); // number of lines spoken
+        $table->add_field('speaklineids',  XMLDB_TYPE_CHAR,   '255'); // list of comma-separated ids
+
+        $table->add_field('totalpoints',   XMLDB_TYPE_INTEGER, '10');
+        $table->add_field('sessiongrade',  XMLDB_TYPE_CHAR,   '255'); // EC grade (e.g. "A")
+        $table->add_field('sessionscore',  XMLDB_TYPE_INTEGER, '10'); // EC numeric score (e.g. 97)
+
+        $table->add_field('activetime',    XMLDB_TYPE_INTEGER, '10');
+        $table->add_field('totaltime',     XMLDB_TYPE_INTEGER, '10');
+
+        $table->add_field('timecompleted', XMLDB_TYPE_INTEGER, '10');
+        $table->add_field('timecreated',   XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+
+        // the following fields doesn't seem to be necessary
+        $table->add_field('status',        XMLDB_TYPE_INTEGER,  '2', null, XMLDB_NOTNULL, null, '0');
+
+        // keys for englishcentral_attempts
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('englatte_ecid', XMLDB_KEY_FOREIGN, array('ecid'), 'englishcentral', array('id'));
+        $table->add_key('englatte_userid', XMLDB_KEY_FOREIGN, array('userid'), 'user', array('id'));
+
+        // indexes for englishcentral_attempts
+        $table->add_index('englatte_videoid', XMLDB_INDEX_NOTUNIQUE, array('videoid'));
+
+        // create/modify the table
+        xmldb_englishcentral_create_table($dbman, $table, $fields);
+
+        upgrade_mod_savepoint(true, "$newversion", 'englishcentral');
+    }
+
     return true;
 }
 
@@ -294,7 +361,7 @@ function xmldb_englishcentral_replace_table($dbman, $table, $fields, $oldname) {
     xmldb_englishcentral_create_table($dbman, $table);
 
     if ($dbman->table_exists($oldname)) {
-        if ($records = $DB->get_records($oldname, null)) {
+        if ($records = $DB->get_records($oldname)) {
             foreach ($records as $record) {
                 if ($table_exists && $DB->record_exists($table->getName(), array('id' => $record->id))) {
                     continue; // record has already been transferred
@@ -310,11 +377,22 @@ function xmldb_englishcentral_replace_table($dbman, $table, $fields, $oldname) {
     }
 }
 
-function xmldb_englishcentral_create_table($dbman, $table) {
+function xmldb_englishcentral_create_table($dbman, $table, $fields=array()) {
     global $DB;
     if ($dbman->table_exists($table)) {
+        $previous = ''; // name of previous field in DB
         $indexes = $DB->get_indexes($table->getName());
         foreach ($table->getFields() as $field) {
+            if ($previous) {
+                $field->setPrevious($previous);
+            }
+            $newname = $field->getName();
+            $oldname = array_search($newname, $fields);
+            if ($oldname && $dbman->field_exists($table, $oldname)) {
+                $field->setName($oldname);
+                $dbman->rename_field($table, $field, $newname);
+                $field->setName($newname);
+            }
             if ($dbman->field_exists($table, $field)) {
                 $can_update = true;
                 foreach ($indexes as $indexname => $index) {
@@ -329,6 +407,7 @@ function xmldb_englishcentral_create_table($dbman, $table) {
             } else {
                 $dbman->add_field($table, $field);
             }
+            $previous = $field->getName();
         }
     } else {
         $dbman->create_table($table);

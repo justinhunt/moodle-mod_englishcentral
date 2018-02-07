@@ -93,16 +93,16 @@ echo $renderer->show_intro();
 echo $renderer->show_dates_available();
 
 // get ECSDK javascript object
-// https://www.qaenglishcentral.com/partnersdk/sdk.js
-$PAGE->requires->js($auth->get_js_url(), true);
+$PAGE->requires->js($auth->get_js_url());
 
 $opts = array('accept'        => \mod_englishcentral\auth::ACCEPT_V1,
               'authorization' => $auth->get_authorization(),
               'searchurl'     => $auth->get_search_url(),
               'sdktoken'      => $auth->get_sdk_token(),
               'consumerkey'   => $auth->consumerkey,
-              'playercontainer' => 'id_playercontainer',
-              'resultscontainer' => 'id_resultscontainer',
+              'progresscontainer' => 'id_progresscontainer',
+              'playercontainer'   => 'id_playercontainer',
+              'resultscontainer'  => 'id_resultscontainer',
               'resultsmode'   => 'ajax',
               'cmid'          => $ec->cm->id,
               'moodlesesskey' => sesskey(),
@@ -120,8 +120,8 @@ echo $renderer->show_progress();
 
 if ($ec->viewable) {
     echo $renderer->show_videos($ec);
-    echo '<div id="id_playercontainer">PLAYER goes here</div>';
-    echo '<div id="id_resultscontainer">RESULTS go here</div>';
+    echo '<div id="id_playercontainer"></div>';
+    echo '<div id="id_resultscontainer"></div>';
 } else {
     echo $renderer->show_notviewable($ec);
 }

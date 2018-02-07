@@ -31,7 +31,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
     protected $auth = null;
 
     /**
-     * attach the $ec object so it is accessible throughout this class
+     * attach the $ec & $auth objects so they are accessible throughout this class
      *
      * @param object $ec a \mod_englishcentral/activity Object.
      * @return void
@@ -48,19 +48,23 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
      * @return string
      */
     public function header($extrapagetitle=null) {
-        $activityname = format_string($this->ec->name, true, $this->ec->course);
-        $title = $this->ec->course->shortname.': '.$activityname;
-        if ($extrapagetitle) {
-            $title .= ': '.$extrapagetitle;
+        if (isset($this->ec->id)) {
+            $activityname = format_string($this->ec->name, true, $this->ec->course);
+            $title = $this->ec->course->shortname.': '.$activityname;
+            if ($extrapagetitle) {
+                $title .= ': '.$extrapagetitle;
+            }
+            $this->page->set_title($title);
+            $this->page->set_heading($this->ec->course->fullname);
         }
-        $this->page->set_title($title);
-        $this->page->set_heading($this->ec->course->fullname);
 
         $output = $this->output->header();
-        if ($this->ec->can_manage()) {
-            $output .= $this->output->heading_with_help($activityname, 'overview', 'englishcentral');
-        } else {
-            $output .= $this->output->heading($activityname);
+        if (isset($this->ec->id)) {
+            if ($this->ec->can_manage()) {
+                $output .= $this->output->heading_with_help($activityname, 'overview', 'englishcentral');
+            } else {
+                $output .= $this->output->heading($activityname);
+            }
         }
         return $output;
     }
@@ -199,20 +203,47 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
      * Show the EC progress element
      */
     public function show_progress() {
-        $output = '';
-        $output .= $this->output->box_start('englishcentral_progress');
-        if ($videoids = $this->ec->get_videoids()) {
-            $progress = $this->auth->fetch_dialog_progress($videoids);
-            $debug = false; // enable this during development
-            if ($debug) {
-                print_object($progress);
-            }
-            /////////////////////////////////////////////////////////
-            // code to format progress data goes here
-            /////////////////////////////////////////////////////////
-            $output .= 'PROGRESS data goes here';
+
+        $progress = $this->ec->get_progress();
+
+        if ($total = ($this->ec->watchgoal + $this->ec->learngoal + $this->ec->speakgoal)) {
+            $total = (($progress->watch + $progress->learn + $progress->speak) / $total);
+            $total = round(100 * $total, 0);
         } else {
-            $output .= 'No progress to report so far';
+            $total = 0; // unusual - no goals have been set up yet !!
+        }
+
+        $output = '';
+        $output .= $this->output->box_start('englishcentral_progress', 'id_progresscontainer');
+
+        $timing = '';
+        if ($open = ($this->ec->videoopen ? $this->ec->videoopen : $this->ec->activityopen)) {
+            $timing .= html_writer::tag('dt', $this->ec->get_string('from'));
+            $timing .= html_writer::tag('dd', userdate($open));
+        }
+        if ($close = ($this->ec->videoclose ? $this->ec->videoclose : $this->ec->activityclose)) {
+            $timing .= html_writer::tag('dt', $this->ec->get_string('until'));
+            $timing .= html_writer::tag('dd', userdate($close));
+        }
+        if ($timing) {
+            $timing = html_writer::tag('dl', $timing);
+        }
+        $timing = html_writer::tag('h4', $this->ec->get_string('yourprogress')).$timing;
+        $output .= html_writer::tag('div', $timing, array('class' => 'timing'));
+
+        $text = html_writer::tag('span', $total, array('class' => 'percentnumber')).
+                html_writer::tag('span', '%', array('class' => 'percentsign'));
+        $text = html_writer::tag('div', $text, array('class' => 'percent')).
+                html_writer::tag('div', $this->ec->get_string('achieved'), array('class' => 'achieved'));
+        $output .= html_writer::tag('div', $text, array('class' => 'total'));
+
+        $goals = array('watch', 'learn', 'speak');
+        foreach ($goals as $goal) {
+            $text = html_writer::tag('span', $progress->$goal, array('class' => 'numerator')).
+                    html_writer::tag('span', ' / '.$this->ec->{$goal.'goal'}, array('class' => 'divisor'));
+            $text = html_writer::tag('div', $text, array('class' => 'fraction')).
+                    html_writer::tag('div', $this->ec->get_string($goal.'goalunits'), array('class' => 'units'));
+            $output .= html_writer::tag('div', $text, array('class' => $goal));
         }
         $output .= $this->output->box_end();
         return $output;
@@ -230,9 +261,11 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
                 $output .= $this->show_video($video);
             }
         } else {
-            $output .= $this->ec->get_string('novideos');
+            $output .= html_writer::tag('p', $this->ec->get_string('novideos'));
         }
-        $output .= $this->add_videos_button();
+        if ($this->ec->can_manage()) {
+            $output .= $this->add_videos_button();
+        }
         $output .= $this->output->box_end();
         return $output;
     }
