@@ -308,12 +308,20 @@
 }
 
 #page-mod-englishcentral-view .activity-thumbnail .play-icon {
-    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAAnFBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGBgYMDAwREREXFxccHBwiIiIsLCw1NTU/Pz9NTU1ZWVllZWVwcHB+fn6FhYWLi4uXl5ejo6OxsbG2tra6urq/v7/ExMTNzc3V1dXh4eHm5ubs7Ozv7+/y8vL29vb5+fn6+vr8/Pz9/f3/*/8PYru4AAAAM3RSTlMAAyMkMDIzWVpcbm9xfX6AgYOEhoeJjI+SlpufpKqtsLa8w8bJzM/V2+Tp7fDz9vn7/P6SVZHeAAAA7UlEQVRIx7XW2VLCQBCF4TMMgZCEjIiiuCFugAsu5/3fjQv1Ri3Jn6qcy1R9FzPp6W5JUugPi7Q3xbAf9JVYpoYp46fI6tQ4dSZJPSBSqntSKBNKETRIMAPllIxUUVJpTMlYv79Njv83f5Cjp1NMvD3HxO8LTOzbA0y8nmLixxNM/HKGid8uMbGXnHh1iIk3M0z8PMfErxeY+OMaE/t+gskDJsvuj88vmf9KXjA3uPivun9i/CHzdnFHm9LP4u2iwfI2vndYtBhJLQbfiI/XFkOcrgplkCJbSGK7tUeKjW+tit8LWcjyBqrKsyBJO3XAtmsmt1NVAAAAAElFTkSuQmCC");
-    background-repeat: no-repeat;
+    background-image: url([[pix:mod_englishcentral|play]]);
     background-position: center center;
+    background-repeat: no-repeat;
     width: 100%;
     height: 100%;
     display: none;
+}
+
+#page-mod-englishcentral-view .activity-thumbnail .inprogress {
+    background-image: url([[pix:mod_englishcentral|inprogress]]);
+}
+
+#page-mod-englishcentral-view .activity-thumbnail .completed {
+    background-image: url([[pix:mod_englishcentral|completed]]);
 }
 
 #page-mod-englishcentral-view .activity-title {
