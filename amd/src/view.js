@@ -22,7 +22,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since       2.9
  */
-define(["jquery", "core/str", "mod_englishcentral/html"], function($, STR, HTML) {
+define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($, JUI, STR, HTML) {
 
     /** @alias module:mod_englishcentral/view */
     var VIEW = {};
@@ -35,28 +35,30 @@ define(["jquery", "core/str", "mod_englishcentral/html"], function($, STR, HTML)
 
     // set up strings
     STR.get_strings([
-        {"key" : "addthisvideo",      "component" : VIEW.plugin},
-        {"key" : "advanced",          "component" : VIEW.plugin},
-        {"key" : "beginner",          "component" : VIEW.plugin},
-        {"key" : "clickwhenfinished", "component" : VIEW.plugin},
-        {"key" : "description",       "component" : VIEW.plugin},
-        {"key" : "entersearchterm",   "component" : VIEW.plugin},
-        {"key" : "intermediate",      "component" : VIEW.plugin},
-        {"key" : "searchterm",        "component" : VIEW.plugin},
-        {"key" : "topics",            "component" : VIEW.plugin},
-        {"key" : "transcript",        "component" : VIEW.plugin}
+        {"key" : "addthisvideo",       "component" : VIEW.plugin},
+        {"key" : "advanced",           "component" : VIEW.plugin},
+        {"key" : "beginner",           "component" : VIEW.plugin},
+        {"key" : "clickwhenfinished",  "component" : VIEW.plugin},
+        {"key" : "confirmremovevideo", "component" : VIEW.plugin},
+        {"key" : "description",        "component" : VIEW.plugin},
+        {"key" : "entersearchterm",    "component" : VIEW.plugin},
+        {"key" : "intermediate",       "component" : VIEW.plugin},
+        {"key" : "searchterm",         "component" : VIEW.plugin},
+        {"key" : "topics",             "component" : VIEW.plugin},
+        {"key" : "transcript",         "component" : VIEW.plugin}
     ]).done(function(s) {
         var i = 0
-        VIEW.str.addthisvideo      = s[i++];
-        VIEW.str.advanced          = s[i++];
-        VIEW.str.beginner          = s[i++];
-        VIEW.str.clickwhenfinished = s[i++];
-        VIEW.str.description       = s[i++];
-        VIEW.str.entersearchterm   = s[i++];
-        VIEW.str.intermediate      = s[i++];
-        VIEW.str.searchterm        = s[i++];
-        VIEW.str.topics            = s[i++];
-        VIEW.str.transcript        = s[i++];
+        VIEW.str.addthisvideo       = s[i++];
+        VIEW.str.advanced           = s[i++];
+        VIEW.str.beginner           = s[i++];
+        VIEW.str.clickwhenfinished  = s[i++];
+        VIEW.str.confirmremovevideo = s[i++];
+        VIEW.str.description        = s[i++];
+        VIEW.str.entersearchterm    = s[i++];
+        VIEW.str.intermediate       = s[i++];
+        VIEW.str.searchterm         = s[i++];
+        VIEW.str.topics             = s[i++];
+        VIEW.str.transcript         = s[i++];
     });
 
     VIEW.init = function(opts) {
@@ -68,6 +70,43 @@ define(["jquery", "core/str", "mod_englishcentral/html"], function($, STR, HTML)
 
         $(".activity-title, .thumb-frame").click(function(evt){
             VIEW.play_video(evt, this);
+        });
+
+        // make the video thumnails sortable
+        $(".englishcentral_videos").sortable({
+            "cursor": "move",
+            "items" : ".activity-thumbnail",
+            "update": function(evt, ui){
+                var href = ui.item.find(".activity-title").prop("href");
+                var data = {"dialogId"  : VIEW.get_videoid_from_href(href),
+                            "sortorder" : ui.item.index() + 1};
+                $.ajax({
+                    "url" : VIEW.viewajaxurl,
+                    "data" : {"id"      : VIEW.cmid,
+                              "data"    : data,
+                              "action"  : "sortvideo",
+                              "sesskey" : VIEW.moodlesesskey},
+                    "dataType" : "html",
+                    "success" : function(html){
+                        if (html) {
+                            // probably an error message
+                            $("#" + VIEW.playercontainer).html(html);
+                        }
+                    }
+                });
+            }
+        });
+
+        // make the video thumnails sortable
+        //$(".activity-thumbnail").draggable({
+        //});
+
+        $(".hidevideos").droppable({
+            "drop" : function(evt, ui){
+                if (confirm(VIEW.str.confirmremovevideo)) {
+                    ui.draggable.remove();
+                }
+            }
         });
 
         $(".addvideos").click(function(){
@@ -116,7 +155,7 @@ define(["jquery", "core/str", "mod_englishcentral/html"], function($, STR, HTML)
             var btn = HTML.tag("button", VIEW.str.clickwhenfinished, {"type" : "button", "id" : "id_sendresultsbutton"});
             $(btn).click(function(){
                 $.ajax({
-                    "url" : VIEW.storeresultsurl,
+                    "url" : VIEW.viewajaxurl,
                     "data" : {"id"      : VIEW.cmid,
                               "data"    : {"dialogID" : VIEW.dialogID,
                                            "sdktoken" : VIEW.sdktoken},
@@ -137,7 +176,7 @@ define(["jquery", "core/str", "mod_englishcentral/html"], function($, STR, HTML)
                 // AJAX call to send the data.dialogID to the Moodle server
                 // and receive the html for the updated Progress pie-charts
                 $.ajax({
-                    "url" : VIEW.storeresultsurl,
+                    "url" : VIEW.viewajaxurl,
                     "data" : {"id"      : VIEW.cmid,
                               "data"    : {"dialogID" : data.dialogID,
                                            "sdktoken" : VIEW.sdktoken},
@@ -158,9 +197,13 @@ define(["jquery", "core/str", "mod_englishcentral/html"], function($, STR, HTML)
         // initialize EC player
         window.ECSDK.loadWidget("player", {
             "partnerSdkToken": VIEW.sdktoken,
-            "partnerKey":      VIEW.consumerkey,
-            "container":       VIEW.playercontainer,
-            "dialogId":        VIEW.get_videoid(elm)
+            "partnerKey": VIEW.consumerkey,
+            "container":  VIEW.playercontainer,
+            "dialogId":   VIEW.get_videoid(elm),
+            "learnMode":  true,
+            "speakMode":  true,
+            // "quizMode":  true,
+            "interstitialsEnabled": true
         });
 
         // disable normal event behavior/propagation
@@ -168,6 +211,7 @@ define(["jquery", "core/str", "mod_englishcentral/html"], function($, STR, HTML)
         evt.stopPropagation();
     };
 
+    // define click-handler for search button
     VIEW.search_videos = function(term) {
         $.ajax({
             "url" : VIEW.searchurl,
@@ -212,6 +256,21 @@ define(["jquery", "core/str", "mod_englishcentral/html"], function($, STR, HTML)
             $(id).click(function(evt){
                 VIEW.add_video(evt, this);
             });
+            $(id).siblings(".result-info").find(".icon").click(function(){
+                var id = $(this).closest(".result-info")
+                                .siblings(".result-add")
+                                .prop("id");
+                id = VIEW.get_videoid_from_id(id);
+                var w = Math.min(640, window.innerWidth);
+                var h = Math.min(480, window.innerHeight);
+                var x = window.outerWidth / 2 + window.screenX - (w / 2);
+                var y = window.outerHeight / 2 + window.screenY - (h / 2);
+                var options = "width=" + w + ",height=" + h + ",top=" + y + ",left=" + x;
+                var win = window.open(VIEW.videoinfourl + "/" + id, VIEW.targetwindow, options);
+                if (win.focus) {
+                    win.focus();
+                }
+            });
         }
     };
 
@@ -224,20 +283,29 @@ define(["jquery", "core/str", "mod_englishcentral/html"], function($, STR, HTML)
     };
 
     VIEW.get_videoid = function(elm) {
+        return VIEW.get_videoid_from_href($(elm).prop("href"));
+    };
+
+    VIEW.get_videoid_from_href = function(href) {
         // sample href: https://www.qaenglishcentral.com/video/28864
-        return $(elm).prop("href").replace(new RegExp("^.*/"), "");
+        return href.replace(new RegExp("^.*/"), "");
+    };
+
+    VIEW.get_videoid_from_id = function(id) {
+        // sample id: id_add_video_27323
+        return id.replace(new RegExp("^.*_"), "");
     };
 
     VIEW.add_video = function(evt, elm) {
         $.ajax({
-            "url" : VIEW.addvideourl,
+            "url" : VIEW.viewajaxurl,
             "data" : {"id"      : VIEW.cmid,
                       "data"    : $(elm).data(),
                       "action"  : "addvideo",
                       "sesskey" : VIEW.moodlesesskey},
             "dataType" : "html",
             "success" : function(html){
-                $(html).insertBefore(".addvideos").find("a").click(function(evt){
+                $(html).insertBefore(".hidevideos").find("a").click(function(evt){
                     VIEW.play_video(evt, this);
                 });
             }
@@ -302,7 +370,9 @@ define(["jquery", "core/str", "mod_englishcentral/html"], function($, STR, HTML)
 
     VIEW.format_info = function(r) {
         var html = "";
-        html += HTML.tag("h2", r.value.title, {"class" : "result-title"});
+        var src = $(".addvideos .icon").prop("src").replace("t/addfile", "i/info");
+        var img = HTML.emptytag('img', {"src" : src, "class" : "icon"});
+        html += HTML.tag("h2", r.value.title + img, {"class" : "result-title"});
         html += VIEW.format_details(r);
         return HTML.tag("div", html, {"class" : "result-info"});
     };

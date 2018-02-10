@@ -63,7 +63,7 @@ function xmldb_englishcentral_upgrade($oldversion) {
 
         // =============================================
         // create USERIDS table
-        // (this will be replaced in a later update)
+        // (this will be renamed to ACCOUNTIDS later)
         // =============================================
 
         $table = new xmldb_table('englishcentral_userids');
@@ -85,14 +85,17 @@ function xmldb_englishcentral_upgrade($oldversion) {
 
         $table = new xmldb_table('englishcentral_videos');
 
-        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE);
-        $table->add_field('ecid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
-        $table->add_field('videoid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('id',        XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE);
+        $table->add_field('ecid',      XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('videoid',   XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('visible',   XMLDB_TYPE_INTEGER,  '2', null, XMLDB_NOTNULL, null, '1');
+        $table->add_field('sortorder', XMLDB_TYPE_INTEGER,  '6', null, XMLDB_NOTNULL, null, '0');
 
         $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
         $table->add_key('englvide_ecid', XMLDB_KEY_FOREIGN, array('ecid'), 'englishcentral', array('id'));
 
         $table->add_index('englvide_videoid', XMLDB_INDEX_NOTUNIQUE, array('videoid'));
+        $table->add_index('englvide_sortorder', XMLDB_INDEX_NOTUNIQUE, array('ecid,sortorder'));
 
         xmldb_englishcentral_create_table($dbman, $table);
 
@@ -163,23 +166,23 @@ function xmldb_englishcentral_upgrade($oldversion) {
         $fields = array('englishcentralid' => 'ecid');
         $oldname = 'englishcentral_attempt';
 
-        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE);
-        $table->add_field('ecid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL);
-        $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL);
-        $table->add_field('videoid', XMLDB_TYPE_INTEGER, '10');
-        $table->add_field('linestotal', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL);
+        $table->add_field('id',              XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE);
+        $table->add_field('ecid',            XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL);
+        $table->add_field('userid',          XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL);
+        $table->add_field('videoid',         XMLDB_TYPE_INTEGER, '10');
+        $table->add_field('linestotal',      XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL);
         $table->add_field('totalactivetime', XMLDB_TYPE_INTEGER, '10');
-        $table->add_field('watchedcomplete', XMLDB_TYPE_INTEGER, '2');
-        $table->add_field('activetime', XMLDB_TYPE_INTEGER, '10');
-        $table->add_field('datecompleted', XMLDB_TYPE_INTEGER, '10');
-        $table->add_field('linesrecorded', XMLDB_TYPE_INTEGER, '10');
-        $table->add_field('lineswatched', XMLDB_TYPE_INTEGER, '10');
-        $table->add_field('points', XMLDB_TYPE_INTEGER, '10');
+        $table->add_field('watchedcomplete', XMLDB_TYPE_INTEGER,  '2');
+        $table->add_field('activetime',      XMLDB_TYPE_INTEGER, '10');
+        $table->add_field('datecompleted',   XMLDB_TYPE_INTEGER, '10');
+        $table->add_field('linesrecorded',   XMLDB_TYPE_INTEGER, '10');
+        $table->add_field('lineswatched',    XMLDB_TYPE_INTEGER, '10');
+        $table->add_field('points',          XMLDB_TYPE_INTEGER, '10');
         $table->add_field('recordingcomplete', XMLDB_TYPE_INTEGER, '2');
-        $table->add_field('sessiongrade', XMLDB_TYPE_CHAR, '255');
-        $table->add_field('sessionscore', XMLDB_TYPE_INTEGER, '10');
-        $table->add_field('status', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, '0');
-        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('sessiongrade',    XMLDB_TYPE_CHAR,   '255');
+        $table->add_field('sessionscore',    XMLDB_TYPE_INTEGER, '10');
+        $table->add_field('status',          XMLDB_TYPE_INTEGER,  '2', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('timecreated',     XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
 
         $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
         $table->add_key('englatte_ecid', XMLDB_KEY_FOREIGN, array('ecid'), 'englishcentral', array('id'));
@@ -197,19 +200,19 @@ function xmldb_englishcentral_upgrade($oldversion) {
         $fields = array('englishcentralid' => 'ecid');
         $oldname = 'englishcentral_phs';
 
-        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE);
-        $table->add_field('ecid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL);
-        $table->add_field('attemptid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL);
-        $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL);
-        $table->add_field('phoneme', XMLDB_TYPE_CHAR, '255', null, null, null, '');
-        $table->add_field('badcount', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
-        $table->add_field('goodcount', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('id',          XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE);
+        $table->add_field('ecid',        XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL);
+        $table->add_field('attemptid',   XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL);
+        $table->add_field('userid',      XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL);
+        $table->add_field('phoneme',     XMLDB_TYPE_CHAR,   '255', null, null,          null, '');
+        $table->add_field('badcount',    XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('goodcount',   XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
         $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
 
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
-        $table->add_key('englphs_ecid', XMLDB_KEY_FOREIGN, array('ecid'), 'englishcentral', array('id'));
+        $table->add_key('primary',           XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('englphs_ecid',      XMLDB_KEY_FOREIGN, array('ecid'),      'englishcentral',          array('id'));
         $table->add_key('englphs_attemptid', XMLDB_KEY_FOREIGN, array('attemptid'), 'englishcentral_attempts', array('id'));
-        $table->add_key('englphs_userid', XMLDB_KEY_FOREIGN, array('userid'), 'user', array('id'));
+        $table->add_key('englphs_userid',    XMLDB_KEY_FOREIGN, array('userid'),    'user',                    array('id'));
 
         xmldb_englishcentral_replace_table($dbman, $table, $fields, $oldname);
 
@@ -224,31 +227,6 @@ function xmldb_englishcentral_upgrade($oldversion) {
             set_config($name, $value, 'mod_englishcentral');
             unset_config($name, 'englishcentral');
         }
-
-        upgrade_mod_savepoint(true, "$newversion", 'englishcentral');
-    }
-
-    $newversion = 2018013007;
-    if ($oldversion < $newversion) {
-
-        // =============================================
-        // create ACCOUNTIDS table
-        // =============================================
-
-        $table = new xmldb_table('englishcentral_accountids');
-        $fields = array('ecuserid' => 'accountid');
-        $oldname = 'englishcentral_userids';
-
-        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE);
-        $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
-        $table->add_field('accountid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
-
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
-        $table->add_key('engluser_userid', XMLDB_KEY_FOREIGN, array('userid'), 'user', array('id'));
-
-        $table->add_index('engluser_accountid', XMLDB_INDEX_UNIQUE, array('accountid'));
-
-        xmldb_englishcentral_replace_table($dbman, $table, $fields, $oldname);
 
         upgrade_mod_savepoint(true, "$newversion", 'englishcentral');
     }
@@ -351,6 +329,85 @@ function xmldb_englishcentral_upgrade($oldversion) {
         upgrade_mod_savepoint(true, "$newversion", 'englishcentral');
     }
 
+    $newversion = 2018021020;
+    if ($oldversion < $newversion) {
+
+        // =============================================
+        // create ACCOUNTIDS table
+        // =============================================
+
+        $table = new xmldb_table('englishcentral_accountids');
+        $fields = array('ecuserid' => 'accountid');
+        $oldname = 'englishcentral_userids';
+
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE);
+        $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('accountid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('engluser_userid', XMLDB_KEY_FOREIGN, array('userid'), 'user', array('id'));
+
+        // Use NOTUNIQUE, because initially the accountid is set to "0" for all users
+        // Later, it gets set to a unique non-zero value
+        $table->add_index('engluser_accountid', XMLDB_INDEX_NOTUNIQUE, array('accountid'));
+
+        xmldb_englishcentral_replace_table($dbman, $table, $fields, $oldname);
+
+        // =============================================
+        // adjust VIDEOS table
+        // =============================================
+
+        $table = new xmldb_table('englishcentral_videos');
+
+        // remove videotitle field
+        $field = new xmldb_field('videotitle');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+        // add visible field
+        $field = new xmldb_field('visible', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, '1', 'videoid');
+        if (! $dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // add sortorder field
+        $field = new xmldb_field('sortorder', XMLDB_TYPE_INTEGER, '6', null, XMLDB_NOTNULL, null, '0', 'visible');
+        if ($dbman->field_exists($table, $field)) {
+            // do nothing
+        } else {
+            $dbman->add_field($table, $field);
+
+            // define new index on sortorder field
+            $index = new xmldb_index('englvide_sortorder', XMLDB_INDEX_UNIQUE, array('ecid,sortorder'));
+
+            // remove index, if it already exists
+            if ($dbman->index_exists($table, $index)) {
+                $dbman->drop_index($table, $index);
+            }
+
+            // set sortorder field on existing records
+            $ecid = 0;
+            $sortorder = 0;
+            if ($videos = $DB->get_records($table->getName(), array(), 'ecid,id')) {
+                foreach ($videos as $video) {
+                    if ($ecid && $ecid==$video->ecid) {
+                        $sortorder++;
+                    } else {
+                        $sortorder = 1;
+                    }
+                    $ecid = $video->ecid;
+                    $DB->set_field($table->getName(), 'sortorder', $sortorder, array('id' => $video->id));
+                }
+            }
+
+            // add index on sortorder
+            $dbman->add_index($table, $index);
+        }
+
+        upgrade_mod_savepoint(true, "$newversion", 'englishcentral');
+    }
+
     return true;
 }
 
@@ -380,8 +437,24 @@ function xmldb_englishcentral_replace_table($dbman, $table, $fields, $oldname) {
 function xmldb_englishcentral_create_table($dbman, $table, $fields=array()) {
     global $DB;
     if ($dbman->table_exists($table)) {
-        $previous = ''; // name of previous field in DB
+
+        // remove all existing indexes and keys (except PRIMARY key)
         $indexes = $DB->get_indexes($table->getName());
+        foreach ($indexes as $indexname => $index) {
+            if ($indexname=='primary') {
+                continue;
+            }
+            if (isset($index['unique']) && $index['unique']) {
+                $type = XMLDB_INDEX_UNIQUE;
+            } else {
+                $type = XMLDB_INDEX_NOTUNIQUE;
+            }
+            $index = new xmldb_index($indexname, $type, $index['columns']);
+            $dbman->drop_index($table, $index);
+        }
+
+        // add/change fields
+        $previous = ''; // name of previous field in DB
         foreach ($table->getFields() as $field) {
             if ($previous) {
                 $field->setPrevious($previous);
@@ -394,20 +467,26 @@ function xmldb_englishcentral_create_table($dbman, $table, $fields=array()) {
                 $field->setName($newname);
             }
             if ($dbman->field_exists($table, $field)) {
-                $can_update = true;
-                foreach ($indexes as $indexname => $index) {
-                    $columns = $index['columns'];
-                    if (in_array($field->getName(), $columns)) {
-                        $can_update = false;
-                    }
-                }
-                if ($can_update) {
-                    $dbman->change_field_type($table, $field);
-                }
+                $dbman->change_field_type($table, $field);
             } else {
                 $dbman->add_field($table, $field);
             }
             $previous = $field->getName();
+        }
+
+        // (re)add indexes
+        foreach ($table->getIndexes() as $index) {
+            if ($index->getName()=='primary') {
+                continue;
+            }
+            $dbman->add_index($table, $index);
+        }
+        foreach ($table->getKeys() as $index) {
+            if ($index->getName()=='primary') {
+                continue;
+            }
+            $index = new xmldb_index($index->getName(), $index->getType(), $index->getFields());
+            $dbman->add_index($table, $index);
         }
     } else {
         $dbman->create_table($table);

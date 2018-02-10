@@ -60,6 +60,15 @@ $renderer->attach_activity_and_auth($ec, $auth);
 
 switch ($action) {
 
+    case 'storeresults':
+        if (is_array($data) && array_key_exists('dialogID', $data)) {
+            $data = (object)$data;
+            $dialog = $auth->fetch_dialog_progress($data->dialogID, $data->sdk_token);
+            $ec->update_progress($dialog);
+            echo $renderer->show_progress();
+        }
+        break;
+
     case 'addvideo':
         if (is_array($data) && array_key_exists('dialogId', $data)) {
             $data = (object)$data;
@@ -69,19 +78,64 @@ switch ($action) {
             if ($record['id'] = $DB->get_field($table, 'id', $record)) {
                 // video is already in our database - unexpected !!
             } else {
+                if ($sortorder = $DB->get_field($table, 'MAX(sortorder)', array('ecid' => $ec->id))) {
+                    $sortorder++;
+                } else {
+                    $sortorder = 1;
+                }
                 unset($record['id']);
+                $record['sortorder'] = $sortorder;
                 $record['id'] = $DB->insert_record($table, $record);
             }
             echo $renderer->show_video($data);
         }
         break;
 
-    case 'storeresults':
-        if (is_array($data) && array_key_exists('dialogID', $data)) {
+    case 'sortvideo':
+
+        if (is_array($data) && array_key_exists('dialogId', $data) && array_key_exists('sortorder', $data)) {
+
+            // sanity check on incoming values
             $data = (object)$data;
-            $dialog = $auth->fetch_dialog_progress($data->dialogID, $data->sdk_token);
-            $ec->update_progress($dialog);
-            echo $renderer->show_progress();
+            $targetvideoid = intval($data->dialogId);
+            $targetsortorder = intval($data->sortorder);
+
+            if ($targetvideoid && $targetsortorder) {
+
+                // define DB table name
+                $table = 'englishcentral_videos';
+
+                // set all sort orders to negative
+                // we need to do this because the DB index requies unique (ecid, sortorder)
+                $params = array('ecid' => $ec->id);
+                $DB->execute('UPDATE {'.$table.'} SET sortorder = -sortorder WHERE ecid = :ecid', $params);
+
+                if ($videos = $DB->get_records($table, $params, 'sortorder DESC')) {
+                    $sortorder = 1;
+                    foreach ($videos as $video) {
+                        $params = array('id' => $video->id);
+                        if (intval($video->videoid)==$targetvideoid) {
+                            $DB->set_field($table, 'sortorder', $targetsortorder, $params);
+                        } else if ($sortorder >= $targetsortorder) {
+                            $DB->set_field($table, 'sortorder', $sortorder + 1, $params);
+                            $sortorder++;
+                        } else {
+                            $DB->set_field($table, 'sortorder', $sortorder, $params);
+                            $sortorder++;
+                        }
+                    }
+                }
+            }
+            // there's nothing to return because the element has been dragged
+            // to the correct position in the browser
+        }
+        break;
+
+    case 'removevideo':
+        if (is_array($data) && array_key_exists('dialogId', $data)) {
+            $data = (object)$data;
+            $table = 'englishcentral_videos';
+            $DB->delete_records($table, array('ecid' => $ec->id,'videoid' => intval($data->dialogId)))
         }
         break;
 }

@@ -106,8 +106,9 @@ $opts = array('accept'        => \mod_englishcentral\auth::ACCEPT_V1,
               'resultsmode'   => 'ajax',
               'cmid'          => $ec->cm->id,
               'moodlesesskey' => sesskey(),
-              'addvideourl'   => $ec->get_viewajax_url(false),
-              'storeresultsurl' => $ec->get_viewajax_url(false));
+              'viewajaxurl'   => $ec->get_viewajax_url(false),
+              'videoinfourl'  => 'https://www.englishcentral.com/videodetails',
+              'targetwindow'  => 'EC');
 
 $PAGE->requires->js_call_amd("$ec->plugin/view", 'init', array($opts));
 

@@ -163,6 +163,17 @@
     width:         30px;
 }
 
+#page-mod-englishcentral-view .hidevideos {
+    display:        inline-block;
+    margin:             1em .6em;
+    vertical-align:          top;
+}
+
+#page-mod-englishcentral-view .hidevideos img {
+    height:        80px;
+    width:         80px;
+}
+
 #page-mod-englishcentral-view .result-add,
 #page-mod-englishcentral-view .result-thumb,
 #page-mod-englishcentral-view .result-info {

@@ -48,3 +48,5 @@ Go into Edit mode and from the "Add an Activity/Resource" popup, choose to add a
 * Specify the Video ID. To get this you will need to visit English Central and find the video you wish. The ID can be found in the URL for the activity on English Central.
 
 If you have questions please contact the developer, me, Justin Hunt at poodllsupport @ gmail. com
+
+Trash Icon made by Freepik from www.flaticon.com 

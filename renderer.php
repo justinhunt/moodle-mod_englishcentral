@@ -255,16 +255,32 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
     public function show_videos() {
         $output = '';
         $output .= $this->output->box_start('englishcentral_videos');
+
+        // get video ids in this EC activity
         if ($videoids = $this->ec->get_videoids()) {
+
+            // fetch video info from EC server
             $videos = $this->auth->fetch_dialog_list($videoids);
-            foreach ($videos as $video) {
-                $output .= $this->show_video($video);
+
+            // build index to map videoid onto $videos item
+            $index = array();
+            foreach ($videos as $i => $video) {
+                $index[$video->dialogID] = $i;
+            }
+
+            // create video thumbnails in required sortorder
+            foreach ($videoids as $videoid) {
+                if (array_key_exists($videoid, $index)) {
+                    $i = $index[$videoid];
+                    $output .= $this->show_video($videos[$i]);
+                }
             }
         } else {
             $output .= html_writer::tag('p', $this->ec->get_string('novideos'));
         }
         if ($this->ec->can_manage()) {
-            $output .= $this->add_videos_button();
+            $output .= $this->show_hidevideos_icon();
+            $output .= $this->show_addvideos_button();
         }
         $output .= $this->output->box_end();
         return $output;
@@ -318,7 +334,18 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         return $output;
     }
 
-    protected function add_videos_button() {
+    protected function show_hidevideos_icon() {
+        if (method_exists($this, 'image_url')) {
+            $image_url = 'image_url'; // Moodle >= 3.3
+        } else {
+            $image_url = 'pix_url'; // Moodle <= 3.2
+        }
+        $image_url = $this->$image_url('trash', $this->ec->plugin);
+        $image = html_writer::empty_tag('img', array('src' => $image_url));
+        return html_writer::tag('div', $image, array('class' => 'hidevideos'));
+    }
+
+    protected function show_addvideos_button() {
         $text = $this->ec->get_string('addvideos');
         $icon = $this->pix_icon('t/addfile', $text);
         return html_writer::tag('div', $icon.$text, array('class' => 'addvideos'));
