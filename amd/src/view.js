@@ -47,7 +47,7 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         {"key" : "topics",             "component" : VIEW.plugin},
         {"key" : "transcript",         "component" : VIEW.plugin}
     ]).done(function(s) {
-        var i = 0
+        var i = 0;
         VIEW.str.addthisvideo       = s[i++];
         VIEW.str.advanced           = s[i++];
         VIEW.str.beginner           = s[i++];
@@ -170,7 +170,7 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
                         }
                     }
                 });
-            }).insertBefore("#" + VIEW.playercontainer)
+            }).insertBefore("#" + VIEW.playercontainer);
         } else {
             window.ECSDK.setOnSessionEndHandler(function(data) {
                 // AJAX call to send the data.dialogID to the Moodle server

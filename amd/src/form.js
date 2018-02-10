@@ -25,7 +25,7 @@
  */
 define(["jquery"], function($) {
     /** @alias module:mod_englishcentral/form */
-    FORM = {};
+    var FORM = {};
 
     FORM.init = function() {
 
