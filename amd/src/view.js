@@ -350,7 +350,7 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
     };
 
     VIEW.format_add = function(r) {
-        var html = HTML.emptytag("img", {"src" : $(".addvideos .icon").prop("src"),
+        var html = HTML.emptytag("img", {"src" : $(".addvideos img").prop("src"),
                                          "title" : VIEW.str.addthisvideo});
         return HTML.tag("div", html, {"class" : "result-add",
                                       "id" : "id_add_video_" + r.value.dialogID});
@@ -370,7 +370,7 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
 
     VIEW.format_info = function(r) {
         var html = "";
-        var src = $(".addvideos .icon").prop("src").replace("t/addfile", "i/info");
+        var src = $(".addvideos img").prop("src").replace("t/addfile", "i/info");
         var img = HTML.emptytag('img', {"src" : src, "class" : "icon"});
         html += HTML.tag("h2", r.value.title + img, {"class" : "result-title"});
         html += VIEW.format_details(r);
