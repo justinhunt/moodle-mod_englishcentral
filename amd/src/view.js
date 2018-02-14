@@ -133,8 +133,11 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
             // add click event to button
             $("#id_searchbutton").click(function(){
                 var term = $("#id_searchterm").val();
+                var list = new RegExp("^\s*[0-9]+([, \\t\\r\\n]+[0-9]+)*\s*$");
                 if (term=="") {
                     $(".search-results").html(VIEW.str.entersearchterm);
+                } else if (term.match(list)) {
+                    VIEW.fetch_videos(term);
                 } else {
                     VIEW.search_videos(term);
                 }
@@ -194,16 +197,27 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
             });
         }
 
+        // set player width and height, in order to see WLS controls
+        var width = 640;
+        var height = 420;
+        if (window.outerWidth > 1000) {
+            width = 1000;
+        } else if (window.outerHeight > 655) {
+            height = 655;
+        }
+
         // initialize EC player
         window.ECSDK.loadWidget("player", {
             "partnerSdkToken": VIEW.sdktoken,
             "partnerKey": VIEW.consumerkey,
             "container":  VIEW.playercontainer,
             "dialogId":   VIEW.get_videoid(elm),
+            "interstitialsEnabled": true,
             "learnMode":  true,
             "speakMode":  true,
-            // "quizMode":  true,
-            "interstitialsEnabled": true
+            "quizMode":  true,
+            "height": height,
+            "width": width
         });
 
         // disable normal event behavior/propagation
@@ -211,27 +225,44 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         evt.stopPropagation();
     };
 
-    // define click-handler for search button
+    VIEW.fetch_videos = function(term) {
+        var spacer = new RegExp("[, \\t\\r\\n]+", "g");
+        var ids = term.replace(spacer, ",");
+        $.ajax({
+            "url": VIEW.fetchurl,
+            "type": "GET",
+            "data": {"dialogIDs": ids, "siteLanguage": VIEW.siteanguage, "page": "0", "pageSize": "20"},
+            "dataType": "json",
+            "headers": {"Accept": VIEW.accept1,
+                        "Authorization": VIEW.authorization,
+                        "Content-Type": "application/json"},
+            "success": function(info){
+                VIEW.format_results(info);
+            }
+        });
+    };
+
     VIEW.search_videos = function(term) {
         $.ajax({
-            "url" : VIEW.searchurl,
-            "type" : "GET",
-            "data" : {"term"       : term,
-                      "page"       : "0",
-                      "pageSize"   : "20"},
-            "dataType" : "json",
-            "headers" : {"Accept": VIEW.accept,
-                         "Authorization" : VIEW.authorization,
-                         "Content-Type": "application/json"},
-            "success" : function(info){
+            "url": VIEW.searchurl,
+            "type": "GET",
+            "data": {"term": term, "page": "0", "pageSize": "20"},
+            "dataType": "json",
+            "headers": {"Accept": VIEW.accept1,
+                        "Authorization": VIEW.authorization,
+                        "Content-Type": "application/json"},
+            "success": function(info){
                 VIEW.format_results(info);
             }
         });
     };
 
     VIEW.format_results = function(info) {
-        var videoids = VIEW.get_videoids();
+        if ((!info) || (!info.results) || info.results.length==0) {
+            return "";
+        }
         var html = "";
+        var videoids = VIEW.get_videoids();
         for (var i=0; i<info.results.length; i++) {
             // skip videos that are already displayed
             var id = info.results[i].value.dialogID.toString();
@@ -371,7 +402,7 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
     VIEW.format_info = function(r) {
         var html = "";
         var src = $(".addvideos img").prop("src").replace("t/addfile", "i/info");
-        var img = HTML.emptytag('img', {"src" : src, "class" : "icon"});
+        var img = HTML.emptytag("img", {"src" : src, "class" : "icon"});
         html += HTML.tag("h2", r.value.title + img, {"class" : "result-title"});
         html += VIEW.format_details(r);
         return HTML.tag("div", html, {"class" : "result-info"});

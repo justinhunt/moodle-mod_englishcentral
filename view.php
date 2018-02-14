@@ -95,15 +95,15 @@ echo $renderer->show_dates_available();
 // get ECSDK javascript object
 $PAGE->requires->js($auth->get_js_url());
 
-$opts = array('accept'        => \mod_englishcentral\auth::ACCEPT_V1,
+$opts = array('accept1'       => \mod_englishcentral\auth::ACCEPT_V1,
               'authorization' => $auth->get_authorization(),
+              'fetchurl'      => $auth->get_fetch_url(),
               'searchurl'     => $auth->get_search_url(),
               'sdktoken'      => $auth->get_sdk_token(),
+              'sitelanguage'  => $auth->get_user_language(),
               'consumerkey'   => $auth->consumerkey,
               'progresscontainer' => 'id_progresscontainer',
               'playercontainer'   => 'id_playercontainer',
-              'resultscontainer'  => 'id_resultscontainer',
-              'resultsmode'   => 'ajax',
               'cmid'          => $ec->cm->id,
               'moodlesesskey' => sesskey(),
               'viewajaxurl'   => $ec->get_viewajax_url(false),

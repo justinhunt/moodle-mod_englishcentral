@@ -290,6 +290,10 @@ class auth {
         }
     }
 
+	public function get_fetch_url() {
+		return $this->get_url('bridge', 'rest/content/dialog');
+	}
+
 	public function get_search_url() {
 		return $this->get_url('bridge', 'rest/content/dialog/search/fulltext');
 	}

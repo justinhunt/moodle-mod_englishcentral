@@ -135,7 +135,7 @@ switch ($action) {
         if (is_array($data) && array_key_exists('dialogId', $data)) {
             $data = (object)$data;
             $table = 'englishcentral_videos';
-            $DB->delete_records($table, array('ecid' => $ec->id,'videoid' => intval($data->dialogId)))
+            $DB->delete_records($table, array('ecid' => $ec->id,'videoid' => intval($data->dialogId)));
         }
         break;
 }
