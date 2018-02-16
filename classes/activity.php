@@ -385,7 +385,7 @@ class activity {
 
 	/**
 	 * Format data about dialog activities returned from EC ReportCard api
-	 * e.g. /rest/report/dialog/dialogID/progress
+	 * e.g. /rest/report/dialog/{dialogID}/progress
 	 *
 	 * @param array $dialog JSON data returned from EC REST call
 	 * @return array of $progress data
@@ -412,12 +412,20 @@ class activity {
             'speaklineids'  => array(), // dialogLineID's of lines spoken,
 
             'totalpoints'   => 0,
-            'sessionScore'  => 0,
-            'sessionGrade'  => '', // A-F
 
+            // this info is no longer available
             'activetime'    => 0,
             'totaltime'     => 0,
+            'sessionScore'  => 0,
+            'sessionGrade'  => '', // A-F
         );
+
+        if (isset($dialog->hash)) {
+           $progress['hash'] = $dialog->hash;
+        }
+        if (isset($dialog->totalPoints)) {
+           $progress['totalpoints']  = $dialog->totalPoints;
+        }
 
         if (empty($dialog->activities)) {
             return $progress;
@@ -425,21 +433,19 @@ class activity {
 
         foreach($dialog->activities as $activity) {
 
-            // activityType     : watchActivity
+            // activityType     : watchActivity / speakActivity
             // activityID       : 208814
+            // activityTypeID   : (see below)
             // activityPoints   : 10
             // activityProgress : 1
             // completed        : 1
+            // grade            : A (speakActivity only ?)
             
-            $progress['totalActiveTime'] = 0;
-            $progress['activeTime']      = 0;
-            $progress['totalpoints']     = $activity->totalPoints;
-
             // extract DB fields
             switch ($activity->activityTypeID) {
 
                 case \mod_englishcentral\auth::ACTIVITYTYPE_WATCHING: // =9
-                    $progress['watchcomplete'] = $activity->completed;
+                    $progress['watchcomplete'] = ($activity->completed ? 1 : 0);
                     foreach ($activity->watchedDialogLines as $line) {
                         $progress['watchlineids'][$line->dialogLineID] = 1;
                     }

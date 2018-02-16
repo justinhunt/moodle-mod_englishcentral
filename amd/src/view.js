@@ -175,7 +175,7 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
                 });
             }).insertBefore("#" + VIEW.playercontainer);
         } else {
-            window.ECSDK.setOnSessionEndHandler(function(data) {
+            window.ECSDK.setOnModeEndHandler(function(data) {
                 // AJAX call to send the data.dialogID to the Moodle server
                 // and receive the html for the updated Progress pie-charts
                 $.ajax({
@@ -190,6 +190,7 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
                         if (html.indexOf("englishcentral_progress") < 0) {
                             $(".englishcentral_progress").html(html);
                         } else {
+                            // probably an error message
                             $(".englishcentral_progress").replaceWith(html);
                         }
                     }

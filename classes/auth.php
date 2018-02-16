@@ -47,7 +47,7 @@ class auth {
     protected $authorization = null;
 
     protected $uniqueid = null; // user's unique ID on this Moodle site
-    protected $accountid = null; // the EC userid of the current user
+    protected $accountid = null; // the EC accountid of the current user
 
     const ACCEPT_V1 = 'application/vnd.englishcentral-v1+json,application/json;q=0.9,*/*;q=0.8';
     const ACCEPT_V2 = 'application/vnd.englishcentral-v2+json,application/json;q=0.9,*/*;q=0.8';

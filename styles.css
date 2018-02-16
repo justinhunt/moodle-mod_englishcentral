@@ -307,7 +307,7 @@
     cursor:    pointer;
     display:     block;
     height:       75px;
-    max-width:   150px;
+    width:       150px;
     border-radius: 4px;
     background-repeat: no-repeat;
     background-size: cover;

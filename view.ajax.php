@@ -67,6 +67,7 @@ switch ($action) {
             $ec->update_progress($dialog);
             echo $renderer->show_progress();
         }
+        //echo html_writer::tag('p', 'results stored: '.userdate(time()));
         break;
 
     case 'addvideo':
