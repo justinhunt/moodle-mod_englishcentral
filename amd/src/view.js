@@ -70,6 +70,9 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
 
         $(".activity-title, .thumb-frame").click(function(evt){
             VIEW.play_video(evt, this);
+            evt.stopPropagation();
+            evt.preventDefault();
+            return false;
         });
 
         // make the video thumnails sortable
@@ -150,53 +153,28 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         // remove previous player
         $("#" + VIEW.playercontainer).html("");
 
-        // set handler for end of session
-        var usebutton = true;
-        if (usebutton) {
-            $("#id_sendresultsbutton").remove();
-            VIEW.dialogID = VIEW.get_videoid(elm);
-            var btn = HTML.tag("button", VIEW.str.clickwhenfinished, {"type" : "button", "id" : "id_sendresultsbutton"});
-            $(btn).click(function(){
-                $.ajax({
-                    "url" : VIEW.viewajaxurl,
-                    "data" : {"id"      : VIEW.cmid,
-                              "data"    : {"dialogID" : VIEW.dialogID,
-                                           "sdktoken" : VIEW.sdktoken},
-                              "action"  : "storeresults",
-                              "sesskey" : VIEW.moodlesesskey},
-                    "dataType" : "html",
-                    "success" : function(html){
-                        if (html.indexOf("englishcentral_progress") < 0) {
-                            $(".englishcentral_progress").html(html);
-                        } else {
-                            $(".englishcentral_progress").replaceWith(html);
-                        }
+        // set handler for end of mode
+        window.ECSDK.setOnModeEndHandler(function(data) {
+            // AJAX call to send the data.dialogID to the Moodle server
+            // and receive the html for the updated Progress pie-charts
+            $.ajax({
+                "url" : VIEW.viewajaxurl,
+                "data" : {"id"      : VIEW.cmid,
+                          "data"    : {"dialogID" : data.dialogID,
+                                       "sdktoken" : VIEW.sdktoken},
+                          "action"  : "storeresults",
+                          "sesskey" : VIEW.moodlesesskey},
+                "dataType" : "html",
+                "success" : function(html){
+                    if (html.indexOf("englishcentral_progress") < 0) {
+                        $(".englishcentral_progress").html(html);
+                    } else {
+                        // probably an error message
+                        $(".englishcentral_progress").replaceWith(html);
                     }
-                });
-            }).insertBefore("#" + VIEW.playercontainer);
-        } else {
-            window.ECSDK.setOnModeEndHandler(function(data) {
-                // AJAX call to send the data.dialogID to the Moodle server
-                // and receive the html for the updated Progress pie-charts
-                $.ajax({
-                    "url" : VIEW.viewajaxurl,
-                    "data" : {"id"      : VIEW.cmid,
-                              "data"    : {"dialogID" : data.dialogID,
-                                           "sdktoken" : VIEW.sdktoken},
-                              "action"  : "storeresults",
-                              "sesskey" : VIEW.moodlesesskey},
-                    "dataType" : "html",
-                    "success" : function(html){
-                        if (html.indexOf("englishcentral_progress") < 0) {
-                            $(".englishcentral_progress").html(html);
-                        } else {
-                            // probably an error message
-                            $(".englishcentral_progress").replaceWith(html);
-                        }
-                    }
-                });
+                }
             });
-        }
+        });
 
         // set player width and height, in order to see WLS controls
         var width = 640;
@@ -220,10 +198,6 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
             "height": height,
             "width": width
         });
-
-        // disable normal event behavior/propagation
-        evt.preventDefault();
-        evt.stopPropagation();
     };
 
     VIEW.fetch_videos = function(term) {
@@ -339,6 +313,9 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
             "success" : function(html){
                 $(html).insertBefore(".hidevideos").find("a").click(function(evt){
                     VIEW.play_video(evt, this);
+                    evt.stopPropagation();
+                    evt.preventDefault();
+                    return false;
                 });
             }
         });
