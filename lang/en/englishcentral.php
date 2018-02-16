@@ -85,6 +85,7 @@ $string['watchgoalunits'] = 'videos';
 $string['watchvideos'] = '{$a} videos';
 $string['achieved'] = 'achieved';
 $string['yourprogress'] = 'Your progress';
+$string['overall'] = 'Overall';
 
 $string['from'] = 'From';
 $string['until'] = 'Until';
@@ -129,7 +130,7 @@ $string['intermediate'] = 'Intermediate';
 $string['advanced'] = 'Advanced';
 $string['levelx'] = 'Level {$a}';
 
-$string['addvideos'] = 'Add videos';
+$string['addvideo'] = 'Add video';
 $string['searchterm'] = 'Search term(s)';
 $string['entersearchterm'] = 'Please enter one or more search terms.';
 $string['xitemsfound'] = '{$a} items found';
@@ -139,6 +140,8 @@ $string['addthisvideo'] = 'Add this video';
 $string['description'] = 'Description';
 $string['topics'] = 'Topic(s)';
 $string['transcript'] = 'Transcript';
+$string['removevideo'] = 'Remove video';
+
 
 // deprecated strings
 

@@ -231,19 +231,23 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         $timing = html_writer::tag('h4', $this->ec->get_string('yourprogress')).$timing;
         $output .= html_writer::tag('div', $timing, array('class' => 'timing'));
 
-        $text = html_writer::tag('span', $total, array('class' => 'percentnumber')).
-                html_writer::tag('span', '%', array('class' => 'percentsign'));
-        $text = html_writer::tag('div', $text, array('class' => 'percent')).
-                html_writer::tag('div', $this->ec->get_string('achieved'), array('class' => 'achieved'));
-        $output .= html_writer::tag('div', $text, array('class' => 'total'));
+		$title = html_writer::tag('h4', $this->ec->get_string('overall'), array('class' => 'title'));
+        $chart = html_writer::tag('span', $total, array('class' => 'percentnumber')).
+                 html_writer::tag('span', '%', array('class' => 'percentsign'));
+        $chart = html_writer::tag('div', $chart, array('class' => 'percent')).
+                 html_writer::tag('div', $this->ec->get_string('achieved'), array('class' => 'achieved'));
+        $chart = html_writer::tag('div', $chart, array('class' => 'chart total'));
+		$output .= html_writer::tag('div', $title.$chart, array('class' => 'titlechart'));
 
         $goals = array('watch', 'learn', 'speak');
         foreach ($goals as $goal) {
-            $text = html_writer::tag('span', $progress->$goal, array('class' => 'numerator')).
-                    html_writer::tag('span', ' / '.$this->ec->{$goal.'goal'}, array('class' => 'divisor'));
-            $text = html_writer::tag('div', $text, array('class' => 'fraction')).
-                    html_writer::tag('div', $this->ec->get_string($goal.'goalunits'), array('class' => 'units'));
-            $output .= html_writer::tag('div', $text, array('class' => $goal));
+        	$title = html_writer::tag('h4', $this->ec->get_string($goal.'goal'), array('class' => 'title'));
+            $chart = html_writer::tag('span', $progress->$goal, array('class' => 'numerator')).
+                     html_writer::tag('span', ' / '.$this->ec->{$goal.'goal'}, array('class' => 'divisor'));
+            $chart = html_writer::tag('div', $chart, array('class' => 'fraction')).
+                     html_writer::tag('div', $this->ec->get_string($goal.'goalunits'), array('class' => 'units'));
+            $chart = html_writer::tag('div', $chart, array('class' => 'chart '.$goal));
+            $output .= html_writer::tag('div', $title.$chart, array('class' => 'titlechart'));
         }
         $output .= $this->output->box_end();
         return $output;
@@ -279,8 +283,8 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
             $output .= html_writer::tag('p', $this->ec->get_string('novideos'));
         }
         if ($this->ec->can_manage()) {
-            $output .= $this->show_hidevideos_icon();
-            $output .= $this->show_addvideos_button();
+            $output .= $this->show_removevideo_icon();
+            $output .= $this->show_addvideo_icon();
         }
         $output .= $this->output->box_end();
         return $output;
@@ -334,20 +338,23 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         return $output;
     }
 
-    protected function show_hidevideos_icon() {
+    protected function show_addvideo_icon() {
+    	return $this->show_videos_icon('add');
+    }
+
+    protected function show_removevideo_icon() {
+    	return $this->show_videos_icon('remove');
+    }
+
+    protected function show_videos_icon($type) {
+        $text = $this->ec->get_string($type.'video');
         if (method_exists($this, 'image_url')) {
             $image_url = 'image_url'; // Moodle >= 3.3
         } else {
             $image_url = 'pix_url'; // Moodle <= 3.2
         }
-        $image_url = $this->$image_url('trash', $this->ec->plugin);
-        $image = html_writer::empty_tag('img', array('src' => $image_url));
-        return html_writer::tag('div', $image, array('class' => 'hidevideos'));
-    }
-
-    protected function show_addvideos_button() {
-        $text = $this->ec->get_string('addvideos');
-        $icon = $this->pix_icon('t/addfile', $text);
-        return html_writer::tag('div', $icon.$text, array('class' => 'addvideos'));
+        $image_url = $this->$image_url($type.'video', $this->ec->plugin);
+        $image = html_writer::empty_tag('img', array('src' => $image_url, 'title' => $text));
+        return html_writer::tag('div', $image, array('class' => 'videoicon '.$type.'video'));
     }
 }

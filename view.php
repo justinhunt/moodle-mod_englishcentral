@@ -90,7 +90,7 @@ if ($ec->not_available()) {
 }
 
 echo $renderer->show_intro();
-echo $renderer->show_dates_available();
+//echo $renderer->show_dates_available();
 
 // get ECSDK javascript object
 $PAGE->requires->js($auth->get_js_url());

@@ -100,19 +100,35 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
             }
         });
 
-        // make the video thumnails sortable
+        // make the video thumnails draggable
         //$(".activity-thumbnail").draggable({
         //});
 
-        $(".hidevideos").droppable({
+        $(".removevideo").droppable({
             "drop" : function(evt, ui){
                 if (confirm(VIEW.str.confirmremovevideo)) {
                     ui.draggable.remove();
+					var href = ui.draggable.find(".activity-title").prop("href");
+					var data = {"dialogId"  : VIEW.get_videoid_from_href(href)};
+					$.ajax({
+						"url" : VIEW.viewajaxurl,
+						"data" : {"id"      : VIEW.cmid,
+								  "data"    : data,
+								  "action"  : "removevideo",
+								  "sesskey" : VIEW.moodlesesskey},
+						"dataType" : "html",
+						"success" : function(html){
+							if (html) {
+								// probably an error message
+								$("#" + VIEW.playercontainer).html(html);
+							}
+						}
+					});
                 }
             }
         });
 
-        $(".addvideos").click(function(){
+        $(".addvideo").click(function(){
 
             var container = document.getElementById(VIEW.playercontainer);
             if (container) {
@@ -311,7 +327,7 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
                       "sesskey" : VIEW.moodlesesskey},
             "dataType" : "html",
             "success" : function(html){
-                $(html).insertBefore(".hidevideos").find("a").click(function(evt){
+                $(html).insertBefore(".removevideo").find("a").click(function(evt){
                     VIEW.play_video(evt, this);
                     evt.stopPropagation();
                     evt.preventDefault();
@@ -359,7 +375,7 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
     };
 
     VIEW.format_add = function(r) {
-        var html = HTML.emptytag("img", {"src" : $(".addvideos img").prop("src"),
+        var html = HTML.emptytag("img", {"src" : $(".addvideo img").prop("src"),
                                          "title" : VIEW.str.addthisvideo});
         return HTML.tag("div", html, {"class" : "result-add",
                                       "id" : "id_add_video_" + r.value.dialogID});
@@ -379,7 +395,7 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
 
     VIEW.format_info = function(r) {
         var html = "";
-        var src = $(".addvideos img").prop("src").replace("t/addfile", "i/info");
+        var src = $(".addvideo img").prop("src").replace("t/addfile", "i/info");
         var img = HTML.emptytag("img", {"src" : src, "class" : "icon"});
         html += HTML.tag("h2", r.value.title + img, {"class" : "result-title"});
         html += VIEW.format_details(r);
