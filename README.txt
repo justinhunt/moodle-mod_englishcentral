@@ -49,4 +49,10 @@ Go into Edit mode and from the "Add an Activity/Resource" popup, choose to add a
 
 If you have questions please contact the developer, me, Justin Hunt at poodllsupport @ gmail. com
 
-Trash Icon made by Freepik from www.flaticon.com 
+Icons downloaded from https://www.flaticon.com/
+made by Picol [https://www.flaticon.com/authors/picol] 
+licensed by Creative Commons BY 3.0 [http://creativecommons.org/licenses/by/3.0/]
+ - https://www.flaticon.com/free-icon/video-document-add-button_14356
+ - https://www.flaticon.com/free-icon/remove-video_14333
+ - https://www.flaticon.com/free-icon/plus-badge_14312
+ - https://www.flaticon.com/free-icon/badge-minus_13641

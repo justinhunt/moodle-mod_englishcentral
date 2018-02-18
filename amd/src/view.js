@@ -375,7 +375,8 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
     };
 
     VIEW.format_add = function(r) {
-        var html = HTML.emptytag("img", {"src" : $(".addvideo img").prop("src"),
+        var src = $(".addvideo img").prop("src").replace("addvideo", "add");
+        var html = HTML.emptytag("img", {"src" : src,
                                          "title" : VIEW.str.addthisvideo});
         return HTML.tag("div", html, {"class" : "result-add",
                                       "id" : "id_add_video_" + r.value.dialogID});
@@ -395,7 +396,9 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
 
     VIEW.format_info = function(r) {
         var html = "";
-        var src = $(".addvideo img").prop("src").replace("t/addfile", "i/info");
+        var src = $(".addvideo img").prop("src")
+                                    .replace("addvideo", "i/info")
+                                    .replace("mod_englishcentral", "core");
         var img = HTML.emptytag("img", {"src" : src, "class" : "icon"});
         html += HTML.tag("h2", r.value.title + img, {"class" : "result-title"});
         html += VIEW.format_details(r);
