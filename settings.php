@@ -28,28 +28,31 @@ defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
     $plugin = 'mod_englishcentral';
+    $link = new moodle_url('/mod/englishcentral/support.php');
+    $link = html_writer::tag('a', 'EnglishCentral.com', array('href' => $link, 'target' => 'EC'));
+    // whenever possible, the support URL will display a form in the browser's preferred language
 
     $name = 'partnerid';
     $label = get_string($name, $plugin);
-    $explain = get_string($name.'explain', $plugin);
+    $explain = get_string($name.'explain', $plugin, $link);
     $default = get_string($name.'default', $plugin);
     $settings->add(new admin_setting_configtext("$plugin/$name", $label, $explain, $default, PARAM_TEXT));
 
     $name = 'consumerkey';
     $label = get_string($name, $plugin);
-    $explain = get_string($name.'explain', $plugin);
+    $explain = get_string($name.'explain', $plugin, $link);
     $default = get_string($name.'default', $plugin);
     $settings->add(new admin_setting_configtext("$plugin/$name", $label, $explain, $default, PARAM_TEXT));
 
     $name = 'consumersecret';
 	$label = get_string($name, $plugin);
-	$explain = get_string($name.'explain', $plugin);
+    $explain = get_string($name.'explain', $plugin, $link);
     $default = get_string($name.'default', $plugin);
     $settings->add(new admin_setting_configtext("$plugin/$name", $label, $explain, $default, PARAM_TEXT));
 
     $name = 'encryptedsecret';
     $label = get_string($name, $plugin);
-    $explain = get_string($name.'explain', $plugin);
+    $explain = get_string($name.'explain', $plugin, $link);
     $default = get_string($name.'default', $plugin);
     $settings->add(new admin_setting_configtext("$plugin/$name", $label, $explain, $default, PARAM_TEXT));
 

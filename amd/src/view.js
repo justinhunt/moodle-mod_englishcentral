@@ -108,22 +108,22 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
             "drop" : function(evt, ui){
                 if (confirm(VIEW.str.confirmremovevideo)) {
                     ui.draggable.remove();
-					var href = ui.draggable.find(".activity-title").prop("href");
-					var data = {"dialogId"  : VIEW.get_videoid_from_href(href)};
-					$.ajax({
-						"url" : VIEW.viewajaxurl,
-						"data" : {"id"      : VIEW.cmid,
-								  "data"    : data,
-								  "action"  : "removevideo",
-								  "sesskey" : VIEW.moodlesesskey},
-						"dataType" : "html",
-						"success" : function(html){
-							if (html) {
-								// probably an error message
-								$("#" + VIEW.playercontainer).html(html);
-							}
-						}
-					});
+                    var href = ui.draggable.find(".activity-title").prop("href");
+                    var data = {"dialogId"  : VIEW.get_videoid_from_href(href)};
+                    $.ajax({
+                        "url" : VIEW.viewajaxurl,
+                        "data" : {"id"      : VIEW.cmid,
+                                  "data"    : data,
+                                  "action"  : "removevideo",
+                                  "sesskey" : VIEW.moodlesesskey},
+                        "dataType" : "html",
+                        "success" : function(html){
+                            if (html) {
+                                // probably an error message
+                                $("#" + VIEW.playercontainer).html(html);
+                            }
+                        }
+                    });
                 }
             }
         });

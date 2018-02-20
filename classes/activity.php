@@ -455,7 +455,7 @@ class activity {
                     $progress['learncomplete'] = ($activity->completed ? 1 : 0);
                     foreach ($activity->learnedDialogLines as $line) {
                         foreach($line->learnedWords as $word) {
-                            if ($word->completed && ! $word->incorrect) {
+                            if ($word->completed) {
                                 $progress['learnwordids'][$word->wordHeadID] = 1;
                             }
                         }

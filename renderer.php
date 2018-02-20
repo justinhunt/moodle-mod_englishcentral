@@ -120,6 +120,47 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
     }
 
     /**
+     * generate link to config settings page
+     */
+    public function show_support_form() {
+        global $DB, $USER;
+
+        $fullname = fullname($USER);
+        $subject = $this->ec->get_string('supportsubject');
+        $description = $this->ec->get_string('supportmessage');
+        $institution = $DB->get_field('course', 'fullname', array('id' => SITEID));
+
+        $output = '';
+        $output .= html_writer::tag('h3', $this->ec->get_string('supporttitle'));
+        $output .= html_writer::tag('p', $this->ec->get_string('supportconfirm'));
+        $output .= html_writer::start_tag('table', array('class' => 'supportconfirm', 'cellpadding' => 4, 'cellspacing' => 4));
+        $output .= html_writer::tag('tr', html_writer::tag('th', get_string('name')).html_writer::tag('td', $fullname));
+        $output .= html_writer::tag('tr', html_writer::tag('th', get_string('email')).html_writer::tag('td', $USER->email));
+        if ($USER->phone1) {
+            $output .= html_writer::tag('tr', html_writer::tag('th', get_string('phone1')).html_writer::tag('td', $USER->phone1));
+        }
+        if ($institution) {
+            $output .= html_writer::tag('tr', html_writer::tag('th', get_string('institution')).html_writer::tag('td', $institution));
+        }
+        $output .= html_writer::tag('tr', html_writer::tag('th', get_string('subject', 'forum')).html_writer::tag('td', $subject));
+        $output .= html_writer::tag('tr', html_writer::tag('th', get_string('description')).html_writer::tag('td', $description));
+        $output .= html_writer::end_tag('table');
+
+        $url = 'https://www.englishcentral.com/support/contact-school-support';
+        $label = get_string('continue');
+        $params = array('name' => $fullname,
+                        'email' => $USER->email,
+                        'phone' => $USER->phone1,
+                        'subject' => $subject,
+                        'institution' => $institution,
+                        'description' => $description,
+                        'type' => 'access_code_coupon');
+        $output .= $this->single_button(new moodle_url($url, $params), $label);
+
+        return $output;
+    }
+
+    /**
      * Show the introduction as entered on edit page
      */
     public function show_intro() {
@@ -206,11 +247,12 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
 
         $progress = $this->ec->get_progress();
 
-        if ($total = ($this->ec->watchgoal + $this->ec->learngoal + $this->ec->speakgoal)) {
-            $total = (($progress->watch + $progress->learn + $progress->speak) / $total);
-            $total = round(100 * $total, 0);
+        // calculate overall percent
+        if ($percent = ($this->ec->watchgoal + $this->ec->learngoal + $this->ec->speakgoal)) {
+            $percent = (($progress->watch + $progress->learn + $progress->speak) / $percent);
+            $percent = round(100 * $percent, 0);
         } else {
-            $total = 0; // unusual - no goals have been set up yet !!
+            $percent = 0; // unusual - no goals have been set up yet !!
         }
 
         $output = '';
@@ -231,26 +273,44 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         $timing = html_writer::tag('h4', $this->ec->get_string('yourprogress')).$timing;
         $output .= html_writer::tag('div', $timing, array('class' => 'timing'));
 
-		$title = html_writer::tag('h4', $this->ec->get_string('overall'), array('class' => 'title'));
-        $chart = html_writer::tag('span', $total, array('class' => 'percentnumber')).
-                 html_writer::tag('span', '%', array('class' => 'percentsign'));
-        $chart = html_writer::tag('div', $chart, array('class' => 'percent')).
-                 html_writer::tag('div', $this->ec->get_string('achieved'), array('class' => 'achieved'));
-        $chart = html_writer::tag('div', $chart, array('class' => 'chart total'));
-		$output .= html_writer::tag('div', $title.$chart, array('class' => 'titlechart'));
+        // format titlecharts
+        $output .= $this->show_titlechart('overall', $percent, '%', 'achieved', $percent);
+        $output .= $this->show_titlechart_type('watch', $progress);
+        $output .= $this->show_titlechart_type('learn', $progress);
+        $output .= $this->show_titlechart_type('speak', $progress);
 
-        $goals = array('watch', 'learn', 'speak');
-        foreach ($goals as $goal) {
-        	$title = html_writer::tag('h4', $this->ec->get_string($goal.'goal'), array('class' => 'title'));
-            $chart = html_writer::tag('span', $progress->$goal, array('class' => 'numerator')).
-                     html_writer::tag('span', ' / '.$this->ec->{$goal.'goal'}, array('class' => 'divisor'));
-            $chart = html_writer::tag('div', $chart, array('class' => 'fraction')).
-                     html_writer::tag('div', $this->ec->get_string($goal.'goalunits'), array('class' => 'units'));
-            $chart = html_writer::tag('div', $chart, array('class' => 'chart '.$goal));
-            $output .= html_writer::tag('div', $title.$chart, array('class' => 'titlechart'));
-        }
         $output .= $this->output->box_end();
         return $output;
+    }
+
+    public function show_titlechart_type($type, $progress) {
+        $num = intval($progress->$type);
+        $div = intval($this->ec->{$type.'goal'});
+        if ($div==0) {
+            $percent = 0;
+        } else {
+            $percent = round($num / $div, 0);
+        }
+        return $this->show_titlechart($type, $num, " / $div", $type.'goalunits', $percent);
+    }
+
+    public function show_titlechart($type, $text1, $text2, $string, $percent) {
+        $title = $this->ec->get_string($type.'goal');
+        $help = $this->help_icon($type.'goal', $this->ec->plugin);
+        $title = html_writer::tag('h4', $title.$help, array('class' => 'title'));
+        $chart = $this->show_chart($type, $text1, $text2, $string, $percent);
+        return html_writer::tag('div', $title.$chart, array('class' => 'titlechart'));
+    }
+
+    public function show_chart($type, $text1, $text2, $string, $percent) {
+        $line1 = html_writer::tag('span', $text1, array('class' => 'text1')).
+                 html_writer::tag('span', $text2, array('class' => 'text2'));
+        $line2 = $this->ec->get_string($string);
+        $lines = html_writer::tag('div', $line1, array('class' => 'line1')).
+                 html_writer::tag('div', $line2, array('class' => 'line2'));
+        $params = array('class' => 'chart '.$type,
+                        'style' => ''); // set rotation to $percent %
+        return html_writer::tag('div', $lines, $params);
     }
 
     /**

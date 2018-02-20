@@ -45,28 +45,28 @@ $string['englishcentral:manageattempts'] = 'Manage attempts at an English Centra
 // activity settings
 $string['consumerkey'] = 'Consumer Key';
 $string['consumerkeydefault'] = 'YOUR CONSUMER KEY';
-$string['consumerkeyexplain'] = 'Your consumer key is available from EnglishCentral.com';
+$string['consumerkeyexplain'] = 'Your consumer key is available from {$a}';
 $string['consumersecret'] = 'Consumer Secret';
 $string['consumersecretdefault'] = 'YOUR CONSUMER SECRET';
-$string['consumersecretexplain'] = 'Your consumer secret is available from EnglishCentral.com';
+$string['consumersecretexplain'] = 'Your consumer secret is available from {$a}';
 $string['developmentmode'] = 'Development mode';
 $string['developmentmodeexplain'] = 'On development sites, this setting should be enabled. On production sites, it should be disabled.';
 $string['encryptedsecret'] = 'Encrypted Secret';
 $string['encryptedsecretdefault'] = 'YOUR ENCRYPTED SECRET';
-$string['encryptedsecretexplain'] = 'Your encrypted secret is available from EnglishCentral.com';
+$string['encryptedsecretexplain'] = 'Your encrypted secret is available from {$a}';
 $string['partnerid'] = 'Partner ID';
 $string['partneriddefault'] = 'YOUR PARTNER ID';
-$string['partneridexplain'] = 'Your partnerid is available from EnglishCentral.com';
+$string['partneridexplain'] = 'Your partnerid is available from {$a}';
 
 $string['goals_help'] = 'Define goals for Watch, Learn, Speak and Study time';
 $string['goals'] = 'Goals';
-$string['learngoal_help'] = 'The target number of words to learn.';
+$string['learngoal_help'] = 'The target number of unique words to learn.';
 $string['learngoal'] = 'Learn';
 $string['learngoalunits'] = 'words';
 $string['learnwords'] = '{$a} words';
 $string['goalperiod_help'] = 'The time period and the day or date by which these goals should be achieved.';
 $string['goalperiod'] = 'Goal period';
-$string['speakgoal_help'] = 'The target number of lines to speak.';
+$string['speakgoal_help'] = 'The target number of unique lines to speak.';
 $string['speakgoal'] = 'Speak';
 $string['speakgoalunits'] = 'lines';
 $string['speaklines'] = '{$a} lines';
@@ -74,8 +74,8 @@ $string['studygoal_help'] = 'The target number of minutes/hours to study.
 
 The study time is calculated using the following formula:
 
-(number of videos watched) x 6 minutes
-+ (number of words learned) x 1 minute
+(number of videos watched) x 6 minutes  
++ (number of words learned) x 1 minute  
 + (number of lines spoken) x 1 minute';
 $string['studygoal'] = 'Study time';
 $string['studygoalunits'] = 'minutes';
@@ -85,7 +85,15 @@ $string['watchgoalunits'] = 'videos';
 $string['watchvideos'] = '{$a} videos';
 $string['achieved'] = 'achieved';
 $string['yourprogress'] = 'Your progress';
-$string['overall'] = 'Overall';
+$string['overallgoal_help'] = 'The overall progress as a percentage. it is calculated as using the following formula:
+
+**(number of items studied) / (total study goal)**
+
+* **number of items studied**:  
+(number of videos watched) + (number of words learned) + (number of lines spoken)
+* **total study goal**:  
+(watch goal) + (learn goal) + (speak goal)';
+$string['overallgoal'] = 'Overall';
 
 $string['from'] = 'From';
 $string['until'] = 'Until';
@@ -142,6 +150,10 @@ $string['topics'] = 'Topic(s)';
 $string['transcript'] = 'Transcript';
 $string['removevideo'] = 'Remove video';
 
+$string['supporttitle'] = 'Request partnerID from EnglishCentral.com';
+$string['supportconfirm'] = 'The following information will be sent to EnglishCentral.com to request a partner ID and access keys:';
+$string['supportsubject'] = 'Request for access to EC module for Moodle';
+$string['supportmessage'] = 'Please could you contact me regarding a partner ID and keys to use the EC module on my Moodle site.';
 
 // deprecated strings
 
