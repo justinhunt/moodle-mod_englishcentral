@@ -192,17 +192,8 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
             });
         });
 
-        // set player width and height, in order to see WLS controls
-        var width = 640;
-        var height = 420;
-        if (window.outerWidth > 1000) {
-            width = 1000;
-        } else if (window.outerHeight > 655) {
-            height = 655;
-        }
-
-        // initialize EC player
-        window.ECSDK.loadWidget("player", {
+        // set player options
+        var options = {
             "partnerSdkToken": VIEW.sdktoken,
             "partnerKey": VIEW.consumerkey,
             "container":  VIEW.playercontainer,
@@ -211,9 +202,20 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
             "learnMode":  true,
             "speakMode":  true,
             "quizMode":  true,
-            "height": height,
-            "width": width
-        });
+            "width": 640
+        };
+
+        // set player width and height, in order to see WLS controls
+        if (options.width > window.outerWidth) {
+            options.width = window.outerWidth;
+        } else if (window.outerWidth > 1000) {
+            options.width = 1000;
+        } else {
+            options.height = 655;
+        }
+
+        // initialize EC player
+        window.ECSDK.loadWidget("player", options);
     };
 
     VIEW.fetch_videos = function(term) {
