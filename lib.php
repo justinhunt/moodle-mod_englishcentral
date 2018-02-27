@@ -168,28 +168,24 @@ function englishcentral_delete_instance($id) {
  */
 function englishcentral_grade_item_update($englishcentral, $grades=null) {
     global $CFG;
+	require_once($CFG->dirroot.'/lib/gradelib.php');
 
-    if (! function_exists('grade_update')) { //workaround for buggy PHP versions
-        require_once($CFG->libdir.'/gradelib.php');
-    }
-
-    if (array_key_exists('cmidnumber', $englishcentral)) { //it may not be always present
-        $params = array('itemname'=>$englishcentral->name, 'idnumber'=>$englishcentral->cmidnumber);
-    } else {
-        $params = array('itemname'=>$englishcentral->name);
+	$params = array('itemname' => $englishcentral->name);
+    if (array_key_exists('cmidnumber', $englishcentral)) {
+        $params['idnumber'] = $englishcentral->cmidnumber;
     }
 
     if ($englishcentral->grade > 0) {
-        $params['gradetype']  = GRADE_TYPE_VALUE;
-        $params['grademax']   = $englishcentral->grade;
-        $params['grademin']   = 0;
+        $params['gradetype'] = GRADE_TYPE_VALUE;
+        $params['grademax'] = $englishcentral->grade;
+        $params['grademin'] = 0;
     } else if ($englishcentral->grade < 0) {
-        $params['gradetype']  = GRADE_TYPE_SCALE;
-        $params['scaleid']   = -$englishcentral->grade;
+        $params['gradetype'] = GRADE_TYPE_SCALE;
+        $params['scaleid'] = -$englishcentral->grade;
 
         // Make sure current grade fetched correctly from $grades
         $currentgrade = null;
-        if (!empty($grades)) {
+        if (! empty($grades)) {
             if (is_array($grades)) {
                 $currentgrade = reset($grades);
             } else {
@@ -198,12 +194,12 @@ function englishcentral_grade_item_update($englishcentral, $grades=null) {
         }
 
         // When converting a score to a scale, use scale's grade maximum to calculate it.
-        if (!empty($currentgrade) && $currentgrade->rawgrade !== null) {
+        if (! empty($currentgrade) && $currentgrade->rawgrade !== null) {
             $grade = grade_get_grades($englishcentral->course, 'mod', 'englishcentral', $englishcentral->id, $currentgrade->userid);
-            $params['grademax']   = reset($grade->items)->grademax;
+            $params['grademax'] = reset($grade->items)->grademax;
         }
     } else {
-        $params['gradetype']  = GRADE_TYPE_NONE;
+        $params['gradetype'] = GRADE_TYPE_NONE;
     }
 
     if ($grades  === 'reset') {
@@ -230,7 +226,13 @@ function englishcentral_grade_item_update($englishcentral, $grades=null) {
         }
     }
 
-    return grade_update('mod/englishcentral', $englishcentral->course, 'mod', 'englishcentral', $englishcentral->id, 0, $grades, $params);
+	if (is_object($englishcentral->course)) {
+		$courseid = $englishcentral->course->id;
+	} else {
+		$courseid = $englishcentral->course;
+	}
+
+    return grade_update('mod/englishcentral', $courseid, 'mod', 'englishcentral', $englishcentral->id, 0, $grades, $params);
 }
 
 /**
@@ -243,25 +245,19 @@ function englishcentral_grade_item_update($englishcentral, $grades=null) {
  */
 function englishcentral_update_grades($englishcentral, $userid=0, $nullifnone=true) {
     global $CFG, $DB;
-    require_once($CFG->libdir.'/gradelib.php');
+    require_once($CFG->dirroot.'/lib/gradelib.php');
 
-    if ($englishcentral->grade == 0) {
-        englishcentral_grade_item_update($englishcentral);
-
+    if (empty($englishcentral->grade)) {
+		$grades = null;
     } else if ($grades = englishcentral_get_user_grades($englishcentral, $userid)) {
-        englishcentral_grade_item_update($englishcentral, $grades);
-
-    } else if ($userid and $nullifnone) {
-        $grade = new stdClass();
-        $grade->userid   = $userid;
-        $grade->rawgrade = null;
-        englishcentral_grade_item_update($englishcentral, $grade);
-
+    	// do nothing
+    } else if ($userid && $nullifnone) {
+		$grades = (object)array('userid' => $userid, 'rawgrade' => null);
     } else {
-        englishcentral_grade_item_update($englishcentral);
+		$grades = null;
     }
 
-	//echo "updategrades" . $userid;
+	englishcentral_grade_item_update($englishcentral, $grades);
 }
 
 /**
@@ -274,66 +270,42 @@ function englishcentral_update_grades($englishcentral, $userid=0, $nullifnone=tr
  * @return array array of grades, false if none
  */
 function englishcentral_get_user_grades($englishcentral, $userid=0) {
-    global $CFG, $DB;
+    global $DB;
 
-    $params = array("ecid" => $englishcentral->id);
+	$goal = 0;
 
-    if (!empty($userid)) {
-        $params["userid"] = $userid;
-        $user = "AND u.id = :userid";
-    }
-    else {
-        $user="";
-
-    }
-
-    $englishcentral->speaklitemode = 0;
-    $englishcentral->maxattempts = 0;
-    $englishcentral->gradeoptions = 0;
-
-	if ($englishcentral->speaklitemode != 1) {
-		$overallgrade = '(a.sessionscore * (a.linesrecorded * (1 / a.linestotal)))';
-	} else {
-		$overallgrade = '(a.sessionscore * a.recordingcomplete)';
+	if ($englishcentral->watchgoal) {
+		$goal += intval($englishcentral->watchgoal);
+	}
+	if ($englishcentral->learngoal) {
+		$goal += intval($englishcentral->learngoal);
+	}
+	if ($englishcentral->speakgoal) {
+		$goal += intval($englishcentral->speakgoal);
 	}
 
-    if ($englishcentral->maxattempts==1 || $englishcentral->gradeoptions == MOD_ENGLISHCENTRAL_GRADELATEST) {
-
-        $sql = "SELECT u.id, u.id AS userid, $overallgrade AS rawgrade
-                  FROM {user} u, {englishcentral_attempts} a
-                 WHERE u.id = a.userid AND a.ecid = :ecid
-                       AND a.status = 1
-                       $user";
-
+	if ($goal) {
+		$select = 'SUM(watchcomplete) + SUM(learncount) + SUM(speakcount)';
+		$select = "ROUND(100 * ($select) / ?, 0)";
+		// Note: MSSQL always requires precision for ROUND function.
 	} else {
-		switch ($englishcentral->gradeoptions) {
-			case MOD_ENGLISHCENTRAL_GRADEHIGHEST:
-				$sql = "SELECT u.id, u.id AS userid, MAX($overallgrade) AS rawgrade
-                      FROM {user} u, {englishcentral_attempts} a
-                     WHERE u.id = a.userid AND a.ecid = :ecid
-                           $user
-                  GROUP BY u.id";
-				  break;
-			case MOD_ENGLISHCENTRAL_GRADELOWEST:
-				$sql = "SELECT u.id, u.id AS userid, MIN($overallgrade) AS rawgrade
-                      FROM {user} u, {englishcentral_attempts} a
-                     WHERE u.id = a.userid AND a.ecid = :ecid
-                           $user
-                  GROUP BY u.id";
-				  break;
-			case MOD_ENGLISHCENTRAL_GRADEAVERAGE:
-                $sql = "SELECT u.id, u.id AS userid, AVG($overallgrade) AS rawgrade
-                      FROM {user} u, {englishcentral_attempts} a
-                     WHERE u.id = a.userid AND a.ecid = :ecid
-                           $user
-                  GROUP BY u.id";
-				  break;
+		// If no goals have been setup, all grades will be set to zero.
+		$select = '?';
+	}
 
-        }
+	$select = "userid, $select AS rawgrade";
+	$from   = '{englishcentral_attempts}';
+	$where  = 'ecid = ?';
+	$params = array($goal, $englishcentral->id);
 
-    }
+	if ($userid) {
+		$where .= ' AND userid = ?';
+		$params[] = $userid;
+	} else {
+		$where .= ' GROUP BY userid';
+	}
 
-    return $DB->get_records_sql($sql, $params);
+    return $DB->get_records_sql("SELECT $select FROM $from WHERE $where", $params);
 }
 
 /**
@@ -353,7 +325,7 @@ function englishcentral_reset_course_form_definition(&$mform) {
  * @return array
  */
 function englishcentral_reset_course_form_defaults($course) {
-    return array('reset_englishcentral'=>1);
+    return array('reset_englishcentral' => 1);
 }
 
 /**
@@ -407,13 +379,13 @@ function englishcentral_reset_userdata($data) {
             englishcentral_reset_gradebook($data->courseid);
         }
 
-        $status[] = array('component'=>$componentstr, 'item'=>get_string('deleteallattempts', 'englishcentral'), 'error'=>false);
+        $status[] = array('component' => $componentstr, 'item' => get_string('deleteallattempts', 'englishcentral'), 'error' => false);
     }
 
     /// updating dates - shift may be negative too
     if ($data->timeshift) {
         shift_course_mod_dates('englishcentral', array('available', 'deadline'), $data->timeshift, $data->courseid);
-        $status[] = array('component'=>$componentstr, 'item'=>get_string('datechanged'), 'error'=>false);
+        $status[] = array('component' => $componentstr, 'item' => get_string('datechanged'), 'error' => false);
     }
 
     return $status;

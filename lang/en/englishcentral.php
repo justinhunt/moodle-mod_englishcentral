@@ -90,7 +90,9 @@ $string['overallgoal_help'] = 'The overall progress as a percentage. it is calcu
 **(number of items studied) / (total study goal)**
 
 * **number of items studied**:  
-(number of videos watched) + (number of words learned) + (number of lines spoken)
+(number of videos watched) +  
+(number of words learned) +  
+(number of lines spoken)
 * **total study goal**:  
 (watch goal) + (learn goal) + (speak goal)';
 $string['overallgoal'] = 'Overall';
@@ -138,22 +140,25 @@ $string['intermediate'] = 'Intermediate';
 $string['advanced'] = 'Advanced';
 $string['levelx'] = 'Level {$a}';
 
-$string['addvideo'] = 'Add video';
-$string['searchterm'] = 'Search term(s)';
-$string['entersearchterm'] = 'Please enter one or more search terms.';
-$string['xitemsfound'] = '{$a} items found';
-$string['clickwhenfinished'] = "Click me when you've finished";
-$string['confirmremovevideo'] = 'Do you really want to remove this video?';
 $string['addthisvideo'] = 'Add this video';
+$string['addvideo'] = 'Add video';
+$string['confirmremovevideo'] = 'Do you really want to remove this video?';
 $string['description'] = 'Description';
-$string['topics'] = 'Topic(s)';
-$string['transcript'] = 'Transcript';
+$string['entersearchterm'] = 'Please enter one or more search terms.';
+$string['goals'] = 'Goals';
+$string['noconnection'] = 'WARNING: Your Moodle site cannot currently connect to the EnglishCentral server.';
 $string['removevideo'] = 'Remove video';
+$string['searchterm'] = 'Search terms';
+$string['topics'] = 'Topics';
+$string['transcript'] = 'Transcript';
+$string['xitemsfound'] = '{$a} items found';
 
 $string['supporttitle'] = 'Request partnerID from EnglishCentral.com';
 $string['supportconfirm'] = 'The following information will be sent to EnglishCentral.com to request a partner ID and access keys:';
 $string['supportsubject'] = 'Request for access to EC module for Moodle';
 $string['supportmessage'] = 'Please could you contact me regarding a partner ID and keys to use the EC module on my Moodle site.';
+
+$string['updatinggrades'] = 'Updating EnglishCentral grades';
 
 // deprecated strings
 

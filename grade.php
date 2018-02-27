@@ -28,13 +28,10 @@
  */
 require_once("../../config.php");
 require_once($CFG->dirroot.'/mod/englishcentral/lib.php');
-require_once($CFG->dirroot.'/mod/englishcentral/locallib.php');
-
 
 $id = required_param('id', PARAM_INT);
 $cm = get_coursemodule_from_id('englishcentral', $id, 0, false, MUST_EXIST);
 $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
-//$englishcentral = $DB->get_record('englishcentral', array('id' => $cm->instance), '*', MUST_EXIST);
 
 require_login($course, false, $cm);
 

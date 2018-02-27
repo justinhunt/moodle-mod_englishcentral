@@ -164,12 +164,13 @@ class auth {
 
     public function get_authorization() {
         if ($this->authorization===null) {
-            $sdk_token = $this->get_sdk_token();
-            $consumersecret = \mod_englishcentral\jwt\JWT::urlsafeB64Decode($this->encryptedsecret);
-            $payload = \mod_englishcentral\jwt\JWT::decode($sdk_token, $consumersecret, array('HS256'));
-            $payload = array('accessToken' => $payload->accessToken,
-                             'consumerKey' => $this->consumerkey);
-            $this->authorization = 'JWT '.\mod_englishcentral\jwt\JWT::encode($payload, $consumersecret);
+            if ($sdk_token = $this->get_sdk_token()) {
+				$consumersecret = \mod_englishcentral\jwt\JWT::urlsafeB64Decode($this->encryptedsecret);
+				$payload = \mod_englishcentral\jwt\JWT::decode($sdk_token, $consumersecret, array('HS256'));
+				$payload = array('accessToken' => $payload->accessToken,
+								 'consumerKey' => $this->consumerkey);
+				$this->authorization = 'JWT '.\mod_englishcentral\jwt\JWT::encode($payload, $consumersecret);
+            }
         }
         return $this->authorization;
     }
@@ -230,6 +231,10 @@ class auth {
 
     public function doCurl($url, $header, $json_decode=false, $post=null, $fields=null) {
 
+		// NOTE: we could also use the Moodle API (lib/filelib.php)
+		// download_file_content($url, $headers=null, $postdata=null, $fullresponse=false,
+		//                       $timeout=300, $connecttimeout=20, $skipcertverify=false,
+		//                       $tofile=NULL, $calctimeout=false)
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL,             $url);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION,  true);
@@ -273,21 +278,19 @@ class auth {
         }
     }
 
-    public function get_site_language($default='en') {
-        if (empty($CFG->lang)) {
-            return $default;
-        } else {
-            return str_replace('_utf8', '', $CFG->lang);
-        }
-    }
-
     public function get_user_language($default='en') {
-        global $USER;
-        if (empty($USER->lang)) {
-            return $this->get_site_language($default);
-        } else {
+        global $CFG, $USER;
+        if (! empty($USER->lang)) {
             return str_replace('_utf8', '', $USER->lang);
         }
+        if (! empty($CFG->lang)) {
+            return str_replace('_utf8', '', $CFG->lang);
+        }
+        return $default;
+    }
+
+    public function get_site_language() {
+        return substr(current_language(), 0, 2);
     }
 
 	public function get_fetch_url() {

@@ -138,6 +138,27 @@ class activity {
         return $this->url('view.ajax.php', $escaped);
     }
 
+    public function get_videoinfo_url($escaped=null) {
+        $lang = substr(current_language(), 0, 2);
+        switch ($lang) {
+            case 'en': // English
+                return 'https://www.englishcentral.com/videodetails';
+            case 'ar': // Arabic
+            case 'es': // Spanish
+            case 'he': // Hebrew
+            case 'ja': // Japanese
+            case 'pt': // Portuguese
+            case 'ru': // Russian
+            case 'tr': // Turkish
+            case 'vi': // Vietnamese
+                return "https://$lang.englishcentral.com/videodetails";
+            case 'zh': // Chinese
+                return 'https://www.englishcentralchina.com/videodetails';
+            default:
+                'https://www.englishcentral.com/videodetails?setLanguage='.$lang;
+        }
+    }
+
     public function url($filepath, $escaped=null, $params=array()) {
         $url = '/'.$this->plugintype.'/'.$this->pluginname.'/'.$filepath;
         $url = new \moodle_url($filepath, $params);
@@ -377,10 +398,12 @@ class activity {
         }
 
         if (empty($attempt->id)) {
-            return $DB->insert_record($table, $attempt);
+            $DB->insert_record($table, $attempt);
         } else {
-            return $DB->update_record($table, $attempt);
+            $DB->update_record($table, $attempt);
         }
+
+        englishcentral_update_grades($this, $USER->id);
     }
 
 	/**

@@ -39,7 +39,7 @@ defined('MOODLE_INTERNAL') || die();
  * @return bool
  */
 function xmldb_englishcentral_upgrade($oldversion) {
-    global $DB;
+    global $CFG, $DB;
 
     $dbman = $DB->get_manager();
 
@@ -403,6 +403,65 @@ function xmldb_englishcentral_upgrade($oldversion) {
 
         // create/modify the table
         xmldb_englishcentral_create_table($dbman, $table, $fields);
+
+        upgrade_mod_savepoint(true, "$newversion", 'englishcentral');
+    }
+
+    $newversion = 2018022735;
+    if ($oldversion < $newversion) {
+        require_once $CFG->dirroot.'/mod/englishcentral/lib.php';
+
+        // update/create grades for all hotpots
+
+        // set up sql strings
+        $strupdating = get_string('updatinggrades', 'mod_englishcentral');
+        $select = 'ec.*, cm.idnumber AS cmidnumber';
+        $from   = '{englishcentral} ec, {course_modules} cm, {modules} m';
+        $where  = 'ec.id = cm.instance AND cm.module = m.id AND m.name = ?';
+        $params = array('englishcentral');
+
+        // get previous record index (if any)
+        $configname = 'updategrades';
+        $configvalue = get_config('mod_englishcentral', $configname);
+        if (is_numeric($configvalue)) {
+            $i_min = intval($configvalue);
+        } else {
+            $i_min = 0;
+        }
+
+        if ($i_max = $DB->count_records_sql("SELECT COUNT('x') FROM $from WHERE $where", $params)) {
+            if ($rs = $DB->get_recordset_sql("SELECT $select FROM $from WHERE $where", $params)) {
+                if (defined('CLI_SCRIPT') && CLI_SCRIPT) {
+                    $bar = false;
+                } else {
+                    $bar = new progress_bar('englishcentralupgradegrades', 500, true);
+                }
+                $i = 0;
+                foreach ($rs as $ec) {
+
+                    // update grade
+                    if ($i >= $i_min) {
+                        upgrade_set_timeout(); // apply for more time (3 mins)
+                        englishcentral_update_grades($ec);
+                    }
+
+                    // update progress bar
+                    $i++;
+                    if ($bar) {
+                        $bar->update($i, $i_max, $strupdating.": ($i/$i_max)");
+                    }
+
+                    // update record index
+                    if ($i > $i_min) {
+                        set_config($configname, $i, 'mod_englishcentral');
+                    }
+                }
+                $rs->close();
+            }
+        }
+
+        // delete the record index
+        unset_config($configname, 'mod_englishcentral');
 
         upgrade_mod_savepoint(true, "$newversion", 'englishcentral');
     }

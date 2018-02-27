@@ -96,24 +96,24 @@ echo $renderer->show_intro();
 $PAGE->requires->js($auth->get_js_url());
 
 $opts = array('accept1'       => \mod_englishcentral\auth::ACCEPT_V1,
-              'authorization' => $auth->get_authorization(),
-              'fetchurl'      => $auth->get_fetch_url(),
-              'searchurl'     => $auth->get_search_url(),
-              'sdktoken'      => $auth->get_sdk_token(),
-              'sitelanguage'  => $auth->get_user_language(),
               'consumerkey'   => $auth->consumerkey,
+              'sdktoken'      => $auth->get_sdk_token(),
+              'authorization' => $auth->get_authorization(),
+              'sitelanguage'  => $auth->get_site_language(),
+              'searchurl'     => $auth->get_search_url(),
+              'fetchurl'      => $auth->get_fetch_url(),
+              'playercontainer'  => 'id_playercontainer',
               'progresscontainer' => 'id_progresscontainer',
-              'playercontainer'   => 'id_playercontainer',
               'cmid'          => $ec->cm->id,
               'moodlesesskey' => sesskey(),
               'viewajaxurl'   => $ec->get_viewajax_url(false),
-              'videoinfourl'  => 'https://www.englishcentral.com/videodetails',
+              'videoinfourl'  => $ec->get_videoinfo_url(false),
               'targetwindow'  => 'EC');
 
 $PAGE->requires->js_call_amd("$ec->plugin/view", 'init', array($opts));
 
 // We could preload the string cache - it might speed things up.
-// Otherwise, the strings will be fetched as need by "core/str".
+// Otherwise, the strings will be fetched as needed by "core/str".
 //$strings = array();
 //$PAGE->strings_for_js($strings, $ec->plugin);
 

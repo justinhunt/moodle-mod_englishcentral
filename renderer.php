@@ -320,32 +320,45 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         $output = '';
         $output .= $this->output->box_start('englishcentral_videos');
 
+        if ($this->ec->can_manage()) {
+            $output .= $this->show_addvideo_icon();
+        }
+
         // get video ids in this EC activity
+        $connection_available = true;
         if ($videoids = $this->ec->get_videoids()) {
 
             // fetch video info from EC server
-            $videos = $this->auth->fetch_dialog_list($videoids);
+            if ($videos = $this->auth->fetch_dialog_list($videoids)) {
 
-            // build index to map videoid onto $videos item
-            $index = array();
-            foreach ($videos as $i => $video) {
-                $index[$video->dialogID] = $i;
-            }
-
-            // create video thumbnails in required sortorder
-            foreach ($videoids as $videoid) {
-                if (array_key_exists($videoid, $index)) {
-                    $i = $index[$videoid];
-                    $output .= $this->show_video($videos[$i]);
+                // build index to map videoid onto $videos item
+                $index = array();
+                foreach ($videos as $i => $video) {
+                    $index[$video->dialogID] = $i;
                 }
+
+                // create video thumbnails in required sortorder
+                foreach ($videoids as $videoid) {
+                    if (array_key_exists($videoid, $index)) {
+                        $i = $index[$videoid];
+                        $output .= $this->show_video($videos[$i]);
+                    }
+                }
+            } else {
+                $connection_available = false;
             }
         } else {
             $output .= html_writer::tag('p', $this->ec->get_string('novideos'));
         }
+
         if ($this->ec->can_manage()) {
             $output .= $this->show_removevideo_icon();
-            $output .= $this->show_addvideo_icon();
         }
+
+        if ($connection_available==false) {
+            $output .= html_writer::tag('p', $this->ec->get_string('noconnection'));
+        }
+
         $output .= $this->output->box_end();
         return $output;
     }

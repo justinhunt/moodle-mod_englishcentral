@@ -35,30 +35,32 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
 
     // set up strings
     STR.get_strings([
-        {"key" : "addthisvideo",       "component" : VIEW.plugin},
-        {"key" : "advanced",           "component" : VIEW.plugin},
-        {"key" : "beginner",           "component" : VIEW.plugin},
-        {"key" : "clickwhenfinished",  "component" : VIEW.plugin},
-        {"key" : "confirmremovevideo", "component" : VIEW.plugin},
-        {"key" : "description",        "component" : VIEW.plugin},
-        {"key" : "entersearchterm",    "component" : VIEW.plugin},
-        {"key" : "intermediate",       "component" : VIEW.plugin},
-        {"key" : "searchterm",         "component" : VIEW.plugin},
-        {"key" : "topics",             "component" : VIEW.plugin},
-        {"key" : "transcript",         "component" : VIEW.plugin}
+        {"key": "addthisvideo",       "component": VIEW.plugin},
+        {"key": "advanced",           "component": VIEW.plugin},
+        {"key": "beginner",           "component": VIEW.plugin},
+        {"key": "clickwhenfinished",  "component": VIEW.plugin},
+        {"key": "confirmremovevideo", "component": VIEW.plugin},
+        {"key": "description",        "component": VIEW.plugin},
+        {"key": "entersearchterm",    "component": VIEW.plugin},
+        {"key": "goals",              "component": VIEW.plugin},
+        {"key": "intermediate",       "component": VIEW.plugin},
+        {"key": "searchterm",         "component": VIEW.plugin},
+        {"key": "topics",             "component": VIEW.plugin},
+        {"key": "transcript",         "component": VIEW.plugin}
     ]).done(function(s) {
         var i = 0;
-        VIEW.str.addthisvideo       = s[i++];
-        VIEW.str.advanced           = s[i++];
-        VIEW.str.beginner           = s[i++];
-        VIEW.str.clickwhenfinished  = s[i++];
+        VIEW.str.addthisvideo = s[i++];
+        VIEW.str.advanced = s[i++];
+        VIEW.str.beginner = s[i++];
+        VIEW.str.clickwhenfinished = s[i++];
         VIEW.str.confirmremovevideo = s[i++];
-        VIEW.str.description        = s[i++];
-        VIEW.str.entersearchterm    = s[i++];
-        VIEW.str.intermediate       = s[i++];
-        VIEW.str.searchterm         = s[i++];
-        VIEW.str.topics             = s[i++];
-        VIEW.str.transcript         = s[i++];
+        VIEW.str.description = s[i++];
+        VIEW.str.entersearchterm = s[i++];
+        VIEW.str.goals = s[i++];
+        VIEW.str.intermediate = s[i++];
+        VIEW.str.searchterm = s[i++];
+        VIEW.str.topics = s[i++];
+        VIEW.str.transcript = s[i++];
     });
 
     VIEW.init = function(opts) {
@@ -68,7 +70,7 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
             VIEW[i] = opts[i];
         }
 
-        $(".activity-title, .thumb-frame").click(function(evt){
+        $(".activity-title, .thumb-frame").click(function(evt) {
             VIEW.play_video(evt, this);
             evt.stopPropagation();
             evt.preventDefault();
@@ -78,19 +80,23 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         // make the video thumnails sortable
         $(".englishcentral_videos").sortable({
             "cursor": "move",
-            "items" : ".activity-thumbnail",
-            "update": function(evt, ui){
+            "items": ".activity-thumbnail",
+            "update": function(evt, ui) {
                 var href = ui.item.find(".activity-title").prop("href");
-                var data = {"dialogId"  : VIEW.get_videoid_from_href(href),
-                            "sortorder" : ui.item.index() + 1};
+                var data = {
+                    "dialogId": VIEW.get_videoid_from_href(href),
+                    "sortorder": ui.item.index() + 1
+                };
                 $.ajax({
-                    "url" : VIEW.viewajaxurl,
-                    "data" : {"id"      : VIEW.cmid,
-                              "data"    : data,
-                              "action"  : "sortvideo",
-                              "sesskey" : VIEW.moodlesesskey},
-                    "dataType" : "html",
-                    "success" : function(html){
+                    "url": VIEW.viewajaxurl,
+                    "data": {
+                        "id": VIEW.cmid,
+                        "data": data,
+                        "action": "sortvideo",
+                        "sesskey": VIEW.moodlesesskey
+                    },
+                    "dataType": "html",
+                    "success": function(html) {
                         if (html) {
                             // probably an error message
                             $("#" + VIEW.playercontainer).html(html);
@@ -105,19 +111,23 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         //});
 
         $(".removevideo").droppable({
-            "drop" : function(evt, ui){
+            "drop": function(evt, ui) {
                 if (confirm(VIEW.str.confirmremovevideo)) {
                     ui.draggable.remove();
                     var href = ui.draggable.find(".activity-title").prop("href");
-                    var data = {"dialogId"  : VIEW.get_videoid_from_href(href)};
+                    var data = {
+                        "dialogId": VIEW.get_videoid_from_href(href)
+                    };
                     $.ajax({
-                        "url" : VIEW.viewajaxurl,
-                        "data" : {"id"      : VIEW.cmid,
-                                  "data"    : data,
-                                  "action"  : "removevideo",
-                                  "sesskey" : VIEW.moodlesesskey},
-                        "dataType" : "html",
-                        "success" : function(html){
+                        "url": VIEW.viewajaxurl,
+                        "data": {
+                            "id": VIEW.cmid,
+                            "data": data,
+                            "action": "removevideo",
+                            "sesskey": VIEW.moodlesesskey
+                        },
+                        "dataType": "html",
+                        "success": function(html) {
                             if (html) {
                                 // probably an error message
                                 $("#" + VIEW.playercontainer).html(html);
@@ -128,7 +138,7 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
             }
         });
 
-        $(".addvideo").click(function(){
+        $(".addvideo").click(function() {
 
             var container = document.getElementById(VIEW.playercontainer);
             if (container) {
@@ -142,18 +152,28 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
 
             // create search box/results
             var html = "";
-            html += HTML.tag("span", VIEW.str.searchterm, {"class" : "search-prompt"});
-            html += HTML.input("searchterm", "text", {"size" : 30});
-            html += HTML.input("searchbutton", "submit", {"value" : "Go"});
-            html  = HTML.tag("div", html, {"class" : "search-box"});
-            html += HTML.tag("div", "", {"class" : "search-results"});
+            html += HTML.tag("span", VIEW.str.searchterm, {
+                "class": "search-prompt"
+            });
+            html += HTML.input("searchterm", "text", {
+                "size": 30
+            });
+            html += HTML.input("searchbutton", "submit", {
+                "value": "Go"
+            });
+            html = HTML.tag("div", html, {
+                "class": "search-box"
+            });
+            html += HTML.tag("div", "", {
+                "class": "search-results"
+            });
             $("#" + VIEW.playercontainer).html(html);
 
             // add click event to button
-            $("#id_searchbutton").click(function(){
+            $("#id_searchbutton").click(function() {
                 var term = $("#id_searchterm").val();
                 var list = new RegExp("^\s*[0-9]+([, \\t\\r\\n]+[0-9]+)*\s*$");
-                if (term=="") {
+                if (term == "") {
                     $(".search-results").html(VIEW.str.entersearchterm);
                 } else if (term.match(list)) {
                     VIEW.fetch_videos(term);
@@ -174,14 +194,18 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
             // AJAX call to send the data.dialogID to the Moodle server
             // and receive the html for the updated Progress pie-charts
             $.ajax({
-                "url" : VIEW.viewajaxurl,
-                "data" : {"id"      : VIEW.cmid,
-                          "data"    : {"dialogID" : data.dialogID,
-                                       "sdktoken" : VIEW.sdktoken},
-                          "action"  : "storeresults",
-                          "sesskey" : VIEW.moodlesesskey},
-                "dataType" : "html",
-                "success" : function(html){
+                "url": VIEW.viewajaxurl,
+                "data": {
+                    "id": VIEW.cmid,
+                    "data": {
+                        "dialogID": data.dialogID,
+                        "sdktoken": VIEW.sdktoken
+                    },
+                    "action": "storeresults",
+                    "sesskey": VIEW.moodlesesskey
+                },
+                "dataType": "html",
+                "success": function(html) {
                     if (html.indexOf("englishcentral_progress") < 0) {
                         $(".englishcentral_progress").html(html);
                     } else {
@@ -196,12 +220,13 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         var options = {
             "partnerSdkToken": VIEW.sdktoken,
             "partnerKey": VIEW.consumerkey,
-            "container":  VIEW.playercontainer,
-            "dialogId":   VIEW.get_videoid(elm),
+            "siteLanguage": VIEW.sitelanguage,
+            "container": VIEW.playercontainer,
+            "dialogId": VIEW.get_videoid(elm),
             "interstitialsEnabled": true,
-            "learnMode":  true,
-            "speakMode":  true,
-            "quizMode":  true,
+            "learnMode": true,
+            "speakMode": true,
+            "quizMode": true,
             "width": 640
         };
 
@@ -224,12 +249,19 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         $.ajax({
             "url": VIEW.fetchurl,
             "type": "GET",
-            "data": {"dialogIDs": ids, "siteLanguage": VIEW.siteanguage, "page": "0", "pageSize": "20"},
+            "data": {
+                "dialogIDs": ids,
+                "siteLanguage": VIEW.siteanguage,
+                "page": "0",
+                "pageSize": "20"
+            },
             "dataType": "json",
-            "headers": {"Accept": VIEW.accept1,
-                        "Authorization": VIEW.authorization,
-                        "Content-Type": "application/json"},
-            "success": function(info){
+            "headers": {
+                "Accept": VIEW.accept1,
+                "Authorization": VIEW.authorization,
+                "Content-Type": "application/json"
+            },
+            "success": function(info) {
                 VIEW.format_results(info);
             }
         });
@@ -239,24 +271,30 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         $.ajax({
             "url": VIEW.searchurl,
             "type": "GET",
-            "data": {"term": term, "page": "0", "pageSize": "20"},
+            "data": {
+                "term": term,
+                "page": "0",
+                "pageSize": "20"
+            },
             "dataType": "json",
-            "headers": {"Accept": VIEW.accept1,
-                        "Authorization": VIEW.authorization,
-                        "Content-Type": "application/json"},
-            "success": function(info){
+            "headers": {
+                "Accept": VIEW.accept1,
+                "Authorization": VIEW.authorization,
+                "Content-Type": "application/json"
+            },
+            "success": function(info) {
                 VIEW.format_results(info);
             }
         });
     };
 
     VIEW.format_results = function(info) {
-        if ((!info) || (!info.results) || info.results.length==0) {
+        if ((!info) || (!info.results) || info.results.length == 0) {
             return "";
         }
         var html = "";
         var videoids = VIEW.get_videoids();
-        for (var i=0; i<info.results.length; i++) {
+        for (var i = 0; i < info.results.length; i++) {
             // skip videos that are already displayed
             var id = info.results[i].value.dialogID.toString();
             if (videoids.indexOf(id) < 0) {
@@ -264,26 +302,28 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
             }
         }
         $(".search-results").html(html);
-        STR.get_string("xitemsfound", VIEW.plugin, info.count).done(function(s){
+        STR.get_string("xitemsfound", VIEW.plugin, info.count).done(function(s) {
             $(".search-results").prepend(HTML.tag("p", s));
         });
-        for (var i=0; i<info.results.length; i++) {
+        for (var i = 0; i < info.results.length; i++) {
             var v = info.results[i].value;
-            var data = {"dialogId"     : v.dialogID,
-                        "title"        : v.title,
-                        "duration"     : v.duration,
-                        "difficulty"   : v.difficulty,
-                        "dialogURL"    : v.dialogURL,
-                        "thumbnailURL" : v.thumbnailURL};
+            var data = {
+                "dialogId": v.dialogID,
+                "title": v.title,
+                "duration": v.duration,
+                "difficulty": v.difficulty,
+                "dialogURL": v.dialogURL,
+                "thumbnailURL": v.thumbnailURL
+            };
             var id = "#id_add_video_" + data.dialogId;
             $(id).data(data);
-            $(id).click(function(evt){
+            $(id).click(function(evt) {
                 VIEW.add_video(evt, this);
             });
-            $(id).siblings(".result-info").find(".icon").click(function(){
+            $(id).siblings(".result-info").find(".icon").click(function() {
                 var id = $(this).closest(".result-info")
-                                .siblings(".result-add")
-                                .prop("id");
+                    .siblings(".result-add")
+                    .prop("id");
                 id = VIEW.get_videoid_from_id(id);
                 var w = Math.min(640, window.innerWidth);
                 var h = Math.min(480, window.innerHeight);
@@ -300,7 +340,7 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
 
     VIEW.get_videoids = function() {
         var videoids = [];
-        $(".englishcentral_videos .activity-title").each(function(){
+        $(".englishcentral_videos .activity-title").each(function() {
             videoids.push(VIEW.get_videoid(this));
         });
         return videoids;
@@ -322,14 +362,16 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
 
     VIEW.add_video = function(evt, elm) {
         $.ajax({
-            "url" : VIEW.viewajaxurl,
-            "data" : {"id"      : VIEW.cmid,
-                      "data"    : $(elm).data(),
-                      "action"  : "addvideo",
-                      "sesskey" : VIEW.moodlesesskey},
-            "dataType" : "html",
-            "success" : function(html){
-                $(html).insertBefore(".removevideo").find("a").click(function(evt){
+            "url": VIEW.viewajaxurl,
+            "data": {
+                "id": VIEW.cmid,
+                "data": $(elm).data(),
+                "action": "addvideo",
+                "sesskey": VIEW.moodlesesskey
+            },
+            "dataType": "html",
+            "success": function(html) {
+                $(html).insertBefore(".removevideo").find("a").click(function(evt) {
                     VIEW.play_video(evt, this);
                     evt.stopPropagation();
                     evt.preventDefault();
@@ -339,7 +381,7 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         });
 
         // remove this "result-item" from "search-results"
-        $(elm).closest(".result-item").fadeTo(1000, 0.01, function(){
+        $(elm).closest(".result-item").fadeTo(1000, 0.01, function() {
             $(this).slideUp(150, function() {
                 $(this).remove();
             });
@@ -373,62 +415,92 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         html += VIEW.format_add(r);
         html += VIEW.format_thumb(r);
         html += VIEW.format_info(r);
-        return HTML.tag("div", html, {"class" : "result-item"});
+        return HTML.tag("div", html, {
+            "class": "result-item"
+        });
     };
 
     VIEW.format_add = function(r) {
         var src = $(".addvideo img").prop("src").replace("addvideo", "add");
-        var html = HTML.emptytag("img", {"src" : src,
-                                         "title" : VIEW.str.addthisvideo});
-        return HTML.tag("div", html, {"class" : "result-add",
-                                      "id" : "id_add_video_" + r.value.dialogID});
+        var html = HTML.emptytag("img", {
+            "src": src,
+            "title": VIEW.str.addthisvideo
+        });
+        return HTML.tag("div", html, {
+            "class": "result-add",
+            "id": "id_add_video_" + r.value.dialogID
+        });
     };
 
     VIEW.format_thumb = function(r) {
         var duration = r.value.duration.replace(new RegExp("^00:"), "");
         var html = "";
-        html += HTML.starttag("a", {"class" : "thumb-frame",
-                                    "href"  : r.value.dialogURL,
-                                    "style" : "background-image: url('" + r.value.thumbnailURL + "')"});
-        html += HTML.tag("div", r.value.difficulty, {"class" : "result-difficulty"});
-        html += HTML.tag("div", duration, {"class" : "result-duration"});
+        html += HTML.starttag("a", {
+            "class": "thumb-frame",
+            "href": r.value.dialogURL,
+            "style": "background-image: url('" + r.value.thumbnailURL + "')"
+        });
+        html += HTML.tag("div", r.value.difficulty, {
+            "class": "result-difficulty"
+        });
+        html += HTML.tag("div", duration, {
+            "class": "result-duration"
+        });
         html += HTML.endtag("a");
-        return HTML.tag("div", html, {"class" : "result-thumb"});
+        return HTML.tag("div", html, {
+            "class": "result-thumb"
+        });
     };
 
     VIEW.format_info = function(r) {
         var html = "";
         var src = $(".addvideo img").prop("src")
-                                    .replace("addvideo", "i/info")
-                                    .replace("mod_englishcentral", "core");
-        var img = HTML.emptytag("img", {"src" : src, "class" : "icon"});
-        html += HTML.tag("h2", r.value.title + img, {"class" : "result-title"});
+            .replace("addvideo", "i/info")
+            .replace("mod_englishcentral", "core");
+        var img = HTML.emptytag("img", {
+            "src": src,
+            "class": "icon"
+        });
+        html += HTML.tag("h2", r.value.title + img, {
+            "class": "result-title"
+        });
         html += VIEW.format_details(r);
-        return HTML.tag("div", html, {"class" : "result-info"});
+        return HTML.tag("div", html, {
+            "class": "result-info"
+        });
     };
 
     VIEW.format_details = function(r) {
-        var html =  "";
-        html += VIEW.format_topics(r.value.topics);
+        var html = "";
+        html += VIEW.format_goalstopics(r.value.goals, r.value.topics);
         html += VIEW.format_description(r.value.description);
         html += VIEW.format_transcript(r.highlights.transcript);
-        return HTML.tag("dl", html, {"class" : "result-details"});
+        return HTML.tag("dl", html, {
+            "class": "result-details"
+        });
     };
 
-    VIEW.format_topics = function(topics) {
+    VIEW.format_goalstopics = function(goals, topics) {
         var txt = [];
-        for (var i=0; i<topics.length; i++) {
-            txt.push(topics[i].name);
+        if (goals && goals.length) {
+            for (var i = 0; i < goals.length; i++) {
+                txt.push(goals[i].title);
+            }
         }
-        if (txt.length==0) {
+        if (topics && topics.length) {
+            for (var i = 0; i < topics.length; i++) {
+                txt.push(topics[i].name);
+            }
+        }
+        if (txt.length == 0) {
             return "";
         }
-        return VIEW.format_detail("Topics", txt.join(", "));
+        return VIEW.format_detail("topics", txt.join(", "));
     };
 
     VIEW.format_description = function(description) {
-        if (description && description) {
-            return VIEW.format_detail(VIEW.str.description, description);
+        if (description && description.length) {
+            return VIEW.format_detail("description", description);
         }
         return "";
     };
@@ -437,15 +509,19 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         if (transcript && transcript.length) {
             var dots = "...";
             var slashes = new RegExp("//", "g");
-            return VIEW.format_detail(VIEW.str.transcript, dots + transcript[0].replace(slashes, dots) + dots);
+            return VIEW.format_detail("transcript", dots + transcript[0].replace(slashes, dots) + dots);
         }
         return "";
     };
 
-    VIEW.format_detail = function(label, value) {
+    VIEW.format_detail = function(type, value) {
         var html = "";
-        html += HTML.tag("dt", label, {"class" : "result-label"});
-        html += HTML.tag("dd", value, {"class" : "result-value"});
+        html += HTML.tag("dt", VIEW.str[type], {
+            "class": "result-label " + type
+        });
+        html += HTML.tag("dd", value, {
+            "class": "result-value " + type
+        });
         return html;
     };
 
