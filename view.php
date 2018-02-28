@@ -29,8 +29,8 @@
 require_once('../../config.php');
 require_once($CFG->dirroot.'/mod/englishcentral/lib.php');;
 
-$id = optional_param('id', 0, PARAM_INT); // course_module ID, or
-$ecid  = optional_param('ecid', 0, PARAM_INT);  // englishcentral instance ID - it should be named as the first character of the module
+$id = optional_param('id', 0, PARAM_INT); // course_module ID
+$ecid = optional_param('ecid', 0, PARAM_INT);  // englishcentral instance ID
 
 if ($id) {
     $cm = get_coursemodule_from_id('englishcentral', $id, 0, false, MUST_EXIST);
@@ -52,8 +52,8 @@ $event = \mod_englishcentral\event\course_module_viewed::create(array(
    'objectid' => $instance->id,
    'context' => $context
 ));
-$event->add_record_snapshot('course_modules', $cm);
 $event->add_record_snapshot('course', $course);
+$event->add_record_snapshot('course_modules', $cm);
 $event->add_record_snapshot('englishcentral', $instance);
 $event->trigger();
 

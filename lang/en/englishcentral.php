@@ -160,6 +160,9 @@ $string['supportmessage'] = 'Please could you contact me regarding a partner ID 
 
 $string['updatinggrades'] = 'Updating EnglishCentral grades';
 
+$string['overallprogress'] = 'Overall progress toward goal';
+$string['noprogressreport'] = 'Sorry, but there is no progress to report.';
+
 // deprecated strings
 
 $string['englishcentral'] = 'English Central';

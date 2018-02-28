@@ -430,4 +430,110 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         $image = html_writer::empty_tag('img', array('src' => $image_url, 'title' => $text));
         return html_writer::tag('div', $image, array('class' => 'videoicon '.$type.'video'));
     }
+
+    public function show_progress_report() {
+        global $DB;
+        $output = '';
+
+        $fullname = html_writer::tag('span', get_string('name', 'moodle'), array('class' => 'fullname'));
+        $percent = html_writer::tag('span', get_string('percent', 'grades'), array('class' => 'percent'));
+        $output .= html_writer::tag('dt', $fullname.$percent, array('class' => 'user title'));
+
+        $output .= html_writer::tag('dd', $this->ec->get_string('overallprogress'), array('class' => 'bars title'));
+
+        $goals = (object)array('watch' => 0,
+                               'learn' => 0,
+                               'speak' => 0);
+
+        $select = "userid, SUM(watchcomplete) AS watch, SUM(learncount) AS learn, SUM(speakcount) AS speak";
+        $from   = '{englishcentral_attempts}';
+        $where  = 'ecid = ?  GROUP BY userid';
+        $params = array($this->ec->id);
+
+        if ($items = $DB->get_records_sql("SELECT $select FROM $from WHERE $where", $params)) {
+            foreach ($items as $userid => $item) {
+                $goals->watch = max($goals->watch, $item->watch);
+                $goals->learn = max($goals->learn, $item->learn);
+                $goals->speak = max($goals->speak, $item->speak);
+            }
+        } else {
+            $items = array();
+        }
+
+        // determine goals
+        if ($this->ec->watchgoal + $this->ec->learngoal + $this->ec->speakgoal) {
+            $goals->watch = intval($this->ec->watchgoal);
+            $goals->learn = intval($this->ec->learngoal);
+            $goals->speak = intval($this->ec->speakgoal);
+        }
+
+        $goals->total = ($goals->watch + 
+                         $goals->learn + 
+                         $goals->speak);
+
+        foreach ($items as $userid => $item) {
+            $item->total = (min($goals->watch, $item->watch) +
+                            min($goals->learn, $item->learn) +
+                            min($goals->speak, $item->speak));
+            $output .= $this->show_progress_report_item($item, $goals);
+        }
+
+        if (count($items)) {
+            $output = html_writer::tag('dl', $output, array('class' => 'userbars'));
+        } else {
+            $output = html_writer::tag('p', $this->ec->get_string('noprogressreport'));
+        }
+
+        return $output;
+    }
+
+    protected function show_progress_report_item($item, $goals) {
+        $output = '';
+        $output .= html_writer::tag('dt', $this->show_progress_report_user($item, $goals), array('class' => 'user'));
+        $output .= html_writer::tag('dd', $this->show_progress_report_bars($item, $goals), array('class' => 'bars'));
+        return $output;
+    }
+
+    protected function show_progress_report_user($item, $goals) {
+        global $DB;
+        $output = '';
+        if ($goals->total==0) {
+            $percent = '';
+        } else {
+            $percent = round(100 * min(1, $item->total / $goals->total)).'%';
+        }
+        $fullname = fullname($DB->get_record('user', array('id' => $item->userid)));
+        $output .= html_writer::tag('span', $fullname, array('class' => 'fullname'));
+        $output .= html_writer::tag('span', $percent, array('class' => 'percent'));
+        return $output;
+    }
+
+    protected function show_progress_report_bars($item, $goals) {
+        $output = '';
+        $output .= $this->show_progress_report_bar($item, $goals, 'watch');
+        $output .= $this->show_progress_report_bar($item, $goals, 'learn');
+        $output .= $this->show_progress_report_bar($item, $goals, 'speak');
+        return $output;
+    }
+
+    protected function show_progress_report_bar($item, $goals, $type) {
+        if (empty($item->$type) || empty($goals->$type)) {
+            return '';
+        }
+
+        $text = $item->$type.' / '.$goals->$type;
+        switch ($type) {
+            case 'watch': $title = $this->ec->get_string('watchvideos', $text); break;
+            case 'learn': $title = $this->ec->get_string('learnwords', $text); break;
+            case 'speak': $title = $this->ec->get_string('speaklines', $text); break;
+            default: $title = $text;
+        }
+
+        $value = min($item->$type, $goals->$type);
+        $width = round(100 * min(1, $value / $goals->total)).'%;';
+        $params = array('class' => $type,
+                        'title' => $title,
+                        'style' => 'width: '.$width);
+        return html_writer::tag('span', $text, $params);
+    }
 }

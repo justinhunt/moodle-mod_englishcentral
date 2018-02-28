@@ -1,3 +1,15 @@
+/**
+ * CSS for SUPPORT page
+ **/
+
+#page-mod-englishcentral-support .supportconfirm th {
+    text-align: right;
+}
+
+#page-mod-englishcentral-support .supportconfirm td {
+    text-align: left;
+}
+
 /** styles for goals on EDIT form  */
 
 #page-mod-englishcentral-mod #fgroup_id_watchgoalgroup {
@@ -252,8 +264,8 @@
 }
 
 #page-mod-englishcentral-view .result-value em {
-    background-color: #f9f9c7;
-    font-style:        normal;
+    background :   #f9f9c7;
+    font-style:     normal;
 }
 
 /**
@@ -414,10 +426,83 @@
     color: transparent;
 }
 
-#page-mod-englishcentral-support .supportconfirm th {
-    text-align: right;
+/**
+ * CSS for the progress REPORT
+ **/
+
+#page-mod-englishcentral-report .title {
+    background:      #f0f0f0;
 }
 
-#page-mod-englishcentral-support .supportconfirm td {
-    text-align: left;
+#page-mod-englishcentral-report .user,
+#page-mod-englishcentral-report .bars {
+    border-color:       #999;
+    border-style:      solid;
+    border-width:        1px;
+    border-bottom-width: 0px;
+    float:              left;
+    height:             24px;
+    margin:              0px;
+}
+
+#page-mod-englishcentral-report .user:last-of-type,
+#page-mod-englishcentral-report .bars:last-of-type {
+    border-bottom-width: 1px;
+}
+
+#page-mod-englishcentral-report .user {
+    clear:              left;
+    max-width:         240px;
+    overflow:         hidden;
+    padding:        6px 12px;
+    position:       relative;
+    width:              100%;
+}
+
+#page-mod-englishcentral-report .bars {
+    clear:             right;
+    max-width:         760px;
+    padding:         6px 0px;
+    position:       relative;
+    width:              100%;
+}
+
+#page-mod-englishcentral-report .bars.title {
+    font-size:        larger;
+    font-weight:         400;
+    max-width:         736px;
+    padding:        6px 12px;
+}
+
+#page-mod-englishcentral-report .fullname {
+    font-size:        larger;
+}
+
+#page-mod-englishcentral-report .percent {
+    float:             right;
+}
+
+#page-mod-englishcentral-report .watch,
+#page-mod-englishcentral-report .learn,
+#page-mod-englishcentral-report .speak {
+    border-style:      solid;
+    border-width:    2px 0px;
+    display:    inline-block;
+    overflow:         hidden;
+    text-align:       center;
+    vertical-align:   middle;
+    white-space:      nowrap;
+}
+
+#page-mod-englishcentral-report .watch {
+    background:      #d4edf7;
+    border-color:    #23a1da; /* BLUE */
+}
+#page-mod-englishcentral-report .learn {
+    background:      #fbe0d0;
+    border-color:    #eb6613; /* RED */
+}
+#page-mod-englishcentral-report .speak {
+    background:      #e9f4d7;
+    border-color:    #a4d05c; /* GREEN */
 }
