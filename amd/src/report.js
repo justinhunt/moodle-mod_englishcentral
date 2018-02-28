@@ -22,7 +22,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since       2.9
  */
-define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($, JUI, STR, HTML) {
+define(["jquery", "jqueryui", "core/str"], function($, JUI, STR) {
 
     /** @alias module:mod_englishcentral/report */
     var REPORT = {};
@@ -48,7 +48,11 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
     });
 
     REPORT.init = function() {
-        HTML.tag('p');
+        if (window.outerWidth > 1000) {
+            $(".bars .text").each(function(){
+                $(this).text($(this).prop("title"));
+            });
+        }
     };
 
     return REPORT;

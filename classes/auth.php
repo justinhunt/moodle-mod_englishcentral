@@ -318,7 +318,9 @@ class auth {
                          'consumersecret' => '/^[0-9a-fA-F]{64}$/',
                          'encryptedsecret' => '/^[0-9a-zA-Z\/+=]+$/');
         foreach ($missing as $name => $pattern) {
-            if (isset($this->ec->config->$name) && preg_match($pattern, $this->ec->config->$name)) {
+            if ($name=='consumersecret' && $this->ec->config->$name==$this->ec->config->encryptedsecret) {
+                unset($missing[$name]);
+            } else if (isset($this->ec->config->$name) && preg_match($pattern, $this->ec->config->$name)) {
                 unset($missing[$name]);
             } else {
                 $missing[$name] = $this->ec->get_string($name);

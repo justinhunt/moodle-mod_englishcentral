@@ -430,6 +430,15 @@
  * CSS for the progress REPORT
  **/
 
+#page-mod-englishcentral-report .userbars {
+    margin:              0px;
+    overflow:           auto;
+}
+
+#page-mod-englishcentral-report .bars.title {
+    display:            none;
+}
+
 #page-mod-englishcentral-report .title {
     background:      #f0f0f0;
 }
@@ -440,7 +449,6 @@
     border-style:      solid;
     border-width:        1px;
     border-bottom-width: 0px;
-    float:              left;
     height:             24px;
     margin:              0px;
 }
@@ -451,20 +459,13 @@
 }
 
 #page-mod-englishcentral-report .user {
-    clear:              left;
-    max-width:         240px;
-    overflow:         hidden;
     padding:        6px 12px;
     position:       relative;
-    width:              100%;
 }
 
 #page-mod-englishcentral-report .bars {
-    clear:             right;
-    max-width:         760px;
     padding:         6px 0px;
     position:       relative;
-    width:              100%;
 }
 
 #page-mod-englishcentral-report .bars.title {
@@ -488,21 +489,77 @@
     border-style:      solid;
     border-width:    2px 0px;
     display:    inline-block;
+    height:             100%;
     overflow:         hidden;
-    text-align:       center;
+    position:       relative;
     vertical-align:   middle;
     white-space:      nowrap;
 }
 
 #page-mod-englishcentral-report .watch {
-    background:      #d4edf7;
-    border-color:    #23a1da; /* BLUE */
+    background:      #d4edf7; /* light BLUE */
+    border-color:    #23a1da; /* Eng.C BLUE */
 }
 #page-mod-englishcentral-report .learn {
-    background:      #fbe0d0;
-    border-color:    #eb6613; /* RED */
+    background:      #fbe0d0; /* light RED */
+    border-color:    #eb6613; /* Eng.C RED */
 }
 #page-mod-englishcentral-report .speak {
-    background:      #e9f4d7;
-    border-color:    #a4d05c; /* GREEN */
+    background:      #e9f4d7; /* light GREEN */
+    border-color:    #a4d05c; /* Eng.C GREEN */
+}
+
+#page-mod-englishcentral-report .bar,
+#page-mod-englishcentral-report .text {
+    display:    inline-block;
+    height:             100%;
+    left:                0px;
+    position:       absolute;
+    top:                 0px;
+}
+
+#page-mod-englishcentral-report .text {
+    font-size:         0.9em;
+    text-align:       center;
+    width:              100%;
+}
+
+#page-mod-englishcentral-report .watch .bar {
+    background:      #a9dbef; /* medium BLUE */
+}
+#page-mod-englishcentral-report .learn .bar {
+    background:      #f7c1a1; /* medium RED */
+}
+#page-mod-englishcentral-report .speak .bar {
+    background:      #d3e9af; /* medium GREEN */
+}
+
+@media screen and (min-width: 768px) {
+
+    #page-mod-englishcentral-report .bars.title {
+        display:         initial;
+        background:      #f0f0f0;
+    }
+
+    #page-mod-englishcentral-report .user,
+    #page-mod-englishcentral-report .bars {
+        float:              left;
+    }
+
+    #page-mod-englishcentral-report .user {
+        clear:              left;
+        max-width:         240px;
+        overflow:        elipsis;
+        white-space:      nowrap;
+        width:              100%;
+    }
+
+    #page-mod-englishcentral-report .bars {
+        clear:             right;
+        max-width:         760px;
+        width:              100%;
+    }
+}
+
+@media only screen and (min-width: 768px) and (max-height: 800px) {
 }

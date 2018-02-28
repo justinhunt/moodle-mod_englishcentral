@@ -190,7 +190,11 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         $("#" + VIEW.playercontainer).html("");
 
         // set handler for end of mode
-        window.ECSDK.setOnModeEndHandler(function(data) {
+        var setHandler = 'setOnModeEndHandler';
+        if (ECSDK.setOnProgressEventHandler) {
+            setHandler = 'setOnProgressEventHandler';
+        }
+        window.ECSDK[setHandler](function(data) {
             // AJAX call to send the data.dialogID to the Moodle server
             // and receive the html for the updated Progress pie-charts
             $.ajax({

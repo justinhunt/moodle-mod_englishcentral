@@ -467,8 +467,8 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
             $goals->speak = intval($this->ec->speakgoal);
         }
 
-        $goals->total = ($goals->watch + 
-                         $goals->learn + 
+        $goals->total = ($goals->watch +
+                         $goals->learn +
                          $goals->speak);
 
         foreach ($items as $userid => $item) {
@@ -517,7 +517,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
     }
 
     protected function show_progress_report_bar($item, $goals, $type) {
-        if (empty($item->$type) || empty($goals->$type)) {
+        if (empty($goals->$type)) {
             return '';
         }
 
@@ -526,14 +526,21 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
             case 'watch': $title = $this->ec->get_string('watchvideos', $text); break;
             case 'learn': $title = $this->ec->get_string('learnwords', $text); break;
             case 'speak': $title = $this->ec->get_string('speaklines', $text); break;
-            default: $title = $text;
+        }
+        $text = html_writer::tag('span', $text, array('class' => 'text', 'title' => $title));
+
+        if (empty($item->$type)) {
+            $bar = '';
+        } else {
+            $value = min($item->$type, $goals->$type);
+            $width = round(100 * min(1, $value / $goals->$type)).'%;';
+            $params = array('class' => 'bar', 'style' => 'width: '.$width);
+            $bar = html_writer::tag('span', '', $params);
         }
 
-        $value = min($item->$type, $goals->$type);
-        $width = round(100 * min(1, $value / $goals->total)).'%;';
-        $params = array('class' => $type,
-                        'title' => $title,
-                        'style' => 'width: '.$width);
-        return html_writer::tag('span', $text, $params);
+        $width = round(100 * min(1, $goals->$type / $goals->total)).'%';
+        $params = array('class' => $type, 'style' => 'width: '.$width);
+
+        return html_writer::tag('span', $bar.$text, $params);
     }
 }
