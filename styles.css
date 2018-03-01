@@ -439,20 +439,20 @@
 }
 
 #page-mod-englishcentral-report .bars.title {
-    text-align:       center;
-}
-
-#page-mod-englishcentral-report .bars.title .text {
-    display:            none;
+    text-align:         left;
+    position:       relative;
 }
 
 #page-mod-englishcentral-report .title .watch,
 #page-mod-englishcentral-report .title .learn,
 #page-mod-englishcentral-report .title .speak {
-    margin:          0px 6px;
-    max-width:          80px;
-    padding:         0px 6px;
-    width: calc((100% - 72px) / 3);
+    font-size:       smaller;
+    height:             16px;
+    margin:              0px;
+    padding:             0px;
+    padding-bottom:      2px;
+    position:       absolute;
+    text-align:       center;
 }
 
 #page-mod-englishcentral-report .user,
@@ -550,7 +550,7 @@
     #page-mod-englishcentral-report .title .watch,
     #page-mod-englishcentral-report .title .learn,
     #page-mod-englishcentral-report .title .speak {
-        padding:     0px 4px 2px;
+        font-size:         small;
     }
 
     #page-mod-englishcentral-report .user,

@@ -485,14 +485,15 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         $output .= html_writer::tag('dt', $fullname.$percent, array('class' => 'user title'));
 
         $text = '';
-        if ($goals->watch) {
-            $text .= html_writer::tag('span', $this->ec->get_string('watchgoal'), array('class' => 'watch'));
-        }
-        if ($goals->learn) {
-            $text .= html_writer::tag('span', $this->ec->get_string('learngoal'), array('class' => 'learn'));
-        }
-        if ($goals->speak) {
-            $text .= html_writer::tag('span', $this->ec->get_string('speakgoal'), array('class' => 'speak'));
+        $left = 0;
+        foreach (array('watch', 'learn', 'speak') as $type) {
+            if ($goals->$type) {
+                $percent = round(100 * min(1, $goals->$type / $goals->total));
+                $style = "margin-left: $left%; width: $percent%;";
+                $params = array('class' => $type, 'style' => $style);
+                $text .= html_writer::tag('span', $this->ec->get_string($type.'goal'), $params);
+                $left += $percent;
+            }
         }
         $output .= html_writer::tag('dd', $text, array('class' => 'bars title'));
 
