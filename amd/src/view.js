@@ -194,7 +194,7 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
 
         // set handler for end of mode
         var setHandler = 'setOnModeEndHandler';
-        if (ECSDK.setOnProgressEventHandler) {
+        if (window.ECSDK.setOnProgressEventHandler) {
             setHandler = 'setOnProgressEventHandler';
         }
         window.ECSDK[setHandler](function(data) {
