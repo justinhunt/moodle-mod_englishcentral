@@ -429,58 +429,61 @@
 /**
  * CSS for the progress REPORT
  **/
-
 #page-mod-englishcentral-report .userbars {
     margin:              0px;
     overflow:           auto;
-}
-
-#page-mod-englishcentral-report .bars.title {
-    display:            none;
 }
 
 #page-mod-englishcentral-report .title {
     background:      #f0f0f0;
 }
 
-#page-mod-englishcentral-report .user,
-#page-mod-englishcentral-report .bars {
-    border-color:       #999;
-    border-style:      solid;
-    border-width:        1px;
-    border-bottom-width: 0px;
-    height:             24px;
-    margin:              0px;
+#page-mod-englishcentral-report .bars.title {
+    text-align:       center;
 }
 
-#page-mod-englishcentral-report .user:last-of-type,
-#page-mod-englishcentral-report .bars:last-of-type {
-    border-bottom-width: 1px;
+#page-mod-englishcentral-report .bars.title .text {
+    display:            none;
+}
+
+#page-mod-englishcentral-report .title .watch,
+#page-mod-englishcentral-report .title .learn,
+#page-mod-englishcentral-report .title .speak {
+    margin:          0px 6px;
+    max-width:          80px;
+    padding:         0px 6px;
+    width: calc((100% - 72px) / 3);
+}
+
+#page-mod-englishcentral-report .user,
+#page-mod-englishcentral-report .bars {
+    height:             24px;
+    margin:              0px;
+    padding:             0px;
+    position:       relative;
 }
 
 #page-mod-englishcentral-report .user {
-    padding:        6px 12px;
-    position:       relative;
+    padding-top:         4px;
+    padding-left:        4px;
+    padding-right:       4px;
+    width:  calc(100% - 8px);
 }
 
 #page-mod-englishcentral-report .bars {
-    padding:         6px 0px;
-    position:       relative;
-}
-
-#page-mod-englishcentral-report .bars.title {
-    font-size:        larger;
-    font-weight:         400;
-    max-width:         736px;
-    padding:        6px 12px;
+    padding-bottom:      4px;
+    width:              100%;
 }
 
 #page-mod-englishcentral-report .fullname {
     font-size:        larger;
+    vertical-align:   middle;
 }
 
 #page-mod-englishcentral-report .percent {
     float:             right;
+    padding-top:         2px;
+    vertical-align:   middle;
 }
 
 #page-mod-englishcentral-report .watch,
@@ -489,7 +492,7 @@
     border-style:      solid;
     border-width:    2px 0px;
     display:    inline-block;
-    height:             100%;
+    height: calc(100% - 4px);
     overflow:         hidden;
     position:       relative;
     vertical-align:   middle;
@@ -509,21 +512,6 @@
     border-color:    #a4d05c; /* Eng.C GREEN */
 }
 
-#page-mod-englishcentral-report .bar,
-#page-mod-englishcentral-report .text {
-    display:    inline-block;
-    height:             100%;
-    left:                0px;
-    position:       absolute;
-    top:                 0px;
-}
-
-#page-mod-englishcentral-report .text {
-    font-size:         0.9em;
-    text-align:       center;
-    width:              100%;
-}
-
 #page-mod-englishcentral-report .watch .bar {
     background:      #a9dbef; /* medium BLUE */
 }
@@ -534,32 +522,54 @@
     background:      #d3e9af; /* medium GREEN */
 }
 
+#page-mod-englishcentral-report .bar,
+#page-mod-englishcentral-report .text {
+    display:    inline-block;
+    height:             100%;
+    left:                0px;
+    position:       absolute;
+    top:                 0px;
+}
+
+#page-mod-englishcentral-report .text {
+    font-size:       smaller;
+    text-align:       center;
+    width:              100%;
+}
+
 @media screen and (min-width: 768px) {
 
+    #page-mod-englishcentral-report .userbars {
+        max-width:        1000px;
+    }
+
     #page-mod-englishcentral-report .bars.title {
-        display:         initial;
-        background:      #f0f0f0;
+        height:             20px;
+    }
+
+    #page-mod-englishcentral-report .title .watch,
+    #page-mod-englishcentral-report .title .learn,
+    #page-mod-englishcentral-report .title .speak {
+        padding:     0px 4px 2px;
     }
 
     #page-mod-englishcentral-report .user,
     #page-mod-englishcentral-report .bars {
         float:              left;
+        vertical-align:      top;
     }
 
     #page-mod-englishcentral-report .user {
         clear:              left;
-        max-width:         240px;
-        overflow:        elipsis;
+        overflow:         hidden;
+        text-overflow:  ellipsis;
         white-space:      nowrap;
-        width:              100%;
+        width:             240px;
     }
 
     #page-mod-englishcentral-report .bars {
         clear:             right;
-        max-width:         760px;
-        width:              100%;
+        padding-top:         4px;
+        width:calc(100% - 248px);
     }
-}
-
-@media only screen and (min-width: 768px) and (max-height: 800px) {
 }

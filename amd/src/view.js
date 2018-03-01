@@ -30,6 +30,9 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
     // cache full plugin name
     VIEW.plugin = "mod_englishcentral";
 
+    VIEW.playercontainer = "id_playercontainer";
+    VIEW.progresscontainer = "id_progresscontainer";
+
     // initialize string cache
     VIEW.str = {};
 

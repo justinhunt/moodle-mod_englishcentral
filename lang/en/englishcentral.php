@@ -160,7 +160,6 @@ $string['supportmessage'] = 'Please could you contact me regarding a partner ID 
 
 $string['updatinggrades'] = 'Updating EnglishCentral grades';
 
-$string['overallprogress'] = 'Overall progress toward goal';
 $string['noprogressreport'] = 'Sorry, but there is no progress to report.';
 
 // deprecated strings
@@ -181,7 +180,19 @@ $string['watchmode'] ='Watch mode';
 
 //tabs
 $string['overview'] ='Overview';
-$string['overview_help'] ='Overview Help';
+$string['overview_help'] ='In an EnglishCentral activity, students interact with a selected set of videos and work toward the Watch, Learn and Study goals set by the teacher.
+
+To set up the activity, the teacher first defines the following study goals:
+
+* the number of videos to Watch
+* the number of words to Learn
+* the number of lines to Speak
+
+The teacher then searches the EnglishCentral video library and selects which videos should be added to this EnglishCentral activity.
+
+Finally, the students choose one or more of the videos they would like to watch. After watching a video, they can choose which words from the video they would like to learn, and which lines they wish to practice speaking.
+
+As each student studies, the dials on their scoreboard are updated to give feedback about their progress towards the Watch, Learn and Speak goals.';
 $string['preview'] ='Preview';
 $string['previewenglishcentral'] ='Preview English Central';
 $string['view'] ='View';

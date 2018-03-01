@@ -59,9 +59,20 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         }
 
         $output = $this->output->header();
+
         if (isset($this->ec->id)) {
             if ($this->ec->can_manage()) {
-                $output .= $this->output->heading_with_help($activityname, 'overview', 'englishcentral');
+                if ($this->page->url == $this->ec->get_view_url()) {
+                    $icon = $this->pix_icon('i/report', 'report', 'moodle', array('class'=>'icon'));
+                    $icon = html_writer::link($this->ec->get_report_url(), $icon);
+                } else if ($this->page->url == $this->ec->get_report_url()) {
+                    $icon = $this->pix_icon('i/preview', 'view', 'moodle', array('class'=>'icon'));
+                    $icon = html_writer::link($this->ec->get_view_url(), $icon);
+                } else {
+                    $icon = '';
+                }
+                $help = $this->help_icon('overview', $this->ec->plugin);
+                $output .= $this->heading($activityname.$help.$icon);
             } else {
                 $output .= $this->output->heading($activityname);
             }
@@ -435,21 +446,18 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         global $DB;
         $output = '';
 
-        $fullname = html_writer::tag('span', get_string('name', 'moodle'), array('class' => 'fullname'));
-        $percent = html_writer::tag('span', get_string('percent', 'grades'), array('class' => 'percent'));
-        $output .= html_writer::tag('dt', $fullname.$percent, array('class' => 'user title'));
-
-        $output .= html_writer::tag('dd', $this->ec->get_string('overallprogress'), array('class' => 'bars title'));
-
+        // initialie study goals
         $goals = (object)array('watch' => 0,
                                'learn' => 0,
                                'speak' => 0);
 
+        // fetch aggreagate items from attempts table
         $select = "userid, SUM(watchcomplete) AS watch, SUM(learncount) AS learn, SUM(speakcount) AS speak";
         $from   = '{englishcentral_attempts}';
         $where  = 'ecid = ?  GROUP BY userid';
         $params = array($this->ec->id);
 
+        // set goals to maximum in these aggregate items
         if ($items = $DB->get_records_sql("SELECT $select FROM $from WHERE $where", $params)) {
             foreach ($items as $userid => $item) {
                 $goals->watch = max($goals->watch, $item->watch);
@@ -460,7 +468,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
             $items = array();
         }
 
-        // determine goals
+        // override goals with teacher-specified goals, if available
         if ($this->ec->watchgoal + $this->ec->learngoal + $this->ec->speakgoal) {
             $goals->watch = intval($this->ec->watchgoal);
             $goals->learn = intval($this->ec->learngoal);
@@ -470,6 +478,23 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         $goals->total = ($goals->watch +
                          $goals->learn +
                          $goals->speak);
+
+
+        $fullname = html_writer::tag('span', get_string('name', 'moodle'), array('class' => 'fullname'));
+        $percent = html_writer::tag('span', get_string('percent', 'grades'), array('class' => 'percent'));
+        $output .= html_writer::tag('dt', $fullname.$percent, array('class' => 'user title'));
+
+        $text = '';
+        if ($goals->watch) {
+            $text .= html_writer::tag('span', $this->ec->get_string('watchgoal'), array('class' => 'watch'));
+        }
+        if ($goals->learn) {
+            $text .= html_writer::tag('span', $this->ec->get_string('learngoal'), array('class' => 'learn'));
+        }
+        if ($goals->speak) {
+            $text .= html_writer::tag('span', $this->ec->get_string('speakgoal'), array('class' => 'speak'));
+        }
+        $output .= html_writer::tag('dd', $text, array('class' => 'bars title'));
 
         foreach ($items as $userid => $item) {
             $item->total = (min($goals->watch, $item->watch) +
