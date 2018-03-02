@@ -130,16 +130,16 @@ class activity {
     // URLs API
     ////////////////////////////////////////////////////////////////////////////////
 
-    public function get_report_url($escaped=null) {
-        return $this->url('report.php', $escaped, array('id' => $this->cm->id));
+    public function get_report_url($escaped=null, $params=array()) {
+        return $this->url('report.php', $escaped, $params);
     }
 
-    public function get_view_url($escaped=null) {
-        return $this->url('view.php', $escaped, array('id' => $this->cm->id));
+    public function get_view_url($escaped=null, $params=array()) {
+        return $this->url('view.php', $escaped, $params);
     }
 
-    public function get_viewajax_url($escaped=null) {
-        return $this->url('view.ajax.php', $escaped);
+    public function get_viewajax_url($escaped=null, $params=array()) {
+        return $this->url('view.ajax.php', $escaped, $params);
     }
 
     public function get_videoinfo_url($escaped=null) {
@@ -164,6 +164,9 @@ class activity {
     }
 
     public function url($filepath, $escaped=null, $params=array()) {
+    	if (isset($this->cm)) {
+			$params['id'] = $this->cm->id;
+    	}
         $url = '/'.$this->plugintype.'/'.$this->pluginname.'/'.$filepath;
         $url = new \moodle_url($url, $params);
         if (is_bool($escaped)) {

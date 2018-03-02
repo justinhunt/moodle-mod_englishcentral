@@ -30,6 +30,9 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
     protected $ec = null;
     protected $auth = null;
 
+    protected $sort = null;
+    protected $order = null;
+
     /**
      * attach the $ec & $auth objects so they are accessible throughout this class
      *
@@ -348,7 +351,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
                     $index[$video->dialogID] = $i;
                 }
 
-                // create video thumbnails in required sortorder
+                // create video thumbnails in required order
                 foreach ($videoids as $videoid) {
                     if (array_key_exists($videoid, $index)) {
                         $i = $index[$videoid];
@@ -423,11 +426,11 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
     }
 
     protected function show_addvideo_icon() {
-    	return $this->show_videos_icon('add');
+        return $this->show_videos_icon('add');
     }
 
     protected function show_removevideo_icon() {
-    	return $this->show_videos_icon('remove');
+        return $this->show_videos_icon('remove');
     }
 
     protected function show_videos_icon($type) {
@@ -446,19 +449,43 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         global $DB;
         $output = '';
 
-        // initialie study goals
+        $this->setup_sort();
+        $url = $this->ec->get_report_url();
+
+        // initialize study goals
         $goals = (object)array('watch' => 0,
                                'learn' => 0,
                                'speak' => 0);
 
-        // fetch aggreagate items from attempts table
-        $select = "userid, SUM(watchcomplete) AS watch, SUM(learncount) AS learn, SUM(speakcount) AS speak";
+        // Fetch aggregate items from attempts table.
+        // The "totalpoints" field is not a real percent
+        // but it is good enough for sorting, because it
+        // should have a direct correlation to the percent.
+        $select = 'userid,'.
+        		  'SUM(totalpoints) AS percent,'.
+        		  'SUM(watchcomplete) AS watch,'.
+        		  'SUM(learncount) AS learn,'.
+        		  'SUM(speakcount) AS speak';
         $from   = '{englishcentral_attempts}';
         $where  = 'ecid = ?  GROUP BY userid';
         $params = array($this->ec->id);
 
+		$from   = "(SELECT $select FROM $from WHERE $where) items,".
+				  '{user} u';
+		$where  = 'items.userid = u.id';
+		$select = 'items.*,'.get_all_user_name_fields(true, 'u');
+
+		if ($this->sort=='firstname' || $this->sort=='lastname') {
+			$order = 'u.'.$this->sort;
+		} else {
+			$order = 'items.'.$this->sort;
+		}
+		if ($this->order) {
+			$order .= ' '.$this->order;
+		}
+
         // set goals to maximum in these aggregate items
-        if ($items = $DB->get_records_sql("SELECT $select FROM $from WHERE $where", $params)) {
+        if ($items = $DB->get_records_sql("SELECT $select FROM $from WHERE $where ORDER BY $order", $params)) {
             foreach ($items as $userid => $item) {
                 $goals->watch = max($goals->watch, $item->watch);
                 $goals->learn = max($goals->learn, $item->learn);
@@ -479,23 +506,38 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
                          $goals->learn +
                          $goals->speak);
 
+		$type = 'firstname';
+		$fullname = get_string($type, 'moodle');
+		$fullname .= $this->get_sort_icon($url, $type);
 
-        $fullname = html_writer::tag('span', get_string('name', 'moodle'), array('class' => 'fullname'));
-        $percent = html_writer::tag('span', get_string('percent', 'grades'), array('class' => 'percent'));
+		$fullname .= ' ';
+
+		$type = 'lastname';
+		$fullname .= get_string('lastname', 'moodle');
+		$fullname .= $this->get_sort_icon($url, $type);
+        $fullname = html_writer::tag('span', $fullname, array('class' => 'fullname'));
+
+		$type = 'percent';
+		$percent = '%'; // get_string($type, 'grades');
+		$percent .= $this->get_sort_icon($url, $type);
+        $percent = html_writer::tag('span', $percent, array('class' => 'percent'));
+
         $output .= html_writer::tag('dt', $fullname.$percent, array('class' => 'user title'));
 
-        $text = '';
+        $title = '';
         $left = 0;
         foreach (array('watch', 'learn', 'speak') as $type) {
             if ($goals->$type) {
+                $text = $this->ec->get_string($type.'goal');
+                $sort = $this->get_sort_icon($url, $type);
                 $percent = round(100 * min(1, $goals->$type / $goals->total));
                 $style = "margin-left: $left%; width: $percent%;";
                 $params = array('class' => $type, 'style' => $style);
-                $text .= html_writer::tag('span', $this->ec->get_string($type.'goal'), $params);
+                $title .= html_writer::tag('span', $text.' '.$sort, $params);
                 $left += $percent;
             }
         }
-        $output .= html_writer::tag('dd', $text, array('class' => 'bars title'));
+        $output .= html_writer::tag('dd', $title, array('class' => 'bars title'));
 
         foreach ($items as $userid => $item) {
             $item->total = (min($goals->watch, $item->watch) +
@@ -528,7 +570,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         } else {
             $percent = round(100 * min(1, $item->total / $goals->total)).'%';
         }
-        $fullname = fullname($DB->get_record('user', array('id' => $item->userid)));
+        $fullname = fullname($item);
         $output .= html_writer::tag('span', $fullname, array('class' => 'fullname'));
         $output .= html_writer::tag('span', $percent, array('class' => 'percent'));
         return $output;
@@ -568,5 +610,103 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         $params = array('class' => $type, 'style' => 'width: '.$width);
 
         return html_writer::tag('span', $bar.$text, $params);
+    }
+
+    /**
+     * Set the sort item/order
+     */
+    protected function setup_sort() {
+        global $SESSION;
+
+		// initialize session info
+		if (empty($SESSION->englishcentral)) {
+			$SESSION->englishcentral = new stdClass();
+			$SESSION->englishcentral->sort = '';
+			$SESSION->englishcentral->order = '';
+		}
+
+		// override sort item/order with incoming data
+		$sort = optional_param('sort', '', PARAM_ALPHA);
+		switch (true) {
+
+			case ($sort==''):
+				$sort = $SESSION->englishcentral->sort;
+				$order = $SESSION->englishcentral->order;
+				break;
+
+			case ($sort==$SESSION->englishcentral->sort):
+				$order = optional_param('order', '', PARAM_ALPHA);
+				break;
+
+			default:
+				$order = '';
+		}
+
+		if ($sort=='') {
+			$sort = 'lastname';
+			$order = '';
+		}
+
+		if ($order=='') {
+			if ($sort=='firstname' || $sort=='lastname') {
+				$order = 'ASC';
+			} else {
+				$order = 'DESC';
+			}
+		}
+
+		// store new/updated sort item/order
+		$this->sort = $SESSION->englishcentral->sort = $sort;
+		$this->order = $SESSION->englishcentral->order = $order;
+    }
+
+    protected function get_sort_icon($url, $sort) {
+        global $OUTPUT;
+
+        if ($sort==$this->sort) {
+            $order = $this->order;
+        } else {
+            $order = ''; // unsorted
+        }
+
+        switch (true) {
+            case ($order=='ASC'):
+                $text = 'sortdesc';
+                $icon = 't/sort_asc';
+                break;
+            case ($order=='DESC'):
+                $text = 'sortasc';
+                $icon = 't/sort_desc';
+                break;
+            case ($sort=='firstname'):
+            case ($sort=='lastname'):
+				$text = "sortby$sort";
+                $icon = 't/sort';
+            default:
+				$text = 'sort';
+                $icon = 't/sort';
+                break;
+        }
+
+		$params = array();
+		if ($sort) {
+			$params['sort'] = $sort;
+		} else {
+			$url->remove_params('sort');
+		}
+		if ($order) {
+			$params['order'] = ($order=='ASC' ? 'DESC' : 'ASC');
+		} else {
+			$url->remove_params('order');
+		}
+		if (count($params)) {
+			$url->params($params);
+		}
+
+        $text = get_string($text, 'grades');
+        $params = array('class' => 'sorticon');
+        $icon = $OUTPUT->pix_icon($icon, $text, 'moodle', $params);
+
+        return html_writer::link($url, $icon, array('title' => $text));
     }
 }

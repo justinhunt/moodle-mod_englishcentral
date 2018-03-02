@@ -184,10 +184,6 @@
 }
 
 #page-mod-englishcentral-view .result-item {
-    /*
-    float:            left;
-    max-width:       480px;
-    */
     margin:           12px;
     padding:          12px;
     background:    #f8f8f8;
@@ -434,7 +430,7 @@
     overflow:           auto;
 }
 
-#page-mod-englishcentral-report .title {
+#page-mod-englishcentral-report .user.title {
     background:      #f0f0f0;
 }
 
@@ -478,6 +474,10 @@
 #page-mod-englishcentral-report .fullname {
     font-size:        larger;
     vertical-align:   middle;
+}
+
+#page-mod-englishcentral-report .title .fullname {
+    font-size:       initial;
 }
 
 #page-mod-englishcentral-report .percent {
