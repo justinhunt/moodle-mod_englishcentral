@@ -317,11 +317,8 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
     }
 
     public function show_chart($type, $text1, $text2, $string, $percent) {
-        $rotate = round(360 * $percent / 100);
-        if ($percent = 50) {
-            $rotate -= 180;
-        }
-        $params = array('class' => 'darkrim', 'style' => 'transform: rotate('.$rotate.'deg);');
+        $degrees = round(360 * ($percent % 50) / 100);
+        $params = array('class' => 'darkrim', 'style' => 'transform: rotate('.$degrees.'deg);');
         $darkrim = html_writer::tag('div', '', $params);
 
         $line1 = html_writer::tag('span', $text1, array('class' => 'text1')).
