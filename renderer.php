@@ -317,8 +317,11 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
     }
 
     public function show_chart($type, $text1, $text2, $string, $percent) {
-        $params = array('class' => 'darkrim',
-                        'style' => 'transform: rotate('.round(360 * $percent / 100).'deg);');
+        $rotate = round(360 * $percent / 100);
+        if ($percent = 50) {
+            $rotate -= 180;
+        }
+        $params = array('class' => 'darkrim', 'style' => 'transform: rotate('.$rotate.'deg);');
         $darkrim = html_writer::tag('div', '', $params);
 
         $line1 = html_writer::tag('span', $text1, array('class' => 'text1')).
@@ -329,7 +332,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         $lines = html_writer::tag('div', $lines, array('class' => 'lines'));
 
         $params = array('class' => 'chart '.$type);
-        if ($percent >= 50) {
+        if ($percent > 50) {
             $params['class'] .= ' over50';
         } else {
             $params['class'] .= ' under50';
