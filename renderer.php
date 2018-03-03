@@ -284,7 +284,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         if ($timing) {
             $timing = html_writer::tag('dl', $timing);
         }
-        $timing = html_writer::tag('h4', $this->ec->get_string('yourprogress')).$timing;
+        $timing = html_writer::tag('h4', $this->ec->get_string('yourprogress'), array('class' => 'title')).$timing;
         $output .= html_writer::tag('div', $timing, array('class' => 'timing'));
 
         // format titlecharts
@@ -303,7 +303,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         if ($div==0) {
             $percent = 0;
         } else {
-            $percent = round($num / $div, 0);
+            $percent = round(100 * $num / $div);
         }
         return $this->show_titlechart($type, $num, " / $div", $type.'goalunits', $percent);
     }
@@ -317,14 +317,24 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
     }
 
     public function show_chart($type, $text1, $text2, $string, $percent) {
+        $params = array('class' => 'darkrim',
+                        'style' => 'transform: rotate('.round(360 * $percent / 100).'deg);');
+        $darkrim = html_writer::tag('div', '', $params);
+
         $line1 = html_writer::tag('span', $text1, array('class' => 'text1')).
                  html_writer::tag('span', $text2, array('class' => 'text2'));
         $line2 = $this->ec->get_string($string);
         $lines = html_writer::tag('div', $line1, array('class' => 'line1')).
                  html_writer::tag('div', $line2, array('class' => 'line2'));
-        $params = array('class' => 'chart '.$type,
-                        'style' => ''); // set rotation to $percent %
-        return html_writer::tag('div', $lines, $params);
+        $lines = html_writer::tag('div', $lines, array('class' => 'lines'));
+
+        $params = array('class' => 'chart '.$type);
+        if ($percent >= 50) {
+            $params['class'] .= ' over50';
+        } else {
+            $params['class'] .= ' under50';
+        }
+        return html_writer::tag('div', $darkrim.$lines, $params);
     }
 
     /**
@@ -333,10 +343,6 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
     public function show_videos() {
         $output = '';
         $output .= $this->output->box_start('englishcentral_videos');
-
-        if ($this->ec->can_manage()) {
-            $output .= $this->show_addvideo_icon();
-        }
 
         // get video ids in this EC activity
         $connection_available = true;
@@ -367,6 +373,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
 
         if ($this->ec->can_manage()) {
             $output .= $this->show_removevideo_icon();
+            $output .= $this->show_addvideo_icon();
         }
 
         if ($connection_available==false) {
@@ -458,11 +465,8 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
                                'speak' => 0);
 
         // Fetch aggregate items from attempts table.
-        // The "totalpoints" field is not a real percent
-        // but it is good enough for sorting, because it
-        // should have a direct correlation to the percent.
         $select = 'userid,'.
-        		  'SUM(totalpoints) AS percent,'.
+        		  'SUM(watchcomplete) + SUM(learncount)  + SUM(speakcount) AS percent,'.
         		  'SUM(watchcomplete) AS watch,'.
         		  'SUM(learncount) AS learn,'.
         		  'SUM(speakcount) AS speak';

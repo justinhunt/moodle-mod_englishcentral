@@ -225,8 +225,8 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
 
         // set player options
         var options = {
-            "partnerSdkToken": VIEW.sdktoken,
             "partnerKey": VIEW.consumerkey,
+            "partnerSdkToken": VIEW.sdktoken,
             "siteLanguage": VIEW.sitelanguage,
             "container": VIEW.playercontainer,
             "dialogId": VIEW.get_videoid(elm),
@@ -238,9 +238,10 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         };
 
         // set player width and height, in order to see WLS controls
-        if (options.width > window.outerWidth) {
-            options.width = window.outerWidth;
-        } else if (window.outerWidth > 1000) {
+        var w = window.outerWidth - $("#" + VIEW.playercontainer).offset().left - 24;
+        if (options.width > w) {
+            options.width = w;
+        } else if (w > 1000) {
             options.width = 1000;
         } else {
             options.height = 655;

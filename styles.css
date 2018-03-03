@@ -73,18 +73,21 @@
     box-shadow: 0 2px 4px 0 rgba(0,0,0,0.16),
                 0 2px 10px 0 rgba(0,0,0,0.12);
     margin:       12px 6px;
-    max-width:       800px;
+    max-width:       760px;
     padding:      6px 18px;
+    text-align:     center;
 }
 
 #page-mod-englishcentral-view .timing {
     display: inline-block;
+    text-align:      left;
     vertical-align:   top;
-    width:          180px;
+    width:           100%;
 }
 
-#page-mod-englishcentral-view .timing h4 {
-    margin:       8px 0px;
+#page-mod-englishcentral-view #id_progresscontainer .title {
+    margin:           0px;
+    padding:          6px;
 }
 
 #page-mod-englishcentral-view .timing dl {
@@ -101,6 +104,7 @@
 }
 
 #page-mod-englishcentral-view .timing dt {
+    clear:           left;
     max-width:       34px;
     margin-right:     6px;
 }
@@ -110,47 +114,89 @@
 }
 
 #page-mod-englishcentral-view .timing dd {
+    clear:          right;
     max-width: calc(100% - 60px);
 }
 
 #page-mod-englishcentral-view .titlechart {
     display: inline-block;
+    padding:      0px 8px;
     text-align:    center;
 }
 
-#page-mod-englishcentral-view .title {
-    vertical-align:   top;
-}
-
 #page-mod-englishcentral-view .chart {
-    border-radius:    50%;
-    border-style:   solid;
-    border-width:    20px;
-    height:          70px;
-    margin:           6px;
-    padding-top:     30px;
-    vertical-align:   top;
-    width:          100px;
+    width:       120px;
+    height:      120px;
+    border-radius: 50%;
+    margin-bottom: 6px;
+    position: relative;
 }
 
-#page-mod-englishcentral-view .overall {
-    background:   #f0f0f0;
-    border-color:    #aaa; /* GREY */
+#page-mod-englishcentral-view .chart.overall { background: #dddddd; }
+#page-mod-englishcentral-view .chart.watch   { background: #a9dbef; }
+#page-mod-englishcentral-view .chart.learn   { background: #f7c1a1; }
+#page-mod-englishcentral-view .chart.speak   { background: #d3e9af; }
+
+#page-mod-englishcentral-view .chart.overall { background-image: linear-gradient(to right, transparent 50%, #aaaaaa 0); }
+#page-mod-englishcentral-view .chart.watch { background-image: linear-gradient(to right, transparent 50%, #23a1da 0); }
+#page-mod-englishcentral-view .chart.learn { background-image: linear-gradient(to right, transparent 50%, #eb6613 0); }
+#page-mod-englishcentral-view .chart.speak { background-image: linear-gradient(to right, transparent 50%, #a4d05c 0); }
+
+#page-mod-englishcentral-view .chart .darkrim {
+    margin-left:   50%;
+    height:       100%;
+    border-radius: 0 100% 100% 0 / 50%;
+    /***********************************
+    border-top-left-radius       0% 50%;
+    border-top-right-radius      0% 50%;
+    border-bottom-right-radius 100% 50%;
+    border-bottom-left-radius  100% 50%;
+    ***********************************/
+    transform-origin: left;
 }
 
-#page-mod-englishcentral-view .watch {
-    background:   #d4edf7;
-    border-color: #23a1da; /* BLUE */
+#page-mod-englishcentral-view .chart.overall.under50 .darkrim { background-color: #dddddd; }
+#page-mod-englishcentral-view .chart.watch.under50 .darkrim   { background-color: #a9dbef; }
+#page-mod-englishcentral-view .chart.learn.under50 .darkrim   { background-color: #f7c1a1; }
+#page-mod-englishcentral-view .chart.speak.under50 .darkrim   { background-color: #d3e9af; }
+
+#page-mod-englishcentral-view .chart.overall.over50 .darkrim { background-color: #aaaaaa; }
+#page-mod-englishcentral-view .chart.watch.over50 .darkrim   { background-color: #23a1da; }
+#page-mod-englishcentral-view .chart.learn.over50 .darkrim   { background-color: #eb6613; }
+#page-mod-englishcentral-view .chart.speak.over50 .darkrim   { background-color: #a4d05c; }
+
+#page-mod-englishcentral-view .lines {
+    background:  white;
+    border-radius: 50%;
+    height:        70%;
+    left:          15%;
+    position: absolute;
+    text-align: center;
+    top:           15%;
+    width:         70%;
 }
 
-#page-mod-englishcentral-view .learn {
-    background:   #fbe0d0;
-    border-color: #eb6613; /* RED */
-}
+#page-mod-englishcentral-view .chart.overall .lines { background: #f8f8f8; }
+#page-mod-englishcentral-view .chart.watch .lines   { background: #e9f6fb; }
+#page-mod-englishcentral-view .chart.learn .lines   { background: #fdf0e7; }
+#page-mod-englishcentral-view .chart.speak .lines   { background: #f4f9eb; }
 
-#page-mod-englishcentral-view .speak {
-    background:   #e9f4d7;
-    border-color: #a4d05c; /* GREEN */
+#page-mod-englishcentral-view .line1,
+#page-mod-englishcentral-view .line2 {
+    position: absolute;
+    text-align: center;
+    width:        100%;
+}
+#page-mod-englishcentral-view .line1 { top: 24%; }
+#page-mod-englishcentral-view .line2 { top: 50%; }
+
+@media screen and (min-width: 800px) {
+    #page-mod-englishcentral-view #id_progresscontainer {
+        text-align:  left;
+    }
+    #page-mod-englishcentral-view .timing {
+        width:      180px;
+    }
 }
 
 #page-mod-englishcentral-view .videoicon {
@@ -275,7 +321,7 @@
     font-size: 1.0em;
     line-height: 1;
     margin: 0.35em 1.0em;
-    max-width: 160px; /* 195px; */
+    max-width: 140px;
     min-width: 120px;
 }
 
@@ -420,6 +466,12 @@
 
 #page-mod-englishcentral-view .transparent {
     color: transparent;
+}
+
+@media screen and (min-width: 840px) {
+    #page-mod-englishcentral-view .activity-thumbnail {
+        max-width: 160px;
+    }
 }
 
 /**
