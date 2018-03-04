@@ -261,7 +261,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
 
         $progress = $this->ec->get_progress();
 
-        // calculate overall percent
+        // calculate total percent
         if ($percent = ($this->ec->watchgoal + $this->ec->learngoal + $this->ec->speakgoal)) {
             $percent = (($progress->watch + $progress->learn + $progress->speak) / $percent);
             $percent = round(100 * $percent, 0);
@@ -288,7 +288,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         $output .= html_writer::tag('div', $timing, array('class' => 'timing'));
 
         // format titlecharts
-        $output .= $this->show_titlechart('overall', $percent, '%', 'achieved', $percent);
+        $output .= $this->show_titlechart('total', $percent, '%', 'achieved', $percent);
         $output .= $this->show_titlechart_type('watch', $progress);
         $output .= $this->show_titlechart_type('learn', $progress);
         $output .= $this->show_titlechart_type('speak', $progress);
@@ -317,32 +317,63 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
     }
 
     public function show_chart($type, $text1, $text2, $string, $percent) {
-        $params = array('class' => 'darkrim',
-                        'style' => 'transform: rotate('.round(360 * ($percent % 50) / 100).'deg);');
-        $darkrim = html_writer::tag('div', '', $params);
+        $output = '';
 
-        $line1 = html_writer::tag('span', $text1, array('class' => 'text1')).
-                 html_writer::tag('span', $text2, array('class' => 'text2'));
-        $line2 = $this->ec->get_string($string);
-        $lines = html_writer::tag('div', $line1, array('class' => 'line1')).
-                 html_writer::tag('div', $line2, array('class' => 'line2'));
-        $lines = html_writer::tag('div', $lines, array('class' => 'lines'));
+        // outer ring
+        $params = array('class' => 'outerring',
+                        'style' => $this->get_chart_transform($percent));
+        $output .= html_writer::tag('div', '', $params);
 
-        $params = array('class' => 'chart '.$type);
+        // start innertext
+        $output .= html_writer::start_tag('div', array('class' => 'innertext'));
+
+        // line1
+        $output .= html_writer::start_tag('div', array('class' => 'line1'));
+        $output .= html_writer::tag('span', $text1, array('class' => 'text1'));
+        $output .= html_writer::tag('span', $text2, array('class' => 'text2'));
+        $output .= html_writer::end_tag('div');
+
+        // line2
+        $output .= html_writer::tag('div', $this->ec->get_string($string), array('class' => 'line2'));
+
+        // end innertext
+        $output .= html_writer::end_tag('div');
+
+        $params = array('class' => "chart $type ".$this->get_chart_class($percent));
+        return html_writer::tag('div', $output, $params);
+    }
+
+    public function get_chart_transform($percent) {
+        $degrees = round(360 * $percent / 100);
         if ($percent >= 50) {
-            $params['class'] .= ' over50';
-        } else {
-            $params['class'] .= ' under50';
+            $degrees -= 180;
         }
-        return html_writer::tag('div', $darkrim.$lines, $params);
+        return 'transform: rotate('.$degrees.'deg);';
+    }
+
+    public function get_chart_class($percent) {
+        if ($percent >= 50) {
+            return 'over50';
+        } else {
+            return 'under50';
+        }
     }
 
     /**
      * Show the EC videos element
      */
     public function show_videos() {
+        global $DB, $USER;
+
         $output = '';
         $output .= $this->output->box_start('englishcentral_videos');
+
+        $fields = 'videoid,watchcount,watchcomplete,learncomplete,speakcomplete';
+        $params = array('ecid' => $this->ec->id, 'userid' => $USER->id);
+        $attempts = $DB->get_records('englishcentral_attempts', $params, 'id', $fields);
+        if ($attempts==false) {
+            $attempts = array();
+        }
 
         // get video ids in this EC activity
         $connection_available = true;
@@ -360,8 +391,19 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
                 // create video thumbnails in required order
                 foreach ($videoids as $videoid) {
                     if (array_key_exists($videoid, $index)) {
-                        $i = $index[$videoid];
-                        $output .= $this->show_video($videos[$i]);
+                        $video = $videos[$index[$videoid]];
+                        if (array_key_exists($videoid, $attempts)) {
+                            $video->watchcount = $attempts[$videoid]->watchcount;
+                            $video->watchcomplete = $attempts[$videoid]->watchcomplete;
+                            $video->learncomplete = $attempts[$videoid]->learncomplete;
+                            $video->speakcomplete = $attempts[$videoid]->speakcomplete;
+                        } else {
+                            $video->watchcount = 0;
+                            $video->watchcomplete = 0;
+                            $video->learncomplete = 0;
+                            $video->speakcomplete = 0;
+                        }
+                        $output .= $this->show_video($video);
                     }
                 }
             } else {
@@ -410,6 +452,11 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
                                                      'href'  => $video->dialogURL,
                         'style' => 'background-image: url("'.$video->thumbnailURL.'");'));
         $output .= html_writer::tag('span', '', array('class' => 'play-icon'));
+        if ($video->watchcomplete && $video->learncomplete && $video->speakcomplete) {
+            $output .= html_writer::tag('span', '', array('class' => 'status-icon completed'));
+        } else if ($video->watchcount) {
+            $output .= html_writer::tag('span', '', array('class' => 'status-icon inprogress'));
+        }
         $output .= html_writer::end_tag('a');
 
         $output .= html_writer::start_tag('span', array('class' => 'difficulty-level-indicator '.$difficulty));
@@ -417,9 +464,8 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         $output .= html_writer::tag('span', $this->ec->get_string('levelx', $video->difficulty),
                                             array('class' => 'difficulty-level text-center difficulty-icon'));
 
-        $output .= html_writer::start_tag('span', array('class' => 'difficulty-label'));
-        $output .= html_writer::tag('span', $this->ec->get_string($difficulty));
-        $output .= html_writer::end_tag('span'); // difficulty-label
+        $output .= html_writer::tag('span', $this->ec->get_string($difficulty),
+                                            array('class' => 'difficulty-label'));
 
         $output .= html_writer::end_tag('span'); // difficulty-level-indicator
 

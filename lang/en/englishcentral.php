@@ -58,6 +58,7 @@ $string['partnerid'] = 'Partner ID';
 $string['partneriddefault'] = 'YOUR PARTNER ID';
 $string['partneridexplain'] = 'Your partnerid is available from {$a}';
 
+$string['achieved'] = 'achieved';
 $string['goals_help'] = 'Define goals for Watch, Learn, Speak and Study time';
 $string['goals'] = 'Goals';
 $string['learngoal_help'] = 'The target number of unique words to learn.';
@@ -74,28 +75,27 @@ $string['studygoal_help'] = 'The target number of minutes/hours to study.
 
 The study time is calculated using the following formula:
 
-(number of videos watched) x 6 minutes  
-+ (number of words learned) x 1 minute  
+(number of videos watched) x 6 minutes
++ (number of words learned) x 1 minute
 + (number of lines spoken) x 1 minute';
 $string['studygoal'] = 'Study time';
 $string['studygoalunits'] = 'minutes';
+$string['totalgoal_help'] = 'The total progress as a percentage. it is calculated as using the following formula:
+
+**(number of items studied) / (total study goal)**
+
+* **number of items studied**:
+(number of videos watched) +
+(number of words learned) +
+(number of lines spoken)
+* **total study goal**:
+(watch goal) + (learn goal) + (speak goal)';
+$string['totalgoal'] = 'Total';
 $string['watchgoal_help'] = 'The target number of videos to watch.';
 $string['watchgoal'] = 'Watch';
 $string['watchgoalunits'] = 'videos';
 $string['watchvideos'] = '{$a} videos';
-$string['achieved'] = 'achieved';
 $string['yourprogress'] = 'Your progress';
-$string['overallgoal_help'] = 'The overall progress as a percentage. it is calculated as using the following formula:
-
-**(number of items studied) / (total study goal)**
-
-* **number of items studied**:  
-(number of videos watched) +  
-(number of words learned) +  
-(number of lines spoken)
-* **total study goal**:  
-(watch goal) + (learn goal) + (speak goal)';
-$string['overallgoal'] = 'Overall';
 
 $string['from'] = 'From';
 $string['until'] = 'Until';

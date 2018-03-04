@@ -386,7 +386,6 @@ class activity {
 
     public function update_progress($dialog) {
         global $DB, $USER;
-        $progress = $this->extract_progress($dialog);
 
         // extract/create $attempt
         $table = 'englishcentral_attempts';
@@ -399,6 +398,8 @@ class activity {
             $attempt = (object)$params;
             $attempt->timecreated = $this->time;
         }
+
+        $progress = $this->extract_progress($dialog, $attempt);
 
         foreach ($progress as $name => $value) {
             $attempt->$name = $value;
@@ -418,9 +419,10 @@ class activity {
 	 * e.g. /rest/report/dialog/{dialogID}/progress
 	 *
 	 * @param array $dialog JSON data returned from EC REST call
+	 * @param object $attempt record from "englishcentral_attempts"
 	 * @return array of $progress data
 	 */
-    public function extract_progress($dialog) {
+    public function extract_progress($dialog, $attempt) {
 
         // initialize totals for goals
         $progress = array(
@@ -457,6 +459,15 @@ class activity {
            $progress['totalpoints']  = $dialog->totalPoints;
         }
 
+        // populate the $progress array with values earned hitherto
+        foreach (array('watchlineids', 'learnwordids', 'speaklineids') as $ids) {
+            if (isset($attempt->$ids) && $attempt->$ids) {
+                $progress[$ids] = explode($attempt->$ids);
+                $progress[$ids] = array_keys($progress[$ids]);
+                $progress[$ids] = array_fill_keys($progress[$ids], 1);
+            }
+        }
+
         if (empty($dialog->activities)) {
             return $progress;
         }
@@ -470,19 +481,19 @@ class activity {
             // activityProgress : 1
             // completed        : 1
             // grade            : A (speakActivity only ?)
-            
+
             // extract DB fields
             switch ($activity->activityTypeID) {
 
                 case \mod_englishcentral\auth::ACTIVITYTYPE_WATCHING: // =9
-                    $progress['watchcomplete'] = ($activity->completed ? 1 : 0);
+                    $progress['watchcomplete'] = (empty($activity->completed) ? 0 : 1);
                     foreach ($activity->watchedDialogLines as $line) {
                         $progress['watchlineids'][$line->dialogLineID] = 1;
                     }
                     break;
 
                 case \mod_englishcentral\auth::ACTIVITYTYPE_LEARNING: // =10
-                    $progress['learncomplete'] = ($activity->completed ? 1 : 0);
+                    $progress['learncomplete'] = (empty($activity->completed) ? 0 : 1);
                     foreach ($activity->learnedDialogLines as $line) {
                         foreach($line->learnedWords as $word) {
                             if ($word->completed) {
@@ -493,7 +504,7 @@ class activity {
                     break;
 
                 case \mod_englishcentral\auth::ACTIVITYTYPE_SPEAKING: // =11
-                    $progress['speakcomplete'] = ($activity->completed ? 1 : 0);
+                    $progress['speakcomplete'] = (empty($activity->completed) ? 0 : 1);
                     foreach ($activity->spokenDialogLines as $line) {
                         $progress['speaklineids'][$line->dialogLineID] = 1;
                     }
