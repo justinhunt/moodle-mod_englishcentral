@@ -391,7 +391,7 @@ class activity {
         $table = 'englishcentral_attempts';
         $params = array('ecid' => $this-id,
                         'userid' => $USER->id,
-                        'videoid' => $progress['dialogID']);
+                        'videoid' => $dialog->dialogID);
         if ($attempt = $DB->get_record($table, $params)) {
             // $USER has attempted this video before
         } else {
