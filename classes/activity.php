@@ -389,7 +389,7 @@ class activity {
 
         // extract/create $attempt
         $table = 'englishcentral_attempts';
-        $params = array('ecid' => $this-id,
+        $params = array('ecid' => $this->id,
                         'userid' => $USER->id,
                         'videoid' => $dialog->dialogID);
         if ($attempt = $DB->get_record($table, $params)) {
