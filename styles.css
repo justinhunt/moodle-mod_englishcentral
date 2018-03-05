@@ -132,6 +132,23 @@
     position:    relative;
 }
 
+/*************************
+  WATCH (blue)
+  #d4edf7 light
+  #a9dbef medium
+  #23a1da English Central
+
+  LEARN (red)
+  #fbe0d0 light
+  #f7c1a1 medium
+  #eb6613 English Central
+
+  SPEAK (green)
+  #e9f4d7 light
+  #d3e9af medium
+  #a4d05c English Central
+*************************/
+
 #page-mod-englishcentral-view .chart.total { background: #dddddd; }
 #page-mod-englishcentral-view .chart.watch { background: #a9dbef; }
 #page-mod-englishcentral-view .chart.learn { background: #f7c1a1; }
@@ -361,7 +378,7 @@
     display: block;
 }
 
-#page-mod-englishcentral-view .activity-thumbnail .status-icon {
+#page-mod-englishcentral-view .activity-thumbnail .watch-status {
     background-position: center center;
     background-repeat: no-repeat;
     display:     block;
@@ -378,6 +395,33 @@
 
 #page-mod-englishcentral-view .activity-thumbnail .completed {
     background-image: url([[pix:mod_englishcentral|completed]]);
+}
+
+#page-mod-englishcentral-view .activity-thumbnail .learn-status,
+#page-mod-englishcentral-view .activity-thumbnail .speak-status {
+	border-style:   solid;
+	border-width:     2px;
+	border-radius:    50%;
+    display:        block;
+    font-size:		 14px;
+    position:    absolute;
+    right:            0px;
+    height:          14px;
+    width:           14px;
+    text-align:    center;
+}
+
+#page-mod-englishcentral-view .activity-thumbnail .learn-status {
+	background:   #fbe0d0;
+	border-color: #eb6613;
+	color:        #eb6613;
+    top:             46px;
+}
+#page-mod-englishcentral-view .activity-thumbnail .speak-status {
+	background:   #e9f4d7;
+	border-color: #a4d05c;
+	color:        #a4d05c;
+    top:             70px;
 }
 
 #page-mod-englishcentral-view .activity-title {
@@ -482,7 +526,7 @@
     #page-mod-englishcentral-view .activity-thumbnail {
         max-width: 160px;
     }
-    #page-mod-englishcentral-view .activity-thumbnail .status-icon {
+    #page-mod-englishcentral-view .activity-thumbnail .watch-status {
         right:        -6px;
     }
 }

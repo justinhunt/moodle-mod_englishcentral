@@ -44,7 +44,7 @@ class auth {
     protected $ec = null; // EC activity
     protected $jwt_token = null; // JWT token
     protected $sdk_token = null; // SDK token
-    protected $authorization = null;
+    protected $authorization = null; // HTTP header
 
     protected $uniqueid = null; // user's unique ID on this Moodle site
     protected $accountid = null; // the EC accountid of the current user
@@ -281,10 +281,10 @@ class auth {
     public function get_user_language($default='en') {
         global $CFG, $USER;
         if (! empty($USER->lang)) {
-            return str_replace('_utf8', '', $USER->lang);
+            return substr($USER->lang, 0, 2);
         }
         if (! empty($CFG->lang)) {
-            return str_replace('_utf8', '', $CFG->lang);
+            return substr($CFG->lang, 0, 2);
         }
         return $default;
     }

@@ -368,8 +368,11 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         $output = '';
         $output .= $this->output->box_start('englishcentral_videos');
 
-        $fields = 'videoid,watchcount,watchcomplete,learncomplete,speakcomplete';
-        $params = array('ecid' => $this->ec->id, 'userid' => $USER->id);
+        $fields = 'videoid,watchcount,watchcomplete,'.
+        				  'learncount,learncomplete,'.
+        				  'speakcount,speakcomplete';
+        $params = array('ecid' => $this->ec->id,
+        				'userid' => $USER->id);
         $attempts = $DB->get_records('englishcentral_attempts', $params, 'id', $fields);
         if ($attempts==false) {
             $attempts = array();
@@ -388,20 +391,17 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
                     $index[$video->dialogID] = $i;
                 }
 
+				// convert $fields to array and remove first item (videoid)
+				$fields = explode(',', $fields);
+				array_shift($fields);
+
                 // create video thumbnails in required order
                 foreach ($videoids as $videoid) {
                     if (array_key_exists($videoid, $index)) {
                         $video = $videos[$index[$videoid]];
-                        if (array_key_exists($videoid, $attempts)) {
-                            $video->watchcount = $attempts[$videoid]->watchcount;
-                            $video->watchcomplete = $attempts[$videoid]->watchcomplete;
-                            $video->learncomplete = $attempts[$videoid]->learncomplete;
-                            $video->speakcomplete = $attempts[$videoid]->speakcomplete;
-                        } else {
-                            $video->watchcount = 0;
-                            $video->watchcomplete = 0;
-                            $video->learncomplete = 0;
-                            $video->speakcomplete = 0;
+                        $empty = empty($attempts[$videoid]);
+                        foreach ($fields as $field) {
+							$video->$field = ($empty ? 0 : $attempts[$videoid]->$field);
                         }
                         $output .= $this->show_video($video);
                     }
@@ -452,10 +452,12 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
                                                      'href'  => $video->dialogURL,
                         'style' => 'background-image: url("'.$video->thumbnailURL.'");'));
         $output .= html_writer::tag('span', '', array('class' => 'play-icon'));
-        if ($video->watchcomplete && $video->learncomplete && $video->speakcomplete) {
-            $output .= html_writer::tag('span', '', array('class' => 'status-icon completed'));
+        if ($video->watchcomplete) {
+            $output .= html_writer::tag('span', '', array('class' => 'watch-status completed'));
+            $output .= html_writer::tag('span', $video->learncount, array('class' => 'learn-status'));
+            $output .= html_writer::tag('span', $video->speakcount, array('class' => 'speak-status'));
         } else if ($video->watchcount) {
-            $output .= html_writer::tag('span', '', array('class' => 'status-icon inprogress'));
+            $output .= html_writer::tag('span', '', array('class' => 'watch-status inprogress'));
         }
         $output .= html_writer::end_tag('a');
 
