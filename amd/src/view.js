@@ -198,6 +198,32 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
             setHandler = 'setOnProgressEventHandler';
         }
         window.ECSDK[setHandler](function(data) {
+
+            // we are only interested in the events
+            // that affect the grade of this EC activity
+            switch (data.eventType) {
+                case "CompleteActivityWatch":
+                case "LearnedWord":
+                case "DialogLineSpeak":
+                    break;
+
+                case "CompleteActivityLearn":
+                case "CompleteActivitySpeak":
+                    return false;
+
+                case "StartActivityWatch":
+                case "DialogLineWatch":
+                case "StartActivityLearn":
+                case "TypedWord":
+                case "StudiedWord":
+                case "StartActivitySpeak":
+                    return false;
+
+                default:
+                    // oops - an unexpected value
+                    break;
+            }
+
             // AJAX call to send the data.dialogID to the Moodle server
             // and receive the html for the updated Progress pie-charts
             $.ajax({
@@ -214,12 +240,33 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
                 "dataType": "html",
                 "success": function(html) {
                     if (html.indexOf("englishcentral_progress") < 0) {
+                        // probably an error message
                         $(".englishcentral_progress").html(html);
                     } else {
-                        // probably an error message
                         $(".englishcentral_progress").replaceWith(html);
                     }
                 }
+            }).then(function(){
+                // AJAX call to send the data.dialogID to the Moodle server
+                // and receive the html for the updated status of this video
+                $.ajax({
+                    "url": VIEW.viewajaxurl,
+                    "data": {
+                        "id": VIEW.cmid,
+                        "data": {
+                            "dialogID": data.dialogID,
+                            "sdktoken": VIEW.sdktoken
+                        },
+                        "action": "showstatus",
+                        "sesskey": VIEW.moodlesesskey
+                    },
+                    "dataType": "html",
+                    "success": function(html) {
+                        var thumb = $(".thumb-frame[href$=" + data.dialogID + "]");
+                        thumb.find(".watch-status, .learn-status, .speak-status").remove();
+                        thumb.find(".play-icon").after(html);
+                    }
+                });
             });
         });
 

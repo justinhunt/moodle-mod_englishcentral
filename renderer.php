@@ -344,7 +344,11 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
     }
 
     public function get_chart_transform($percent) {
-        $degrees = round(360 * $percent / 100);
+    	switch (true) {
+    		case ($percent < 0): $percent = 0; break;
+    		case ($percent > 100): $percent = 100; break;
+    	}
+    	$degrees = round(360 * $percent / 100);
         if ($percent >= 50) {
             $degrees -= 180;
         }
@@ -368,15 +372,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         $output = '';
         $output .= $this->output->box_start('englishcentral_videos');
 
-        $fields = 'videoid,watchcount,watchcomplete,'.
-        				  'learncount,learncomplete,'.
-        				  'speakcount,speakcomplete';
-        $params = array('ecid' => $this->ec->id,
-        				'userid' => $USER->id);
-        $attempts = $DB->get_records('englishcentral_attempts', $params, 'id', $fields);
-        if ($attempts==false) {
-            $attempts = array();
-        }
+        $attempts = $this->ec->get_attempts();
 
         // get video ids in this EC activity
         $connection_available = true;
@@ -391,9 +387,9 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
                     $index[$video->dialogID] = $i;
                 }
 
-				// convert $fields to array and remove first item (videoid)
+				// extract names of count/complete $fields
+				$fields = $this->ec->get_attempts_fields(false);
 				$fields = explode(',', $fields);
-				array_shift($fields);
 
                 // create video thumbnails in required order
                 foreach ($videoids as $videoid) {
@@ -452,13 +448,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
                                                      'href'  => $video->dialogURL,
                         'style' => 'background-image: url("'.$video->thumbnailURL.'");'));
         $output .= html_writer::tag('span', '', array('class' => 'play-icon'));
-        if ($video->watchcomplete) {
-            $output .= html_writer::tag('span', '', array('class' => 'watch-status completed'));
-            $output .= html_writer::tag('span', $video->learncount, array('class' => 'learn-status'));
-            $output .= html_writer::tag('span', $video->speakcount, array('class' => 'speak-status'));
-        } else if ($video->watchcount) {
-            $output .= html_writer::tag('span', '', array('class' => 'watch-status inprogress'));
-        }
+        $output .= $this->show_video_status($video);
         $output .= html_writer::end_tag('a');
 
         $output .= html_writer::start_tag('span', array('class' => 'difficulty-level-indicator '.$difficulty));
@@ -479,6 +469,18 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
 
         return $output;
     }
+
+	public function show_video_status($video) {
+		$output = '';
+        if ($video->watchcomplete) {
+            $output .= html_writer::tag('span', $video->watchcomplete, array('class' => 'watch-status completed'));
+            $output .= html_writer::tag('span', $video->learncount, array('class' => 'learn-status'));
+            $output .= html_writer::tag('span', $video->speakcount, array('class' => 'speak-status'));
+        } else if ($video->watchcount) {
+            $output .= html_writer::tag('span', core_text::code2utf8(0x27eb), array('class' => 'watch-status inprogress'));
+        }
+		return $output;
+	}
 
     protected function show_addvideo_icon() {
         return $this->show_videos_icon('add');

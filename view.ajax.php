@@ -48,7 +48,7 @@ $ec = \mod_englishcentral\activity::create($instance, $cm, $course, $context);
 $auth = \mod_englishcentral\auth::create($ec);
 
 // check we have suitable capability
-if ($action=='storeresults') {
+if ($action=='storeresults' || $action=='showstatus') {
     $ec->req('view'); // student
 } else {
     $ec->req('manage'); // teacher
@@ -66,6 +66,16 @@ switch ($action) {
             $dialog = $auth->fetch_dialog_progress($data->dialogID, $data->sdk_token);
             $ec->update_progress($dialog);
             echo $renderer->show_progress();
+        }
+        break;
+
+    case 'showstatus':
+        if (is_array($data) && array_key_exists('dialogID', $data)) {
+            $data = (object)$data;
+            $attempts = $ec->get_attempts($data->dialogID);
+            if ($video = reset($attempts)) {
+				echo $renderer->show_video_status($video);
+            }
         }
         break;
 

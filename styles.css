@@ -88,6 +88,7 @@
 #page-mod-englishcentral-view #id_progresscontainer .title {
     margin:           0px;
     padding:          6px;
+    font-size:       14px;
 }
 
 #page-mod-englishcentral-view .timing dl {
@@ -125,8 +126,8 @@
 }
 
 #page-mod-englishcentral-view .chart {
-    width:          120px;
-    height:         120px;
+    width:           80px;
+    height:          80px;
     border-radius:    50%;
     margin-bottom:    6px;
     position:    relative;
@@ -185,6 +186,7 @@
 #page-mod-englishcentral-view .innertext {
     background:  white;
     border-radius: 50%;
+    font-size:    12px;
     height:        70%;
     left:          15%;
     position: absolute;
@@ -204,16 +206,28 @@
     text-align: center;
     width:        100%;
 }
-#page-mod-englishcentral-view .line1 { top: 24%; }
-#page-mod-englishcentral-view .line2 { top: 50%; }
+#page-mod-englishcentral-view .line1 { top: 16%; }
+#page-mod-englishcentral-view .line2 { top: 40%; }
 
 @media screen and (min-width: 800px) {
     #page-mod-englishcentral-view #id_progresscontainer {
-        text-align:  left;
+        text-align:   left;
+    }
+    #page-mod-englishcentral-view #id_progresscontainer .title {
+        font-size:    20px;
     }
     #page-mod-englishcentral-view .timing {
-        width:      180px;
+        width:       180px;
     }
+    #page-mod-englishcentral-view .chart {
+        width:       120px;
+        height:      120px;
+    }
+    #page-mod-englishcentral-view .innertext {
+        font-size: initial;
+    }
+    #page-mod-englishcentral-view .line1 { top: 24%; }
+    #page-mod-englishcentral-view .line2 { top: 50%; }
 }
 
 #page-mod-englishcentral-view .videoicon {
@@ -336,132 +350,109 @@
     display: inline-block;
     font-size:      1.0em;
     line-height:        1;
-    margin:  0.35em 1.0em;
-    max-width:      140px;
-    min-width:      120px;
+    margin:     12px 12px;
+    width:          100px;
     position:    relative;
 }
 
-#page-mod-englishcentral-view .activity-progress {
-    position: absolute;
-    right:       0.5em;
-    top:         0.2em;
-    z-index:         9;
-}
-
 #page-mod-englishcentral-view .thumb-outline {
-    position: relative;
-    padding:         0;
+    position:    relative;
+    padding:            0;
 }
 
 #page-mod-englishcentral-view .thumb-frame {
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
-    border-radius: 4px;
-    cursor:    pointer;
-    display:     block;
-    height:       75px;
-    width:       150px;
+    border-radius:     4px;
+    cursor:        pointer;
+    display:         block;
+    height:           66px;
+    width:           100px;
 }
 
 #page-mod-englishcentral-view .activity-thumbnail .play-icon {
     background-image: url([[pix:mod_englishcentral|play]]);
     background-position: center center;
     background-repeat: no-repeat;
-    display:      none;
-    height:       100%;
-    width:        100%;
+    display:          none;
+    height:           100%;
+    width:            100%;
 }
 
 #page-mod-englishcentral-view .activity-thumbnail:hover .play-icon {
     display: block;
 }
 
-#page-mod-englishcentral-view .activity-thumbnail .watch-status {
-    background-position: center center;
-    background-repeat: no-repeat;
-    display:     block;
-    position: absolute;
-    top:          13px;
-    right:       -24px;
-    height:       30px;
-    width:        30px;
-}
-
-#page-mod-englishcentral-view .activity-thumbnail .inprogress {
-    background-image: url([[pix:mod_englishcentral|inprogress]]);
-}
-
-#page-mod-englishcentral-view .activity-thumbnail .completed {
-    background-image: url([[pix:mod_englishcentral|completed]]);
-}
-
+#page-mod-englishcentral-view .activity-thumbnail .watch-status,
 #page-mod-englishcentral-view .activity-thumbnail .learn-status,
 #page-mod-englishcentral-view .activity-thumbnail .speak-status {
 	border-style:   solid;
 	border-width:     2px;
 	border-radius:    50%;
+	border-color:    #fff;
+	color:           #fff;
     display:        block;
     font-size:		 14px;
+    line-height:      1.2;
     position:    absolute;
-    right:            0px;
-    height:          14px;
-    width:           14px;
+    right:           -2px;
+    height:          16px;
+    width:           16px;
     text-align:    center;
 }
 
+#page-mod-englishcentral-view .activity-thumbnail .watch-status {
+	background:   #23a1da;
+    top:             15px;
+}
 #page-mod-englishcentral-view .activity-thumbnail .learn-status {
-	background:   #fbe0d0;
-	border-color: #eb6613;
-	color:        #eb6613;
-    top:             46px;
+	background:   #eb6613;
+    top:             40px;
 }
 #page-mod-englishcentral-view .activity-thumbnail .speak-status {
-	background:   #e9f4d7;
-	border-color: #a4d05c;
-	color:        #a4d05c;
-    top:             70px;
+	background:   #a4d05c;
+    top:             65px;
 }
 
 #page-mod-englishcentral-view .activity-title {
-    color:         #000;
-    display:      block;
-    font-size:    0.9em;
-    font-weight:   bold;
-    line-height:    1.2;
-    max-height:   2.4em;
-    overflow:    hidden;
-    white-space: normal;
+    color:           #000;
+    display:        block;
+    font-size:      0.9em;
+    font-weight:     bold;
+    line-height:      1.4;
+    max-height:     2.4em;
+    overflow:      hidden;
+    white-space:   normal;
 
     text-overflow: ellipsis;
-    white-space: nowrap;
+    white-space:   nowrap;
 }
 
 #page-mod-englishcentral-view .activity-topics {
-    color:         #999;
-    display:      block;
-    font-size:   0.82em;
-    line-height:    1.2;
-    max-height:   2.4em;
-    overflow:    hidden;
-    white-space: normal;
+    color:           #999;
+    display:        block;
+    font-size:     0.82em;
+    line-height:      1.2;
+    max-height:     2.4em;
+    overflow:      hidden;
+    white-space:   normal;
 }
 
 #page-mod-englishcentral-view .activity-topics a:hover {
-    cursor: default;
+    cursor:       default;
 }
 
 #page-mod-englishcentral-view .activity-difficulty {
-    bottom:       0.4em;
-    font-size:    0.8em;
-    left:         0.5em;
-    position:  absolute;
+    bottom:         0.4em;
+    font-size:      0.8em;
+    left:           0.5em;
+    position:    absolute;
 }
 
 #page-mod-englishcentral-view .activity-thumbnail:hover .activity-title {
-    color:      #0078ff;
-    cursor:     pointer;
+    color:        #0078ff;
+    cursor:       pointer;
     text-decoration: underline;
 }
 
@@ -524,10 +515,22 @@
 
 @media screen and (min-width: 840px) {
     #page-mod-englishcentral-view .activity-thumbnail {
-        max-width: 160px;
+        width: 150px;
     }
-    #page-mod-englishcentral-view .activity-thumbnail .watch-status {
-        right:        -6px;
+    #page-mod-englishcentral-view .thumb-frame {
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        border-radius:     4px;
+        cursor:        pointer;
+        display:         block;
+        height:           75px;
+        width:           150px;
+    }
+    #page-mod-englishcentral-view .activity-thumbnail .watch-status,
+    #page-mod-englishcentral-view .activity-thumbnail .learn-status,
+    #page-mod-englishcentral-view .activity-thumbnail .speak-status {
+        right:      -2px;
     }
 }
 

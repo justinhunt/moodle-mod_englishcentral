@@ -164,9 +164,9 @@ class activity {
     }
 
     public function url($filepath, $escaped=null, $params=array()) {
-    	if (isset($this->cm)) {
-			$params['id'] = $this->cm->id;
-    	}
+        if (isset($this->cm)) {
+            $params['id'] = $this->cm->id;
+        }
         $url = '/'.$this->plugintype.'/'.$this->pluginname.'/'.$filepath;
         $url = new \moodle_url($url, $params);
         if (is_bool($escaped)) {
@@ -414,14 +414,14 @@ class activity {
         englishcentral_update_grades($this, $USER->id);
     }
 
-	/**
-	 * Format data about dialog activities returned from EC ReportCard api
-	 * e.g. /rest/report/dialog/{dialogID}/progress
-	 *
-	 * @param array $dialog JSON data returned from EC REST call
-	 * @param object $attempt record from "englishcentral_attempts"
-	 * @return array of $progress data
-	 */
+    /**
+     * Format data about dialog activities returned from EC ReportCard api
+     * e.g. /rest/report/dialog/{dialogID}/progress
+     *
+     * @param array $dialog JSON data returned from EC REST call
+     * @param object $attempt record from "englishcentral_attempts"
+     * @return array of $progress data
+     */
     public function extract_progress($dialog, $attempt) {
 
         // initialize totals for goals
@@ -462,11 +462,11 @@ class activity {
         // populate the $progress array with values earned hitherto
         foreach (array('watchlineids', 'learnwordids', 'speaklineids') as $ids) {
             if (isset($attempt->$ids) && $attempt->$ids) {
-                $progress[$ids] = explode($attempt->$ids);
-                $progress[$ids] = array_keys($progress[$ids]);
+                $progress[$ids] = explode(',', $attempt->$ids);
                 $progress[$ids] = array_fill_keys($progress[$ids], 1);
             }
         }
+
 
         if (empty($dialog->activities)) {
             return $progress;
@@ -523,4 +523,28 @@ class activity {
         return $progress;
     }
 
+    public function get_attempts_fields($addvideoid=true) {
+        $fields = 'watchcount,watchcomplete,'.
+                  'learncount,learncomplete,'.
+                  'speakcount,speakcomplete';
+    	if ($addvideoid) {
+    		$fields = "videoid,$fields";
+    	}
+    	return $fields;
+    }
+
+    public function get_attempts($videoid=0) {
+        global $DB, $USER;
+        $params = array('ecid' => $this->id,
+                        'userid' => $USER->id);
+        if ($videoid) {
+            $params['videoid'] = $videoid;
+        }
+        $fields = $this->get_attempts_fields();
+        if ($attempts = $DB->get_records('englishcentral_attempts', $params, 'id', $fields)) {
+            return $attempts;
+        } else {
+            return array();
+        }
+    }
 }
