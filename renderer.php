@@ -344,11 +344,11 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
     }
 
     public function get_chart_transform($percent) {
-    	switch (true) {
-    		case ($percent < 0): $percent = 0; break;
-    		case ($percent > 100): $percent = 100; break;
-    	}
-    	$degrees = round(360 * $percent / 100);
+        switch (true) {
+            case ($percent < 0): $percent = 0; break;
+            case ($percent > 100): $percent = 100; break;
+        }
+        $degrees = round(360 * $percent / 100);
         if ($percent >= 50) {
             $degrees -= 180;
         }
@@ -384,12 +384,14 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
                 // build index to map videoid onto $videos item
                 $index = array();
                 foreach ($videos as $i => $video) {
-                    $index[$video->dialogID] = $i;
+                    if (isset($video->dialogID)) {
+						$index[$video->dialogID] = $i;
+                    }
                 }
 
-				// extract names of count/complete $fields
-				$fields = $this->ec->get_attempts_fields(false);
-				$fields = explode(',', $fields);
+                // extract names of count/complete $fields
+                $fields = $this->ec->get_attempts_fields(false);
+                $fields = explode(',', $fields);
 
                 // create video thumbnails in required order
                 foreach ($videoids as $videoid) {
@@ -397,7 +399,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
                         $video = $videos[$index[$videoid]];
                         $empty = empty($attempts[$videoid]);
                         foreach ($fields as $field) {
-							$video->$field = ($empty ? 0 : $attempts[$videoid]->$field);
+                            $video->$field = ($empty ? 0 : $attempts[$videoid]->$field);
                         }
                         $output .= $this->show_video($video);
                     }
@@ -470,18 +472,18 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         return $output;
     }
 
-	public function show_video_status($video) {
-		$output = '';
+    public function show_video_status($video) {
+        $output = '';
         if ($video->watchcomplete) {
             $output .= html_writer::tag('span', $video->watchcomplete, array('class' => 'watch-status completed'));
             $output .= html_writer::tag('span', $video->learncount, array('class' => 'learn-status'));
             $output .= html_writer::tag('span', $video->speakcount, array('class' => 'speak-status'));
         } else if ($video->watchcount) {
-        	// we could try a fancy unicode char, core_text::code2utf8(0x27eb)
+            // we could try a fancy unicode char, core_text::code2utf8(0x27eb)
             $output .= html_writer::tag('span', '~', array('class' => 'watch-status inprogress'));
         }
-		return $output;
-	}
+        return $output;
+    }
 
     protected function show_addvideo_icon() {
         return $this->show_videos_icon('add');
@@ -517,27 +519,27 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
 
         // Fetch aggregate items from attempts table.
         $select = 'userid,'.
-        		  'SUM(watchcomplete) + SUM(learncount)  + SUM(speakcount) AS percent,'.
-        		  'SUM(watchcomplete) AS watch,'.
-        		  'SUM(learncount) AS learn,'.
-        		  'SUM(speakcount) AS speak';
+                  'SUM(watchcomplete) + SUM(learncount)  + SUM(speakcount) AS percent,'.
+                  'SUM(watchcomplete) AS watch,'.
+                  'SUM(learncount) AS learn,'.
+                  'SUM(speakcount) AS speak';
         $from   = '{englishcentral_attempts}';
         $where  = 'ecid = ?  GROUP BY userid';
         $params = array($this->ec->id);
 
-		$from   = "(SELECT $select FROM $from WHERE $where) items,".
-				  '{user} u';
-		$where  = 'items.userid = u.id';
-		$select = 'items.*,'.get_all_user_name_fields(true, 'u');
+        $from   = "(SELECT $select FROM $from WHERE $where) items,".
+                  '{user} u';
+        $where  = 'items.userid = u.id';
+        $select = 'items.*,'.get_all_user_name_fields(true, 'u');
 
-		if ($this->sort=='firstname' || $this->sort=='lastname') {
-			$order = 'u.'.$this->sort;
-		} else {
-			$order = 'items.'.$this->sort;
-		}
-		if ($this->order) {
-			$order .= ' '.$this->order;
-		}
+        if ($this->sort=='firstname' || $this->sort=='lastname') {
+            $order = 'u.'.$this->sort;
+        } else {
+            $order = 'items.'.$this->sort;
+        }
+        if ($this->order) {
+            $order .= ' '.$this->order;
+        }
 
         // set goals to maximum in these aggregate items
         if ($items = $DB->get_records_sql("SELECT $select FROM $from WHERE $where ORDER BY $order", $params)) {
@@ -561,20 +563,20 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
                          $goals->learn +
                          $goals->speak);
 
-		$type = 'firstname';
-		$fullname = get_string($type, 'moodle');
-		$fullname .= $this->get_sort_icon($url, $type);
+        $type = 'firstname';
+        $fullname = get_string($type, 'moodle');
+        $fullname .= $this->get_sort_icon($url, $type);
 
-		$fullname .= ' ';
+        $fullname .= ' ';
 
-		$type = 'lastname';
-		$fullname .= get_string('lastname', 'moodle');
-		$fullname .= $this->get_sort_icon($url, $type);
+        $type = 'lastname';
+        $fullname .= get_string('lastname', 'moodle');
+        $fullname .= $this->get_sort_icon($url, $type);
         $fullname = html_writer::tag('span', $fullname, array('class' => 'fullname'));
 
-		$type = 'percent';
-		$percent = '%'; // get_string($type, 'grades');
-		$percent .= $this->get_sort_icon($url, $type);
+        $type = 'percent';
+        $percent = '%'; // get_string($type, 'grades');
+        $percent .= $this->get_sort_icon($url, $type);
         $percent = html_writer::tag('span', $percent, array('class' => 'percent'));
 
         $output .= html_writer::tag('dt', $fullname.$percent, array('class' => 'user title'));
@@ -673,46 +675,46 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
     protected function setup_sort() {
         global $SESSION;
 
-		// initialize session info
-		if (empty($SESSION->englishcentral)) {
-			$SESSION->englishcentral = new stdClass();
-			$SESSION->englishcentral->sort = '';
-			$SESSION->englishcentral->order = '';
-		}
+        // initialize session info
+        if (empty($SESSION->englishcentral)) {
+            $SESSION->englishcentral = new stdClass();
+            $SESSION->englishcentral->sort = '';
+            $SESSION->englishcentral->order = '';
+        }
 
-		// override sort item/order with incoming data
-		$sort = optional_param('sort', '', PARAM_ALPHA);
-		switch (true) {
+        // override sort item/order with incoming data
+        $sort = optional_param('sort', '', PARAM_ALPHA);
+        switch (true) {
 
-			case ($sort==''):
-				$sort = $SESSION->englishcentral->sort;
-				$order = $SESSION->englishcentral->order;
-				break;
+            case ($sort==''):
+                $sort = $SESSION->englishcentral->sort;
+                $order = $SESSION->englishcentral->order;
+                break;
 
-			case ($sort==$SESSION->englishcentral->sort):
-				$order = optional_param('order', '', PARAM_ALPHA);
-				break;
+            case ($sort==$SESSION->englishcentral->sort):
+                $order = optional_param('order', '', PARAM_ALPHA);
+                break;
 
-			default:
-				$order = '';
-		}
+            default:
+                $order = '';
+        }
 
-		if ($sort=='') {
-			$sort = 'lastname';
-			$order = '';
-		}
+        if ($sort=='') {
+            $sort = 'lastname';
+            $order = '';
+        }
 
-		if ($order=='') {
-			if ($sort=='firstname' || $sort=='lastname') {
-				$order = 'ASC';
-			} else {
-				$order = 'DESC';
-			}
-		}
+        if ($order=='') {
+            if ($sort=='firstname' || $sort=='lastname') {
+                $order = 'ASC';
+            } else {
+                $order = 'DESC';
+            }
+        }
 
-		// store new/updated sort item/order
-		$this->sort = $SESSION->englishcentral->sort = $sort;
-		$this->order = $SESSION->englishcentral->order = $order;
+        // store new/updated sort item/order
+        $this->sort = $SESSION->englishcentral->sort = $sort;
+        $this->order = $SESSION->englishcentral->order = $order;
     }
 
     protected function get_sort_icon($url, $sort) {
@@ -735,28 +737,28 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
                 break;
             case ($sort=='firstname'):
             case ($sort=='lastname'):
-				$text = "sortby$sort";
+                $text = "sortby$sort";
                 $icon = 't/sort';
             default:
-				$text = 'sort';
+                $text = 'sort';
                 $icon = 't/sort';
                 break;
         }
 
-		$params = array();
-		if ($sort) {
-			$params['sort'] = $sort;
-		} else {
-			$url->remove_params('sort');
-		}
-		if ($order) {
-			$params['order'] = ($order=='ASC' ? 'DESC' : 'ASC');
-		} else {
-			$url->remove_params('order');
-		}
-		if (count($params)) {
-			$url->params($params);
-		}
+        $params = array();
+        if ($sort) {
+            $params['sort'] = $sort;
+        } else {
+            $url->remove_params('sort');
+        }
+        if ($order) {
+            $params['order'] = ($order=='ASC' ? 'DESC' : 'ASC');
+        } else {
+            $url->remove_params('order');
+        }
+        if (count($params)) {
+            $url->params($params);
+        }
 
         $text = get_string($text, 'grades');
         $params = array('class' => 'sorticon');

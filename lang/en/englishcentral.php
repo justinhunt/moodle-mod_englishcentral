@@ -139,10 +139,12 @@ $string['beginner'] = 'Beginner';
 $string['intermediate'] = 'Intermediate';
 $string['advanced'] = 'Advanced';
 $string['levelx'] = 'Level {$a}';
+$string['level'] = 'Level';
 
 $string['addthisvideo'] = 'Add this video';
 $string['addvideo'] = 'Add video';
 $string['confirmremovevideo'] = 'Do you really want to remove this video?';
+$string['copyright'] = 'Source';
 $string['description'] = 'Description';
 $string['entersearchterm'] = 'Please enter one or more search terms.';
 $string['goals'] = 'Goals';

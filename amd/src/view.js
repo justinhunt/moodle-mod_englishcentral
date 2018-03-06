@@ -43,11 +43,17 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         {"key": "beginner",           "component": VIEW.plugin},
         {"key": "clickwhenfinished",  "component": VIEW.plugin},
         {"key": "confirmremovevideo", "component": VIEW.plugin},
+        {"key": "copyright",          "component": VIEW.plugin},
         {"key": "description",        "component": VIEW.plugin},
+        {"key": "duration",           "component": "search"},
         {"key": "entersearchterm",    "component": VIEW.plugin},
         {"key": "goals",              "component": VIEW.plugin},
+        {"key": "hideadvanced",       "component": "form"},
         {"key": "intermediate",       "component": VIEW.plugin},
+        {"key": "level",              "component": VIEW.plugin},
+        {"key": "search",             "component": "moodle"},
         {"key": "searchterm",         "component": VIEW.plugin},
+        {"key": "showadvanced",       "component": "form"},
         {"key": "topics",             "component": VIEW.plugin},
         {"key": "transcript",         "component": VIEW.plugin}
     ]).done(function(s) {
@@ -57,11 +63,17 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         VIEW.str.beginner = s[i++];
         VIEW.str.clickwhenfinished = s[i++];
         VIEW.str.confirmremovevideo = s[i++];
+        VIEW.str.copyright = s[i++];
         VIEW.str.description = s[i++];
+        VIEW.str.duration = s[i++];
         VIEW.str.entersearchterm = s[i++];
         VIEW.str.goals = s[i++];
+        VIEW.str.hideadvanced = s[i++];
         VIEW.str.intermediate = s[i++];
+        VIEW.str.level = s[i++];
+        VIEW.str.search = s[i++];
         VIEW.str.searchterm = s[i++];
+        VIEW.str.showadvanced = s[i++];
         VIEW.str.topics = s[i++];
         VIEW.str.transcript = s[i++];
     });
@@ -155,15 +167,32 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
 
             // create search box/results
             var html = "";
-            html += HTML.tag("span", VIEW.str.searchterm, {
-                "class": "search-prompt"
-            });
-            html += HTML.input("searchterm", "text", {
-                "size": 30
-            });
+            html += HTML.starttag('form', {"class": "search-form"});
+            html += HTML.starttag('dl', {"class": "search-fields"});
+
+            html += HTML.tag("dt", VIEW.str.searchterm, {"class": "visible"});
+            html += HTML.tag("dd", HTML.input("searchterm", "text", {"size": 30}), {"class": "visible"});
+
+            html += HTML.tag("dt", VIEW.str.level, {});
+            html += HTML.tag("dd", HTML.input("level", "text", {"size": 30}), {});
+
+            html += HTML.tag("dt", VIEW.str.copyright, {});
+            html += HTML.tag("dd", HTML.input("copyright", "text", {"size": 30}), {});
+
+            html += HTML.tag("dt", VIEW.str.duration, {});
+            html += HTML.tag("dd", HTML.input("duration", "text", {"size": 30}), {});
+
+            html += HTML.starttag("dd", {"class": "visible"});
             html += HTML.input("searchbutton", "submit", {
-                "value": "Go"
+                "value": VIEW.str.search
             });
+            html += HTML.tag("a", VIEW.str.showadvanced, {
+                "class": "search-advanced"
+            });
+            html += HTML.endtag("dd");
+
+            html += HTML.endtag('dl');
+            html += HTML.endtag('form');
             html = HTML.tag("div", html, {
                 "class": "search-box"
             });
@@ -172,8 +201,8 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
             });
             $("#" + VIEW.playercontainer).html(html);
 
-            // add click event to button
-            $("#id_searchbutton").click(function() {
+            // override standard form submit action
+            $("#" + VIEW.playercontainer + " .search-form").submit(function(evt){
                 var term = $("#id_searchterm").val();
                 var list = new RegExp("^\s*[0-9]+([, \\t\\r\\n]+[0-9]+)*\s*$");
                 if (term == "") {
@@ -183,6 +212,17 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
                 } else {
                     VIEW.search_videos(term);
                 }
+                evt.preventDefault();
+            });
+
+            // add event event handler to show/hide advanced settings
+            $("#" + VIEW.playercontainer + " .search-advanced").click(function(){
+                if ($(this).text()==VIEW.str.showadvanced) {
+                    $(this).text(VIEW.str.hideadvanced);
+                } else {
+                    $(this).text(VIEW.str.showadvanced);
+                }
+                $("#" + VIEW.playercontainer + " .search-fields").find("dt:not(.visible), dd:not(.visible)").toggle();
             });
         });
     };
@@ -291,6 +331,7 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
             "learnMode": true,
             "speakMode": true,
             "quizMode": true,
+            //"goLiveMode": true,
             "width": 640
         };
 
@@ -332,32 +373,63 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         });
     };
 
-    VIEW.search_videos = function(term) {
-        $.ajax({
-            "url": VIEW.searchurl,
-            "type": "GET",
-            "data": {
-                "term": term,
-                "page": "0",
-                "pageSize": "20"
-            },
-            "dataType": "json",
-            "headers": {
-                "Accept": VIEW.accept1,
-                "Authorization": VIEW.authorization,
-                "Content-Type": "application/json"
-            },
-            "success": function(info) {
-                VIEW.format_results(info);
-            }
-        });
+    VIEW.search_videos = function(term, page, size) {
+        if (isNaN(VIEW.searchsize)) {
+            VIEW.searchsize = 20;
+        }
+        if (size) {
+            VIEW.searchsize = parseInt(size);
+        }
+        if (isNaN(page)) {
+            VIEW.searchpage = 0;
+            VIEW.searchterm = "";
+        } else {
+            VIEW.searchpage = parseInt(page);
+        }
+        if (term) {
+            VIEW.searchterm = term;
+        }
+        if (VIEW.searchterm) {
+            $.ajax({
+                "url": VIEW.searchurl,
+                "type": "GET",
+                "data": {
+                    "term": VIEW.searchterm,
+                    "page": VIEW.searchpage,
+                    "pageSize": VIEW.searchsize
+                },
+                "dataType": "json",
+                "headers": {
+                    "Accept": VIEW.accept1,
+                    "Authorization": VIEW.authorization,
+                    "Content-Type": "application/json"
+                },
+                "success": function(info) {
+                    VIEW.format_results(info);
+                }
+            });
+        }
     };
+
+    VIEW.formatnumber = function(n, separator) {
+        if (separator==null) {
+            separator = ",";
+        }
+        if (typeof(n)=="number") {
+            n = n.toString();
+        }
+        // "B" metachar means "not at beginning or end of word"
+        var regexp = new RegExp("\\B(?=(\\d{3})+(?!\\d))", "g");
+        return n.replace(regexp, separator);
+    }
 
     VIEW.format_results = function(info) {
         if ((!info) || (!info.results) || info.results.length == 0) {
             return "";
         }
+        var pagingbar = VIEW.pagingbar(info.count);
         var html = "";
+        html += pagingbar;
         var videoids = VIEW.get_videoids();
         for (var i = 0; i < info.results.length; i++) {
             // skip videos that are already displayed
@@ -366,9 +438,10 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
                 html += VIEW.format_result(info.results[i]);
             }
         }
+        html += pagingbar;
         $(".search-results").html(html);
-        STR.get_string("xitemsfound", VIEW.plugin, info.count).done(function(s) {
-            $(".search-results").prepend(HTML.tag("p", s));
+        STR.get_string("xitemsfound", VIEW.plugin, VIEW.formatnumber(info.count)).done(function(s) {
+            $(".search-results").prepend(HTML.tag("div", s, {"class": "itemsfound"}));
         });
         for (var i = 0; i < info.results.length; i++) {
             var v = info.results[i].value;
@@ -401,6 +474,10 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
                 }
             });
         }
+        $(".pagingbar").find(".pagenumber:not(.currentpage)").click(function(){
+            var page = $(this).text() - 1;
+            VIEW.search_videos("", page);
+        });
     };
 
     VIEW.get_videoids = function() {
@@ -423,6 +500,45 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
     VIEW.get_videoid_from_id = function(id) {
         // sample id: id_add_video_27323
         return id.replace(new RegExp("^.*_"), "");
+    };
+
+    VIEW.pagingbar = function(count) {
+        var html = "";
+        if (count) {
+            var size = VIEW.searchsize;
+            var lastpage = Math.ceil(count / size) - 1;
+            if (lastpage > 0) {
+                var firstpage = 0;
+
+                var page = VIEW.searchpage;
+                var p_min = Math.max(firstpage, VIEW.searchpage - 4);
+                var p_max = Math.min(lastpage, Math.max(9, VIEW.searchpage + 4));
+
+                if (firstpage < p_min) {
+                    html += HTML.tag("span", (firstpage + 1), {"class": "pagenumber"});
+                    if ((p_min - firstpage) > 1) {
+                        html += HTML.tag("span", "...", {"class": "pageseparator"});
+                    }
+                }
+                for (var p=p_min; p<=p_max; p++) {
+                    var s = "pagenumber";
+                    if (p==page) {
+                        s += " currentpage";
+                    }
+                    html += HTML.tag("span", (p+1), {"class": s});
+                }
+                if (p_max < lastpage) {
+                    if ((lastpage - p_max) > 1) {
+                        html += HTML.tag("span", "...", {"class": "pageseparator"});
+                    }
+                    html += HTML.tag("span", (lastpage + 1), {"class": "pagenumber"});
+                }
+            }
+        }
+        if (html) {
+            html = HTML.tag("div", html, {"class": "pagingbar"});
+        }
+        return html;
     };
 
     VIEW.add_video = function(evt, elm) {
@@ -476,6 +592,16 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
     //"promotionalDialog": false,
 
     VIEW.format_result = function(r) {
+        if (isNaN(r.value.difficulty) || r.value.difficulty < 1 || r.value.difficulty > 7) {
+            r.value.difficulty = 0;
+            r.difficulty = "unknown";
+        } else {
+            switch (true) {
+                case (r.value.difficulty <= 2): r.difficulty = "beginner";     break;
+                case (r.value.difficulty <= 4): r.difficulty = "intermediate"; break;
+                case (r.value.difficulty <= 7): r.difficulty = "advanced";     break;
+            }
+        }
         var html = "";
         html += VIEW.format_add(r);
         html += VIEW.format_thumb(r);
@@ -506,7 +632,7 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
             "style": "background-image: url('" + r.value.thumbnailURL + "')"
         });
         html += HTML.tag("div", r.value.difficulty, {
-            "class": "result-difficulty"
+            "class": "result-difficulty " + r.difficulty
         });
         html += HTML.tag("div", duration, {
             "class": "result-duration"
@@ -526,7 +652,11 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
             "src": src,
             "class": "icon"
         });
-        html += HTML.tag("h2", r.value.title + img, {
+        var title = r.value.title;
+        if (r.highlights.en_name) {
+            title = r.highlights.en_name[0];
+        }
+        html += HTML.tag("h2", title + img, {
             "class": "result-title"
         });
         html += VIEW.format_details(r);
@@ -537,7 +667,8 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
 
     VIEW.format_details = function(r) {
         var html = "";
-        html += VIEW.format_goalstopics(r.value.goals, r.value.topics);
+        //html += VIEW.format_copyright(r.value.copyright);
+        html += VIEW.format_goalstopics(r.value.goals, r.value.topics, r.difficulty);
         html += VIEW.format_description(r.value.description);
         html += VIEW.format_transcript(r.highlights.transcript);
         return HTML.tag("dl", html, {
@@ -545,7 +676,14 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         });
     };
 
-    VIEW.format_goalstopics = function(goals, topics) {
+    VIEW.format_copyright = function(copyright) {
+        if (copyright && copyright.length) {
+            return VIEW.format_detail("copyright", copyright);
+        }
+        return "";
+    };
+
+    VIEW.format_goalstopics = function(goals, topics, difficulty) {
         var txt = [];
         if (goals && goals.length) {
             for (var i = 0; i < goals.length; i++) {
@@ -560,7 +698,11 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         if (txt.length == 0) {
             return "";
         }
-        return VIEW.format_detail("topics", txt.join(", "));
+        txt = txt.join(", ");
+        txt += HTML.tag("span", VIEW.str[difficulty], {
+            "class": "result-level " + difficulty
+        });
+        return VIEW.format_detail("topics", txt);
     };
 
     VIEW.format_description = function(description) {
