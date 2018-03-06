@@ -466,6 +466,80 @@ function xmldb_englishcentral_upgrade($oldversion) {
         upgrade_mod_savepoint(true, "$newversion", 'englishcentral');
     }
 
+    $newversion = 2018030651;
+    if ($oldversion < $newversion) {
+        // select attempts records whose ecid + videoid does not exist in videos table
+        $select = 'ea.*';
+        $from   = '{englishcentral_attempts} ea '.
+                  'LEFT JOIN {englishcentral_videos} ev ON ea.ecid = ev.ecid AND ea.videoid = ev.videoid';
+        $where  = 'ea.ecid = ? AND ev.id IS NULL';
+        $params = array(1); // this issue only affects attempts with ecid==1
+
+        // SELECT ea.* FROM mdl_englishcentral_attempts ea
+        //        LEFT JOIN mdl_englishcentral_videos ev
+        //               ON ea.ecid = ev.ecid
+        //              AND ea.videoid = ev.videoid
+        //  WHERE ea.ecid = 1
+        //    AND ev.id IS NULL;
+        if ($orphans = $DB->get_records_sql("SELECT $select FROM $from WHERE $where", $params)) {
+            $fields = array('watchcount' => 'watchlineids',
+            				'learncount' => 'learnwordids',
+            				'speakcount' => 'speaklineids');
+            foreach ($orphans as $orphan) {
+                // merge all attempts by this user at this video
+                // try to locate a valid $ecid while we're at it
+                $ecid = 0;
+                $record = null; // new attempt
+                $table = 'englishcentral_attempts';
+                $params = array('userid' => $orphan->userid,
+                                'videoid' => $orphan->videoid);
+                $attempts = $DB->get_records($table, $params, 'id');
+                foreach ($attempts as $attempt) {
+                    if ($record===null) {
+                        $record = clone($attempt);
+						foreach ($fields as $field) {
+							$record->$field = array();
+						}
+                    } else {
+                        // remove this $attempt
+                        $DB->delete_records($table, array('id' => $attempt->id));
+                    }
+					// transfer attempt details
+					foreach ($fields as $field) {
+						$record->$field += array_fill_keys(explode(',', $attempt->$field), 1);
+					}
+                    if ($ecid==0) {
+                        $ecid = ($attempt->ecid==$orphan->ecid ? 0 : $attempt->ecid);
+                    }
+                }
+                foreach ($fields as $count => $field) {
+                    $record->$field = array_keys($record->$field);
+                    $record->$field = array_filter($record->$field);
+                    $record->$count = count($record->$field);
+                    $record->$field = implode(',', $record->$field);
+                }
+                if ($ecid==0) {
+                    if ($ecid = $DB->get_records('englishcentral_videos', array('videoid' => $orphan->videoid))) {
+                        $ecid = reset($ecid);
+                        $ecid = $ecid->ecid;
+                    } else {
+                        $ecid = 0; // shouldn't happen !!
+                    }
+                }
+                if ($ecid) {
+                    $record->ecid = $ecid;
+                    $DB->update_record($table, $record);
+                } else {
+                    // sorry, we couldn't rescue this orphan :-(
+                    // probably because we have no record of its videoid
+                    $DB->delete_records($table, array('id' => $record->id));
+                }
+            }
+        }
+
+        upgrade_mod_savepoint(true, "$newversion", 'englishcentral');
+    }
+
     return true;
 }
 

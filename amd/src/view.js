@@ -207,12 +207,18 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
                 case "DialogLineSpeak":
                     break;
 
+                case "DialogLineWatch":
+                    var thumbframe = ".thumb-frame[href$=" + data.dialogID + "]";
+                    if ($(thumbframe + " .watch-status").length) {
+                        return false;
+                    }
+                    break;
+
                 case "CompleteActivityLearn":
                 case "CompleteActivitySpeak":
                     return false;
 
                 case "StartActivityWatch":
-                case "DialogLineWatch":
                 case "StartActivityLearn":
                 case "TypedWord":
                 case "StudiedWord":
@@ -270,14 +276,18 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
             });
         });
 
+        var dialogId = VIEW.get_videoid(elm);
+        var completed = ".thumb-frame[href$=" +dialogId + "] .watch-status.completed";
+
         // set player options
         var options = {
             "partnerKey": VIEW.consumerkey,
             "partnerSdkToken": VIEW.sdktoken,
             "siteLanguage": VIEW.sitelanguage,
             "container": VIEW.playercontainer,
-            "dialogId": VIEW.get_videoid(elm),
+            "autoStart": $(completed).length,
             "interstitialsEnabled": true,
+            "dialogId": dialogId,
             "learnMode": true,
             "speakMode": true,
             "quizMode": true,

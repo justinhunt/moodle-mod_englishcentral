@@ -39,8 +39,6 @@ $PAGE->set_pagelayout('course');
 // check we have suitable capability
 $ec->req('config', 'moodle/site');
 
-$url = 'https://www.englishcentral.com/support/contact-school-support';
-
 // initialize the renderer
 $renderer = $PAGE->get_renderer($ec->plugin);
 $renderer->attach_activity_and_auth($ec, $auth);

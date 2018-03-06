@@ -477,7 +477,8 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
             $output .= html_writer::tag('span', $video->learncount, array('class' => 'learn-status'));
             $output .= html_writer::tag('span', $video->speakcount, array('class' => 'speak-status'));
         } else if ($video->watchcount) {
-            $output .= html_writer::tag('span', core_text::code2utf8(0x27eb), array('class' => 'watch-status inprogress'));
+        	// we could try a fancy unicode char, core_text::code2utf8(0x27eb)
+            $output .= html_writer::tag('span', '~', array('class' => 'watch-status inprogress'));
         }
 		return $output;
 	}
