@@ -412,7 +412,7 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
     };
 
     VIEW.formatnumber = function(n, separator) {
-        if (separator==null) {
+        if (typeof(separator)=="undefined") {
             separator = ",";
         }
         if (typeof(n)=="number") {
@@ -421,7 +421,7 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         // "B" metachar means "not at beginning or end of word"
         var regexp = new RegExp("\\B(?=(\\d{3})+(?!\\d))", "g");
         return n.replace(regexp, separator);
-    }
+    };
 
     VIEW.format_results = function(info) {
         if ((!info) || (!info.results) || info.results.length == 0) {
