@@ -143,17 +143,24 @@ $string['level'] = 'Level';
 
 $string['addthisvideo'] = 'Add this video';
 $string['addvideo'] = 'Add video';
+$string['addvideohelp'] = 'To add a video to this page, click this icon and do a video search.';
 $string['confirmremovevideo'] = 'Do you really want to remove this video?';
 $string['copyright'] = 'Source';
 $string['description'] = 'Description';
-$string['entersearchterm'] = 'Please enter one or more search terms.';
 $string['goals'] = 'Goals';
 $string['noconnection'] = 'WARNING: Your Moodle site cannot currently connect to the EnglishCentral server.';
 $string['removevideo'] = 'Remove video';
+$string['removevideohelp'] = 'To remove a video from this page, drag it to this icon.';
 $string['searchterm'] = 'Search terms';
 $string['topics'] = 'Topics';
 $string['transcript'] = 'Transcript';
 $string['xitemsfound'] = '{$a} items found';
+$string['videosearch'] = 'Video search';
+$string['videosearchhelp'] = 'Please type one or more search terms into the "Video search" text box.';
+$string['videosearchprompt'] = 'Enter search terms here';
+$string['duration1'] = '<b>Short</b> (up to 1 minute)';
+$string['duration2'] = '<b>Medium</b> (1 to 3 minutes)';
+$string['duration3'] = '<b>Long</b> (over minutes)';
 
 $string['supporttitle'] = 'Request partnerID from EnglishCentral.com';
 $string['supportconfirm'] = 'The following information will be sent to EnglishCentral.com to request a partner ID and access keys:';

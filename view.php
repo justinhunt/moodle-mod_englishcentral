@@ -118,9 +118,9 @@ $PAGE->requires->js_call_amd("$ec->plugin/view", 'init', array($opts));
 echo $renderer->show_progress();
 
 if ($ec->viewable) {
-    echo $renderer->show_videos($ec);
-    echo '<div id="id_playercontainer"></div>';
-    echo '<div id="id_resultscontainer"></div>';
+    echo $renderer->show_videos();
+    echo $renderer->show_search();
+    echo $renderer->show_player();
 } else {
     echo $renderer->show_notviewable($ec);
 }

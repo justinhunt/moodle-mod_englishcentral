@@ -27,6 +27,9 @@ define([], function() {
     /** @alias module:mod_englishcentral/html */
     var HTML = {};
 
+    // RegExp to clean non-alphanumeric chars from a string
+    HTML.nonalphanumeric = new RegExp("[^a-zA-Z0-9_-]+", "g");
+
     HTML.htmlescape = function(value) {
         value += ""; // convert to String
         return value.replace(new RegExp("&", "g"), "&amp;")
@@ -37,7 +40,7 @@ define([], function() {
     };
 
     HTML.attribute = function(name, value) {
-        var attr = name.replace(new RegExp("^a-zA-Z0-9_-"), "g");
+        var attr = name.replace(HTML.nonalphanumeric, "");
         if (attr) {
             attr = " " + attr + '="' + HTML.htmlescape(value) + '"';
         }
@@ -70,10 +73,14 @@ define([], function() {
         return (HTML.starttag(tag, attr) + content + HTML.endtag(tag));
     };
 
-    HTML.input = function(name, type, attr) {
+    HTML.input = function(name, type, attr, id) {
         attr.type = type;
         attr.name = name;
-        attr.id = "id_" + name;
+        if (id) {
+            attr.id = id;
+        } else {
+            attr.id = "id_" + name;
+        }
         return HTML.emptytag("input", attr);
     };
 

@@ -30,8 +30,16 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
     // cache full plugin name
     VIEW.plugin = "mod_englishcentral";
 
-    VIEW.playercontainer = "id_playercontainer";
+    // define DOM element names
+    VIEW.playercontainer   = "id_playercontainer";
     VIEW.progresscontainer = "id_progresscontainer";
+    VIEW.searchcontainer   = "id_searchcontainer";
+
+    // initialize search params
+    VIEW.searchpage = 0;
+    VIEW.searchsize = 20;
+    VIEW.searchterm = "";
+    VIEW.searchlevel = "";
 
     // initialize string cache
     VIEW.str = {};
@@ -46,16 +54,17 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         {"key": "copyright",          "component": VIEW.plugin},
         {"key": "description",        "component": VIEW.plugin},
         {"key": "duration",           "component": "search"},
-        {"key": "entersearchterm",    "component": VIEW.plugin},
         {"key": "goals",              "component": VIEW.plugin},
         {"key": "hideadvanced",       "component": "form"},
         {"key": "intermediate",       "component": VIEW.plugin},
         {"key": "level",              "component": VIEW.plugin},
         {"key": "search",             "component": "moodle"},
-        {"key": "searchterm",         "component": VIEW.plugin},
         {"key": "showadvanced",       "component": "form"},
         {"key": "topics",             "component": VIEW.plugin},
-        {"key": "transcript",         "component": VIEW.plugin}
+        {"key": "transcript",         "component": VIEW.plugin},
+        {"key": "videosearch",        "component": VIEW.plugin},
+        {"key": "videosearchhelp",    "component": VIEW.plugin},
+        {"key": "videosearchprompt",  "component": VIEW.plugin}
     ]).done(function(s) {
         var i = 0;
         VIEW.str.addthisvideo = s[i++];
@@ -66,16 +75,17 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         VIEW.str.copyright = s[i++];
         VIEW.str.description = s[i++];
         VIEW.str.duration = s[i++];
-        VIEW.str.entersearchterm = s[i++];
         VIEW.str.goals = s[i++];
         VIEW.str.hideadvanced = s[i++];
         VIEW.str.intermediate = s[i++];
         VIEW.str.level = s[i++];
         VIEW.str.search = s[i++];
-        VIEW.str.searchterm = s[i++];
         VIEW.str.showadvanced = s[i++];
         VIEW.str.topics = s[i++];
         VIEW.str.transcript = s[i++];
+        VIEW.str.videosearch = s[i++];
+        VIEW.str.videosearchhelp = s[i++];
+        VIEW.str.videosearchprompt = s[i++];
     });
 
     VIEW.init = function(opts) {
@@ -153,77 +163,29 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
             }
         });
 
-        $(".addvideo").click(function() {
-
-            var container = document.getElementById(VIEW.playercontainer);
-            if (container) {
-                // remove previous EC player
-                $("#" + VIEW.playercontainer).html("");
+        // override standard form submit action
+        $("#" + VIEW.searchcontainer + " .search-form").submit(function(evt){
+            var term = $("#id_searchterm").val();
+            var list = new RegExp("^\s*[0-9]+([, \\t\\r\\n]+[0-9]+)*\s*$");
+            var level = $("[name='level[]']:checked").map(function() {return this.value;}).get().join(',');
+            if (term == "") {
+                $(".search-results").html(VIEW.str.videosearchhelp);
+            } else if (term.match(list)) {
+                VIEW.fetch_videos(null, null, term, level);
             } else {
-                container = document.createElement("DIV");
-                container.setAttribute("id", VIEW.playercontainer);
-                $(VIEW.progresscontainer).after(container);
+                VIEW.search_videos(null, null, term, level);
             }
+            evt.preventDefault();
+        });
 
-            // create search box/results
-            var html = "";
-            html += HTML.starttag('form', {"class": "search-form"});
-            html += HTML.starttag('dl', {"class": "search-fields"});
-
-            html += HTML.tag("dt", VIEW.str.searchterm, {"class": "visible"});
-            html += HTML.tag("dd", HTML.input("searchterm", "text", {"size": 30}), {"class": "visible"});
-
-            html += HTML.tag("dt", VIEW.str.level, {});
-            html += HTML.tag("dd", HTML.input("level", "text", {"size": 30}), {});
-
-            html += HTML.tag("dt", VIEW.str.copyright, {});
-            html += HTML.tag("dd", HTML.input("copyright", "text", {"size": 30}), {});
-
-            html += HTML.tag("dt", VIEW.str.duration, {});
-            html += HTML.tag("dd", HTML.input("duration", "text", {"size": 30}), {});
-
-            html += HTML.starttag("dd", {"class": "visible"});
-            html += HTML.input("searchbutton", "submit", {
-                "value": VIEW.str.search
-            });
-            html += HTML.tag("a", VIEW.str.showadvanced, {
-                "class": "search-advanced"
-            });
-            html += HTML.endtag("dd");
-
-            html += HTML.endtag('dl');
-            html += HTML.endtag('form');
-            html = HTML.tag("div", html, {
-                "class": "search-box"
-            });
-            html += HTML.tag("div", "", {
-                "class": "search-results"
-            });
-            $("#" + VIEW.playercontainer).html(html);
-
-            // override standard form submit action
-            $("#" + VIEW.playercontainer + " .search-form").submit(function(evt){
-                var term = $("#id_searchterm").val();
-                var list = new RegExp("^\s*[0-9]+([, \\t\\r\\n]+[0-9]+)*\s*$");
-                if (term == "") {
-                    $(".search-results").html(VIEW.str.entersearchterm);
-                } else if (term.match(list)) {
-                    VIEW.fetch_videos(term);
-                } else {
-                    VIEW.search_videos(term);
-                }
-                evt.preventDefault();
-            });
-
-            // add event event handler to show/hide advanced settings
-            $("#" + VIEW.playercontainer + " .search-advanced").click(function(){
-                if ($(this).text()==VIEW.str.showadvanced) {
-                    $(this).text(VIEW.str.hideadvanced);
-                } else {
-                    $(this).text(VIEW.str.showadvanced);
-                }
-                $("#" + VIEW.playercontainer + " .search-fields").find("dt:not(.visible), dd:not(.visible)").toggle();
-            });
+        // add event event handler to show/hide advanced settings
+        $("#" + VIEW.searchcontainer + " .search-advanced").click(function(){
+            if ($(this).text()==VIEW.str.showadvanced) {
+                $(this).text(VIEW.str.hideadvanced);
+            } else {
+                $(this).text(VIEW.str.showadvanced);
+            }
+            $("#" + VIEW.searchcontainer + " .search-fields").find("dt:not(.visible), dd:not(.visible)").toggle();
         });
     };
 
@@ -349,18 +311,20 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         window.ECSDK.loadWidget("player", options);
     };
 
-    VIEW.fetch_videos = function(term) {
+    VIEW.fetch_videos = function(page, size, term, level) {
         var spacer = new RegExp("[, \\t\\r\\n]+", "g");
         var ids = term.replace(spacer, ",");
+        VIEW.set_search_params(page, size, ids, level);
+        var data = {
+            "dialogIDs": ids,
+            "page": VIEW.searchpage,
+            "pageSize": VIEW.searchsize,
+            "siteLanguage": VIEW.siteanguage
+        };
         $.ajax({
             "url": VIEW.fetchurl,
             "type": "GET",
-            "data": {
-                "dialogIDs": ids,
-                "siteLanguage": VIEW.siteanguage,
-                "page": "0",
-                "pageSize": "20"
-            },
+            "data": data,
             "dataType": "json",
             "headers": {
                 "Accept": VIEW.accept1,
@@ -373,31 +337,21 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         });
     };
 
-    VIEW.search_videos = function(term, page, size) {
-        if (isNaN(VIEW.searchsize)) {
-            VIEW.searchsize = 20;
-        }
-        if (size) {
-            VIEW.searchsize = parseInt(size);
-        }
-        if (isNaN(page)) {
-            VIEW.searchpage = 0;
-            VIEW.searchterm = "";
-        } else {
-            VIEW.searchpage = parseInt(page);
-        }
-        if (term) {
-            VIEW.searchterm = term;
+    VIEW.search_videos = function(page, size, term, level) {
+        VIEW.set_search_params(page, size, term, level);
+        var data = {
+            "term": VIEW.searchterm,
+            "page": VIEW.searchpage,
+            "pageSize": VIEW.searchsize
+        };
+        if (level) {
+            data.difficulty = level;
         }
         if (VIEW.searchterm) {
             $.ajax({
                 "url": VIEW.searchurl,
                 "type": "GET",
-                "data": {
-                    "term": VIEW.searchterm,
-                    "page": VIEW.searchpage,
-                    "pageSize": VIEW.searchsize
-                },
+                "data": data,
                 "dataType": "json",
                 "headers": {
                     "Accept": VIEW.accept1,
@@ -411,25 +365,40 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         }
     };
 
-    VIEW.formatnumber = function(n, separator) {
-        if (typeof(separator)=="undefined") {
-            separator = ",";
+    VIEW.set_search_params = function(page, size, term, level) {
+        if (VIEW.isNotNum(page)) {
+            VIEW.searchpage = 0;
+            VIEW.searchterm = "";
+            VIEW.searchlevel = "";
+        } else {
+            VIEW.searchpage = parseInt(page);
         }
-        if (typeof(n)=="number") {
-            n = n.toString();
+        if (size) {
+            VIEW.searchsize = parseInt(size);
         }
-        // "B" metachar means "not at beginning or end of word"
-        var regexp = new RegExp("\\B(?=(\\d{3})+(?!\\d))", "g");
-        return n.replace(regexp, separator);
+        if (term) {
+            VIEW.searchterm = term;
+        }
+        if (level) {
+            VIEW.searchlevel = level;
+        }
     };
 
     VIEW.format_results = function(info) {
-        if ((!info) || (!info.results) || info.results.length == 0) {
-            return "";
-        }
-        var pagingbar = VIEW.pagingbar(info.count);
         var html = "";
+
+        // finish early if there are no results
+        if ((!info) || (!info.results) || info.results.length == 0) {
+            return html;
+        }
+
+        // cache the paging-bar (we need it twice)
+        var pagingbar = VIEW.pagingbar(info.count);
+
+        // add top paging-bar
         html += pagingbar;
+
+        // add results
         var videoids = VIEW.get_videoids();
         for (var i = 0; i < info.results.length; i++) {
             // skip videos that are already displayed
@@ -438,11 +407,17 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
                 html += VIEW.format_result(info.results[i]);
             }
         }
+
+        // add bottom paging-bar
         html += pagingbar;
+
+        // number of items found
         $(".search-results").html(html);
         STR.get_string("xitemsfound", VIEW.plugin, VIEW.formatnumber(info.count)).done(function(s) {
             $(".search-results").prepend(HTML.tag("div", s, {"class": "itemsfound"}));
         });
+
+        // add click handlers for "+" and thumbnail
         for (var i = 0; i < info.results.length; i++) {
             var v = info.results[i].value;
             var data = {
@@ -474,9 +449,11 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
                 }
             });
         }
+
+        // add click handlers for page numbers on paging-bar
         $(".pagingbar").find(".pagenumber:not(.currentpage)").click(function(){
             var page = $(this).text() - 1;
-            VIEW.search_videos("", page);
+            VIEW.search_videos(page);
         });
     };
 
@@ -541,6 +518,18 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         return html;
     };
 
+    VIEW.formatnumber = function(n, separator) {
+        if (typeof(separator)=="undefined") {
+            separator = ",";
+        }
+        if (typeof(n)=="number") {
+            n = n.toString();
+        }
+        // "B" metachar means "not at beginning or end of word"
+        var regexp = new RegExp("\\B(?=(\\d{3})+(?!\\d))", "g");
+        return n.replace(regexp, separator);
+    };
+
     VIEW.add_video = function(evt, elm) {
         $.ajax({
             "url": VIEW.viewajaxurl,
@@ -592,7 +581,7 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
     //"promotionalDialog": false,
 
     VIEW.format_result = function(r) {
-        if (isNaN(r.value.difficulty) || r.value.difficulty < 1 || r.value.difficulty > 7) {
+        if (VIEW.isNotNum(r.value.difficulty) || r.value.difficulty < 1 || r.value.difficulty > 7) {
             r.value.difficulty = 0;
             r.difficulty = "unknown";
         } else {
@@ -612,7 +601,7 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
     };
 
     VIEW.format_add = function(r) {
-        var src = $(".addvideo img").prop("src").replace("addvideo", "add");
+        var src = $(".removevideo img").prop("src").replace("removevideo", "add");
         var html = HTML.emptytag("img", {
             "src": src,
             "title": VIEW.str.addthisvideo
@@ -645,8 +634,8 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
 
     VIEW.format_info = function(r) {
         var html = "";
-        var src = $(".addvideo img").prop("src")
-            .replace("addvideo", "i/info")
+        var src = $(".removevideo img").prop("src")
+            .replace("removevideo", "i/info")
             .replace("mod_englishcentral", "core");
         var img = HTML.emptytag("img", {
             "src": src,
@@ -730,6 +719,14 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
             "class": "result-value " + type
         });
         return html;
+    };
+
+    VIEW.isNotNum = function(n) {
+        switch (typeof(n)) {
+            case "number": return false;
+            case "string": return (n.match(new RegExp("^[0-9]+$")) ? false : true);
+        }
+        return true; // everything else is NOT a number
     };
 
     return VIEW;

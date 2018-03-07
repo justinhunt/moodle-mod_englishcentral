@@ -234,8 +234,9 @@
     display:        inline-block;
     margin:                  0em;
     margin-left:           1.6em;
-    margin-top:            1.4em;
+    margin-top:            2.4em;
     padding:                 0em;
+    position:           relative;
     vertical-align:          top;
 }
 
@@ -249,6 +250,23 @@
                 0 2px 10px 0 rgba(0,0,0,0.12);
 }
 
+#page-mod-englishcentral-view .videoicon .videohelp {
+    background:          #f8f8f8;
+    border-radius:           6px;
+    border:       2px solid #ccc;
+    display:                none;
+    font-size:           smaller;
+    left:                  -20px;
+    padding:             4px 8px;
+    position:           absolute;
+    top:                   -40px;
+    width:                 120px;
+}
+
+#page-mod-englishcentral-view .videoicon:hover .videohelp {
+    display:               block;
+}
+
 /** styles on VIEW page: search results  */
 
 #page-mod-englishcentral-view .search-box {
@@ -256,8 +274,9 @@
     margin-left:            12px;
 }
 
-#page-mod-englishcentral-view .search-fields {
+#page-mod-englishcentral-view dl.search-fields {
     overflow:               auto;
+    margin:             12px 0px;
 }
 
 #page-mod-englishcentral-view .search-fields dt {
@@ -281,6 +300,56 @@
 #page-mod-englishcentral-view .search-fields dt.visible,
 #page-mod-englishcentral-view .search-fields dd.visible {
     display:              initial;
+}
+
+#page-mod-englishcentral-view .checkboxgroup.level {
+    padding-bottom:          8px;
+}
+
+#page-mod-englishcentral-view .level .checkboxitem {
+    display:         inline-block;
+    margin:               0px 4px;
+}
+
+#page-mod-englishcentral-view .level input {
+    display:                 none;
+}
+
+#page-mod-englishcentral-view .level label {
+    background-color:      transparent;
+    background-position: center center;
+    background-repeat:       no-repeat;
+    background-size:              100%;
+    border-color:                white;
+    border-style:                solid;
+    border-width:                  2px;
+    color:                        #fff;
+    display:              inline-block;
+    padding:                       2px;
+    text-align:                 center;
+    width:                        20px;
+}
+
+#page-mod-englishcentral-view .level-1 label,
+#page-mod-englishcentral-view .level-2 label {
+    background-image: url([[pix:mod_englishcentral|beginner]]);
+}
+
+#page-mod-englishcentral-view .level-3 label,
+#page-mod-englishcentral-view .level-4 label {
+    background-image: url([[pix:mod_englishcentral|intermediate]]);
+}
+
+#page-mod-englishcentral-view .level-5 label,
+#page-mod-englishcentral-view .level-6 label,
+#page-mod-englishcentral-view .level-7 label {
+    background-image: url([[pix:mod_englishcentral|advanced]]);
+}
+
+#page-mod-englishcentral-view .level input:checked + label  {
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.16),
+                0 2px 10px 0 rgba(0,0,0,0.12);
+    border-color:         yellow;
 }
 
 #page-mod-englishcentral-view .search-advanced {
@@ -336,6 +405,7 @@
 }
 
 #page-mod-englishcentral-view .result-item {
+    clear:            left;
     margin:           12px;
     padding:          12px;
     background:    #f8f8f8;
@@ -564,7 +634,7 @@
     text-decoration: underline;
 }
 
-#page-mod-englishcentral-view .duration {
+#page-mod-englishcentral-view .activity-thumbnail .duration {
     background:      #000;
     border-radius:  0.3em;
     bottom:         0.4em;
