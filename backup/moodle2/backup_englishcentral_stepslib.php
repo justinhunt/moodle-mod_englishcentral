@@ -39,8 +39,8 @@ class backup_englishcentral_activity_structure_step extends backup_activity_stru
      */
     protected function define_structure() {
 
-		// we may need the EC partnerid, if we are backing up userinfo
-		static $partnerid = null;
+        // we may need the EC partnerid, if we are backing up userinfo
+        static $partnerid = null;
 
         // cache the $userinfo flag
         $userinfo = $this->get_setting_value('userinfo');
@@ -63,21 +63,21 @@ class backup_englishcentral_activity_structure_step extends backup_activity_stru
         ////////////////////////////////////////////////////////////////////////
 
         if ($userinfo) {
-			$accountids = new backup_nested_element('accountids');
-			$fieldnames = array('id'); // excluded fields
-			$fieldnames = $this->get_fieldnames('englishcentral_accountids', $fieldnames);
-			$fieldnames[] = 'partnerid'; // additional field
-			$accountid = new backup_nested_element('accountid', array('id'), $fieldnames);
+            $accountids = new backup_nested_element('accountids');
+            $fieldnames = array('id'); // excluded fields
+            $fieldnames = $this->get_fieldnames('englishcentral_accountids', $fieldnames);
+            $fieldnames[] = 'partnerid'; // additional field
+            $accountid = new backup_nested_element('accountid', array('id'), $fieldnames);
 
-			$attempts = new backup_nested_element('attempts');
-			$fieldnames = array('id', 'ecid'); // excluded fields
-			$fieldnames = $this->get_fieldnames('englishcentral_attempts', $fieldnames);
-			$attempt = new backup_nested_element('attempt', array('id'), $fieldnames);
+            $attempts = new backup_nested_element('attempts');
+            $fieldnames = array('id', 'ecid'); // excluded fields
+            $fieldnames = $this->get_fieldnames('englishcentral_attempts', $fieldnames);
+            $attempt = new backup_nested_element('attempt', array('id'), $fieldnames);
 
-			$phonemes = new backup_nested_element('phonemes');
-			$fieldnames = array('id', 'ecid'); // excluded fields (keep attemptid)
-			$fieldnames = $this->get_fieldnames('englishcentral_phonemes', $fieldnames);
-			$phoneme = new backup_nested_element('phoneme', array('id'), $fieldnames);
+            $phonemes = new backup_nested_element('phonemes');
+            $fieldnames = array('id', 'ecid'); // excluded fields (keep attemptid)
+            $fieldnames = $this->get_fieldnames('englishcentral_phonemes', $fieldnames);
+            $phoneme = new backup_nested_element('phoneme', array('id'), $fieldnames);
         }
 
         ////////////////////////////////////////////////////////////////////////
@@ -88,14 +88,14 @@ class backup_englishcentral_activity_structure_step extends backup_activity_stru
         $videos->add_child($video);
 
         if ($userinfo) {
-			$activity->add_child($accountids);
-			$accountids->add_child($accountid);
+            $activity->add_child($accountids);
+            $accountids->add_child($accountid);
 
-			$activity->add_child($attempts);
-			$attempts->add_child($attempt);
+            $activity->add_child($attempts);
+            $attempts->add_child($attempt);
 
-			$activity->add_child($phonemes);
-			$phonemes->add_child($phoneme);
+            $activity->add_child($phonemes);
+            $phonemes->add_child($phoneme);
         }
 
         ////////////////////////////////////////////////////////////////////////
@@ -107,33 +107,33 @@ class backup_englishcentral_activity_structure_step extends backup_activity_stru
 
         if ($userinfo) {
 
-        	// get partnerid (first time only)
-			if ($partnerid===null) {
-				$partnerid = get_config('mod_englishcentral', 'partnerid');
-				if ($partnerid && is_numeric($partnerid)) {
-					$partnerid = intval($partnerid);
-				} else {
-					$partnerid = 0;
-				}
-			}
+            // get partnerid (first time only)
+            if ($partnerid===null) {
+                $partnerid = get_config('mod_englishcentral', 'partnerid');
+                if ($partnerid && is_numeric($partnerid)) {
+                    $partnerid = intval($partnerid);
+                } else {
+                    $partnerid = 0;
+                }
+            }
 
-			// accountids (include partnerid in each record)
+            // accountids (include partnerid in each record)
             list($sql, $params) = $this->get_accountids_userids($this->get_setting_value(backup::VAR_ACTIVITYID));
             $sql = "SELECT *, $partnerid AS partnerid ".
                    'FROM {englishcentral_accountids} '.
-            	   "WHERE accountid > 0 AND userid $sql";
+                   "WHERE accountid > 0 AND userid $sql";
             $accountid->set_source_sql($sql, $params);
 
-			// attempts
-			$params = array('ecid' => backup::VAR_PARENTID);
-			$attempt->set_source_table('englishcentral_attempts', $params);
+            // attempts
+            $params = array('ecid' => backup::VAR_PARENTID);
+            $attempt->set_source_table('englishcentral_attempts', $params);
 
-			// phonemes
-			$params = array('ecid' => backup::VAR_PARENTID);
-			$phoneme->set_source_table('englishcentral_phonemes', $params);
-			// Note that a phoneme should probably be a child of an attempt
-			// but we put it as a child of an EC activity for legacy reasons
-			// i.e. that's how things were done in earlier versions of this module
+            // phonemes
+            $params = array('ecid' => backup::VAR_PARENTID);
+            $phoneme->set_source_table('englishcentral_phonemes', $params);
+            // Note that a phoneme should probably be a child of an attempt
+            // but we put it as a child of an EC activity for legacy reasons
+            // i.e. that's how things were done in earlier versions of this module
         }
 
         ////////////////////////////////////////////////////////////////////////
@@ -141,10 +141,10 @@ class backup_englishcentral_activity_structure_step extends backup_activity_stru
         ////////////////////////////////////////////////////////////////////////
 
         if ($userinfo) {
-			$accountid->annotate_ids('user', 'userid');
-			$attempt->annotate_ids('user', 'userid');
-			$phoneme->annotate_ids('user', 'userid');
-		}
+            $accountid->annotate_ids('user', 'userid');
+            $attempt->annotate_ids('user', 'userid');
+            $phoneme->annotate_ids('user', 'userid');
+        }
 
         ////////////////////////////////////////////////////////////////////////
         // file annotations
@@ -184,11 +184,11 @@ class backup_englishcentral_activity_structure_step extends backup_activity_stru
     protected function get_accountids_userids($ecid) {
         global $DB;
 
-		if ($userids = $DB->get_records_menu('englishcentral_attempts', array('ecid' => $ecid), 'id', 'id,userid')) {
-			$userids = array_unique($userids);
-		} else {
-			$userids = array();
-		}
+        if ($userids = $DB->get_records_menu('englishcentral_attempts', array('ecid' => $ecid), 'id', 'id,userid')) {
+            $userids = array_unique($userids);
+        } else {
+            $userids = array();
+        }
 
         // Note: we don't put the ids into $params like this:
         //   return $DB->get_in_or_equal($userids);

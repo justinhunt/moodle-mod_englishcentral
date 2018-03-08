@@ -527,10 +527,10 @@ class activity {
         $fields = 'watchcount,watchcomplete,'.
                   'learncount,learncomplete,'.
                   'speakcount,speakcomplete';
-    	if ($addvideoid) {
-    		$fields = "videoid,$fields";
-    	}
-    	return $fields;
+        if ($addvideoid) {
+            $fields = "videoid,$fields";
+        }
+        return $fields;
     }
 
     public function get_attempts($videoid=0) {

@@ -208,7 +208,7 @@ function xmldb_englishcentral_upgrade($oldversion) {
         $table->add_field('goodcount',   XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
         $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
 
-        $table->add_key('primary',           XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('primary',             XMLDB_KEY_PRIMARY,     array('id'));
         $table->add_index('englphs_ecid',      XMLDB_INDEX_NOTUNIQUE, array('ecid'));
         $table->add_index('englphs_attemptid', XMLDB_INDEX_NOTUNIQUE, array('attemptid'));
         $table->add_index('englphs_userid',    XMLDB_INDEX_NOTUNIQUE, array('userid'));
@@ -483,8 +483,8 @@ function xmldb_englishcentral_upgrade($oldversion) {
         //    AND ev.id IS NULL;
         if ($orphans = $DB->get_records_sql("SELECT $select FROM $from WHERE $where", $params)) {
             $fields = array('watchcount' => 'watchlineids',
-            				'learncount' => 'learnwordids',
-            				'speakcount' => 'speaklineids');
+                            'learncount' => 'learnwordids',
+                            'speakcount' => 'speaklineids');
             foreach ($orphans as $orphan) {
                 // merge all attempts by this user at this video
                 // try to locate a valid $ecid while we're at it
@@ -497,17 +497,17 @@ function xmldb_englishcentral_upgrade($oldversion) {
                 foreach ($attempts as $attempt) {
                     if ($record===null) {
                         $record = clone($attempt);
-						foreach ($fields as $field) {
-							$record->$field = array();
-						}
+                        foreach ($fields as $field) {
+                            $record->$field = array();
+                        }
                     } else {
                         // remove this $attempt
                         $DB->delete_records($table, array('id' => $attempt->id));
                     }
-					// transfer attempt details
-					foreach ($fields as $field) {
-						$record->$field += array_fill_keys(explode(',', $attempt->$field), 1);
-					}
+                    // transfer attempt details
+                    foreach ($fields as $field) {
+                        $record->$field += array_fill_keys(explode(',', $attempt->$field), 1);
+                    }
                     if ($ecid==0) {
                         $ecid = ($attempt->ecid==$orphan->ecid ? 0 : $attempt->ecid);
                     }

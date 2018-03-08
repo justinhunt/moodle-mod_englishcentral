@@ -165,11 +165,11 @@ class auth {
     public function get_authorization() {
         if ($this->authorization===null) {
             if ($sdk_token = $this->get_sdk_token()) {
-				$consumersecret = \mod_englishcentral\jwt\JWT::urlsafeB64Decode($this->encryptedsecret);
-				$payload = \mod_englishcentral\jwt\JWT::decode($sdk_token, $consumersecret, array('HS256'));
-				$payload = array('accessToken' => $payload->accessToken,
-								 'consumerKey' => $this->consumerkey);
-				$this->authorization = 'JWT '.\mod_englishcentral\jwt\JWT::encode($payload, $consumersecret);
+                $consumersecret = \mod_englishcentral\jwt\JWT::urlsafeB64Decode($this->encryptedsecret);
+                $payload = \mod_englishcentral\jwt\JWT::decode($sdk_token, $consumersecret, array('HS256'));
+                $payload = array('accessToken' => $payload->accessToken,
+                                 'consumerKey' => $this->consumerkey);
+                $this->authorization = 'JWT '.\mod_englishcentral\jwt\JWT::encode($payload, $consumersecret);
             }
         }
         return $this->authorization;
@@ -231,10 +231,10 @@ class auth {
 
     public function doCurl($url, $header, $json_decode=false, $post=null, $fields=null) {
 
-		// NOTE: we could also use the Moodle API (lib/filelib.php)
-		// download_file_content($url, $headers=null, $postdata=null, $fullresponse=false,
-		//                       $timeout=300, $connecttimeout=20, $skipcertverify=false,
-		//                       $tofile=NULL, $calctimeout=false)
+        // NOTE: we could also use the Moodle API (lib/filelib.php)
+        // download_file_content($url, $headers=null, $postdata=null, $fullresponse=false,
+        //                       $timeout=300, $connecttimeout=20, $skipcertverify=false,
+        //                       $tofile=NULL, $calctimeout=false)
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL,             $url);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION,  true);
@@ -293,13 +293,13 @@ class auth {
         return substr(current_language(), 0, 2);
     }
 
-	public function get_fetch_url() {
-		return $this->get_url('bridge', 'rest/content/dialog');
-	}
+    public function get_fetch_url() {
+        return $this->get_url('bridge', 'rest/content/dialog');
+    }
 
-	public function get_search_url() {
-		return $this->get_url('bridge', 'rest/content/dialog/search/fulltext');
-	}
+    public function get_search_url() {
+        return $this->get_url('bridge', 'rest/content/dialog/search/fulltext');
+    }
 
     public function get_url($subdomain, $endpoint, $fields=array()) {
         $url = "https://$subdomain.$this->domain/$endpoint";

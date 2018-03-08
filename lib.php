@@ -52,9 +52,9 @@ function englishcentral_supports($feature) {
     switch ($feature) {
         case FEATURE_MOD_INTRO:         return true;
         case FEATURE_SHOW_DESCRIPTION:  return true;
-		case FEATURE_GRADE_HAS_GRADE:   return true;
-		case FEATURE_COMPLETION_TRACKS_VIEWS: return true;
-		case FEATURE_GRADE_OUTCOMES:    return true;
+        case FEATURE_GRADE_HAS_GRADE:   return true;
+        case FEATURE_COMPLETION_TRACKS_VIEWS: return true;
+        case FEATURE_GRADE_OUTCOMES:    return true;
         case FEATURE_BACKUP_MOODLE2:    return true;
         default:                        return null;
     }
@@ -168,9 +168,9 @@ function englishcentral_delete_instance($id) {
  */
 function englishcentral_grade_item_update($englishcentral, $grades=null) {
     global $CFG;
-	require_once($CFG->dirroot.'/lib/gradelib.php');
+    require_once($CFG->dirroot.'/lib/gradelib.php');
 
-	$params = array('itemname' => $englishcentral->name);
+    $params = array('itemname' => $englishcentral->name);
     if (array_key_exists('cmidnumber', $englishcentral)) {
         $params['idnumber'] = $englishcentral->cmidnumber;
     }
@@ -226,11 +226,11 @@ function englishcentral_grade_item_update($englishcentral, $grades=null) {
         }
     }
 
-	if (is_object($englishcentral->course)) {
-		$courseid = $englishcentral->course->id;
-	} else {
-		$courseid = $englishcentral->course;
-	}
+    if (is_object($englishcentral->course)) {
+        $courseid = $englishcentral->course->id;
+    } else {
+        $courseid = $englishcentral->course;
+    }
 
     return grade_update('mod/englishcentral', $courseid, 'mod', 'englishcentral', $englishcentral->id, 0, $grades, $params);
 }
@@ -248,16 +248,16 @@ function englishcentral_update_grades($englishcentral, $userid=0, $nullifnone=tr
     require_once($CFG->dirroot.'/lib/gradelib.php');
 
     if (empty($englishcentral->grade)) {
-		$grades = null;
+        $grades = null;
     } else if ($grades = englishcentral_get_user_grades($englishcentral, $userid)) {
-    	// do nothing
+        // do nothing
     } else if ($userid && $nullifnone) {
-		$grades = (object)array('userid' => $userid, 'rawgrade' => null);
+        $grades = (object)array('userid' => $userid, 'rawgrade' => null);
     } else {
-		$grades = null;
+        $grades = null;
     }
 
-	englishcentral_grade_item_update($englishcentral, $grades);
+    englishcentral_grade_item_update($englishcentral, $grades);
 }
 
 /**
@@ -272,38 +272,38 @@ function englishcentral_update_grades($englishcentral, $userid=0, $nullifnone=tr
 function englishcentral_get_user_grades($englishcentral, $userid=0) {
     global $DB;
 
-	$goal = 0;
+    $goal = 0;
 
-	if ($englishcentral->watchgoal) {
-		$goal += intval($englishcentral->watchgoal);
-	}
-	if ($englishcentral->learngoal) {
-		$goal += intval($englishcentral->learngoal);
-	}
-	if ($englishcentral->speakgoal) {
-		$goal += intval($englishcentral->speakgoal);
-	}
+    if ($englishcentral->watchgoal) {
+        $goal += intval($englishcentral->watchgoal);
+    }
+    if ($englishcentral->learngoal) {
+        $goal += intval($englishcentral->learngoal);
+    }
+    if ($englishcentral->speakgoal) {
+        $goal += intval($englishcentral->speakgoal);
+    }
 
-	if ($goal) {
-		$select = 'SUM(watchcomplete) + SUM(learncount) + SUM(speakcount)';
-		$select = "ROUND(100 * ($select) / ?, 0)";
-		// Note: MSSQL always requires precision for ROUND function.
-	} else {
-		// If no goals have been setup, all grades will be set to zero.
-		$select = '?';
-	}
+    if ($goal) {
+        $select = 'SUM(watchcomplete) + SUM(learncount) + SUM(speakcount)';
+        $select = "ROUND(100 * ($select) / ?, 0)";
+        // Note: MSSQL always requires precision for ROUND function.
+    } else {
+        // If no goals have been setup, all grades will be set to zero.
+        $select = '?';
+    }
 
-	$select = "userid, $select AS rawgrade";
-	$from   = '{englishcentral_attempts}';
-	$where  = 'ecid = ?';
-	$params = array($goal, $englishcentral->id);
+    $select = "userid, $select AS rawgrade";
+    $from   = '{englishcentral_attempts}';
+    $where  = 'ecid = ?';
+    $params = array($goal, $englishcentral->id);
 
-	if ($userid) {
-		$where .= ' AND userid = ?';
-		$params[] = $userid;
-	} else {
-		$where .= ' GROUP BY userid';
-	}
+    if ($userid) {
+        $where .= ' AND userid = ?';
+        $params[] = $userid;
+    } else {
+        $where .= ' GROUP BY userid';
+    }
 
     return $DB->get_records_sql("SELECT $select FROM $from WHERE $where", $params);
 }

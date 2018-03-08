@@ -485,8 +485,8 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         return $output;
     }
 
-	// this method is not used,
-	// nor is the addvideo icon
+    // this method is not used,
+    // nor is the addvideo icon
     protected function show_addvideo_icon() {
         return $this->show_videos_icon('add');
     }
@@ -778,124 +778,124 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         $output = '';
         if ($this->ec->can_manage()) {
 
-			// start settings/form
+            // start settings/form
             $output .= html_writer::start_tag('form', array('class' => 'search-form'));
             $output .= html_writer::start_tag('dl', array('class' => 'search-fields'));
 
-			// text box size
-			$size = '30';
+            // text box size
+            $size = '30';
 
-			$output .= $this->show_search_term('searchterm', $size);
-			$output .= $this->show_search_level('level'); // =difficulty
-			//$output .= $this->show_search_topics('topics', $size);
-			//$output .= $this->show_search_duration('duration');
-			//$output .= $this->show_search_copyright('copyright', $size);
-			$output .= $this->show_search_button('searchbutton');
+            $output .= $this->show_search_term('searchterm', $size);
+            $output .= $this->show_search_level('level'); // =difficulty
+            //$output .= $this->show_search_topics('topics', $size);
+            //$output .= $this->show_search_duration('duration');
+            //$output .= $this->show_search_copyright('copyright', $size);
+            $output .= $this->show_search_button('searchbutton');
 
-			// end settings/form
+            // end settings/form
             $output .= html_writer::end_tag('dl');
             $output .= html_writer::end_tag('form');
 
-			// enclose settings in search-box
+            // enclose settings in search-box
             $output = html_writer::tag('div', $output, array('class' => 'search-box'));
 
-			// append element to display search-results
+            // append element to display search-results
             $output .= html_writer::tag('div', '', array('class' => 'search-results'));
 
-			// enclose search-box and search-results in container
+            // enclose search-box and search-results in container
             $output = html_writer::tag('div', $output, array('id' => 'id_searchcontainer'));
         }
         return $output;
     }
 
     public function show_search_term($name, $size) {
-		$output = '';
-		$params = array('type' => 'text',
-						'name' => $name,
-						'size' => $size,
-						'id' => 'id_'.$name,
-						'placeholder' => $this->ec->get_string('videosearchprompt'));
-		$output .= html_writer::tag('dt', $this->ec->get_string('videosearch'), array('class' => 'visible'));
-		$output .= html_writer::tag('dd', html_writer::empty_tag('input', $params), array('class' => 'visible'));
-		return $output;
+        $output = '';
+        $params = array('type' => 'text',
+                        'name' => $name,
+                        'size' => $size,
+                        'id' => 'id_'.$name,
+                        'placeholder' => $this->ec->get_string('videosearchprompt'));
+        $output .= html_writer::tag('dt', $this->ec->get_string('videosearch'), array('class' => 'visible'));
+        $output .= html_writer::tag('dd', html_writer::empty_tag('input', $params), array('class' => 'visible'));
+        return $output;
     }
 
     public function show_search_topics($name, $size) {
-		$output = '';
-		$params = array('type' => 'text',
-						'name' => $name,
-						'size' => $size,
-						'id' => 'id_'.$name);
-		$output .= html_writer::tag('dt', $this->ec->get_string('topics'));
-		$output .= html_writer::tag('dd', html_writer::empty_tag('input', $params));
-		return $output;
+        $output = '';
+        $params = array('type' => 'text',
+                        'name' => $name,
+                        'size' => $size,
+                        'id' => 'id_'.$name);
+        $output .= html_writer::tag('dt', $this->ec->get_string('topics'));
+        $output .= html_writer::tag('dd', html_writer::empty_tag('input', $params));
+        return $output;
     }
 
     public function show_search_level($name) {
-    	$output = '';
-		$output .= html_writer::tag('dt', $this->ec->get_string($name));
-		$output .= html_writer::start_tag('dd');
-		$output .= html_writer::start_tag('div', array('class' => "checkboxgroup $name"));
-		for ($i=1; $i<=7; $i++) {
-			$output .= html_writer::start_tag('div', array('class' => "checkboxitem $name-$i"));
-			$id = 'id_'.$name.'_'.$i;
-			$params = array('type'  => 'checkbox',
-							'name'  => $name.'[]',
-							'value' => $i,
-							'id'    => $id);
-			$output .= html_writer::empty_tag('input', $params);
-			$output .= html_writer::tag('label', $i, array('for' => $id));
-			$output .= html_writer::end_tag('div');
-		}
-		$output .= html_writer::end_tag('div');
-		$output .= html_writer::end_tag('dd');
-		return $output;
+        $output = '';
+        $output .= html_writer::tag('dt', $this->ec->get_string($name));
+        $output .= html_writer::start_tag('dd');
+        $output .= html_writer::start_tag('div', array('class' => "checkboxgroup $name"));
+        for ($i=1; $i<=7; $i++) {
+            $output .= html_writer::start_tag('div', array('class' => "checkboxitem $name-$i"));
+            $id = 'id_'.$name.'_'.$i;
+            $params = array('type'  => 'checkbox',
+                            'name'  => $name.'[]',
+                            'value' => $i,
+                            'id'    => $id);
+            $output .= html_writer::empty_tag('input', $params);
+            $output .= html_writer::tag('label', $i, array('for' => $id));
+            $output .= html_writer::end_tag('div');
+        }
+        $output .= html_writer::end_tag('div');
+        $output .= html_writer::end_tag('dd');
+        return $output;
     }
 
     public function show_search_duration($name) {
-    	$output = '';
-		$output .= html_writer::tag('dt', get_string('duration', 'search'));
-		$output .= html_writer::start_tag('dd');
-		$output .= html_writer::start_tag('div', array('class' => "checkboxgroup $name"));
-		for ($i=1; $i<=3; $i++) {
-			$output .= html_writer::start_tag('div', array('class' => "checkboxitem $name-$i"));
-			$id = 'id_'.$name.'_'.$i;
-			$params = array('type'  => 'checkbox',
-							'name'  => $name.'[]',
-							'value' => $i,
-							'id'    => $id);
-			$output .= html_writer::empty_tag('input', $params);
-			$output .= html_writer::tag('label', $this->ec->get_string("duration$i"), array('for' => $id));
-			$output .= html_writer::end_tag('div');
-		}
-		$output .= html_writer::end_tag('div');
-		$output .= html_writer::end_tag('dd');
-		return $output;
+        $output = '';
+        $output .= html_writer::tag('dt', get_string('duration', 'search'));
+        $output .= html_writer::start_tag('dd');
+        $output .= html_writer::start_tag('div', array('class' => "checkboxgroup $name"));
+        for ($i=1; $i<=3; $i++) {
+            $output .= html_writer::start_tag('div', array('class' => "checkboxitem $name-$i"));
+            $id = 'id_'.$name.'_'.$i;
+            $params = array('type'  => 'checkbox',
+                            'name'  => $name.'[]',
+                            'value' => $i,
+                            'id'    => $id);
+            $output .= html_writer::empty_tag('input', $params);
+            $output .= html_writer::tag('label', $this->ec->get_string("duration$i"), array('for' => $id));
+            $output .= html_writer::end_tag('div');
+        }
+        $output .= html_writer::end_tag('div');
+        $output .= html_writer::end_tag('dd');
+        return $output;
     }
 
-	public function show_search_copyright($name, $size) {
-		$output = '';
-		$params = array('type' => 'text',
-						'name' => $name,
-						'size' => $size,
-						'id' => 'id_'.$name);
-		$output .= html_writer::tag('dt', $this->ec->get_string($name));
-		$output .= html_writer::tag('dd', html_writer::empty_tag('input', $params));
-		return $output;
-	}
+    public function show_search_copyright($name, $size) {
+        $output = '';
+        $params = array('type' => 'text',
+                        'name' => $name,
+                        'size' => $size,
+                        'id' => 'id_'.$name);
+        $output .= html_writer::tag('dt', $this->ec->get_string($name));
+        $output .= html_writer::tag('dd', html_writer::empty_tag('input', $params));
+        return $output;
+    }
 
-	public function show_search_button($name) {
-		$output = '';
-		$output .= html_writer::start_tag('dd', array('class' => 'visible'));
-		$params = array('type' => 'submit',
-						'name' => $name,
-						'id' => 'id_'.$name,
-						'value' => get_string('search'));
-		$output .= html_writer::empty_tag('input', $params);
-		$output .= html_writer::tag('a', get_string('showadvanced', 'form'), array('class' => 'search-advanced'));
-		$output .= html_writer::end_tag('dd');
-		return $output;
-	}
+    public function show_search_button($name) {
+        $output = '';
+        $output .= html_writer::start_tag('dd', array('class' => 'visible'));
+        $params = array('type' => 'submit',
+                        'name' => $name,
+                        'id' => 'id_'.$name,
+                        'value' => get_string('search'));
+        $output .= html_writer::empty_tag('input', $params);
+        $output .= html_writer::tag('a', get_string('showadvanced', 'form'), array('class' => 'search-advanced'));
+        $output .= html_writer::end_tag('dd');
+        return $output;
+    }
 
     /**
      * create a container for the EC player

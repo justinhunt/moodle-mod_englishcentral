@@ -74,7 +74,7 @@ switch ($action) {
             $data = (object)$data;
             $attempts = $ec->get_attempts($data->dialogID);
             if ($video = reset($attempts)) {
-				echo $renderer->show_video_status($video);
+                echo $renderer->show_video_status($video);
             }
         }
         break;

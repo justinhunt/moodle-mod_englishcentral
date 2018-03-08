@@ -90,7 +90,7 @@ class restore_englishcentral_activity_structure_step extends restore_activity_st
         $this->apply_activity_instance($newid);
     }
 
-	protected function process_englishcentral_videos($data) {
+    protected function process_englishcentral_videos($data) {
         global $DB;
 
         // convert $data to object
@@ -111,11 +111,11 @@ class restore_englishcentral_activity_structure_step extends restore_activity_st
         $this->set_mapping('englishcentral_videos', $oldid, $newid, false);
     }
 
-	protected function process_englishcentral_accountids($data) {
+    protected function process_englishcentral_accountids($data) {
 
-	    // we should only restore the accountids if the backup 
-	    // and restore sites have the same partnerID
-	    static $partnerid = null;
+        // we should only restore the accountids if the backup 
+        // and restore sites have the same partnerID
+        static $partnerid = null;
 
         // fetch $partnerid of restore site (first time only)
         if ($partnerid===null) {
@@ -151,9 +151,9 @@ class restore_englishcentral_activity_structure_step extends restore_activity_st
                 return false; // could not add new record - shouldn't happen !!
             }
         }
-	}
+    }
 
-	protected function process_englishcentral_attempts($data) {
+    protected function process_englishcentral_attempts($data) {
         global $DB;
 
         // convert $data to object
@@ -173,8 +173,8 @@ class restore_englishcentral_activity_structure_step extends restore_activity_st
         // store mapping from $oldid to $newid
         $this->set_mapping('englishcentral_attempts', $oldid, $newid, false);
     }
-	
-	protected function process_englishcentral_phonemes($data) {
+    
+    protected function process_englishcentral_phonemes($data) {
         global $DB;
 
         // convert $data to object
@@ -185,7 +185,7 @@ class restore_englishcentral_activity_structure_step extends restore_activity_st
 
         // fix fields (e.g. convert fields names from OLD to NEW)
         $data->ecid = $this->get_new_parentid('englishcentral');
-		$data->attemptid = $this->get_mappingid('englishcentral_attempt', $data->attemptid);
+        $data->attemptid = $this->get_mappingid('englishcentral_attempt', $data->attemptid);
 
         // add new record
         if (! $newid = $DB->insert_record('englishcentral_phonemes', $data)) {
@@ -195,7 +195,7 @@ class restore_englishcentral_activity_structure_step extends restore_activity_st
         // store mapping from $oldid to $newid
         $this->set_mapping('englishcentral_phonemes', $oldid, $newid);
     }
-	
+    
     protected function after_execute() {
         // Add englishcentral related files, no need to match by itemname (just internally handled context)
         $this->add_related_files('mod_englishcentral', 'intro', null);

@@ -45,7 +45,7 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configtext("$plugin/$name", $label, $explain, $default, PARAM_TEXT));
 
     $name = 'consumersecret';
-	$label = get_string($name, $plugin);
+    $label = get_string($name, $plugin);
     $explain = get_string($name.'explain', $plugin, $link);
     $default = get_string($name.'default', $plugin);
     $settings->add(new admin_setting_configtext("$plugin/$name", $label, $explain, $default, PARAM_TEXT));
