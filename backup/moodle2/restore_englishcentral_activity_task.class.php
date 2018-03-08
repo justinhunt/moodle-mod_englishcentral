@@ -42,7 +42,6 @@ class restore_englishcentral_activity_task extends restore_activity_task {
      * Define (add) particular steps this activity can have
      */
     protected function define_my_steps() {
-        // Choice only has one structure step
         $this->add_step(new restore_englishcentral_activity_structure_step('englishcentral_structure', 'englishcentral.xml'));
     }
 
@@ -51,12 +50,9 @@ class restore_englishcentral_activity_task extends restore_activity_task {
      * processed by the link decoder
      */
     static public function define_decode_contents() {
-        $contents = array();
-
-        $contents[] = new restore_decode_content('englishcentral',
-                          array('intro'), 'englishcentral');
-
-        return $contents;
+        return array(
+            new restore_decode_content('englishcentral', array('intro'), 'englishcentral')
+        );
     }
 
     /**
@@ -64,13 +60,10 @@ class restore_englishcentral_activity_task extends restore_activity_task {
      * to the activity to be executed by the link decoder
      */
     static public function define_decode_rules() {
-        $rules = array();
-
-        $rules[] = new restore_decode_rule('ENGLISHCENTRALVIEWBYID', '/mod/englishcentral/view.php?id=$1', 'course_module');
-        $rules[] = new restore_decode_rule('ENGLISHCENTRALINDEX', '/mod/englishcentral/index.php?id=$1', 'course');
-
-        return $rules;
-
+        return array (
+            new restore_decode_rule('ENGLISHCENTRALVIEWBYID', '/mod/englishcentral/view.php?id=$1', 'course_module'),
+            new restore_decode_rule('ENGLISHCENTRALINDEX', '/mod/englishcentral/index.php?id=$1', 'course')
+        );
     }
 
     /**
@@ -80,13 +73,11 @@ class restore_englishcentral_activity_task extends restore_activity_task {
      * of {@link restore_log_rule} objects
      */
     static public function define_restore_log_rules() {
-        $rules = array();
-
-        $rules[] = new restore_log_rule('englishcentral', 'add', 'view.php?id={course_module}', '{englishcentral}');
-        $rules[] = new restore_log_rule('englishcentral', 'update', 'view.php?id={course_module}', '{englishcentral}');
-        $rules[] = new restore_log_rule('englishcentral', 'view', 'view.php?id={course_module}', '{englishcentral}');
-
-        return $rules;
+        return array(
+            new restore_log_rule('englishcentral', 'add', 'view.php?id={course_module}', '{englishcentral}'),
+            new restore_log_rule('englishcentral', 'update', 'view.php?id={course_module}', '{englishcentral}'),
+            new restore_log_rule('englishcentral', 'view', 'view.php?id={course_module}', '{englishcentral}')
+        );
     }
 
     /**
@@ -100,10 +91,8 @@ class restore_englishcentral_activity_task extends restore_activity_task {
      * activity level. All them are rules not linked to any module instance (cmid = 0)
      */
     static public function define_restore_log_rules_for_course() {
-        $rules = array();
-
-        $rules[] = new restore_log_rule('englishcentral', 'view all', 'index.php?id={course}', null);
-
-        return $rules;
+        return array(
+            new restore_log_rule('englishcentral', 'view all', 'index.php?id={course}', null)
+        );
     }
 }

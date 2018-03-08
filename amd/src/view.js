@@ -724,9 +724,9 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
     VIEW.isNotNum = function(n) {
         switch (typeof(n)) {
             case "number": return false;
-            case "string": return (n.match(new RegExp("^[0-9]+$")) ? false : true);
+            case "string": return (! n.match(new RegExp("^[0-9]+$")));
+            default:       return true; // everything else is NOT a number
         }
-        return true; // everything else is NOT a number
     };
 
     return VIEW;
