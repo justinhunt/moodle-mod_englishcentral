@@ -42,8 +42,9 @@ class backup_englishcentral_activity_structure_step extends backup_activity_stru
         // we may need the EC partnerid, if we are backing up userinfo
         static $partnerid = null;
 
-        // cache the $userinfo flag
+        // cache the $userinfo flag and $siteadmin flag
         $userinfo = $this->get_setting_value('userinfo');
+        $siteadmin = has_capability('moodle/site:config', context_system::instance());
 
         ////////////////////////////////////////////////////////////////////////
         // XML nodes declaration - non-user data
@@ -109,7 +110,9 @@ class backup_englishcentral_activity_structure_step extends backup_activity_stru
 
             // get partnerid (first time only)
             if ($partnerid===null) {
-                $partnerid = get_config('mod_englishcentral', 'partnerid');
+                if ($siteadmin) {
+                    $partnerid = get_config('mod_englishcentral', 'partnerid');
+                }
                 if ($partnerid && is_numeric($partnerid)) {
                     $partnerid = intval($partnerid);
                 } else {
@@ -118,11 +121,13 @@ class backup_englishcentral_activity_structure_step extends backup_activity_stru
             }
 
             // accountids (include partnerid in each record)
-            list($sql, $params) = $this->get_accountids_userids($this->get_setting_value(backup::VAR_ACTIVITYID));
-            $sql = "SELECT *, $partnerid AS partnerid ".
-                   'FROM {englishcentral_accountids} '.
-                   "WHERE accountid > 0 AND userid $sql";
-            $accountid->set_source_sql($sql, $params);
+            if ($partnerid) {
+                list($sql, $params) = $this->get_accountids_userids($this->get_setting_value(backup::VAR_ACTIVITYID));
+                $sql = "SELECT *, $partnerid AS partnerid ".
+                       'FROM {englishcentral_accountids} '.
+                       "WHERE accountid > 0 AND userid $sql";
+                $accountid->set_source_sql($sql, $params);
+            }
 
             // attempts
             $params = array('ecid' => backup::VAR_PARENTID);

@@ -32,6 +32,9 @@ class restore_englishcentral_activity_structure_step extends restore_activity_st
 
     protected function define_structure() {
 
+        // fetch the $userinfo flag
+        $userinfo = $this->get_setting_value('userinfo');
+
         $paths = array();
 
         ////////////////////////////////////////////////////////////////////////
@@ -48,7 +51,7 @@ class restore_englishcentral_activity_structure_step extends restore_activity_st
         // XML interesting paths - user data
         ////////////////////////////////////////////////////////////////////////
 
-        if ($this->get_setting_value('userinfo')) {
+        if ($userinfo) {
             $path = '/activity/englishcentral/accountids/accountid';
             $paths[] = new restore_path_element('englishcentral_accountids', $path);
 
@@ -112,6 +115,7 @@ class restore_englishcentral_activity_structure_step extends restore_activity_st
     }
 
     protected function process_englishcentral_accountids($data) {
+        global $DB;
 
         // we should only restore the accountids if the backup 
         // and restore sites have the same partnerID
@@ -119,12 +123,19 @@ class restore_englishcentral_activity_structure_step extends restore_activity_st
 
         // fetch $partnerid of restore site (first time only)
         if ($partnerid===null) {
-            $partnerid = get_config('mod_englishcentral', 'partnerid');
+            // only site admin has access to the partnerid on the Moodle site
+            if (has_capability('moodle/site:config', context_system::instance())) {
+                $partnerid = get_config('mod_englishcentral', 'partnerid');
+            }
             if ($partnerid && is_numeric($partnerid)) {
                 $partnerid = intval($partnerid);
             } else {
                 $partnerid = 0;
             }
+        }
+
+        if ($partnerid==0) {
+            return false; // current user does have access to partnerID
         }
 
         // convert $data to object

@@ -98,6 +98,11 @@ class auth {
                 $this->uniqueid = ''.$DB->insert_record($table, $record);
                 // we need the quotes, '', to convert the id to a string
             }
+            // NOTE: it does not seem to be necessary to create a permanent
+            // EC accountid. Everything works without doing so.
+            // However, in the future, we may offer Moodle students the
+            // chance to assume control of their anonymous EC accountid
+            $this->get_accountid();
         }
         return $this->uniqueid;
     }
