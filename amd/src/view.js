@@ -294,7 +294,8 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
             "learnMode": true,
             "speakMode": true,
             "quizMode": true,
-            //"goLiveMode": true,
+            // "newWindow": (is_iOS ? true : false)
+            // "goLiveMode": true,
             "width": 640
         };
 

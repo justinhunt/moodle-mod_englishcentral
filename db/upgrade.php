@@ -411,7 +411,7 @@ function xmldb_englishcentral_upgrade($oldversion) {
     if ($oldversion < $newversion) {
         require_once $CFG->dirroot.'/mod/englishcentral/lib.php';
 
-        // update/create grades for all hotpots
+        // update/create grades for all EC activities
 
         // set up sql strings
         $strupdating = get_string('updatinggrades', 'mod_englishcentral');
@@ -537,6 +537,35 @@ function xmldb_englishcentral_upgrade($oldversion) {
             }
         }
 
+        upgrade_mod_savepoint(true, "$newversion", 'englishcentral');
+    }
+
+    $newversion = 2018041161;
+    if ($oldversion < $newversion) {
+        // remove duplicate attempts with same userid + videoid
+        // NOTE: the old version of this module kept ALL attempts
+        // and used the "status" field to denote old (status=0)
+        // or latest (status=1) attempts
+        $table = 'englishcentral_attempts';
+        $select = $DB->sql_concat('userid', "'_'", 'videoid');
+        $select = "$select AS ids, COUNT(*) AS countrecords";
+        $from   = '{'.$table.'}';
+        $group  = 'userid, videoid'; 
+        $having = 'countrecords > ?';
+        $params = array(1);
+        $records = "SELECT $select FROM $from GROUP BY $group HAVING $having";
+        if ($records = $DB->get_records_sql($records, $params)) {
+            foreach ($records as $record) {
+                list($userid, $videoid) = explode('_', $record->ids);
+                $params = array('userid' => $userid,
+                                'videoid' => $videoid);
+                $ids = $DB->get_records($table, $params, 'id DESC');
+                $ids = array_keys($ids);
+                array_shift($ids); // i.e. keep newest record
+                list($select, $where) = $DB->get_in_or_equal($ids);
+                $DB->delete_records_select($table, "id $select", $params);
+            }
+        }
         upgrade_mod_savepoint(true, "$newversion", 'englishcentral');
     }
 

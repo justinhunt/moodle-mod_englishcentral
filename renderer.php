@@ -139,6 +139,8 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
     public function show_support_form() {
         global $DB, $USER;
 
+        $standardform = false;
+
         $fullname = fullname($USER);
         $subject = $this->ec->get_string('supportsubject');
         $description = $this->ec->get_string('supportmessage');
@@ -156,21 +158,39 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         if ($institution) {
             $output .= html_writer::tag('tr', html_writer::tag('th', get_string('institution')).html_writer::tag('td', $institution));
         }
-        $output .= html_writer::tag('tr', html_writer::tag('th', get_string('subject', 'forum')).html_writer::tag('td', $subject));
-        $output .= html_writer::tag('tr', html_writer::tag('th', get_string('description')).html_writer::tag('td', $description));
+        if ($standardform) {
+            $output .= html_writer::tag('tr', html_writer::tag('th', get_string('subject', 'forum')).html_writer::tag('td', $subject));
+            $output .= html_writer::tag('tr', html_writer::tag('th', get_string('description')).html_writer::tag('td', $description));
+        }
+
+        if ($standardform) {
+            $url = 'https://www.englishcentral.com/support/contact-school-support';
+            $params = array('name' => $fullname,
+                            'email' => $USER->email,
+                            'phone' => $USER->phone1,
+                            'subject' => $subject,
+                            'institution' => $institution,
+                            'description' => $description,
+                            'type' => 'access_code_coupon');
+        } else {
+            $formid = '11252';
+            $postid = '11207';
+            $tag = 'wpcf7-f'.$formid.'-p'.$postid.'-o1';
+            $url = 'http://corporate.englishcentral.com/moodle-signup-gordon/#'.$tag;
+            $params = array('_wpcf7' => $formid,
+                            '_wpcf7_unit_tag' => $tag,
+                            '_wpcf7_locale' => 'en_US',
+                            '_wpcf7_version' => '5.0.1',
+                            '_wpcf7_container_post' => $postid,
+                            'your-name' => $fullname,
+                            'your-email' => $USER->email,
+                            'school-name' => $institution,
+                            'number-student' => 100,
+                            'contact-number' => (empty($USER->phone1) ? '0123456789': $USER->phone1));
+        }
+        $button = $this->single_button(new moodle_url($url, $params), get_string('continue'));
+        $output .= html_writer::tag('tr', html_writer::tag('th', '').html_writer::tag('td', $button));
         $output .= html_writer::end_tag('table');
-
-        $url = 'https://www.englishcentral.com/support/contact-school-support';
-        $label = get_string('continue');
-        $params = array('name' => $fullname,
-                        'email' => $USER->email,
-                        'phone' => $USER->phone1,
-                        'subject' => $subject,
-                        'institution' => $institution,
-                        'description' => $description,
-                        'type' => 'access_code_coupon');
-        $output .= $this->single_button(new moodle_url($url, $params), $label);
-
         return $output;
     }
 
