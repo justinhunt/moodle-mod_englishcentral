@@ -540,7 +540,7 @@ function xmldb_englishcentral_upgrade($oldversion) {
         upgrade_mod_savepoint(true, "$newversion", 'englishcentral');
     }
 
-    $newversion = 2018041161;
+    $newversion = 2018041763;
     if ($oldversion < $newversion) {
         // remove duplicate attempts with same userid + videoid
         // NOTE: the old version of this module kept ALL attempts
@@ -562,7 +562,7 @@ function xmldb_englishcentral_upgrade($oldversion) {
                 $ids = $DB->get_records($table, $params, 'id DESC');
                 $ids = array_keys($ids);
                 array_shift($ids); // i.e. keep newest record
-                list($select, $where) = $DB->get_in_or_equal($ids);
+                list($select, $params) = $DB->get_in_or_equal($ids);
                 $DB->delete_records_select($table, "id $select", $params);
             }
         }
