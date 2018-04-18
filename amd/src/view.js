@@ -107,9 +107,9 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
             "cursor": "move",
             "items": ".activity-thumbnail",
             "update": function(evt, ui) {
-                var href = ui.item.find(".activity-title").prop("href");
+                var url = ui.item.find(".activity-title").data("url");
                 var data = {
-                    "dialogId": VIEW.get_videoid_from_href(href),
+                    "dialogId": VIEW.get_videoid_from_url(url),
                     "sortorder": ui.item.index() + 1
                 };
                 $.ajax({
@@ -139,9 +139,9 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
             "drop": function(evt, ui) {
                 if (confirm(VIEW.str.confirmremovevideo)) {
                     ui.draggable.remove();
-                    var href = ui.draggable.find(".activity-title").prop("href");
+                    var url = ui.draggable.find(".activity-title").data("url");
                     var data = {
-                        "dialogId": VIEW.get_videoid_from_href(href)
+                        "dialogId": VIEW.get_videoid_from_url(url)
                     };
                     $.ajax({
                         "url": VIEW.viewajaxurl,
@@ -210,7 +210,7 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
                     break;
 
                 case "DialogLineWatch":
-                    var thumbframe = ".thumb-frame[href$=" + data.dialogID + "]";
+                    var thumbframe = ".thumb-frame[data-url$=" + data.dialogID + "]";
                     if ($(thumbframe + " .watch-status").length) {
                         return false;
                     }
@@ -270,7 +270,7 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
                     },
                     "dataType": "html",
                     "success": function(html) {
-                        var thumb = $(".thumb-frame[href$=" + data.dialogID + "]");
+                        var thumb = $(".thumb-frame[data-url$=" + data.dialogID + "]");
                         thumb.find(".watch-status, .learn-status, .speak-status").remove();
                         thumb.find(".play-icon").after(html);
                     }
@@ -279,7 +279,7 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         });
 
         var dialogId = VIEW.get_videoid(elm);
-        var completed = ".thumb-frame[href$=" +dialogId + "] .watch-status.completed";
+        var completed = ".thumb-frame[data-url$=" +dialogId + "] .watch-status.completed";
 
         // set player options
         var options = {
@@ -413,8 +413,10 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         // add bottom paging-bar
         html += pagingbar;
 
-        // number of items found
+        // populate search results
         $(".search-results").html(html);
+
+        // add number of items found
         STR.get_string("xitemsfound", VIEW.plugin, VIEW.formatnumber(info.count)).done(function(s) {
             $(".search-results").prepend(HTML.tag("div", s, {"class": "itemsfound"}));
         });
@@ -435,20 +437,12 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
             $(id).click(function(evt) {
                 VIEW.add_video(evt, this);
             });
+            $(id).siblings(".result-thumb").click(function() {
+                VIEW.open_window($(this).data("url"));
+            });
             $(id).siblings(".result-info").find(".icon").click(function() {
-                var id = $(this).closest(".result-info")
-                    .siblings(".result-add")
-                    .prop("id");
-                id = VIEW.get_videoid_from_id(id);
-                var w = Math.min(640, window.innerWidth);
-                var h = Math.min(480, window.innerHeight);
-                var x = window.outerWidth / 2 + window.screenX - (w / 2);
-                var y = window.outerHeight / 2 + window.screenY - (h / 2);
-                var options = "width=" + w + ",height=" + h + ",top=" + y + ",left=" + x;
-                var win = window.open(VIEW.videoinfourl + "/" + id, VIEW.targetwindow, options);
-                if (win.focus) {
-                    win.focus();
-                }
+                var id = $(this).closest(".result-info").siblings(".result-add").prop("id");
+                VIEW.open_window(VIEW.videoinfourl + "/" + VIEW.get_videoid_from_id(id));
             });
         }
 
@@ -468,17 +462,30 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
     };
 
     VIEW.get_videoid = function(elm) {
-        return VIEW.get_videoid_from_href($(elm).prop("href"));
+        var url = $(elm).data("url");
+        return VIEW.get_videoid_from_url(url);
     };
 
-    VIEW.get_videoid_from_href = function(href) {
+    VIEW.get_videoid_from_url = function(url) {
         // sample href: https://www.qaenglishcentral.com/video/28864
-        return href.replace(new RegExp("^.*/"), "");
+        return url.replace(new RegExp("^.*/"), "");
     };
 
     VIEW.get_videoid_from_id = function(id) {
         // sample id: id_add_video_27323
         return id.replace(new RegExp("^.*_"), "");
+    };
+
+    VIEW.open_window = function(url) {
+        var w = Math.min(640, window.innerWidth);
+        var h = Math.min(480, window.innerHeight);
+        var x = window.outerWidth / 2 + window.screenX - (w / 2);
+        var y = window.outerHeight / 2 + window.screenY - (h / 2);
+        var options = "width=" + w + ",height=" + h + ",top=" + y + ",left=" + x;
+        var win = window.open(url, VIEW.targetwindow, options);
+        if (win.focus) {
+            win.focus();
+        }
     };
 
     VIEW.pagingbar = function(count) {
@@ -617,9 +624,8 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
     VIEW.format_thumb = function(r) {
         var duration = r.value.duration.replace(new RegExp("^00:"), "");
         var html = "";
-        html += HTML.starttag("a", {
+        html += HTML.starttag("div", {
             "class": "thumb-frame",
-            "href": r.value.dialogURL,
             "style": "background-image: url('" + r.value.thumbnailURL + "')"
         });
         html += HTML.tag("div", r.value.difficulty, {
@@ -628,9 +634,10 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         html += HTML.tag("div", duration, {
             "class": "result-duration"
         });
-        html += HTML.endtag("a");
+        html += HTML.endtag("div");
         return HTML.tag("div", html, {
-            "class": "result-thumb"
+            "class": "result-thumb",
+            "data-url": r.value.dialogURL,
         });
     };
 

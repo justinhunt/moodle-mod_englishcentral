@@ -529,7 +529,7 @@
     font-size:      1.0em;
     line-height:        1;
     margin:     12px 12px;
-    width:          100px;
+    width:          160px;
     position:    relative;
 }
 
@@ -545,8 +545,8 @@
     border-radius:     4px;
     cursor:        pointer;
     display:         block;
-    height:           66px;
-    width:           100px;
+    height:          100px;
+    width:           160px;
 }
 
 #page-mod-englishcentral-view .activity-thumbnail .play-icon {
@@ -601,8 +601,6 @@
     line-height:      1.4;
     max-height:     2.4em;
     overflow:      hidden;
-    white-space:   normal;
-
     text-overflow: ellipsis;
     white-space:   nowrap;
 }
@@ -691,24 +689,40 @@
     color: transparent;
 }
 
+/** CSS for iPhone 6/7/8 **/
+@media screen and (min-width: 370px) {
+    #page-mod-englishcentral-view .activity-thumbnail {
+        width:  90px;
+    }
+    #page-mod-englishcentral-view .thumb-frame {
+        width:  90px;
+        height: 66px;
+    }
+}
+
+/** CSS for iPhone 6/7/8 Plus, iPad **/
+@media screen and (min-width: 400px) {
+    #page-mod-englishcentral-view .activity-thumbnail {
+        width: 110px;
+    }
+    #page-mod-englishcentral-view .thumb-frame {
+        width: 110px;
+        height: 66px;
+    }
+}
+
 @media screen and (min-width: 840px) {
     #page-mod-englishcentral-view .activity-thumbnail {
         width: 150px;
     }
     #page-mod-englishcentral-view .thumb-frame {
-        background-position: center center;
-        background-repeat: no-repeat;
-        background-size: cover;
-        border-radius:     4px;
-        cursor:        pointer;
-        display:         block;
-        height:           75px;
-        width:           150px;
+        height: 75px;
+        width: 150px;
     }
     #page-mod-englishcentral-view .activity-thumbnail .watch-status,
     #page-mod-englishcentral-view .activity-thumbnail .learn-status,
     #page-mod-englishcentral-view .activity-thumbnail .speak-status {
-        right:      -2px;
+        right:  -2px;
     }
 }
 
