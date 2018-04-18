@@ -692,32 +692,38 @@
 /** CSS for iPhone 6/7/8 **/
 @media screen and (min-width: 370px) {
     #page-mod-englishcentral-view .activity-thumbnail {
-        width:  90px;
+        width:     90px;
     }
     #page-mod-englishcentral-view .thumb-frame {
-        width:  90px;
-        height: 66px;
+        width:     90px;
+        height:    66px;
+    }
+    #page-mod-englishcentral-view .difficulty-label {
+        display:   none;
     }
 }
 
 /** CSS for iPhone 6/7/8 Plus, iPad **/
 @media screen and (min-width: 400px) {
     #page-mod-englishcentral-view .activity-thumbnail {
-        width: 110px;
+        width:    110px;
     }
     #page-mod-englishcentral-view .thumb-frame {
-        width: 110px;
-        height: 66px;
+        width:    110px;
+        height:    66px;
     }
 }
 
 @media screen and (min-width: 840px) {
     #page-mod-englishcentral-view .activity-thumbnail {
-        width: 150px;
+        width:    150px;
     }
     #page-mod-englishcentral-view .thumb-frame {
-        height: 75px;
-        width: 150px;
+        height:    75px;
+        width:    150px;
+    }
+    #page-mod-englishcentral-view .difficulty-label {
+        display: inline;
     }
     #page-mod-englishcentral-view .activity-thumbnail .watch-status,
     #page-mod-englishcentral-view .activity-thumbnail .learn-status,
