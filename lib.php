@@ -53,6 +53,7 @@ function englishcentral_supports($feature) {
         case FEATURE_MOD_INTRO:         return true;
         case FEATURE_SHOW_DESCRIPTION:  return true;
         case FEATURE_GRADE_HAS_GRADE:   return true;
+        case FEATURE_COMPLETION_HAS_RULES: return true;
         case FEATURE_COMPLETION_TRACKS_VIEWS: return true;
         case FEATURE_GRADE_OUTCOMES:    return true;
         case FEATURE_BACKUP_MOODLE2:    return true;
@@ -687,6 +688,15 @@ function englishcentral_get_completion_state($course, $cm, $userid, $type) {
                     if ($state = ($this->ec->watchgoal + $this->ec->learngoal + $this->ec->speakgoal)) {
                         $state = (($progress->watch + $progress->learn + $progress->speak) / $state);
                         $state = (round(100 * $state, 0) >= 100);
+                    } else {
+                        $state = false; // unusual - no goals have been set up !!
+                    }
+                    if ($goals = ($this->ec->watchgoal + $this->ec->learngoal + $this->ec->speakgoal)) {
+						$state = 0;
+						$state += max(0, min($progress->watch, $ec->watchgoal));
+						$state += max(0, min($progress->learn, $ec->learngoal));
+						$state += max(0, min($progress->speak, $ec->speakgoal));
+                        $state = (round(100 * $state / $goals, 0) >= 100);
                     } else {
                         $state = false; // unusual - no goals have been set up !!
                     }

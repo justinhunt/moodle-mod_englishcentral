@@ -282,11 +282,13 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         $progress = $this->ec->get_progress();
 
         // calculate total percent
-        if ($percent = ($this->ec->watchgoal + $this->ec->learngoal + $this->ec->speakgoal)) {
-            $percent = (($progress->watch + $progress->learn + $progress->speak) / $percent);
+        $percent = 0;
+        $percent += max(0, min($progress->watch, $this->ec->watchgoal));
+        $percent += max(0, min($progress->learn, $this->ec->learngoal));
+        $percent += max(0, min($progress->speak, $this->ec->speakgoal));
+        if ($percent) {
+            $percent /= ($this->ec->watchgoal + $this->ec->learngoal + $this->ec->speakgoal);
             $percent = round(100 * $percent, 0);
-        } else {
-            $percent = 0; // unusual - no goals have been set up yet !!
         }
 
         $output = '';

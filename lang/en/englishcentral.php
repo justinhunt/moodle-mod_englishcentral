@@ -30,11 +30,11 @@
 defined('MOODLE_INTERNAL') || die();
 
 // required plugin strings
-$string['modulename'] = 'English Central';
-$string['modulenameplural'] = 'English Central Activities';
-$string['modulename_help'] = 'Use the English Central Activity module to allow your students to use Englosh Central from within Moodle Courses';
-$string['pluginadministration'] = 'English Central Module Administration';
-$string['pluginname'] = 'English Central Activity';
+$string['modulename'] = 'EnglishCentral';
+$string['modulenameplural'] = 'EnglishCentral Activities';
+$string['modulename_help'] = 'Use the EnglishCentral module to allow your students to use EnglishCentral videos within Moodle Courses';
+$string['pluginadministration'] = 'EnglishCentral Administration';
+$string['pluginname'] = 'EnglishCentral';
 
 // capabilities
 $string['englishcentral:addinstance'] = 'Add a new English Central activity';
