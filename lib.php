@@ -129,6 +129,11 @@ function englishcentral_process_formdata(stdClass $data, mod_englishcentral_mod_
         englishcentral_update_grades($data, 0, false);
     }
 
+    if (class_exists('\core_completion\api')) {
+        $completionexpected = (empty($data->completionexpected) ? null : $data->completionexpected);
+        \core_completion\api::update_completion_date_event($data->coursemodule, 'englishcentral', $data->id, $completionexpected);
+    }
+
     return $data->id;
 }
 
@@ -618,4 +623,111 @@ function englishcentral_extend_navigation(navigation_node $navref, stdclass $cou
  * @param navigation_node $englishcentralnode {@link navigation_node}
  */
 function englishcentral_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $englishcentralnode=null) {
+}
+
+/**
+ * Obtains the automatic completion state for this englishcentral
+ * based on the conditions in englishcentral settings.
+ *
+ * @param  object  $course record from "course" table
+ * @param  object  $cm     record from "course_modules" table
+ * @param  integer $userid id from "user" table
+ * @param  bool    $type   of comparison (or/and; used as return value if there are no conditions)
+ * @return mixed   TRUE if completed, FALSE if not, or $type if no conditions are set
+ */
+function englishcentral_get_completion_state($course, $cm, $userid, $type) {
+    global $DB;
+
+    // set default return $state
+    $state = $type;
+
+    // get the englishcentral record
+    if ($ec = $DB->get_record('englishcentral', array('id' => $cm->instance))) {
+        $ec = \mod_englishcentral\activity::create($instance, $cm, $course);
+
+        // get grade, if necessary
+        $grade = false;
+        if ($ec->completionmingrade > 0.0 || $ec->completionpass) {
+            require_once($CFG->dirroot.'/lib/gradelib.php');
+            $params = array('courseid'     => $course->id,
+                            'itemtype'     => 'mod',
+                            'itemmodule'   => 'englishcentral',
+                            'iteminstance' => $cm->instance);
+            if ($grade_item = grade_item::fetch($params)) {
+                $grades = grade_grade::fetch_users_grades($grade_item, array($userid), false);
+                if (isset($grades[$userid])) {
+                    $grade = $grades[$userid];
+                }
+                unset($grades);
+            }
+            unset($grade_item);
+        }
+
+        // the EnglishCentral completion conditions
+        $conditions = array('completionmingrade',
+                            'completionpass',
+                            'completiongoals');
+
+        foreach ($conditions as $condition) {
+            // decimal (e.g. completionmingrade) fields are returned by MySQL as a string
+            // and since empty('0.0') returns false (!!), so we must use numeric comparison
+            if (empty($ec->$condition) || floatval($ec->$condition)==0.0) {
+                continue;
+            }
+            switch ($condition) {
+                case 'completionmingrade':
+                    $state = ($grade && $grade->finalgrade >= $ec->completionmingrade);
+                    break;
+                case 'completionpass':
+                    $state = ($grade && $grade->is_passed());
+                    break;
+                case 'completiongoals':
+                    // if goals have been set up, calculate total percent
+                    $progress = $this->ec->get_progress();
+                    if ($state = ($this->ec->watchgoal + $this->ec->learngoal + $this->ec->speakgoal)) {
+                        $state = (($progress->watch + $progress->learn + $progress->speak) / $state);
+                        $state = (round(100 * $state, 0) >= 100);
+                    } else {
+                        $state = false; // unusual - no goals have been set up !!
+                    }
+                    break;
+
+            }
+            // finish early if possible
+            if ($type==COMPLETION_AND && $state==false) {
+                return false;
+            }
+            if ($type==COMPLETION_OR && $state) {
+                return true;
+            }
+        }
+    }
+
+    return $state;
+}
+
+/**
+ * This function receives a calendar event and returns the action associated with it, or null if there is none.
+ *
+ * This is used by block_myoverview in order to display the event appropriately. If null is returned then the event
+ * is not displayed on the block.
+ *
+ * @param calendar_event $event
+ * @param \core_calendar\action_factory $factory
+ * @return \core_calendar\local\event\entities\action_interface|null
+ */
+function mod_englishcentral_core_calendar_provide_event_action(calendar_event $event,
+                                                            \core_calendar\action_factory $factory) {
+    $cm = get_fast_modinfo($event->courseid)->instances['englishcentral'][$event->instance];
+
+    $completion = new \completion_info($cm->get_course());
+
+    $completiondata = $completion->get_data($cm, false);
+
+    if ($completiondata->completionstate != COMPLETION_INCOMPLETE) {
+        return null;
+    }
+
+    $url = new \moodle_url('/mod/englishcentral/view.php', ['id' => $cm->id]);
+    return $factory->create_instance(get_string('view'), $url, 1, true);
 }

@@ -569,6 +569,30 @@ function xmldb_englishcentral_upgrade($oldversion) {
         upgrade_mod_savepoint(true, "$newversion", 'englishcentral');
     }
 
+    $newversion = 2018042565;
+    if ($oldversion < $newversion) {
+        // add custom completion fields for TaskChain module
+        $table = new xmldb_table('englishcentral');
+        $fields = array(
+            new xmldb_field('completionmingrade',  XMLDB_TYPE_FLOAT, '6,2', null, XMLDB_NOTNULL, null, 0.00),
+            new xmldb_field('completionpass', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, 0),
+            new xmldb_field('completiongoals', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, 0)
+        );
+        $previous = '';
+        foreach ($fields as $field) {
+            if ($previous) {
+                $field->setPrevious($previous);
+            }
+            if ($dbman->field_exists($table, $field)) {
+                $dbman->change_field_type($table, $field);
+            } else {
+                $dbman->add_field($table, $field);
+            }
+            $previous = $field->getName();
+        }
+        upgrade_mod_savepoint(true, "$newversion", 'englishcentral');
+    }
+
     return true;
 }
 

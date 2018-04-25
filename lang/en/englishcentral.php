@@ -42,6 +42,11 @@ $string['englishcentral:view'] = 'View English Central activity';
 $string['englishcentral:manage'] = 'Manage an English Central activity';
 $string['englishcentral:manageattempts'] = 'Manage attempts at an English Central activity';
 
+// completion
+$string['completiongoals'] = 'Require study goals';
+$string['completionmingrade'] = 'Require minimum grade';
+$string['completionpass'] = 'Require passing grade';
+
 // activity settings
 $string['consumerkey'] = 'Consumer Key';
 $string['consumerkeydefault'] = 'YOUR CONSUMER KEY';
