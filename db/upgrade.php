@@ -542,13 +542,18 @@ function xmldb_englishcentral_upgrade($oldversion) {
 
     $newversion = 2018041763;
     if ($oldversion < $newversion) {
+
+    	// remove all attempts where userid OR videoid IS NULL
+    	$DB->delete_records_select('englishcentral_attempts', 'userid IS NULL OR userid = ?', array(0));
+    	$DB->delete_records_select('englishcentral_attempts', 'videoid IS NULL OR videoid = ?', array(0));
+
         // remove duplicate attempts with same userid + videoid
         // NOTE: the old version of this module kept ALL attempts
         // and used the "status" field to denote old (status=0)
         // or latest (status=1) attempts
         $table = 'englishcentral_attempts';
         $select = $DB->sql_concat('userid', "'_'", 'videoid');
-        $select = "$select AS ids, COUNT(*) AS countrecords";
+        $select = "MIN(id) AS minid, $select AS ids, COUNT(*) AS countrecords";
         $from   = '{'.$table.'}';
         $group  = 'userid, videoid'; 
         $having = 'countrecords > ?';

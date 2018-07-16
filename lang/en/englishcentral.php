@@ -38,9 +38,10 @@ $string['pluginname'] = 'EnglishCentral';
 
 // capabilities
 $string['englishcentral:addinstance'] = 'Add a new English Central activity';
-$string['englishcentral:view'] = 'View English Central activity';
 $string['englishcentral:manage'] = 'Manage an English Central activity';
 $string['englishcentral:manageattempts'] = 'Manage attempts at an English Central activity';
+$string['englishcentral:submit'] = 'Submit data to an English Central activity';
+$string['englishcentral:view'] = 'View an English Central activity';
 
 // completion
 $string['completiongoals'] = 'Require study goals';
