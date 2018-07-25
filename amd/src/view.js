@@ -30,6 +30,8 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
     // cache full plugin name
     VIEW.plugin = "mod_englishcentral";
 
+    VIEW.playerversion = "";
+
     // define DOM element names
     VIEW.playercontainer   = "id_playercontainer";
     VIEW.progresscontainer = "id_progresscontainer";
@@ -93,6 +95,21 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         // cache the opts passed from the server
         for (var i in opts) {
             VIEW[i] = opts[i];
+        }
+
+        for (var i in document.scripts) {
+            var src = document.scripts[i].src;
+            if (src.indexOf("englishcentral.com") < 0) {
+                continue;
+            }
+            if (src.indexOf("dist/sdk/sdk.js") > 0) {
+                VIEW.playerversion = "JSDK3";
+                break;
+            }
+            if (src.indexOf("partnersdk/sdk.js") > 0) {
+                VIEW.playerversion = "JSDK2";
+                break;
+            }
         }
 
         $(".activity-title, .thumb-frame").click(function(evt) {
@@ -195,68 +212,48 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         $("#" + VIEW.playercontainer).html("");
 
         // set handler for end of mode
-        var setHandler = 'setOnModeEndHandler';
+        var setHandler = "";
         if (window.ECSDK.setOnProgressEventHandler) {
-            setHandler = 'setOnProgressEventHandler';
+            setHandler = "setOnProgressEventHandler";
+        } else if (window.ECSDK.setOnModeEndHandler) {
+            setHandler = "setOnModeEndHandler";
         }
-        window.ECSDK[setHandler](function(data) {
+        if (setHandler) {
+            window.ECSDK[setHandler](function(data) {
 
-            // we are only interested in the events
-            // that affect the grade of this EC activity
-            switch (data.eventType) {
-                case "CompleteActivityWatch":
-                case "LearnedWord":
-                case "DialogLineSpeak":
-                    break;
+                // we are only interested in the events
+                // that affect the grade of this EC activity
+                switch (data.eventType) {
+                    case "CompleteActivityWatch":
+                    case "LearnedWord":
+                    case "DialogLineSpeak":
+                        break;
 
-                case "DialogLineWatch":
-                    var thumbframe = ".thumb-frame[data-url$=" + data.dialogID + "]";
-                    if ($(thumbframe + " .watch-status").length) {
+                    case "DialogLineWatch":
+                        var thumbframe = ".thumb-frame[data-url$=" + data.dialogID + "]";
+                        if ($(thumbframe + " .watch-status").length) {
+                            return false;
+                        }
+                        break;
+
+                    case "CompleteActivityLearn":
+                    case "CompleteActivitySpeak":
                         return false;
-                    }
-                    break;
 
-                case "CompleteActivityLearn":
-                case "CompleteActivitySpeak":
-                    return false;
+                    case "StartActivityWatch":
+                    case "StartActivityLearn":
+                    case "TypedWord":
+                    case "StudiedWord":
+                    case "StartActivitySpeak":
+                        return false;
 
-                case "StartActivityWatch":
-                case "StartActivityLearn":
-                case "TypedWord":
-                case "StudiedWord":
-                case "StartActivitySpeak":
-                    return false;
-
-                default:
-                    // oops - an unexpected value
-                    break;
-            }
-
-            // AJAX call to send the data.dialogID to the Moodle server
-            // and receive the html for the updated Progress pie-charts
-            $.ajax({
-                "url": VIEW.viewajaxurl,
-                "data": {
-                    "id": VIEW.cmid,
-                    "data": {
-                        "dialogID": data.dialogID,
-                        "sdktoken": VIEW.sdktoken
-                    },
-                    "action": "storeresults",
-                    "sesskey": VIEW.moodlesesskey
-                },
-                "dataType": "html",
-                "success": function(html) {
-                    if (html.indexOf("englishcentral_progress") < 0) {
-                        // probably an error message
-                        $(".englishcentral_progress").html(html);
-                    } else {
-                        $(".englishcentral_progress").replaceWith(html);
-                    }
+                    default:
+                        // oops - an unexpected value
+                        break;
                 }
-            }).then(function(){
+
                 // AJAX call to send the data.dialogID to the Moodle server
-                // and receive the html for the updated status of this video
+                // and receive the html for the updated Progress pie-charts
                 $.ajax({
                     "url": VIEW.viewajaxurl,
                     "data": {
@@ -265,48 +262,76 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
                             "dialogID": data.dialogID,
                             "sdktoken": VIEW.sdktoken
                         },
-                        "action": "showstatus",
+                        "action": "storeresults",
                         "sesskey": VIEW.moodlesesskey
                     },
                     "dataType": "html",
                     "success": function(html) {
-                        var thumb = $(".thumb-frame[data-url$=" + data.dialogID + "]");
-                        thumb.find(".watch-status, .learn-status, .speak-status").remove();
-                        thumb.find(".play-icon").after(html);
+                        if (html.indexOf("englishcentral_progress") < 0) {
+                            // probably an error message
+                            $(".englishcentral_progress").html(html);
+                        } else {
+                            $(".englishcentral_progress").replaceWith(html);
+                        }
                     }
+                }).then(function(){
+                    // AJAX call to send the data.dialogID to the Moodle server
+                    // and receive the html for the updated status of this video
+                    $.ajax({
+                        "url": VIEW.viewajaxurl,
+                        "data": {
+                            "id": VIEW.cmid,
+                            "data": {
+                                "dialogID": data.dialogID,
+                                "sdktoken": VIEW.sdktoken
+                            },
+                            "action": "showstatus",
+                            "sesskey": VIEW.moodlesesskey
+                        },
+                        "dataType": "html",
+                        "success": function(html) {
+                            var thumb = $(".thumb-frame[data-url$=" + data.dialogID + "]");
+                            thumb.find(".watch-status, .learn-status, .speak-status").remove();
+                            thumb.find(".play-icon").after(html);
+                        }
+                    });
                 });
             });
-        });
+        }
 
         var dialogId = VIEW.get_videoid(elm);
         var completed = ".thumb-frame[data-url$=" +dialogId + "] .watch-status.completed";
 
-        // set player options
+        // set player options (JSDK2 and JSDK3)
         var options = {
             "partnerKey": VIEW.consumerkey,
             "partnerSdkToken": VIEW.sdktoken,
-            "siteLanguage": VIEW.sitelanguage,
             "container": VIEW.playercontainer,
-            "autoStart": $(completed).length,
-            "activityPanelEnabled": false,
-            "interstitialsEnabled": true,
-            "dialogId": dialogId,
-            "learnMode": true,
-            "speakMode": true,
-            "quizMode": true,
-            // "newWindow": (is_iOS ? true : false)
-            // "goLiveMode": true,
-            "width": 640
+            "dialogId": dialogId
         };
 
-        // set player width and height, in order to see WLS controls
-        var w = window.outerWidth - $("#" + VIEW.playercontainer).offset().left - 24;
-        if (options.width > w) {
-            options.width = w;
-        } else if (w > 1000) {
-            options.width = 1000;
-        } else {
-            options.height = 655;
+        if (VIEW.playerversion=="JSDK2") {
+            // JSDK2 (until Sept 2018)
+            options.siteLanguage = VIEW.sitelanguage;
+            options.autoStart = $(completed).length;
+            options.activityPanelEnabled = false;
+            options.interstitialsEnabled = true;
+            options.learnMode = true;
+            options.speakMode = true;
+            options.quizMode = true;
+            // options.newWindow = (is_iOS ? true : false);
+            // options.goLiveMode = true;
+            options.width = 640;
+
+            // set player width and height, in order to see WLS controls
+            var w = window.outerWidth - $("#" + VIEW.playercontainer).offset().left - 24;
+            if (options.width > w) {
+                options.width = w;
+            } else if (w > 1000) {
+                options.width = 1000;
+            } else {
+                options.height = 655;
+            }
         }
 
         // initialize EC player

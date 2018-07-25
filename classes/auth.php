@@ -313,7 +313,17 @@ class auth {
     }
 
     public function get_js_url() {
-        $url = $this->get_url('www', 'partnersdk/sdk.js');
+        switch (get_config('mod_englishcentral', 'playerversion')) {
+            case 'JSDK2':
+                // JSDK2 (available until Sept 2018)
+                $url = $this->get_url('www', 'partnersdk/sdk.js');
+                break;
+            case 'JSDK3':
+            default:
+                // JSDK3 (available from July 2017)
+                $url = $this->get_url('www', 'dist/sdk/sdk.js');
+                break;
+        }
         return new \moodle_url($url);
     }
 
