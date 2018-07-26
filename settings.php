@@ -32,13 +32,6 @@ if ($ADMIN->fulltree) {
     $link = html_writer::tag('a', 'EnglishCentral.com', array('href' => $link, 'target' => 'EC'));
     // whenever possible, the support URL will display a form in the browser's preferred language
 
-    $name = 'playerversion';
-    $label = get_string($name, $plugin);
-    $explain = get_string($name.'explain', $plugin, $link);
-    $default = get_string($name.'default', $plugin);
-    $options = array('JSDK2' => 'JSDK2', 'JSDK3' => 'JSDK3');
-    $settings->add(new admin_setting_configselect("$plugin/$name", $label, $explain, $default, $options));
-
     $name = 'partnerid';
     $label = get_string($name, $plugin);
     $explain = get_string($name.'explain', $plugin, $link);
@@ -68,4 +61,11 @@ if ($ADMIN->fulltree) {
     $explain = get_string($name.'explain', $plugin);
     $default = (strpos($CFG->wwwroot, '/localhost/')===false ? 0 : 1);
     $settings->add(new admin_setting_configcheckbox("$plugin/$name", $label, $explain, $default));
+
+    $name = 'playerversion';
+    $label = get_string($name, $plugin);
+    $explain = get_string($name.'explain', $plugin, $link);
+    $default = get_string($name.'default', $plugin);
+    $options = array('JSDK2' => 'JSDK2', 'JSDK3' => 'JSDK3');
+    $settings->add(new admin_setting_configselect("$plugin/$name", $label, $explain, $default, $options));
 }
