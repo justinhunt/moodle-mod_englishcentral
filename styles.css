@@ -269,6 +269,10 @@
 
 /** styles on VIEW page: search results  */
 
+#page-mod-englishcentral-view #id_searchterm {
+    width:                  100%;
+}
+
 #page-mod-englishcentral-view .search-box {
     margin-top:             12px;
     margin-left:            12px;
@@ -519,6 +523,10 @@
     font-style:     normal;
 }
 
+#page-mod-englishcentral-view #id_playercontainer {
+	max-width: 1000px;
+}
+
 /**
  * EC thumbnail styles
  * (https:gist.github.com/jetlogs/fc728be500ba72714e8a4dafdc4bf21e)
@@ -667,14 +675,17 @@
 
 #page-mod-englishcentral-view .beginner .difficulty-level {
     border-color: #379733;
+    color:        #379733;
 }
 
 #page-mod-englishcentral-view .intermediate .difficulty-level {
     border-color: #006395;
+    color:        #006395;
 }
 
 #page-mod-englishcentral-view .advanced .difficulty-level {
     border-color: #000000;
+    color:        #000000;
 }
 
 #page-mod-englishcentral-view .difficulty-label:not(:empty):before {

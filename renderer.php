@@ -474,28 +474,28 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
                         'style' => 'background-image: url("'.$video->thumbnailURL.'");');
         $output .= html_writer::start_tag('span', $params);
 
-		$params = array('class' => 'play-icon');
+        $params = array('class' => 'play-icon');
         $output .= html_writer::tag('span', '', $params);
 
         $output .= $this->show_video_status($video);
 
         $output .= html_writer::end_tag('span');
 
-		$params = array('class' => 'difficulty-level-indicator '.$difficulty);
+        $params = array('class' => 'difficulty-level-indicator '.$difficulty);
         $output .= html_writer::start_tag('span', $params);
 
-		$label = $this->ec->get_string('levelx', $video->difficulty);
-		$params = array('class' => 'difficulty-level text-center difficulty-icon');
+        $label = $this->ec->get_string('levelx', $video->difficulty);
+        $params = array('class' => 'difficulty-level text-center'); //  difficulty-icon
         $output .= html_writer::tag('span', $label, $params);
 
-		$label = $this->ec->get_string($difficulty);
-		$params = array('class' => 'difficulty-label');
+        $label = $this->ec->get_string($difficulty);
+        $params = array('class' => 'difficulty-label');
         $output .= html_writer::tag('span', $label, $params);
 
         $output .= html_writer::end_tag('span'); // difficulty-level-indicator
 
-		$label = $video->duration;
-		$params = array('class' => 'duration');
+        $label = $video->duration;
+        $params = array('class' => 'duration');
         $output .= html_writer::tag('span', $label, $params);
 
         $output .= html_writer::end_tag('div'); // activity-outline
@@ -816,7 +816,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
             $output .= html_writer::start_tag('dl', array('class' => 'search-fields'));
 
             // text box size
-            $size = '30';
+            $size = ''; // 30
 
             $output .= $this->show_search_term('searchterm', $size);
             $output .= $this->show_search_level('level'); // =difficulty
@@ -841,24 +841,28 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         return $output;
     }
 
-    public function show_search_term($name, $size) {
+    public function show_search_term($name, $size='') {
         $output = '';
         $params = array('type' => 'text',
                         'name' => $name,
-                        'size' => $size,
                         'id' => 'id_'.$name,
                         'placeholder' => $this->ec->get_string('videosearchprompt'));
+        if ($size) {
+        	$params['size'] = $size;
+        }
         $output .= html_writer::tag('dt', $this->ec->get_string('videosearch'), array('class' => 'visible'));
         $output .= html_writer::tag('dd', html_writer::empty_tag('input', $params), array('class' => 'visible'));
         return $output;
     }
 
-    public function show_search_topics($name, $size) {
+    public function show_search_topics($name, $size='') {
         $output = '';
         $params = array('type' => 'text',
                         'name' => $name,
-                        'size' => $size,
                         'id' => 'id_'.$name);
+        if ($size) {
+        	$params['size'] = $size;
+        }
         $output .= html_writer::tag('dt', $this->ec->get_string('topics'));
         $output .= html_writer::tag('dd', html_writer::empty_tag('input', $params));
         return $output;

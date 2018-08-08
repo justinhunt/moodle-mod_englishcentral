@@ -221,8 +221,6 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         if (setHandler) {
             window.ECSDK[setHandler](function(data) {
 
-                // we are only interested in the events
-                // that affect the grade of this EC activity
                 switch (data.eventType) {
                     case "CompleteActivityWatch":
                     case "LearnedWord":
@@ -310,7 +308,10 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
             "dialogId": dialogId
         };
 
-        if (VIEW.playerversion=="JSDK2") {
+        if (VIEW.playerversion=="JSDK3") {
+            // JSDK3 (from July 2018)
+            options.lang = VIEW.sitelanguage;
+        } else {
             // JSDK2 (until Sept 2018)
             options.siteLanguage = VIEW.sitelanguage;
             options.autoStart = $(completed).length;
