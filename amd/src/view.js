@@ -182,8 +182,14 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
 
         // override standard form submit action
         $("#" + VIEW.searchcontainer + " .search-form").submit(function(evt){
-            var term = $("#id_searchterm").val();
+
+            // remove player and previous search results
+            VIEW.clear_player_and_searchresults();
+
+            // RegExp to match a list of comma-separated values
             var list = new RegExp("^\s*[0-9]+([, \\t\\r\\n]+[0-9]+)*\s*$");
+
+            var term = $("#id_searchterm").val();
             var level = $("[name='level[]']:checked").map(function() {return this.value;}).get().join(',');
             if (term == "") {
                 $(".search-results").html(VIEW.str.videosearchhelp);
@@ -208,8 +214,8 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
 
     VIEW.play_video = function(evt, elm) {
 
-        // remove previous player
-        $("#" + VIEW.playercontainer).html("");
+        // remove player and previous search results
+        VIEW.clear_player_and_searchresults();
 
         // set handler for end of mode
         var setHandler = "";
@@ -337,6 +343,11 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
 
         // initialize EC player
         window.ECSDK.loadWidget("player", options);
+    };
+
+    VIEW.clear_player_and_searchresults = function() {
+        $("#" + VIEW.playercontainer).html("");
+        $("#" + VIEW.searchcontainer + " .search-results").html("");
     };
 
     VIEW.fetch_videos = function(page, size, term, level) {
@@ -576,7 +587,7 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
             },
             "dataType": "html",
             "success": function(html) {
-                $(html).insertBefore(".removevideo").find("a").click(function(evt) {
+                $(html).insertBefore(".removevideo").find(".thumb-frame").click(function(evt) {
                     VIEW.play_video(evt, this);
                     evt.stopPropagation();
                     evt.preventDefault();
