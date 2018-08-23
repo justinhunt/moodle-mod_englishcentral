@@ -163,13 +163,10 @@
 #page-mod-englishcentral-view .chart .outerring {
     margin-left:      50%;
     height:          100%;
-    border-radius: 0 100% 100% 0 / 50%;
-    /***********************************
-    border-top-left-radius       0% 50%;
-    border-top-right-radius      0% 50%;
-    border-bottom-right-radius 100% 50%;
-    border-bottom-left-radius  100% 50%;
-    ***********************************/
+    border-top-left-radius:       0% 50%;
+    border-top-right-radius:      0% 50%;
+    border-bottom-right-radius: 100% 50%;
+    border-bottom-left-radius:  100% 50%;
     transform-origin: left;
 }
 
