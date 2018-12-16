@@ -16,24 +16,33 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Internal library of functions for module englishcentral
- *
- * All the englishcentral specific functions, needed to implement the module
- * logic, should go here. Never include this file from your lib.php!
- *
  * @package    mod_englishcentral
- * @copyright  2014 Justin Hunt
+ * @copyright  2018 Gordon Bateson
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+/** Include required files */
+require_once('../../config.php');
 
-/**
- * Does something really useful with the passed things
- *
- * @param array $things
- * @return object
- */
-//function englishcentral_do_something_useful(array $things) {
-//    return new stdClass();
-//}
+// get expected input params
+// check we are logged in
+require_login();
+
+// initialize EC activity/auth objects
+$ec = \mod_englishcentral\activity::create();
+$auth = \mod_englishcentral\auth::create($ec);
+
+$PAGE->set_url('/mod/englishcentral/support.php');
+$PAGE->set_context($ec->context);
+$PAGE->set_pagelayout('course');
+
+// check we have suitable capability
+$ec->req('config', 'moodle/site');
+
+// initialize the renderer
+$renderer = $PAGE->get_renderer($ec->plugin);
+$renderer->attach_activity_and_auth($ec, $auth);
+
+echo $renderer->header($ec->get_string('view'));
+echo $renderer->show_support_form();
+echo $renderer->footer();

@@ -31,6 +31,7 @@ require_once($CFG->dirroot.'/mod/englishcentral/lib.php');;
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID
 $ecid = optional_param('ecid', 0, PARAM_INT);  // englishcentral instance ID
+$mode = optional_param('mode', '', PARAM_ALPHA);
 
 if ($id) {
     $cm = get_coursemodule_from_id('englishcentral', $id, 0, false, MUST_EXIST);
@@ -47,82 +48,33 @@ if ($id) {
 require_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 
-// Trigger module viewed event.
-$event = \mod_englishcentral\event\course_module_viewed::create(array(
-   'objectid' => $instance->id,
-   'context' => $context
+// Trigger report viewed event.
+$event = \mod_englishcentral\event\report_viewed::create(array(
+    'context' => $context,
+    'other' => array('ecid' => $instance->id, 'mode' => $mode)
 ));
 $event->add_record_snapshot('course', $course);
 $event->add_record_snapshot('course_modules', $cm);
 $event->add_record_snapshot('englishcentral', $instance);
 $event->trigger();
 
-//if we got this far, we can consider the activity "viewed"
-$completion = new completion_info($course);
-$completion->set_module_viewed($cm);
-
 /// Set up the page header
-$PAGE->set_url('/mod/englishcentral/view.php', array('id' => $cm->id));
+$params = array('id' => $cm->id);
+if ($mode) {
+    $params['mode'] = $mode;
+}
+$PAGE->set_url('/mod/englishcentral/report.php', $params);
 $PAGE->set_context($context);
-$PAGE->set_pagelayout('course');
+$PAGE->set_pagelayout('report');
 
 $ec = \mod_englishcentral\activity::create($instance, $cm, $course, $context);
 $auth = \mod_englishcentral\auth::create($ec);
 
+$PAGE->requires->js_call_amd("$ec->plugin/report", 'init');
+
 $renderer = $PAGE->get_renderer($ec->plugin);
 $renderer->attach_activity_and_auth($ec, $auth);
 
-echo $renderer->header($ec->get_string('view'));
-
-if ($msg = $auth->missing_config()) {
-    echo $renderer->show_missingconfig($msg);
-    die;
-}
-
-if ($msg = $auth->invalid_config()) {
-    echo $renderer->show_invalidconfig($msg);
-    die;
-}
-
-if ($ec->not_available()) {
-    echo $renderer->show_notavailable();
-    die;
-}
-
-echo $renderer->show_intro();
-//echo $renderer->show_dates_available();
-
-// get ECSDK javascript object
-$PAGE->requires->js($auth->get_js_url());
-
-$opts = array('accept1'       => \mod_englishcentral\auth::ACCEPT_V1,
-              'consumerkey'   => $auth->consumerkey,
-              'sdktoken'      => $auth->get_sdk_token(),
-              'authorization' => $auth->get_authorization(),
-              'sitelanguage'  => $auth->get_site_language(),
-              'searchurl'     => $auth->get_search_url(),
-              'fetchurl'      => $auth->get_fetch_url(),
-              'cmid'          => $ec->cm->id,
-              'moodlesesskey' => sesskey(),
-              'viewajaxurl'   => $ec->get_viewajax_url(false),
-              'videoinfourl'  => $ec->get_videoinfo_url(false),
-              'targetwindow'  => 'EC');
-
-$PAGE->requires->js_call_amd("$ec->plugin/view", 'init', array($opts));
-
-// We could preload the string cache - it might speed things up.
-// Otherwise, the strings will be fetched as needed by "core/str".
-//$strings = array();
-//$PAGE->strings_for_js($strings, $ec->plugin);
-
-echo $renderer->show_progress();
-
-if ($ec->viewable) {
-    echo $renderer->show_videos();
-    echo $renderer->show_search();
-    echo $renderer->show_player();
-} else {
-    echo $renderer->show_notviewable($ec);
-}
-
+echo $renderer->header(get_string('report'));
+echo $renderer->show_progress_report();
 echo $renderer->footer();

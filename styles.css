@@ -1,86 +1,893 @@
+/**
+ * CSS for SUPPORT page
+ **/
 
-#mod_englishcentral_playercontainer {
-	text-align: center; 
-	color: #FFF;
-	font-size: 64px;
-    font-style: oblique;
-	/* margin-top: 1em; */
-	background: #ACACAC;
-	width: 640px;
-	height: 415px;
-	line-height: 415px;
-	/* -webkit-transition: height 1s; */
+#page-mod-englishcentral-support .supportconfirm th {
+    text-align: right;
 }
 
-
-
-#mod_englishcentral_resultscontainer {
-	text-align: center; 
-	margin-top: 1em; 
-	background: #A4C63f;
-	width: 640px;
-	height: 415px;
+#page-mod-englishcentral-support .supportconfirm td {
+    text-align: left;
 }
 
-.englishcentral_hidediv {
-	display: none;
-}
-.englishcentral_showdiv {
-	display: block;
+/** styles for goals on EDIT form  */
+
+#page-mod-englishcentral-mod #fgroup_id_watchgoalgroup {
+    background:       #d4edf7;
+    border: 2px solid #23a1da; /* BLUE */
 }
 
-
-.englishcentral_myattempts_headrow{
-	font-weight: bold;
-	text-align: center;
-}
-.englishcentral_myattempts_table{
-	border: 2px;
+#page-mod-englishcentral-mod #fgroup_id_learngoalgroup {
+    background:       #fbe0d0;
+    border: 2px solid #eb6613; /* RED */
 }
 
-.mod_englishcentral_startfinish_button {
-width: 640px; 
-height: 80px; 
-font-size: xx-large;
-background-color: chartreuse;
+#page-mod-englishcentral-mod #fgroup_id_speakgoalgroup {
+    background:       #e9f4d7;
+    border: 2px solid #a4d05c; /* GREEN */
 }
 
-.mod_englishcentral_startfinish_button:hover {
-	background-color: chartreuse;
-}
-.mod_englishcentral_startfinish_button:active {
-	background-color: chartreuse;
-}
-.mod_englishcentral_startfinish_button:focus {
-	background-color: chartreuse;
+#page-mod-englishcentral-mod #fgroup_id_studygoalgroup {
+    background:       #f8f8f8;
+    border: 2px solid    #aaa; /* GREY */
 }
 
-.mod_englishcentral_start_container {
-	width:100%; 
-	/*
-	margin-left: auto; 
-	margin-right: auto; 
-	*/
-	display: block;
-	}
-.mod_englishcentral_bigbutton {font-size: 32px; text-align: center;}
-.mod_englishcentral_container {
-/* text-align: center; */ 
-float: left; 
-padding-right: 20px;
-} 
-.mod_englishcentral_englishcentral_container{margin-left: auto;margin-right: auto; padding-top: 5px}
-
-div.mod_englishcentral_listbuttons {
-	display: block;
-	/*float: left;*/
-}
-.mod_englishcentral_listbuttons input[type="submit"]{
-	width: 400px;
-	/*float: left;*/
+#page-mod-englishcentral-mod .mathsymbol {
+    display:  inline-block;
+    font-size:       2.0em;
+    margin-top:       40px;
+    margin-left:       3px;
+    margin-right:      3px;
 }
 
-div.mod_englishcentral_actionbuttons {
-	display: flex;
-	float: right;
+@media (min-width: 1200px) {
+    #page-mod-englishcentral-mod #id_goals .fcontainer {
+        margin-left:    120px;
+    }
+}
+
+#page-mod-englishcentral-mod #id_goals .fitem_fgroup {
+    border-radius:    4px;
+    display: inline-block;
+    height:          64px;
+    padding:     6px 12px;
+    vertical-align:   top;
+}
+
+#page-mod-englishcentral-mod #id_goals .fitemtitle {
+    float:           none;
+    text-align:      left;
+    width:        initial;
+}
+
+#page-mod-englishcentral-mod #id_goals .fgroup {
+    margin-left:      0px;
+}
+
+/** styles on VIEW page */
+
+#page-mod-englishcentral-view #id_progresscontainer {
+    background:    #fefefe;
+    border-radius:     6px;
+    border: 2px solid #ccc;
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.16),
+                0 2px 10px 0 rgba(0,0,0,0.12);
+    margin:       12px 6px;
+    max-width:       760px;
+    padding:      6px 18px;
+    text-align:     center;
+}
+
+#page-mod-englishcentral-view .timing {
+    display: inline-block;
+    text-align:      left;
+    vertical-align:   top;
+    width:           100%;
+}
+
+#page-mod-englishcentral-view #id_progresscontainer .title {
+    margin:           0px;
+    padding:          6px;
+    font-size:       14px;
+}
+
+#page-mod-englishcentral-view .timing dl {
+    clear:           both;
+    font-size:      0.9em;
+    margin:           0px;
+}
+
+#page-mod-englishcentral-view .timing dt,
+#page-mod-englishcentral-view .timing dd {
+    float:           left;
+    margin:           0px;
+    padding:          0px;
+}
+
+#page-mod-englishcentral-view .timing dt {
+    clear:           left;
+    max-width:       34px;
+    margin-right:     6px;
+}
+
+#page-mod-englishcentral-view .timing dt:after {
+    content:          ":";
+}
+
+#page-mod-englishcentral-view .timing dd {
+    clear:          right;
+    max-width: calc(100% - 60px);
+}
+
+#page-mod-englishcentral-view .titlechart {
+    display: inline-block;
+    padding:      0px 8px;
+    text-align:    center;
+}
+
+#page-mod-englishcentral-view .chart {
+    width:           80px;
+    height:          80px;
+    border-radius:    50%;
+    margin-bottom:    6px;
+    position:    relative;
+}
+
+/*************************
+  WATCH (blue)
+  #d4edf7 light
+  #a9dbef medium
+  #23a1da English Central
+
+  LEARN (red)
+  #fbe0d0 light
+  #f7c1a1 medium
+  #eb6613 English Central
+
+  SPEAK (green)
+  #e9f4d7 light
+  #d3e9af medium
+  #a4d05c English Central
+*************************/
+
+#page-mod-englishcentral-view .chart.total { background: #dddddd; }
+#page-mod-englishcentral-view .chart.watch { background: #a9dbef; }
+#page-mod-englishcentral-view .chart.learn { background: #f7c1a1; }
+#page-mod-englishcentral-view .chart.speak { background: #d3e9af; }
+
+#page-mod-englishcentral-view .chart.total { background-image: linear-gradient(to right, transparent 50%, #aaaaaa 0); }
+#page-mod-englishcentral-view .chart.watch { background-image: linear-gradient(to right, transparent 50%, #23a1da 0); }
+#page-mod-englishcentral-view .chart.learn { background-image: linear-gradient(to right, transparent 50%, #eb6613 0); }
+#page-mod-englishcentral-view .chart.speak { background-image: linear-gradient(to right, transparent 50%, #a4d05c 0); }
+
+#page-mod-englishcentral-view .chart .outerring {
+    margin-left:      50%;
+    height:          100%;
+    border-top-left-radius:       0% 50%;
+    border-top-right-radius:    100% 50%;
+    border-bottom-right-radius: 100% 50%;
+    border-bottom-left-radius:    0% 50%;
+    transform-origin: left;
+}
+
+#page-mod-englishcentral-view .chart.total.under50 .outerring { background-color: #dddddd; }
+#page-mod-englishcentral-view .chart.watch.under50 .outerring { background-color: #a9dbef; }
+#page-mod-englishcentral-view .chart.learn.under50 .outerring { background-color: #f7c1a1; }
+#page-mod-englishcentral-view .chart.speak.under50 .outerring { background-color: #d3e9af; }
+
+#page-mod-englishcentral-view .chart.total.over50 .outerring { background-color: #aaaaaa; }
+#page-mod-englishcentral-view .chart.watch.over50 .outerring { background-color: #23a1da; }
+#page-mod-englishcentral-view .chart.learn.over50 .outerring { background-color: #eb6613; }
+#page-mod-englishcentral-view .chart.speak.over50 .outerring { background-color: #a4d05c; }
+
+#page-mod-englishcentral-view .innertext {
+    background:  white;
+    border-radius: 50%;
+    font-size:    12px;
+    height:        70%;
+    left:          15%;
+    position: absolute;
+    text-align: center;
+    top:           15%;
+    width:         70%;
+}
+
+#page-mod-englishcentral-view .chart.total .innertext { background: #f8f8f8; }
+#page-mod-englishcentral-view .chart.watch .innertext { background: #e9f6fb; }
+#page-mod-englishcentral-view .chart.learn .innertext { background: #fdf0e7; }
+#page-mod-englishcentral-view .chart.speak .innertext { background: #f4f9eb; }
+
+#page-mod-englishcentral-view .line1,
+#page-mod-englishcentral-view .line2 {
+    position: absolute;
+    text-align: center;
+    width:        100%;
+}
+#page-mod-englishcentral-view .line1 { top: 16%; }
+#page-mod-englishcentral-view .line2 { top: 40%; }
+
+@media screen and (min-width: 800px) {
+    #page-mod-englishcentral-view #id_progresscontainer {
+        text-align:   left;
+    }
+    #page-mod-englishcentral-view #id_progresscontainer .title {
+        font-size:    20px;
+    }
+    #page-mod-englishcentral-view .timing {
+        width:       180px;
+    }
+    #page-mod-englishcentral-view .chart {
+        width:       120px;
+        height:      120px;
+    }
+    #page-mod-englishcentral-view .innertext {
+        font-size: initial;
+    }
+    #page-mod-englishcentral-view .line1 { top: 24%; }
+    #page-mod-englishcentral-view .line2 { top: 50%; }
+}
+
+#page-mod-englishcentral-view .videoicon {
+    display:        inline-block;
+    margin:                  0em;
+    margin-left:           1.6em;
+    margin-top:            2.4em;
+    padding:                 0em;
+    position:           relative;
+    vertical-align:          top;
+}
+
+#page-mod-englishcentral-view .videoicon img {
+    height:                 74px;
+    width:                  74px;
+}
+
+#page-mod-englishcentral-view .videoicon:hover {
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.16),
+                0 2px 10px 0 rgba(0,0,0,0.12);
+}
+
+#page-mod-englishcentral-view .videoicon .videohelp {
+    background:          #f8f8f8;
+    border-radius:           6px;
+    border:       2px solid #ccc;
+    display:                none;
+    font-size:           smaller;
+    left:                  -20px;
+    padding:             4px 8px;
+    position:           absolute;
+    top:                   -40px;
+    width:                 120px;
+}
+
+#page-mod-englishcentral-view .videoicon:hover .videohelp {
+    display:               block;
+}
+
+/** styles on VIEW page: search results  */
+
+#page-mod-englishcentral-view #id_searchterm {
+    width:                  100%;
+}
+
+#page-mod-englishcentral-view .search-box {
+    margin-top:             12px;
+    margin-left:            12px;
+}
+
+#page-mod-englishcentral-view dl.search-fields {
+    overflow:               auto;
+    margin:             12px 0px;
+}
+
+#page-mod-englishcentral-view .search-fields dt {
+    clear:                  left;
+    display:                none;
+    float:                  left;
+    text-align:            right;
+    width:                 100px;
+}
+
+#page-mod-englishcentral-view .search-fields dt:after {
+    content:                 ":";
+}
+
+#page-mod-englishcentral-view .search-fields dd {
+    float:                  left;
+    clear:                 right;
+    display:                none;
+}
+
+#page-mod-englishcentral-view .search-fields dt.visible,
+#page-mod-englishcentral-view .search-fields dd.visible {
+    display:              initial;
+}
+
+#page-mod-englishcentral-view .checkboxgroup.level {
+    padding-bottom:          8px;
+}
+
+#page-mod-englishcentral-view .level .checkboxitem {
+    display:         inline-block;
+    margin:               0px 4px;
+}
+
+#page-mod-englishcentral-view .level input {
+    display:                 none;
+}
+
+#page-mod-englishcentral-view .level label {
+    background-color:      transparent;
+    background-position: center center;
+    background-repeat:       no-repeat;
+    background-size:              100%;
+    border-color:                white;
+    border-style:                solid;
+    border-width:                  2px;
+    color:                        #fff;
+    display:              inline-block;
+    padding:                       2px;
+    text-align:                 center;
+    width:                        20px;
+}
+
+#page-mod-englishcentral-view .level-1 label,
+#page-mod-englishcentral-view .level-2 label {
+    background-image: url([[pix:mod_englishcentral|beginner]]);
+}
+
+#page-mod-englishcentral-view .level-3 label,
+#page-mod-englishcentral-view .level-4 label {
+    background-image: url([[pix:mod_englishcentral|intermediate]]);
+}
+
+#page-mod-englishcentral-view .level-5 label,
+#page-mod-englishcentral-view .level-6 label,
+#page-mod-englishcentral-view .level-7 label {
+    background-image: url([[pix:mod_englishcentral|advanced]]);
+}
+
+#page-mod-englishcentral-view .level input:checked + label  {
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.16),
+                0 2px 10px 0 rgba(0,0,0,0.12);
+    border-color:         yellow;
+}
+
+#page-mod-englishcentral-view .search-advanced {
+    display:        inline-block;
+    margin-left:            12px;
+}
+
+#page-mod-englishcentral-view .itemsfound {
+    float:                  left;
+    margin-right:           12px;
+}
+
+#page-mod-englishcentral-view .pagingbar {
+    margin-left:            12px;
+}
+
+#page-mod-englishcentral-view .currentpage,
+#page-mod-englishcentral-view .pagenumber,
+#page-mod-englishcentral-view .pageseparator {
+    background-color:       #fff;
+    color:               #007bff;
+    display:        inline-block;
+    line-height:            1.25;
+}
+
+#page-mod-englishcentral-view .currentpage,
+#page-mod-englishcentral-view .pagenumber {
+    border:    1px solid #dee2e6;
+    cursor:              pointer;
+    margin-left:            -1px;
+    padding:             5px 8px;
+}
+
+#page-mod-englishcentral-view .pagenumber:not(.currentpage):hover {
+    background-color:       #eee;
+}
+
+#page-mod-englishcentral-view .pageseparator {
+    padding:                 5px;
+}
+
+#page-mod-englishcentral-view .currentpage {
+    background-color:    #007bff;
+    color:                  #fff;
+    font-weight:            bold;
+}
+
+#page-mod-englishcentral-view .result-add,
+#page-mod-englishcentral-view .result-thumb,
+#page-mod-englishcentral-view .result-info {
+    display: inline-block;
+    vertical-align: top;
+}
+
+#page-mod-englishcentral-view .result-item {
+    clear:            left;
+    margin:           12px;
+    padding:          12px;
+    background:    #f8f8f8;
+    border: 1px solid #ccc;
+    border-radius:     4px;
+}
+
+#page-mod-englishcentral-view .result-add img {
+    height:           36px;
+    width:            36px;
+    margin:           24px;
+    vertical-align: center;
+}
+
+#page-mod-englishcentral-view .result-thumb {
+    min-height:       80px;
+    min-width:       160px;
+}
+
+#page-mod-englishcentral-view .search-results .result-thumb {
+    position:     relative;
+}
+
+#page-mod-englishcentral-view .result-difficulty,
+#page-mod-englishcentral-view .result-duration {
+    background-color: #000;
+    bottom:            5px;
+    color:            #ccc;
+    position:     absolute;
+    text-align:     center;
+}
+
+#page-mod-englishcentral-view .result-difficulty {
+    background-position: center center;
+    background-repeat: no-repeat;
+    font-size:       0.9em;
+    font-weight:      bold;
+    left:              5px;
+    width:            17px;
+}
+
+#page-mod-englishcentral-view .result-level:before {
+    background-position: right center;
+    background-repeat: no-repeat;
+    background-size:  14px;
+    content:           "|";
+    font-weight:      bold;
+    margin-right:      4px;
+    padding-left:     12px;
+    padding-right:    24px;
+}
+
+#page-mod-englishcentral-view .result-difficulty.beginner,
+#page-mod-englishcentral-view .result-level.beginner:before {
+    background-color: transparent;
+    background-image: url([[pix:mod_englishcentral|beginner]]);
+}
+
+#page-mod-englishcentral-view .result-difficulty.intermediate,
+#page-mod-englishcentral-view .result-level.intermediate:before {
+    background-color: transparent;
+    background-image: url([[pix:mod_englishcentral|intermediate]]);
+}
+
+#page-mod-englishcentral-view .result-difficulty.advanced,
+#page-mod-englishcentral-view .result-level.advanced:before {
+    background-color: transparent;
+    background-image: url([[pix:mod_englishcentral|advanced]]);
+}
+
+#page-mod-englishcentral-view .result-duration {
+    border-radius:     4px 0px 4px 0px;
+    font-size:       0.8em;
+    right:            10px;
+    width:            38px;
+}
+
+#page-mod-englishcentral-view .result-title {
+    font-size:        18px;
+    line-height:   initial;
+    margin:            0px;
+}
+
+#page-mod-englishcentral-view .result-details {
+    clear:            both;
+    font-size:       0.9em;
+    margin:            0px;
+}
+
+#page-mod-englishcentral-view .result-label,
+#page-mod-englishcentral-view .result-value {
+    float:            left;
+}
+
+#page-mod-englishcentral-view .result-label {
+    clear:            both;
+    color:            #933;
+    font-weight:      bold;
+}
+
+#page-mod-englishcentral-view .result-label:after {
+    content: ":";
+}
+
+#page-mod-englishcentral-view .result-value {
+}
+
+#page-mod-englishcentral-view .result-title em,
+#page-mod-englishcentral-view .result-value em {
+    background :   #f9f9c7;
+    font-style:     normal;
+}
+
+#page-mod-englishcentral-view #id_playercontainer {
+	max-width: 1000px;
+}
+
+/**
+ * EC thumbnail styles
+ * (https:gist.github.com/jetlogs/fc728be500ba72714e8a4dafdc4bf21e)
+**/
+
+#page-mod-englishcentral-view .activity-thumbnail {
+    display: inline-block;
+    font-size:      1.0em;
+    line-height:        1;
+    margin:     12px 12px;
+    width:          160px;
+    position:    relative;
+}
+
+#page-mod-englishcentral-view .thumb-outline {
+    position:    relative;
+    padding:            0;
+}
+
+#page-mod-englishcentral-view .thumb-frame {
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius:     4px;
+    cursor:        pointer;
+    display:         block;
+    height:          100px;
+    width:           160px;
+}
+
+#page-mod-englishcentral-view .activity-thumbnail .play-icon {
+    background-image: url([[pix:mod_englishcentral|play]]);
+    background-position: center center;
+    background-repeat: no-repeat;
+    display:          none;
+    height:           100%;
+    width:            100%;
+}
+
+#page-mod-englishcentral-view .activity-thumbnail:hover .play-icon {
+    display: block;
+}
+
+#page-mod-englishcentral-view .activity-thumbnail .watch-status,
+#page-mod-englishcentral-view .activity-thumbnail .learn-status,
+#page-mod-englishcentral-view .activity-thumbnail .speak-status {
+	border-style:   solid;
+	border-width:     2px;
+	border-radius:    50%;
+	border-color:    #fff;
+	color:           #fff;
+    display:        block;
+    font-size:		 14px;
+    line-height:      1.2;
+    position:    absolute;
+    right:           -2px;
+    height:          16px;
+    width:           16px;
+    text-align:    center;
+}
+
+#page-mod-englishcentral-view .activity-thumbnail .watch-status {
+	background:   #23a1da;
+    top:             15px;
+}
+#page-mod-englishcentral-view .activity-thumbnail .learn-status {
+	background:   #eb6613;
+    top:             40px;
+}
+#page-mod-englishcentral-view .activity-thumbnail .speak-status {
+	background:   #a4d05c;
+    top:             65px;
+}
+
+#page-mod-englishcentral-view .activity-title {
+    color:           #000;
+    display:        block;
+    font-size:      0.9em;
+    font-weight:     bold;
+    line-height:      1.4;
+    max-height:     2.4em;
+    overflow:      hidden;
+    text-overflow: ellipsis;
+    white-space:   nowrap;
+}
+
+#page-mod-englishcentral-view .activity-topics {
+    color:           #999;
+    display:        block;
+    font-size:     0.82em;
+    line-height:      1.2;
+    max-height:     2.4em;
+    overflow:      hidden;
+    white-space:   normal;
+}
+
+#page-mod-englishcentral-view .activity-topics a:hover {
+    cursor:       default;
+}
+
+#page-mod-englishcentral-view .activity-difficulty {
+    bottom:         0.4em;
+    font-size:      0.8em;
+    left:           0.5em;
+    position:    absolute;
+}
+
+#page-mod-englishcentral-view .activity-thumbnail:hover .activity-title {
+    color:        #0078ff;
+    cursor:       pointer;
+    text-decoration: underline;
+}
+
+#page-mod-englishcentral-view .activity-thumbnail .duration {
+    background:      #000;
+    border-radius:  0.3em;
+    bottom:         0.4em;
+    color:           #FFF;
+    display: inline-block;
+    font-size:     0.75em;
+    font-weight:      600;
+    opacity:          0.7;
+    padding:  0.1em 0.3em;
+    position:    absolute;
+    right:          0.1em;
+}
+
+#page-mod-englishcentral-view .difficulty-level-indicator {
+    font-size:      0.7em;
+    font-weight:     bold;
+    white-space:   nowrap;
+}
+
+#page-mod-englishcentral-view .difficulty-level {
+    display: inline-block;
+    font-size:      1.0em;
+    font-weight:     bold;
+    height:         1.9em;
+    line-height:    1.9em;
+    margin-right:     4px;
+}
+
+#page-mod-englishcentral-view .difficulty-icon {
+    background-size: contain !important;
+}
+
+#page-mod-englishcentral-view .beginner .difficulty-level {
+    border-color: #379733;
+    color:        #379733;
+}
+
+#page-mod-englishcentral-view .intermediate .difficulty-level {
+    border-color: #006395;
+    color:        #006395;
+}
+
+#page-mod-englishcentral-view .advanced .difficulty-level {
+    border-color: #000000;
+    color:        #000000;
+}
+
+#page-mod-englishcentral-view .difficulty-label:not(:empty):before {
+    content: "(";
+}
+
+#page-mod-englishcentral-view .difficulty-label:not(:empty):after {
+    content: ")";
+}
+
+#page-mod-englishcentral-view .transparent {
+    color: transparent;
+}
+
+/** CSS for iPhone 6/7/8 **/
+@media screen and (min-width: 370px) {
+    #page-mod-englishcentral-view .activity-thumbnail {
+        width:     90px;
+    }
+    #page-mod-englishcentral-view .thumb-frame {
+        width:     90px;
+        height:    66px;
+    }
+    #page-mod-englishcentral-view .difficulty-label {
+        display:   none;
+    }
+}
+
+/** CSS for iPhone 6/7/8 Plus, iPad **/
+@media screen and (min-width: 400px) {
+    #page-mod-englishcentral-view .activity-thumbnail {
+        width:    110px;
+    }
+    #page-mod-englishcentral-view .thumb-frame {
+        width:    110px;
+        height:    66px;
+    }
+}
+
+@media screen and (min-width: 840px) {
+    #page-mod-englishcentral-view .activity-thumbnail {
+        width:    150px;
+    }
+    #page-mod-englishcentral-view .thumb-frame {
+        height:    75px;
+        width:    150px;
+    }
+    #page-mod-englishcentral-view .difficulty-label {
+        display: inline;
+    }
+    #page-mod-englishcentral-view .activity-thumbnail .watch-status,
+    #page-mod-englishcentral-view .activity-thumbnail .learn-status,
+    #page-mod-englishcentral-view .activity-thumbnail .speak-status {
+        right:  -2px;
+    }
+}
+
+/**
+ * CSS for the progress REPORT
+ **/
+#page-mod-englishcentral-report .userbars {
+    margin:              0px;
+    overflow:           auto;
+}
+
+#page-mod-englishcentral-report .user.title {
+    background:      #f0f0f0;
+}
+
+#page-mod-englishcentral-report .bars.title {
+    text-align:         left;
+    position:       relative;
+}
+
+#page-mod-englishcentral-report .title .watch,
+#page-mod-englishcentral-report .title .learn,
+#page-mod-englishcentral-report .title .speak {
+    font-size:       smaller;
+    height:             16px;
+    margin:              0px;
+    padding:             0px;
+    padding-bottom:      2px;
+    position:       absolute;
+    text-align:       center;
+}
+
+#page-mod-englishcentral-report .user,
+#page-mod-englishcentral-report .bars {
+    height:             24px;
+    margin:              0px;
+    padding:             0px;
+    position:       relative;
+}
+
+#page-mod-englishcentral-report .user {
+    padding-top:         4px;
+    padding-left:        4px;
+    padding-right:       4px;
+    width:  calc(100% - 8px);
+}
+
+#page-mod-englishcentral-report .bars {
+    padding-bottom:      4px;
+    width:              100%;
+}
+
+#page-mod-englishcentral-report .fullname {
+    font-size:        larger;
+    vertical-align:   middle;
+}
+
+#page-mod-englishcentral-report .title .fullname {
+    font-size:       initial;
+}
+
+#page-mod-englishcentral-report .percent {
+    float:             right;
+    padding-top:         2px;
+    vertical-align:   middle;
+}
+
+#page-mod-englishcentral-report .watch,
+#page-mod-englishcentral-report .learn,
+#page-mod-englishcentral-report .speak {
+    border-style:      solid;
+    border-width:    2px 0px;
+    display:    inline-block;
+    height: calc(100% - 4px);
+    overflow:         hidden;
+    position:       relative;
+    vertical-align:   middle;
+    white-space:      nowrap;
+}
+
+#page-mod-englishcentral-report .watch {
+    background:      #d4edf7; /* light BLUE */
+    border-color:    #23a1da; /* Eng.C BLUE */
+}
+#page-mod-englishcentral-report .learn {
+    background:      #fbe0d0; /* light RED */
+    border-color:    #eb6613; /* Eng.C RED */
+}
+#page-mod-englishcentral-report .speak {
+    background:      #e9f4d7; /* light GREEN */
+    border-color:    #a4d05c; /* Eng.C GREEN */
+}
+
+#page-mod-englishcentral-report .watch .bar {
+    background:      #a9dbef; /* medium BLUE */
+}
+#page-mod-englishcentral-report .learn .bar {
+    background:      #f7c1a1; /* medium RED */
+}
+#page-mod-englishcentral-report .speak .bar {
+    background:      #d3e9af; /* medium GREEN */
+}
+
+#page-mod-englishcentral-report .bar,
+#page-mod-englishcentral-report .text {
+    display:    inline-block;
+    height:             100%;
+    left:                0px;
+    position:       absolute;
+    top:                 0px;
+}
+
+#page-mod-englishcentral-report .text {
+    font-size:       smaller;
+    text-align:       center;
+    width:              100%;
+}
+
+@media screen and (min-width: 768px) {
+
+    #page-mod-englishcentral-report .userbars {
+        max-width:        1000px;
+    }
+
+    #page-mod-englishcentral-report .bars.title {
+        height:             20px;
+    }
+
+    #page-mod-englishcentral-report .title .watch,
+    #page-mod-englishcentral-report .title .learn,
+    #page-mod-englishcentral-report .title .speak {
+        font-size:         small;
+    }
+
+    #page-mod-englishcentral-report .user,
+    #page-mod-englishcentral-report .bars {
+        float:              left;
+        vertical-align:      top;
+    }
+
+    #page-mod-englishcentral-report .user {
+        clear:              left;
+        overflow:         hidden;
+        text-overflow:  ellipsis;
+        white-space:      nowrap;
+        width:             240px;
+    }
+
+    #page-mod-englishcentral-report .bars {
+        clear:             right;
+        padding-top:         4px;
+        width:calc(100% - 248px);
+    }
 }
