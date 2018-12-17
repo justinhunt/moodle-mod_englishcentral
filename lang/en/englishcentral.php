@@ -280,3 +280,32 @@ $string['username'] ='Username';
 $string['value'] ='Value';
 $string['viewreport'] ='Details';
 $string['viewreports'] ='View reports';
+
+
+//privacy api strings
+$string['privacy:metadata:attempttable']='The table in which the user\'s English Central attempt data is stored.';
+$string['privacy:metadata:attemptid']='The unique identifier of a user\'s English Central activity attempt.';
+$string['privacy:metadata:ecid']='The unique identifier of an English Central activity instance.';
+$string['privacy:metadata:userid']='The user id for the English Central attempt';
+$string['privacy:metadata:videoid']='The id of the video for the current attempt';
+$string['privacy:metadata:watchcomplete']='The percentage of the watch session completed';
+$string['privacy:metadata:watchtotal']='The watch session total items';
+$string['privacy:metadata:watchcount']='The watch session items watched';
+$string['privacy:metadata:watchlineids']='The watch session item line ids';
+$string['privacy:metadata:learntotal']='The learn session total items';
+$string['privacy:metadata:learncount']='The learn session items done';
+$string['privacy:metadata:learnwordids']='The ids of the learnt words';
+$string['privacy:metadata:speakcomplete']='The percentage of the speak session completed';
+$string['privacy:metadata:speaktotal']='The speak session total items';
+$string['privacy:metadata:speakcount']='The speak session items watched';
+$string['privacy:metadata:speaklineids']='The speak session item line ids';
+$string['privacy:metadata:totalpoints']='The total points for the session';
+$string['privacy:metadata:sessiongrade']='The session grade';
+$string['privacy:metadata:sessionscore']='The session score';
+$string['privacy:metadata:activetime']='The time active on session';
+$string['privacy:metadata:totaltime']='The total session time';
+$string['privacy:metadata:timecompleted']='The time the activity was completed';
+$string['privacy:metadata:timecreated']='The time the session was created';
+$string['privacy:metadata:status']='The activity status';
+$string['privacy:metadata:englishcentralcom:accountid']='The English Central plugin matches the Moodle userid with a unique English Central account id. The account id is stored at englishcentral.com.';
+$string['privacy:metadata:englishcentralcom']='The English Central plugin stores session data against the Moodle users English Central account id.';
