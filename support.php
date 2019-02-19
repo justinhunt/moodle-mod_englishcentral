@@ -24,9 +24,11 @@
 /** Include required files */
 require_once('../../config.php');
 
-// get expected input params
 // check we are logged in
 require_login();
+
+// check we have suitable capability
+require_capability('moodle/site:config', context_system::instance());
 
 // initialize EC activity/auth objects
 $ec = \mod_englishcentral\activity::create();
@@ -35,9 +37,6 @@ $auth = \mod_englishcentral\auth::create($ec);
 $PAGE->set_url('/mod/englishcentral/support.php');
 $PAGE->set_context($ec->context);
 $PAGE->set_pagelayout('course');
-
-// check we have suitable capability
-$ec->req('config', 'moodle/site');
 
 // initialize the renderer
 $renderer = $PAGE->get_renderer($ec->plugin);

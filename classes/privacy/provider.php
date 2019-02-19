@@ -58,11 +58,6 @@ class provider implements
 
     use \core_privacy\local\legacy_polyfill;
 
-    const M_TABLE='englishcentral';
-    const M_USERTABLE='englishcentral_attempts';
-    const M_MODNAME='englishcentral';
-    const M_COMPONENT='mod_englishcentral';
-
     /**
      * Return meta data about this plugin.
      *
@@ -96,7 +91,7 @@ class provider implements
             'timecreated' => 'privacy:metadata:timecreated',
             'status' => 'privacy:metadata:status'
         ];
-        $collection->add_database_table(self::M_USERTABLE, $userdetail, 'privacy:metadata:attempttable');
+        $collection->add_database_table('englishcentral_attempts', $userdetail, 'privacy:metadata:attempttable');
 
 
         $collection->add_external_location_link('englishcentral.com', [
@@ -118,12 +113,12 @@ class provider implements
                   FROM {context} c
             INNER JOIN {course_modules} cm ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
             INNER JOIN {modules} m ON m.id = cm.module AND m.name = :modname
-            INNER JOIN {" . self::M_TABLE . "} actt ON actt.id = cm.instance
-            INNER JOIN {" . self::M_USERTABLE . "} usert ON usert.ecid = actt.id
+            INNER JOIN {englishcentral} actt ON actt.id = cm.instance
+            INNER JOIN {englishcentral_attempts} usert ON usert.ecid = actt.id
                  WHERE usert.userid = :theuserid";
         $params = [
             'contextlevel' => CONTEXT_MODULE,
-            'modname' => self::M_MODNAME,
+            'modname' => 'englishcentral',
             'theuserid' => $userid
         ] ;
 
@@ -151,14 +146,14 @@ class provider implements
                   FROM {context} c
                   JOIN {course_modules} cm ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
                   JOIN {modules} m ON m.id = cm.module AND m.name = :modname
-                  JOIN  {" . self::M_TABLE . "} actt ON actt.id = cm.instance
-                  JOIN {" . self::M_USERTABLE . "} usert ON usert.ecid = actt.id
+                  JOIN  {englishcentral} actt ON actt.id = cm.instance
+                  JOIN {englishcentral_attempts} usert ON usert.ecid = actt.id
                  WHERE c.id = :contextid";
 
         $params = [
             'contextid' => $context->id,
             'contextlevel' => CONTEXT_MODULE,
-            'modname' => self::M_MODNAME,
+            'modname' => 'englishcentral',
         ];
 
         $userlist->add_from_sql('userid', $sql, $params);
@@ -205,8 +200,8 @@ class provider implements
                         usert.timecompleted as timecompletec,
                         usert.timecreated as timecreated,
                         usert.status as status
-                  FROM {" . self::M_USERTABLE . "} usert
-                  JOIN {" . self::M_TABLE . "} actt ON usert.ecid = actt.id
+                  FROM {englishcentral_attempts} usert
+                  JOIN {englishcentral} actt ON usert.ecid = actt.id
                   JOIN {course_modules} cm ON actt.id = cm.instance
                   JOIN {modules} m ON cm.module = m.id AND m.name = :modulename
                   JOIN {context} c ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
@@ -215,7 +210,7 @@ class provider implements
                ORDER BY usert.id, cm.id";
         $params = [
                 'userid' => $user->id,
-                'modulename' => self::M_MODNAME,
+                'modulename' => 'englishcentral',
                 'contextlevel' => CONTEXT_MODULE
             ] + $contextparams;
 
@@ -261,16 +256,16 @@ class provider implements
             return;
         }
 
-        if (!$cm = get_coursemodule_from_id(self::M_MODNAME, $context->instanceid)) {
+        if (!$cm = get_coursemodule_from_id('englishcentral', $context->instanceid)) {
             return;
         }
 
         $instanceid = $cm->instance;
 
-        $attempts = $DB->get_records(self::M_USERTABLE, ['ecid' => $instanceid], '', 'id');
+        $attempts = $DB->get_records('englishcentral_attempts', ['ecid' => $instanceid], '', 'id');
 
         // Now delete all attempts
-        $DB->delete_records(self::M_USERTABLE, ['ecid' => $instanceid]);
+        $DB->delete_records('englishcentral_attempts', ['ecid' => $instanceid]);
     }
 
     /**
@@ -291,7 +286,7 @@ class provider implements
 
                 $instanceid = $DB->get_field('course_modules', 'instance', ['id' => $context->instanceid], MUST_EXIST);
 
-                $entries = $DB->get_records(self::M_USERTABLE, ['ecid' => $instanceid, 'userid' => $userid],
+                $entries = $DB->get_records('englishcentral_attempts', ['ecid' => $instanceid, 'userid' => $userid],
                     '', 'id');
 
                 if (!$entries) {
@@ -301,7 +296,7 @@ class provider implements
                 list($insql, $inparams) = $DB->get_in_or_equal(array_keys($entries), SQL_PARAMS_NAMED);
 
                 // Now delete all user related entries.
-                $DB->delete_records(self::M_USERTABLE, ['ecid' => $instanceid, 'userid' => $userid]);
+                $DB->delete_records('englishcentral_attempts', ['ecid' => $instanceid, 'userid' => $userid]);
             }
         }
     }
@@ -322,7 +317,7 @@ class provider implements
         $attemptswhere = "ecid = :instanceid AND userid {$userinsql}";
         $userinstanceparams = $userinparams + ['instanceid' => $instanceid];
 
-        $attemptsset = $DB->get_recordset_select(self::M_USERTABLE, $attemptswhere, $userinstanceparams, 'id', 'id');
+        $attemptsset = $DB->get_recordset_select('englishcentral_attempts', $attemptswhere, $userinstanceparams, 'id', 'id');
         $attempts = [];
 
         foreach ($attemptsset as $attempt) {
@@ -337,6 +332,6 @@ class provider implements
 
 
         $deletewhere = "ecid = :instanceid AND userid {$userinsql}";
-        $DB->delete_records_select(self::M_USERTABLE, $deletewhere, $userinstanceparams);
+        $DB->delete_records_select('englishcentral_attempts', $deletewhere, $userinstanceparams);
     }
 }

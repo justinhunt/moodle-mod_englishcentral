@@ -181,13 +181,18 @@ class auth {
     }
 
     public function create_accountid() {
+        if (has_capability('mod/englishcentral:manage', $this->ec->context)) {
+            $isTeacher = 1;
+        } else {
+            $isTeacher = 0;
+        }
         $subdomain = 'bridge';
         $endpoint = 'rest/identity/account';
         $fields = array('partnerID' => $this->partnerid,
                         'partnerAccountID' => $this->get_uniqueid(),
                         'nativeLanguage' => $this->get_user_language(),
                         'siteLanguage' => $this->get_site_language(),
-                        'isTeacher' => (int)$this->ec->can_manage(),
+                        'isTeacher' => $isTeacher,
                         'timezone' => \core_date::get_user_timezone(),
                         'fields' => 'accountID');
         $response = $this->doPost($subdomain, $endpoint, $fields, self::ACCEPT_V1);

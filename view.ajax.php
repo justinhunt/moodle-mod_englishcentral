@@ -43,16 +43,16 @@ $instance = $DB->get_record('englishcentral', array('id' => $cm->instance), '*',
 require_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 
+// check we have suitable capability
+if ($action=='storeresults' || $action=='showstatus') {
+	require_capability('mod/englishcentral:view', $context); // student
+} else {
+	require_capability('mod/englishcentral:manage', $context); // teacher
+}
+
 // initialize EC activity/auth objects
 $ec = \mod_englishcentral\activity::create($instance, $cm, $course, $context);
 $auth = \mod_englishcentral\auth::create($ec);
-
-// check we have suitable capability
-if ($action=='storeresults' || $action=='showstatus') {
-    $ec->req('view'); // student
-} else {
-    $ec->req('manage'); // teacher
-}
 
 // initialize the renderer
 $renderer = $PAGE->get_renderer($ec->plugin);

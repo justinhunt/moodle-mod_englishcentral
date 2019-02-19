@@ -69,7 +69,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         $output = $this->output->header();
 
         if (isset($this->ec->id)) {
-            if ($this->ec->can_manage()) {
+            if (has_capability('mod/englishcentral:manage', $this->ec->context)) {
                 if ($this->page->url == $this->ec->get_view_url()) {
                     $icon = $this->pix_icon('i/report', 'report', 'moodle', array('class'=>'icon'));
                     $icon = html_writer::link($this->ec->get_report_url(), $icon);
@@ -128,7 +128,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
      */
     public function link_to_config_settings() {
         // moodle/site:config, moodle/category:manage
-        if ($this->ec->can('config', 'moodle/site', context_system::instance())) {
+        if (has_capability('moodle/site:config', context_system::instance())) {
             $link = array('section' => 'modsetting'.$this->ec->pluginname);
             $link = new moodle_url('/admin/settings.php', $link);
             $link = html_writer::link($link, get_string('settings'));
@@ -448,7 +448,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
             $output .= html_writer::tag('p', $this->ec->get_string('novideos'));
         }
 
-        if ($this->ec->can_manage()) {
+		if (has_capability('mod/englishcentral:manage', $this->ec->context)) {
             $output .= $this->show_removevideo_icon();
             //$output .= $this->show_addvideo_icon();
         }
@@ -824,7 +824,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
      */
     public function show_search() {
         $output = '';
-        if ($this->ec->can_manage()) {
+		if (has_capability('mod/englishcentral:manage', $this->ec->context)) {
 
             // start settings/form
             $output .= html_writer::start_tag('form', array('class' => 'search-form'));

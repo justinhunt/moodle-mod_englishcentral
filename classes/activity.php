@@ -79,7 +79,7 @@ class activity {
 
         $this->time = time();
 
-        if ($this->can_manage()) {
+        if (has_capability('mod/englishcentral:manage', $this->context)) {
             $this->available = true;
         } else if ($this->activityopen && $this->activityopen > $this->time) {
             $this->available = false;
@@ -89,7 +89,7 @@ class activity {
             $this->available = true;
         }
 
-        if ($this->can_manage()) {
+        if (has_capability('mod/englishcentral:manage', $this->context)) {
             $this->viewable = true;
         } else if ($this->videoopen && $this->videoopen > $this->time) {
             $this->viewable = false;
@@ -176,120 +176,6 @@ class activity {
     }
 
     ////////////////////////////////////////////////////////////////////////////////
-    // capabilities API
-    ////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * can
-     *
-     * @prefix string $name
-     * @prefix string $type (optional, default="")
-     * @prefix object $context (optional, default=null)
-     * @return boolean
-     */
-    public function can($name, $type='', $context=null) {
-        $defaulttype = $this->plugintype.'/'.$this->pluginname;
-        if ($type==='') {
-            $type = $defaulttype;
-            $is_defaulttype = true;
-        } else {
-            $is_defaulttype = ($type==$defaulttype);
-        }
-        if ($context===null) {
-            $context = $this->context;
-            $is_defaultcontext = true;
-        } else {
-            $is_defaultcontext = ($context->id==$this->context->id);
-        }
-        if ($is_defaulttype && $is_defaultcontext) {
-            $can = 'can'.$name;
-            if (! isset($this->$can)) {
-                $this->$can = has_capability($type.':'.$name, $this->context);
-            }
-            return $this->$can;
-        }
-        return has_capability($type.':'.$name, $context);
-    }
-
-    /*
-     * can_addinstance
-     *
-     * @return boolean
-     **/
-    public function can_addinstance() {
-        return $this->can('addinstance');
-    }
-
-    /*
-     * can_manage
-     *
-     * @return boolean
-     **/
-    public function can_manage() {
-        return $this->can('manage');
-    }
-
-    /*
-     * can_submit
-     *
-     * @return boolean
-     **/
-    public function can_submit() {
-        return $this->can('submit');
-    }
-
-    /*
-     * can_view
-     *
-     * @return boolean
-     **/
-    public function can_view() {
-        return $this->can('view');
-    }
-
-    /*
-     * can_viewreports
-     *
-     * @return boolean
-     **/
-    public function can_viewreports() {
-        return $this->can('viewreports');
-    }
-
-    /**
-     * accessallgroups
-     *
-     * @param xxx $context (optional, default=null)
-     * @return xxx
-     * @todo Finish documenting this function
-     */
-    function can_accessallgroups() {
-        return $this->can('moodle/site:accessallgroups');
-    }
-
-    /*
-     * req(uire)
-     *
-     * @prefix string $name
-     * @prefix string $type (optional, default="")
-     * @prefix object $context (optional, default=null)
-     * @return void, but may terminate script execution
-     **/
-    public function req($name, $type='', $context=null) {
-        if ($this->can($name, $type, $context)) {
-            // do nothing
-        } else {
-            if ($type==='') {
-                $type = 'mod/englishcentral';
-            }
-            if ($context===null) {
-                $context = $this->context;
-            }
-            return require_capability($type.':'.$name, $context);
-        }
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////
     // strings API
     ////////////////////////////////////////////////////////////////////////////////
 
@@ -324,7 +210,7 @@ class activity {
     public function get_userids($groupid=0) {
         global $DB;
         $mode = $this->get_groupmode();
-        if ($mode==NOGROUPS || $mode==VISIBLEGROUPS || $this->can_accessallgroups()) {
+        if ($mode==NOGROUPS || $mode==VISIBLEGROUPS || has_capability('moodle/site:accessallgroups', $this->context)) {
             $users = get_enrolled_users($this->context, 'mod/englishcentral:view', $groupid, 'u.id', 'id');
             if (empty($users)) {
                 return false;
