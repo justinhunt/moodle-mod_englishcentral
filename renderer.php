@@ -564,20 +564,34 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         $this->setup_sort();
         $url = $this->ec->get_report_url();
 
+		// fetch groupmode/menu/id for this activity
+		if ($groupmode = groups_get_activity_groupmode($this->ec->cm)) {
+			$groupmenu = groups_print_activity_menu($this->ec->cm, $url, true);
+			$groupid = groups_get_activity_group($this->ec->cm);
+		} else {
+			$groupmenu = '';
+			$groupid = 0;
+		}
+
         // initialize study goals
         $goals = (object)array('watch' => 0,
                                'learn' => 0,
                                'speak' => 0);
 
-        // Fetch aggregate items from attempts table.
+        // Create SQL to fetch aggregate items from the EC attempts table.
         $select = 'userid,'.
                   'SUM(watchcomplete) + SUM(learncount)  + SUM(speakcount) AS percent,'.
                   'SUM(watchcomplete) AS watch,'.
                   'SUM(learncount) AS learn,'.
                   'SUM(speakcount) AS speak';
         $from   = '{englishcentral_attempts}';
-        $where  = 'ecid = ?  GROUP BY userid';
+        $where  = 'ecid = ?';
         $params = array($this->ec->id);
+		if ($groupid) {
+			$where .= ' AND userid IN (SELECT gm.userid FROM {groups_members} gm WHERE gm.groupid = ?)';
+			$params[] = $groupid;
+        }
+        $where = "$where GROUP BY userid";
 
         $from   = "(SELECT $select FROM $from WHERE $where) items,".
                   '{user} u';
@@ -660,6 +674,10 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         } else {
             $output = html_writer::tag('p', $this->ec->get_string('noprogressreport'));
         }
+
+		if ($groupmenu) {
+			$output = $groupmenu.$output;
+		}
 
         return $output;
     }
