@@ -161,6 +161,10 @@ class auth {
         return $this->sdk_token;
     }
 
+    public function get_sdk_version() {
+        return get_config('mod_englishcentral', 'playerversion');
+    }
+
     public function get_header($accept) {
         return array('Accept: ' . $accept,
                      'Authorization: ' . $this->get_authorization(),
@@ -315,21 +319,6 @@ class auth {
         $url = "https://$subdomain.$this->domain/$endpoint";
         $url = new \moodle_url($url, $fields);
         return $url->out(false); // join with "&" not "&amp;"
-    }
-
-    public function get_js_url() {
-        switch (get_config('mod_englishcentral', 'playerversion')) {
-            case 'JSDK2':
-                // JSDK2 (available until Sept 2018)
-                $url = $this->get_url('www', 'partnersdk/sdk.js');
-                break;
-            case 'JSDK3':
-            default:
-                // JSDK3 (available from July 2017)
-                $url = $this->get_url('www', 'dist/sdk/sdk.js');
-                break;
-        }
-        return new \moodle_url($url);
     }
 
     public function missing_config() {

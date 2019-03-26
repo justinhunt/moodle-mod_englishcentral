@@ -92,12 +92,10 @@ if ($ec->not_available()) {
 echo $renderer->show_intro();
 //echo $renderer->show_dates_available();
 
-// get ECSDK javascript object
-$PAGE->requires->js($auth->get_js_url());
-
 $opts = array('accept1'       => \mod_englishcentral\auth::ACCEPT_V1,
               'consumerkey'   => $auth->consumerkey,
               'sdktoken'      => $auth->get_sdk_token(),
+              'sdkversion'    => $auth->get_sdk_version(),
               'authorization' => $auth->get_authorization(),
               'sitelanguage'  => $auth->get_site_language(),
               'searchurl'     => $auth->get_search_url(),
