@@ -30,11 +30,6 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
     // cache full plugin name
     VIEW.plugin = "mod_englishcentral";
 
-    // It would be preferable to pass SDK url/version as parameters to "init()"
-    // but that's not possible because of the limit of 1024 bytes.
-    // See js_call_amd() method in "lib/outputrequirementslib.php".
-    VIEW.sdkversion = 'JSDK3';
-
     // define DOM element names
     VIEW.playercontainer   = "id_playercontainer";
     VIEW.progresscontainer = "id_progresscontainer";

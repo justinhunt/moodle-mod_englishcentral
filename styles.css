@@ -73,7 +73,7 @@
     box-shadow: 0 2px 4px 0 rgba(0,0,0,0.16),
                 0 2px 10px 0 rgba(0,0,0,0.12);
     margin:       12px 6px;
-    max-width:       760px;
+    max-width:       780px;
     padding:      6px 18px;
     text-align:     center;
 }
@@ -743,6 +743,12 @@
 /**
  * CSS for the progress REPORT
  **/
+#page-mod-englishcentral-report .userbars *,
+#page-mod-englishcentral-report .userbars *::before,
+#page-mod-englishcentral-report .userbars *::after {
+    box-sizing: content-box;
+}
+
 #page-mod-englishcentral-report .userbars {
     margin:              0px;
     overflow:           auto;
