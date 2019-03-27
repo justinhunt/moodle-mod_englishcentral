@@ -92,27 +92,14 @@ if ($ec->not_available()) {
 echo $renderer->show_intro();
 //echo $renderer->show_dates_available();
 
-$opts = array('accept1'       => \mod_englishcentral\auth::ACCEPT_V1,
-              'consumerkey'   => $auth->consumerkey,
-              'sdktoken'      => $auth->get_sdk_token(),
-              'sdkmode'       => $auth->get_sdk_mode(),
-              'sdkversion'    => $auth->get_sdk_version(),
-              'authorization' => $auth->get_authorization(),
-              'sitelanguage'  => $auth->get_site_language(),
-              'searchurl'     => $auth->get_search_url(),
-              'fetchurl'      => $auth->get_fetch_url(),
-              'cmid'          => $ec->cm->id,
+// Because of the limit on the number of options passed,
+// more options are passed via "getoptions" in view.ajax.php
+$opts = array('cmid'          => $ec->cm->id,
               'moodlesesskey' => sesskey(),
               'viewajaxurl'   => $ec->get_viewajax_url(false),
               'videoinfourl'  => $ec->get_videoinfo_url(false),
               'targetwindow'  => 'EC');
-
 $PAGE->requires->js_call_amd("$ec->plugin/view", 'init', array($opts));
-
-// We could preload the string cache - it might speed things up.
-// Otherwise, the strings will be fetched as needed by "core/str".
-//$strings = array();
-//$PAGE->strings_for_js($strings, $ec->plugin);
 
 echo $renderer->show_progress();
 

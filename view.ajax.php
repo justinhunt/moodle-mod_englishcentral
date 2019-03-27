@@ -44,7 +44,7 @@ require_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 
 // check we have suitable capability
-if ($action=='storeresults' || $action=='showstatus') {
+if ($action=='getoptions' || $action=='storeresults' || $action=='showstatus') {
 	require_capability('mod/englishcentral:view', $context); // student
 } else {
 	require_capability('mod/englishcentral:manage', $context); // teacher
@@ -59,6 +59,20 @@ $renderer = $PAGE->get_renderer($ec->plugin);
 $renderer->attach_activity_and_auth($ec, $auth);
 
 switch ($action) {
+
+    case 'getoptions':
+        echo json_encode(array(
+            'accept1'       => \mod_englishcentral\auth::ACCEPT_V1,
+            'consumerkey'   => $auth->consumerkey,
+            'sdktoken'      => $auth->get_sdk_token(),
+            'sdkmode'       => $auth->get_sdk_mode(),
+            'sdkversion'    => $auth->get_sdk_version(),
+            'authorization' => $auth->get_authorization(),
+            'sitelanguage'  => $auth->get_site_language(),
+            'searchurl'     => $auth->get_search_url(),
+            'fetchurl'      => $auth->get_fetch_url())
+        );
+        break;
 
     case 'storeresults':
         if (is_array($data) && array_key_exists('dialogID', $data)) {

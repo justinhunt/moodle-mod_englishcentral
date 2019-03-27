@@ -90,35 +90,54 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
 
     VIEW.init = function(opts) {
 
-        // cache the opts passed from the server
+        // Cache basic options received from Moodle, e.g. cmid, sesskey, ajax URL.
+        // These give us just enough information to get more options asynchronously.
         for (var i in opts) {
             VIEW[i] = opts[i];
         }
 
-        // set appropriate SDK url for specified SDK version
-        if (VIEW.sdkmode==1) {
-            // development mode
-            VIEW.sdkurl = "https://www.qaenglishcentral.com";
-        } else {
-            // production mode
-            VIEW.sdkurl = "https://www.englishcentral.com";
-        }
-        if (VIEW.sdkversion=="JSDK2") {
-            // JSDK2 (available until Sept 2018)
-            VIEW.sdkurl += "/partnersdk/sdk.js";
-        } else {
-            // JSDK3 (available from July 2017)
-            VIEW.sdkurl += "/dist/sdk/sdk.js";
-        }
+        // get more options asynchronously from Moodle
+        VIEW.getoptions = $.Deferred();
+        $.ajax({
+            "url": VIEW.viewajaxurl,
+            "type": "POST",
+            "data": {"id" : VIEW.cmid,
+                     "action": "getoptions",
+                     "sesskey" : VIEW.moodlesesskey},
+            "dataType": "json",
+            "success": function(opts){
+                for (var i in opts) {
+                    VIEW[i] = opts[i];
+                }
+                VIEW.getoptions.resolve();
+            }
+        });
 
         // ensure ECSDK is fully loaded before it is used
         VIEW.ECSDK = $.Deferred();
-        $.ajax({
-            url: VIEW.sdkurl,
-            dataType: "script",
-            cache: true
-        }).done(function() {
-            VIEW.ECSDK.resolve(window.ECSDK);
+        $.when(VIEW.getoptions).done(function(){
+            // set appropriate SDK url for specified SDK version
+            if (VIEW.sdkmode==1) {
+                // development mode
+                VIEW.sdkurl = "https://www.qaenglishcentral.com";
+            } else {
+                // production mode
+                VIEW.sdkurl = "https://www.englishcentral.com";
+            }
+            if (VIEW.sdkversion=="JSDK2") {
+                // JSDK2 (available until Sept 2018)
+                VIEW.sdkurl += "/partnersdk/sdk.js";
+            } else {
+                // JSDK3 (available from July 2017)
+                VIEW.sdkurl += "/dist/sdk/sdk.js";
+            }
+            $.ajax({
+                url: VIEW.sdkurl,
+                dataType: "script",
+                cache: true
+            }).done(function() {
+                VIEW.ECSDK.resolve(window.ECSDK);
+            });
         });
 
         $(".activity-title, .thumb-frame").click(function(evt) {
@@ -140,6 +159,7 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
                 };
                 $.ajax({
                     "url": VIEW.viewajaxurl,
+                    "type": "POST",
                     "data": {
                         "id": VIEW.cmid,
                         "data": data,
@@ -171,6 +191,7 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
                     };
                     $.ajax({
                         "url": VIEW.viewajaxurl,
+                        "type": "POST",
                         "data": {
                             "id": VIEW.cmid,
                             "data": data,
@@ -273,6 +294,7 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
                     // and receive the html for the updated Progress pie-charts
                     $.ajax({
                         "url": VIEW.viewajaxurl,
+                        "type": "POST",
                         "data": {
                             "id": VIEW.cmid,
                             "data": {
@@ -296,6 +318,7 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
                         // and receive the html for the updated status of this video
                         $.ajax({
                             "url": VIEW.viewajaxurl,
+                            "type": "POST",
                             "data": {
                                 "id": VIEW.cmid,
                                 "data": {
@@ -593,6 +616,7 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
     VIEW.add_video = function(evt, elm) {
         $.ajax({
             "url": VIEW.viewajaxurl,
+            "type": "POST",
             "data": {
                 "id": VIEW.cmid,
                 "data": $(elm).data(),
