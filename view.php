@@ -95,6 +95,7 @@ echo $renderer->show_intro();
 $opts = array('accept1'       => \mod_englishcentral\auth::ACCEPT_V1,
               'consumerkey'   => $auth->consumerkey,
               'sdktoken'      => $auth->get_sdk_token(),
+              'sdkmode'       => $auth->get_sdk_mode(),
               'sdkversion'    => $auth->get_sdk_version(),
               'authorization' => $auth->get_authorization(),
               'sitelanguage'  => $auth->get_site_language(),

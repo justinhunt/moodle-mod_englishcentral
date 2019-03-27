@@ -96,14 +96,19 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         }
 
         // set appropriate SDK url for specified SDK version
-        switch (VIEW.sdkversion) {
-            case "JSDK2": // JSDK2 (available until Sept 2018)
-                VIEW.sdkurl = "https://www.qaenglishcentral.com/partnersdk/sdk.js";
-                break;
-            case "JSDK3": // JSDK3 (available from July 2017)
-            default:
-                VIEW.sdkurl = "https://www.qaenglishcentral.com/dist/sdk/sdk.js";
-                break;
+        if (VIEW.sdkmode==1) {
+            // development mode
+            VIEW.sdkurl = "https://www.qaenglishcentral.com";
+        } else {
+            // production mode
+            VIEW.sdkurl = "https://www.englishcentral.com";
+        }
+        if (VIEW.sdkversion=="JSDK2") {
+            // JSDK2 (available until Sept 2018)
+            VIEW.sdkurl += "/partnersdk/sdk.js";
+        } else {
+            // JSDK3 (available from July 2017)
+            VIEW.sdkurl += "/dist/sdk/sdk.js";
         }
 
         // ensure ECSDK is fully loaded before it is used

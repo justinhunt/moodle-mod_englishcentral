@@ -58,6 +58,9 @@ class auth {
     const ACTIVITYTYPE_LEARNING = 10;
     const ACTIVITYTYPE_SPEAKING = 11;
 
+    const SDK_MODE_PRODUCTION   = 0;
+    const SDK_MODE_DEVELOPMENT  = 1;
+
     /**
      * construct English Central object
      */
@@ -69,10 +72,10 @@ class auth {
         $this->consumersecret = $ec->config->consumersecret;
         $this->encryptedsecret = $ec->config->encryptedsecret;
 
-        if (empty($ec->config->developmentmode)) {
-            $this->domain = 'englishcentral.com';
-        } else {
+        if ($this->get_sdk_mode() == self::SDK_MODE_DEVELOPMENT) {
             $this->domain = 'qaenglishcentral.com';
+        } else {
+            $this->domain = 'englishcentral.com';
         }
     }
 
@@ -163,6 +166,14 @@ class auth {
 
     public function get_sdk_version() {
         return get_config('mod_englishcentral', 'playerversion');
+    }
+
+    public function get_sdk_mode() {
+        if (get_config('mod_englishcentral', 'developmentmode')) {
+            return self::SDK_MODE_DEVELOPMENT;
+        } else {
+            return self::SDK_MODE_PRODUCTION;
+        }
     }
 
     public function get_header($accept) {
