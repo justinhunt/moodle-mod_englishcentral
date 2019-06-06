@@ -166,7 +166,7 @@ $string['videosearchhelp'] = 'Please type one or more search terms into the "Vid
 $string['videosearchprompt'] = 'Enter search terms here';
 $string['duration1'] = '<b>Short</b> (up to 1 minute)';
 $string['duration2'] = '<b>Medium</b> (1 to 3 minutes)';
-$string['duration3'] = '<b>Long</b> (over minutes)';
+$string['duration3'] = '<b>Long</b> (over 3 minutes)';
 
 $string['supporttitle'] = 'Request partnerID from EnglishCentral.com';
 $string['supportconfirm'] = 'The following information will be sent to EnglishCentral.com to request a partner ID and access keys:';
