@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die;
 if ($ADMIN->fulltree) {
     $plugin = 'mod_englishcentral';
     $link = new moodle_url('/mod/englishcentral/support.php');
-    $link = html_writer::tag('a', 'EnglishCentral.com', array('href' => $link, 'target' => 'EC'));
+    $link = html_writer::tag('a', 'Poodll.com (EnglishCentral demo request)', array('href' => $link, 'target' => 'EC'));
     // whenever possible, the support URL will display a form in the browser's preferred language
 
     $name = 'partnerid';

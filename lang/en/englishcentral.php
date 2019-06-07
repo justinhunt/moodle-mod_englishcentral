@@ -169,7 +169,7 @@ $string['duration2'] = '<b>Medium</b> (1 to 3 minutes)';
 $string['duration3'] = '<b>Long</b> (over 3 minutes)';
 
 $string['supporttitle'] = 'Request partnerID from EnglishCentral.com';
-$string['supportconfirm'] = 'The following information will be sent to EnglishCentral.com to request a partner ID and access keys:';
+$string['supportconfirm'] = 'The following information will be sent to Poodll.com (English Central demo request) to request a partner ID and access keys:';
 $string['supportsubject'] = 'Request for access to EC module for Moodle';
 $string['supportmessage'] = 'Please could you contact me regarding a partner ID and keys to use the EC module on my Moodle site.';
 
