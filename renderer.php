@@ -37,6 +37,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
     const SIGNUP_STANDARD = 1;
     const SIGNUP_CORPORATE = 2;
     const SIGNUP_SOLUTIONS = 3;
+    const SIGNUP_POODLL    = 4;
 
     /**
      * attach the $ec & $auth objects so they are accessible throughout this class
@@ -142,10 +143,10 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
      * generate link to config settings page
      */
     public function show_support_form() {
-        global $DB, $USER;
+        global $CFG, $DB, $USER;
 
-        // available from Aug 2018
-        $signup = self::SIGNUP_SOLUTIONS;
+        // available from June 2018
+        $signup = self::SIGNUP_POODLL;
 
         $fullname = fullname($USER);
         $subject = $this->ec->get_string('supportsubject');
@@ -158,52 +159,85 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         $output .= html_writer::start_tag('table', array('class' => 'supportconfirm', 'cellpadding' => 4, 'cellspacing' => 4));
         $output .= html_writer::tag('tr', html_writer::tag('th', get_string('name')).html_writer::tag('td', $fullname));
         $output .= html_writer::tag('tr', html_writer::tag('th', get_string('email')).html_writer::tag('td', $USER->email));
-        if ($USER->phone1) {
-            $output .= html_writer::tag('tr', html_writer::tag('th', get_string('phone1')).html_writer::tag('td', $USER->phone1));
-        }
-        if ($institution) {
-            $output .= html_writer::tag('tr', html_writer::tag('th', get_string('institution')).html_writer::tag('td', $institution));
-        }
-        if ($signup==self::SIGNUP_STANDARD) {
-            $output .= html_writer::tag('tr', html_writer::tag('th', get_string('subject', 'forum')).html_writer::tag('td', $subject));
-            $output .= html_writer::tag('tr', html_writer::tag('th', get_string('description')).html_writer::tag('td', $description));
 
-            $tag = '';
-            $url = 'https://www.englishcentral.com/support/contact-school-support';
-            $params = array('name' => $fullname,
-                            'email' => $USER->email,
-                            'phone' => $USER->phone1,
-                            'subject' => $subject,
-                            'institution' => $institution,
-                            'description' => $description,
-                            'type' => 'access_code_coupon');
+        $url = '';
+        $anchor = '';
+        $params = array();
+
+        if ($signup==self::SIGNUP_POODLL) {
+
+                $output .= html_writer::tag('tr', html_writer::tag('th', get_string('url')).html_writer::tag('td', $CFG->wwwroot));
+
+                $url = 'https://poodll.com/englishcentral-demo-request/';
+                $anchor = '';
+
+                $formid = '5677';
+                $postid = '5678';
+                $tag = 'wpcf7-f'.$formid.'-p'.$postid.'-o1';
+                $params = array('_wpcf7' => $formid,
+                                '_wpcf7_unit_tag' => $tag,
+                                '_wpcf7_locale' => 'en_US',
+                                '_wpcf7_version' => '5.0.5',
+                                '_wpcf7_container_post' => $postid,
+                                'your-name' => $fullname,
+                                'your-email' => $USER->email,
+                                'your-subject' => $subject,
+                                'moodle-url' => $CFG->wwwroot,
+                                'your-message' => $description);
         } else {
-            if ($signup==self::SIGNUP_CORPORATE) {
-                $url = 'https://corporate.englishcentral.com/moodle-signup-gordon';
-            } else { // self::SIGNUP_SOLUTIONS is default
-                $url = 'https://solutions.englishcentral.com/moodle-signup-gordon';
+
+            if ($USER->phone1) {
+                $output .= html_writer::tag('tr', html_writer::tag('th', get_string('phone1')).html_writer::tag('td', $USER->phone1));
             }
-            $formid = '11252';
-            $postid = '11207';
-            $tag = 'wpcf7-f'.$formid.'-p'.$postid.'-o6';
-            $params = array('_wpcf7' => $formid,
-                            '_wpcf7_unit_tag' => $tag,
-                            '_wpcf7_locale' => 'en_US',
-                            '_wpcf7_version' => '5.0.3',
-                            '_wpcf7_container_post' => $postid,
-                            'your-name' => $fullname,
-                            'your-email' => $USER->email,
-                            'school-name' => $institution,
-                            'number-student' => 100,
-                            'contact-number' => (empty($USER->phone1) ? '0123456789': $USER->phone1));
+            if ($institution) {
+                $output .= html_writer::tag('tr', html_writer::tag('th', get_string('institution')).html_writer::tag('td', $institution));
+            }
+
+            if ($signup==self::SIGNUP_STANDARD) {
+                $output .= html_writer::tag('tr', html_writer::tag('th', get_string('subject', 'forum')).html_writer::tag('td', $subject));
+                $output .= html_writer::tag('tr', html_writer::tag('th', get_string('description')).html_writer::tag('td', $description));
+
+                $url = 'https://www.englishcentral.com/support/contact-school-support';
+                $params = array('name' => $fullname,
+                                'email' => $USER->email,
+                                'phone' => $USER->phone1,
+                                'subject' => $subject,
+                                'institution' => $institution,
+                                'description' => $description,
+                                'type' => 'access_code_coupon');
+            } else {
+                if ($signup==self::SIGNUP_CORPORATE) {
+                    $url = 'https://corporate.englishcentral.com/moodle-signup-gordon';
+                } else { // self::SIGNUP_SOLUTIONS is default
+                    $url = 'https://solutions.englishcentral.com/moodle-signup-gordon';
+                }
+                $anchor = 'moodle-cta';
+                $formid = '11252';
+                $postid = '11207';
+                $tag = 'wpcf7-f'.$formid.'-p'.$postid.'-o6';
+                $params = array('_wpcf7' => $formid,
+                                '_wpcf7_unit_tag' => $tag,
+                                '_wpcf7_locale' => 'en_US',
+                                '_wpcf7_version' => '5.0.3',
+                                '_wpcf7_container_post' => $postid,
+                                'your-name' => $fullname,
+                                'your-email' => $USER->email,
+                                'school-name' => $institution,
+                                'number-student' => 100,
+                                'contact-number' => (empty($USER->phone1) ? '0123456789': $USER->phone1));
+            }
         }
+
         $button = $this->single_button(new moodle_url($url, $params), get_string('continue'), 'post');
-        if ($tag) {
+
+        // remove sesskey from $button; it's not necessary and could be a security risk
+        $button = preg_replace('/<input[^>]*name="sesskey"[^>]*>/', '', $button);
+
+        if ($anchor) {
             // single_button with "post" does not allow #anchor, so we add it manually
-            $button = str_replace($url, "$url/#moodle-cta", $button);
-            // remove sesskey; it's not necessary and could be a security risk
-            $button = preg_replace('/<input[^>]*name="sesskey"[^>]*>/', '', $button);
+            $button = str_replace($url, "$url/#$anchor", $button);
         }
+
         $output .= html_writer::tag('tr', html_writer::tag('th', '').html_writer::tag('td', $button));
         $output .= html_writer::end_tag('table');
         return $output;
@@ -580,7 +614,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
 
         // Create SQL to fetch aggregate items from the EC attempts table.
         $select = 'userid,'.
-                  'SUM(watchcomplete) + SUM(learncount)  + SUM(speakcount) AS percent,'.
+                  'SUM(watchcomplete) + SUM(learncount) + SUM(speakcount) AS percent,'.
                   'SUM(watchcomplete) AS watch,'.
                   'SUM(learncount) AS learn,'.
                   'SUM(speakcount) AS speak';

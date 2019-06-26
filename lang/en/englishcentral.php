@@ -166,10 +166,10 @@ $string['videosearchhelp'] = 'Please type one or more search terms into the "Vid
 $string['videosearchprompt'] = 'Enter search terms here';
 $string['duration1'] = '<b>Short</b> (up to 1 minute)';
 $string['duration2'] = '<b>Medium</b> (1 to 3 minutes)';
-$string['duration3'] = '<b>Long</b> (over minutes)';
+$string['duration3'] = '<b>Long</b> (over 3 minutes)';
 
 $string['supporttitle'] = 'Request partnerID from EnglishCentral.com';
-$string['supportconfirm'] = 'The following information will be sent to EnglishCentral.com to request a partner ID and access keys:';
+$string['supportconfirm'] = 'The following information will be sent to Poodll.com (English Central demo request) to request a partner ID and access keys:';
 $string['supportsubject'] = 'Request for access to EC module for Moodle';
 $string['supportmessage'] = 'Please could you contact me regarding a partner ID and keys to use the EC module on my Moodle site.';
 
@@ -268,7 +268,7 @@ $string['returntoreports'] ='Return to reports';
 $string['selectanother'] ='Back to Course';
 $string['sessionactivetime'] ='Session active time';
 $string['sessiongrade'] ='Session grade';
-$string['sessionresults'] ='Session gesults';
+$string['sessionresults'] ='Session results';
 $string['sessionscore'] ='Average score';
 $string['sessionscore'] ='Session Score';
 $string['start'] ='Start';

@@ -66,11 +66,23 @@ class auth {
      */
     function __construct($ec) {
 
+        if (empty($ec->config)) {
+            $this->config = new stdClass();
+        }
+
         $this->ec = $ec;
-        $this->partnerid = $ec->config->partnerid;
-        $this->consumerkey = $ec->config->consumerkey;
-        $this->consumersecret = $ec->config->consumersecret;
-        $this->encryptedsecret = $ec->config->encryptedsecret;
+
+        $fields = array('partnerid',
+                        'consumerkey',
+                        'consumersecret',
+                        'encryptedsecret');
+        foreach ($fields as $field) {
+            if (empty($ec->config->$field)) {
+                $this->$field = '';
+            } else {
+                $this->$field = $ec->config->$field;
+            }
+        }
 
         if ($this->get_sdk_mode() == self::SDK_MODE_DEVELOPMENT) {
             $this->domain = 'qaenglishcentral.com';
