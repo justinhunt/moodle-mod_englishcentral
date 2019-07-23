@@ -326,8 +326,26 @@ class auth {
         return $default;
     }
 
-    public function get_site_language() {
-        return substr(current_language(), 0, 2);
+    public function get_site_language($default='en') {
+        $lang = substr(current_language(), 0, 2);
+        $langs = array(
+            // only the following languages are available on the EC site
+            'en', // English
+            'es', // Spanish    Español
+            'ja', // Japanese   日本語
+            'ko', // Korean     한국어
+            'pt', // Portuguese Português
+            'ru', // Russian    Русский
+            'tr', // Turkish    Türkçe
+            'vi', // Vietnamese Tiếng Việt
+            'zh', // Chinese    简体中文
+            'he', // Hebrew     עִברִית 
+            'ar'  // Arabic     عربى 
+        );
+        if (in_array($lang, $langs)) {
+            return $lang;
+        }
+        return $default;
     }
 
     public function get_fetch_url() {

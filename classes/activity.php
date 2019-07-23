@@ -145,8 +145,10 @@ class activity {
     public function get_videoinfo_url($escaped=null) {
         $lang = substr(current_language(), 0, 2);
         switch ($lang) {
+
             case 'en': // English
                 return 'https://www.englishcentral.com/videodetails';
+
             case 'ar': // Arabic
             case 'es': // Spanish
             case 'he': // Hebrew
@@ -156,10 +158,13 @@ class activity {
             case 'tr': // Turkish
             case 'vi': // Vietnamese
                 return "https://$lang.englishcentral.com/videodetails";
+
             case 'zh': // Chinese
                 return 'https://www.englishcentralchina.com/videodetails';
+
             default:
-                'https://www.englishcentral.com/videodetails?setLanguage='.$lang;
+                return 'https://www.englishcentral.com/videodetails';
+                // 'https://www.englishcentral.com/videodetails?setLanguage='.$lang;
         }
     }
 
