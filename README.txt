@@ -41,7 +41,7 @@ To INSTALL the EnglishCentral module
        cd /PATH/TO/MOODLE
        echo '/mod/englishcentral/' >> '.git/info/exclude'
 
-    3. (continue with step 3 below)
+      (continue with step 3 below)
 
     ----------------
     Using ZIP
@@ -56,7 +56,7 @@ To INSTALL the EnglishCentral module
        Then upload, or move, the "englishcentral" folder into the "mod" folder on
        your Moodle >= 2.9 site, to create a new folder at "mod/englishcentral"
 
-    3. (continue with steps 3 and 4 below)
+       (continue with step 3 below)
 
     ----------------
     Using GIT or ZIP
@@ -107,7 +107,7 @@ To UPDATE the EnglishCentral module
 
     1. Get the latest version of this plugin
 
-       cd /PATH/TO/MOODLE/mod/data/field/admin
+       cd /PATH/TO/MOODLE/mod/englishcentral
        git pull
 
     2. Log in to Moodle as administrator to initiate the update
@@ -116,7 +116,7 @@ To UPDATE the EnglishCentral module
     Using ZIP
     ----------------
 
-    Repeat steps 1, 2, 3 and 4 of the ZIP install procedure (see above)
+    Repeat steps 1 - 4 of the ZIP install procedure (see above)
 
 =================================================
 to CONFIGURE the EnglishCentral module
@@ -128,7 +128,7 @@ The settings for the EnglishCentral module can be found at:
 
 These values for these settings can be obtained from EnglishCentral by filling out the form on the following page:
 
-    https://blog.englishcentral.com/moodle-signup-bateson
+    https://poodll.com/englishcentral-demo-request/
 
 =================================================
 to Add an EnglishCentral Activity to a Course
@@ -163,17 +163,16 @@ to Add videos to an EnglishCentral activity
 
     2. Enter one or more search terms in the search box, and click the "Search" button.
 
-    3. Click the large plus-sign, "+", next to any videos that you wish to add to this 
-activity.
+    3. Click the large plus-sign, "+", next to any videos that you wish to add to this activity.
 
 =================================================
-to View videos to an EnglishCentral activity
+to View videos in an EnglishCentral activity
 =================================================
 
     1. Navigate to an EnglishCentral activity in a Moodle course
 
     2. Chose a video you wish to watch and click the thumbnail of that video.
 
-    3. After watching the video, try the activities to learn words or speak lines.
+    3. After watching the video, try the activities to learn words and speak lines.
 
     4. Continue watching videos, learning words and speaking lines until you have reached all the study goals and achieved a total score of 100%.
