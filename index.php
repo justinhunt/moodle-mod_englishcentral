@@ -57,12 +57,12 @@ echo $OUTPUT->heading(get_string('modulenameplural', 'englishcentral'), 2);
 if ($englishcentrals = get_all_instances_in_course('englishcentral', $course)) {
 
     $table = new html_table();
-    if ($course->format == 'weeks') {
-        $table->head  = array(get_string('week'), get_string('name'));
+    $usessections = course_get_format($course)->uses_sections();
+    $formatname = 'format_' . $course->format;
+    if ($usessections) {
+        $sectionname = get_string('sectionname', $formatname);
+        $table->head  = array($sectionname, get_string('name'));
         $table->align = array('center', 'left');
-    } else if ($course->format == 'topics') {
-        $table->head  = array(get_string('topic'), get_string('name'));
-        $table->align = array('center', 'left', 'left', 'left');
     } else {
         $table->head  = array(get_string('name'));
         $table->align = array('left', 'left', 'left');
@@ -81,7 +81,11 @@ if ($englishcentrals = get_all_instances_in_course('englishcentral', $course)) {
         }
         $link = html_writer::link($link, $label, $params);
 
-        if ($course->format == 'weeks' || $course->format == 'topics') {
+        if ($usessections) {
+            // Formats can use special name for section 0.
+            if ($englishcentral->section == 0) {
+                $englishcentral->section = get_string('section0name', $formatname);
+            }
             $table->data[] = array($englishcentral->section, $link);
         } else {
             $table->data[] = array($link);
