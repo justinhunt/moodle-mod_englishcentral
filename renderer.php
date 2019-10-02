@@ -244,6 +244,19 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
     }
 
     /**
+     * Show the  some text in a box
+     */
+    public function show_box_text($boxtext) {
+        $output = '';
+        if (trim(strip_tags($boxtext))) {
+            $output .= $this->output->box_start('mod_introbox');
+            $output .= $boxtext;
+            $output .= $this->output->box_end();
+        }
+        return $output;
+    }
+
+    /**
      * Show the introduction as entered on edit page
      */
     public function show_intro() {

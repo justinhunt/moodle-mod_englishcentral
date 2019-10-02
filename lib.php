@@ -114,7 +114,7 @@ function englishcentral_process_formdata(stdClass $data, mod_englishcentral_mod_
         $data->timemodified = $data->timecreated;
         $data->id = $DB->insert_record($table, $data);
     } else {
-        // update exisiting instance
+        // update existing instance
         $data->id = $data->instance;
         $data->timemodified = time();
         $DB->update_record($table, $data);
@@ -637,14 +637,14 @@ function englishcentral_extend_settings_navigation(settings_navigation $settings
  * @return mixed   TRUE if completed, FALSE if not, or $type if no conditions are set
  */
 function englishcentral_get_completion_state($course, $cm, $userid, $type) {
-    global $DB;
+    global $CFG, $DB;
 
     // set default return $state
     $state = $type;
 
     // get the englishcentral record
     if ($ec = $DB->get_record('englishcentral', array('id' => $cm->instance))) {
-        $ec = \mod_englishcentral\activity::create($instance, $cm, $course);
+        $ec = \mod_englishcentral\activity::create($ec, $cm, $course);
 
         // get grade, if necessary
         $grade = false;
