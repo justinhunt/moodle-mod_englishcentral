@@ -66,6 +66,9 @@ $PAGE->set_url('/mod/englishcentral/view.php', array('id' => $cm->id));
 $PAGE->set_context($context);
 $PAGE->set_pagelayout('course');
 
+// Add standard JS keep the session alive (Moodle >= 2.9).
+\core\session\manager::keepalive();
+
 $ec = \mod_englishcentral\activity::create($instance, $cm, $course, $context);
 $auth = \mod_englishcentral\auth::create($ec);
 

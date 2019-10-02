@@ -697,6 +697,34 @@
     color: transparent;
 }
 
+/** jQuery dialog styles (for reporting errors) */
+#page-mod-englishcentral-view .ui-dialog {
+    background-color: #fff0f0; /* faint red */
+    border:    2px solid #822; /* dark red */
+    border-radius:        6px;
+    padding:              6px;
+    z-index:            10000;
+}
+#page-mod-englishcentral-view .ui-dialog .ui-dialog-titlebar-close {
+    display:             none;
+}
+#page-mod-englishcentral-view .ui-dialog .ui-widget-header {
+    background:          #c99; /* light red */
+    border:    1px solid #966; /* dark red */
+    padding:      0.2em 0.4em;
+}
+#page-mod-englishcentral-view .ui-dialog .ui-dialog-content {
+    font-size:          0.9em;
+}
+#page-mod-englishcentral-view .ui-dialog-buttonpane {
+    background-color: #fff0f0; /* faint red (matches ui-dialog) */
+}
+
+#page-mod-englishcentral-view .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset {
+    float:               none;
+    text-align:        center;
+}
+
 /** CSS for iPhone 6/7/8 **/
 @media screen and (min-width: 370px) {
     #page-mod-englishcentral-view .activity-thumbnail {
