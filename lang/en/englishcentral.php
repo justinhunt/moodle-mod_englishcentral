@@ -281,7 +281,6 @@ $string['value'] ='Value';
 $string['viewreport'] ='Details';
 $string['viewreports'] ='View reports';
 
-
 //privacy api strings
 $string['privacy:metadata:attempttable']='The table in which the user\'s English Central attempt data is stored.';
 $string['privacy:metadata:attemptid']='The unique identifier of a user\'s English Central activity attempt.';
@@ -309,3 +308,5 @@ $string['privacy:metadata:timecreated']='The time the session was created';
 $string['privacy:metadata:status']='The activity status';
 $string['privacy:metadata:englishcentralcom:accountid']='The English Central plugin matches the Moodle userid with a unique English Central account id. The account id is stored at englishcentral.com.';
 $string['privacy:metadata:englishcentralcom']='The English Central plugin stores session data against the Moodle users English Central account id.';
+
+$string['noenglishcentrals'] = 'Sorry, there are no EnglishCentral activities in this course.';

@@ -54,10 +54,12 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         {"key": "copyright",          "component": VIEW.plugin},
         {"key": "description",        "component": VIEW.plugin},
         {"key": "duration",           "component": "search"},
+        {"key": "error",              "component": "error"},
         {"key": "goals",              "component": VIEW.plugin},
         {"key": "hideadvanced",       "component": "form"},
         {"key": "intermediate",       "component": VIEW.plugin},
         {"key": "level",              "component": VIEW.plugin},
+        {"key": "ok",                 "component": "moodle"},
         {"key": "search",             "component": "moodle"},
         {"key": "showadvanced",       "component": "form"},
         {"key": "topics",             "component": VIEW.plugin},
@@ -75,10 +77,12 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         VIEW.str.copyright = s[i++];
         VIEW.str.description = s[i++];
         VIEW.str.duration = s[i++];
+        VIEW.str.error = s[i++];
         VIEW.str.goals = s[i++];
         VIEW.str.hideadvanced = s[i++];
         VIEW.str.intermediate = s[i++];
         VIEW.str.level = s[i++];
+        VIEW.str.ok = s[i++];
         VIEW.str.search = s[i++];
         VIEW.str.showadvanced = s[i++];
         VIEW.str.topics = s[i++];
@@ -304,16 +308,52 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
                             "action": "storeresults",
                             "sesskey": VIEW.moodlesesskey
                         },
-                        "dataType": "html",
-                        "success": function(html) {
-                            if (html.indexOf("englishcentral_progress") < 0) {
-                                // probably an error message
-                                $(".englishcentral_progress").html(html);
+                        "dataType": "html"
+                    }).done(function(html){
+
+                        // Is this a PHP error reported as a JSON string?
+                        // e.g. a session timeout.
+                        if (html.match(new RegExp("^\\{.*\\}$"))) {
+                            html = html.replace(new RegExp("\\n", "g"), "\\\\n");
+                            html = JSON.parse(html);
+                            if (html.error) {
+                                html = html.error.replace(new RegExp("\\n", "g"), "<br>");
                             } else {
-                                $(".englishcentral_progress").replaceWith(html);
+                                html = html.toString().substr(0, 200);
+                                html = 'Sorry, there was an unknown error on the server.\n' + html;
                             }
+
+                            if (VIEW.dialog) {
+                                if (VIEW.dialog.dialog("isOpen")) {
+                                    VIEW.dialog.dialog("close");
+                                }
+                            } else {
+                                VIEW.dialog = $("<div></div>").addClass("dialog");
+                                VIEW.dialog.dialog({"autoOpen": false});
+                            }
+                            VIEW.dialog.html(html);
+
+                            VIEW.dialog.dialog("option", "title", VIEW.str.error);
+                            VIEW.dialog.dialog("option", "buttons", [{
+                                "text": VIEW.str.ok,
+                                //"icon": "ui-icon-check",
+                                "click": function(){
+                                    $(this).dialog("close");
+                                    var href = VIEW.viewajaxurl.replace(".ajax", "");
+                                    window.location.href = href + "?id=" + VIEW.cmid;
+                                }
+                            }]);
+                            VIEW.dialog.dialog("open");
+                            return false;
                         }
-                    }).then(function(){
+
+                        if (html.indexOf("englishcentral_progress") < 0) {
+                            // probably an error message
+                            $(".englishcentral_progress").html(html);
+                        } else {
+                            $(".englishcentral_progress").replaceWith(html);
+                        }
+
                         // AJAX call to send the data.dialogID to the Moodle server
                         // and receive the html for the updated status of this video
                         $.ajax({
@@ -328,12 +368,11 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
                                 "action": "showstatus",
                                 "sesskey": VIEW.moodlesesskey
                             },
-                            "dataType": "html",
-                            "success": function(html) {
-                                var thumb = $(".thumb-frame[data-url$=" + data.dialogID + "]");
-                                thumb.find(".watch-status, .learn-status, .speak-status").remove();
-                                thumb.find(".play-icon").after(html);
-                            }
+                            "dataType": "html"
+                        }).done(function(html) {
+                            var thumb = $(".thumb-frame[data-url$=" + data.dialogID + "]");
+                            thumb.find(".watch-status, .learn-status, .speak-status").remove();
+                            thumb.find(".play-icon").after(html);
                         });
                     });
                 });
