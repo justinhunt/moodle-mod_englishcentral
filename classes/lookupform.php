@@ -33,9 +33,7 @@ namespace mod_pchat\attempt;
 
 namespace mod_englishcentral;
 
-
-require_once($CFG->libdir . '/formslib.php');
-
+require_once($CFG->dirroot.'/lib/formslib.php');
 
 /**
  * Account lookup form.
@@ -46,7 +44,6 @@ require_once($CFG->libdir . '/formslib.php');
  */
 class lookupform extends \moodleform {
 
-
     /**
      * Add the required basic elements to the form.
      *
@@ -55,25 +52,24 @@ class lookupform extends \moodleform {
         $mform = $this->_form;
         $users = $this->_customdata['users'];
 
-
-        $mform->addElement('hidden', 'id');
-        $mform->setType('id', PARAM_INT);
-
-
-        $options = [
-                'multiple'=>false
-        ];
-
-        $selectusers=array();
-        foreach ($users as $user){
-            $selectusers[$user->id] =  fullname($user);
+        // set up list of users (userid => fullname)
+        foreach ($users as $userid => $user) {
+            $users[$userid] = fullname($user);
         }
-        $mform->addElement('autocomplete', 'user', get_string('user'),$selectusers, $options);
-        $mform->addRule('user', null, 'required', null, 'client');
+
+        $name = 'id';
+        $value = optional_param($name, 0, PARAM_INT);
+        $mform->addElement('hidden', $name, $value);
+        $mform->setType($name, PARAM_INT);
+
+        $name = 'userid';
+        $label = get_string('fullnameuser');
+        $mform->addElement('autocomplete', $name, $label, $users);
+        $mform->addRule($name, null, 'required', null, 'client');
+        $mform->setType($name, PARAM_INT);
 
         //add the action buttons
         $this->add_action_buttons(false, get_string('search'));
-
     }
 
     public final function definition_after_data() {

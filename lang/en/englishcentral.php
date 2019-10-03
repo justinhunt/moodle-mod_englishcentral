@@ -136,6 +136,7 @@ $string['pastactivityclose'] = 'This activity closed at {$a}';
 $string['pastvideoclose'] = 'The videos were available until {$a}';
 $string['pastvideoopen'] = 'The videos became available at {$a}';
 
+$string['noenglishcentrals'] = 'Sorry, there are no EnglishCentral activities in this course.';
 $string['notavailable'] = 'Sorry, this activity is not currently avialable to you.';
 $string['notviewable'] = 'Sorry, the videos for this actiity are not currently available to you.';
 
@@ -309,8 +310,7 @@ $string['privacy:metadata:status']='The activity status';
 $string['privacy:metadata:englishcentralcom:accountid']='The English Central plugin matches the Moodle userid with a unique English Central account id. The account id is stored at englishcentral.com.';
 $string['privacy:metadata:englishcentralcom']='The English Central plugin stores session data against the Moodle users English Central account id.';
 
-$string['noenglishcentrals'] = 'Sorry, there are no EnglishCentral activities in this course.';
-$string['account_lookup'] = "Account Lookup";
-$string['lookup_instructions'] = "Choose a user and press 'Search' to see the user's EnglishCentral account id.";
-$string['lookup_results'] = '{$a->fullname}\'s EnglishCentral account id is: <i>{$a->accountid}</i> .';
-$string['lookup_empty_result'] = 'No EnglishCentral account id was found for User: {$a->fullname}.';
+$string['accountlookup'] = "Account Lookup";
+$string['lookupinstructions'] = "Select a user and press 'Search' to see the user's EnglishCentral account id.";
+$string['lookupresults'] = 'The EnglishCentral account id for {$a->fullname} is: <i>{$a->accountid}</i> .';
+$string['lookupemptyresult'] = 'No EnglishCentral account id was found for user: {$a->fullname}.';
