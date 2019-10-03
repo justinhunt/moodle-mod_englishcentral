@@ -378,7 +378,7 @@ function englishcentral_reset_userdata($data) {
 
         $params = array ("course" => $data->courseid);
         $DB->delete_records_select('englishcentral_attempts', "ecid IN ($englishcentralssql)", $params);
-        $DB->delete_records_select('englishcentral_phs', "ecid IN ($englishcentralssql)", $params);
+        $DB->delete_records_select('englishcentral_phonemes', "ecid IN ($englishcentralssql)", $params);
 
         // remove all grades from gradebook
         if (empty($data->reset_gradebook_grades)) {
