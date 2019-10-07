@@ -55,28 +55,9 @@ $renderer->attach_activity_and_auth($ec, $auth);
 echo $renderer->header($ec->get_string('accountlookup'));
 
 if ($users = get_enrolled_users($context)) {
-
-    $mform = new \mod_englishcentral\lookupform(null, array('users' => $users));
+    $mform = new \mod_englishcentral\lookupform($PAGE->url->out(), array('users' => $users));
     $mform->set_data(array('id' => $id));
     $mform->display();
-
-    echo $renderer->show_box_text($ec->get_string('lookupinstructions'));
-
-    //handle user request
-    if ($data = $mform->get_data()) {
-        if (array_key_exists($data->userid, $users)) {
-
-            $a = new \stdClass();
-            $a->fullname = fullname($users[$data->userid]);
-
-            $accountid = $DB->get_field('englishcentral_accountids', 'accountid', array('userid' => $data->userid));
-            if ($a->accountid = $accountid) {
-                echo $renderer->show_box_text($ec->get_string('lookupresults', $a));
-            } else {
-                echo $renderer->show_box_text( $ec->get_string('lookupemptyresult', $a));
-            }
-        }
-    }
 } else {
     echo $renderer->notification(get_string('nousersfound'), 'notifyproblem');
     $url = new moodle_url('/mod/englishcentral/view.php', array('id' => $id));

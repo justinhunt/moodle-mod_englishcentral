@@ -311,6 +311,7 @@ $string['privacy:metadata:englishcentralcom:accountid']='The English Central plu
 $string['privacy:metadata:englishcentralcom']='The English Central plugin stores session data against the Moodle users English Central account id.';
 
 $string['accountlookup'] = "Account Lookup";
-$string['lookupinstructions'] = "Select a user and press 'Search' to see the user's EnglishCentral account id.";
-$string['lookupresults'] = 'The EnglishCentral account id for {$a->fullname} is: <i>{$a->accountid}</i> .';
+$string['accountid'] = "EnglishCentral ID";
+$string['lookupinstructions'] = "Select a user and press 'Search' to see that user's EnglishCentral account id.";
+$string['lookupresults'] = 'The EnglishCentral account id for {$a->fullname} is: <big><b>{$a->accountid}</b></big>';
 $string['lookupemptyresult'] = 'No EnglishCentral account id was found for user: {$a->fullname}.';

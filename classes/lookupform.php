@@ -49,6 +49,8 @@ class lookupform extends \moodleform {
      *
      */
     public final function definition() {
+        global $DB;
+
         $mform = $this->_form;
         $users = $this->_customdata['users'];
 
@@ -57,16 +59,35 @@ class lookupform extends \moodleform {
             $users[$userid] = fullname($user);
         }
 
-        $name = 'id';
-        $value = optional_param($name, 0, PARAM_INT);
-        $mform->addElement('hidden', $name, $value);
-        $mform->setType($name, PARAM_INT);
+        // cache the plugin name (it's rather long)
+        $plugin = 'mod_englishcentral';
+
+        $name = 'lookupinstructions';
+        $label = get_string($name, $plugin);
+        $mform->addElement('static', $name, '', \html_writer::tag('p', $label));
 
         $name = 'userid';
         $label = get_string('fullnameuser');
         $mform->addElement('autocomplete', $name, $label, $users);
         $mform->addRule($name, null, 'required', null, 'client');
         $mform->setType($name, PARAM_INT);
+
+        if ($userid = optional_param('userid', 0, PARAM_INT)) {
+            if (array_key_exists($userid, $users)) {
+                $a = (object)array(
+                    'fullname' => $users[$userid],
+                    'accountid' => $DB->get_field('englishcentral_accountids', 'accountid', array('userid' => $userid))
+                );
+                if ($a->accountid) {
+                    $str = 'lookupresults';
+                } else {
+                    $str = 'lookupemptyresult';
+                }
+                $name = 'accountid';
+                $label = get_string($name, $plugin);
+                $mform->addElement('static', $name, $label, get_string($str, $plugin, $a));
+            }
+        }
 
         //add the action buttons
         $this->add_action_buttons(false, get_string('search'));
