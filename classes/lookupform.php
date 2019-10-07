@@ -56,7 +56,8 @@ class lookupform extends \moodleform {
 
         // set up list of users (userid => fullname)
         foreach ($users as $userid => $user) {
-            $users[$userid] = fullname($user);
+            $url = new \moodle_url('/user/profile.php', array('id' => $userid));
+            $users[$userid] = \html_writer::link($url, fullname($user), array('target' => '_blank'));
         }
 
         // cache the plugin name (it's rather long)
@@ -90,7 +91,7 @@ class lookupform extends \moodleform {
         }
 
         //add the action buttons
-        $this->add_action_buttons(false, get_string('search'));
+        $this->add_action_buttons(true, get_string('search'));
     }
 
     public final function definition_after_data() {
