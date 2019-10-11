@@ -873,11 +873,11 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         switch (true) {
             case ($order=='ASC'):
                 $text = 'sortdesc';
-                $icon = 't/sort_desc';
+                $icon = 't/sort_asc';
                 break;
             case ($order=='DESC'):
                 $text = 'sortasc';
-                $icon = 't/sort_asc';
+                $icon = 't/sort_desc';
                 break;
             case ($sort=='firstname'):
             case ($sort=='lastname'):
