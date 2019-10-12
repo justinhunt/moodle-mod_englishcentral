@@ -745,20 +745,11 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
     protected function uasort_percent($a, $b) {
         $anum = intval($a->percent);
         $bnum = intval($b->percent);
-        if ($this->order=='ASC') {
-            if ($anum < $bnum) {
-                return -1;
-            }
-            if ($anum > $bnum) {
-                return 1;
-            }
-        } else {
-            if ($anum < $bnum) {
-                return 1;
-            }
-            if ($anum > $bnum) {
-                return -1;
-            }
+        if ($anum > $bnum) {
+            return ($this->order=='ASC' ? 1 : -1);
+        }
+        if ($anum < $bnum) {
+            return ($this->order=='ASC' ? -1 : 1);
         }
         return 0;
     }
