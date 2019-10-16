@@ -54,7 +54,7 @@ $renderer->attach_activity_and_auth($ec, $auth);
 
 echo $renderer->header($ec->get_string('accountlookup'));
 
-if (! $users = get_enrolled_users($context)) {
+if ($users = get_enrolled_users($context)) {
 
     $mform = new \mod_englishcentral\lookupform(null, array('users' => $users));
     $mform->set_data(array('id' => $id));
