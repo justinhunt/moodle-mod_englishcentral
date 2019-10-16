@@ -50,13 +50,16 @@ define('MOD_ENGLISHCENTRAL_GRADENONE',    4);
  */
 function englishcentral_supports($feature) {
     switch ($feature) {
-        case FEATURE_MOD_INTRO:         return true;
-        case FEATURE_SHOW_DESCRIPTION:  return true;
-        case FEATURE_GRADE_HAS_GRADE:   return true;
+        case FEATURE_BACKUP_MOODLE2:    return true;
         case FEATURE_COMPLETION_HAS_RULES: return true;
         case FEATURE_COMPLETION_TRACKS_VIEWS: return true;
+        case FEATURE_GRADE_HAS_GRADE:   return true;
         case FEATURE_GRADE_OUTCOMES:    return true;
-        case FEATURE_BACKUP_MOODLE2:    return true;
+        case FEATURE_GROUPINGS:         return true;
+        case FEATURE_GROUPMEMBERSONLY:  return true;
+        case FEATURE_GROUPS:            return true;
+        case FEATURE_MOD_INTRO:         return true;
+        case FEATURE_SHOW_DESCRIPTION:  return true;
         default:                        return null;
     }
 }
@@ -378,7 +381,7 @@ function englishcentral_reset_userdata($data) {
 
         $params = array ("course" => $data->courseid);
         $DB->delete_records_select('englishcentral_attempts', "ecid IN ($englishcentralssql)", $params);
-        $DB->delete_records_select('englishcentral_phs', "ecid IN ($englishcentralssql)", $params);
+        $DB->delete_records_select('englishcentral_phonemes', "ecid IN ($englishcentralssql)", $params);
 
         // remove all grades from gradebook
         if (empty($data->reset_gradebook_grades)) {
@@ -684,14 +687,14 @@ function englishcentral_get_completion_state($course, $cm, $userid, $type) {
                     break;
                 case 'completiongoals':
                     // if goals have been set up, calculate total percent
-                    $progress = $this->ec->get_progress();
-                    if ($state = ($this->ec->watchgoal + $this->ec->learngoal + $this->ec->speakgoal)) {
+                    $progress = $ec->get_progress();
+                    if ($state = ($ec->watchgoal + $ec->learngoal + $ec->speakgoal)) {
                         $state = (($progress->watch + $progress->learn + $progress->speak) / $state);
                         $state = (round(100 * $state, 0) >= 100);
                     } else {
                         $state = false; // unusual - no goals have been set up !!
                     }
-                    if ($goals = ($this->ec->watchgoal + $this->ec->learngoal + $this->ec->speakgoal)) {
+                    if ($goals = ($ec->watchgoal + $ec->learngoal + $ec->speakgoal)) {
 						$state = 0;
 						$state += max(0, min($progress->watch, $ec->watchgoal));
 						$state += max(0, min($progress->learn, $ec->learngoal));

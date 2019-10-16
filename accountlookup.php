@@ -36,7 +36,7 @@ require_login($course, false, $cm);
 $context = context_module::instance($cm->id);
 require_capability('mod/englishcentral:manageattempts', $context);
 
-// trigger event "viewed account lookup"?
+// TODO: trigger event "viewed account lookup"?
 
 //set up the page object
 $PAGE->set_url('/mod/englishcentral/accountlookup.php', array('id' => $id));
@@ -52,35 +52,18 @@ $auth = \mod_englishcentral\auth::create($ec);
 $renderer = $PAGE->get_renderer($ec->plugin);
 $renderer->attach_activity_and_auth($ec, $auth);
 
-echo $renderer->header($ec->get_string('accountlookup'));
-
 if ($users = get_enrolled_users($context)) {
-
-    $mform = new \mod_englishcentral\lookupform(null, array('users' => $users));
-    $mform->set_data(array('id' => $id));
-    $mform->display();
-
-    echo $renderer->show_box_text($ec->get_string('lookupinstructions'));
-
-    //handle user request
-    if ($data = $mform->get_data()) {
-        if (array_key_exists($data->userid, $users)) {
-
-            $a = new \stdClass();
-            $a->fullname = fullname($users[$data->userid]);
-
-            $accountid = $DB->get_field('englishcentral_accountids', 'accountid', array('userid' => $data->userid));
-            if ($a->accountid = $accountid) {
-                echo $renderer->show_box_text($ec->get_string('lookupresults', $a));
-            }else{
-                echo $renderer->show_box_text( $ec->get_string('lookupemptyresult', $a));
-            }
-        }
+    $mform = new \mod_englishcentral\lookupform($PAGE->url->out(), array('users' => $users));
+    if ($mform->is_cancelled()) {
+        redirect($ec->get_view_url());
     }
-} else {
-    echo $renderer->notification(get_string('nousersfound'), 'notifyproblem');
-    $url = new moodle_url('/mod/englishcentral/view.php', array('id' => $id));
-    echo $renderer->continue_button($url);
 }
 
+echo $renderer->header($ec->get_string('accountlookup'));
+if ($users) {
+    $mform->display();
+} else {
+    echo $renderer->notification(get_string('nousersfound'), 'notifyproblem');
+    echo $renderer->continue_button($ec->get_view_url());
+}
 echo $renderer->footer();

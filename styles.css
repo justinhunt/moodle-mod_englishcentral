@@ -916,12 +916,12 @@
         overflow:         hidden;
         text-overflow:  ellipsis;
         white-space:      nowrap;
-        width:             240px;
+        width:             250px;
     }
 
     #page-mod-englishcentral-report .bars {
         clear:             right;
         padding-top:         4px;
-        width:calc(100% - 248px);
+        width:calc(100% - 258px);
     }
 }

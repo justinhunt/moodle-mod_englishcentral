@@ -713,6 +713,19 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
             $item->total = (min($goals->watch, $item->watch) +
                             min($goals->learn, $item->learn) +
                             min($goals->speak, $item->speak));
+            if ($goals->total==0) {
+                $item->percent = '';
+            } else {
+                $item->percent = round(100 * min(1, $item->total / $goals->total)).'%';
+            }
+            $items[$userid] = $item;
+        }
+
+        if ($this->sort=='percent') {
+            uasort($items, array($this, 'uasort_percent'));
+        }
+
+        foreach ($items as $userid => $item) {
             $output .= $this->show_progress_report_item($item, $goals);
         }
 
@@ -729,6 +742,18 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         return $output;
     }
 
+    protected function uasort_percent($a, $b) {
+        $anum = intval($a->percent);
+        $bnum = intval($b->percent);
+        if ($anum > $bnum) {
+            return ($this->order=='ASC' ? 1 : -1);
+        }
+        if ($anum < $bnum) {
+            return ($this->order=='ASC' ? -1 : 1);
+        }
+        return 0;
+    }
+
     protected function show_progress_report_item($item, $goals) {
         $output = '';
         $output .= html_writer::tag('dt', $this->show_progress_report_user($item, $goals), array('class' => 'user'));
@@ -737,16 +762,9 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
     }
 
     protected function show_progress_report_user($item, $goals) {
-        global $DB;
         $output = '';
-        if ($goals->total==0) {
-            $percent = '';
-        } else {
-            $percent = round(100 * min(1, $item->total / $goals->total)).'%';
-        }
-        $fullname = fullname($item);
-        $output .= html_writer::tag('span', $fullname, array('class' => 'fullname'));
-        $output .= html_writer::tag('span', $percent, array('class' => 'percent'));
+        $output .= html_writer::tag('span', fullname($item), array('class' => 'fullname'));
+        $output .= html_writer::tag('span', $item->percent, array('class' => 'percent'));
         return $output;
     }
 
