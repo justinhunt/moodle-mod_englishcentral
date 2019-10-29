@@ -1,7 +1,5 @@
 <?php
 
-namespace mod_pchat\attempt;
-
 ///////////////////////////////////////////////////////////////////////////
 //                                                                       //
 // This file is part of Moodle - http://moodle.org/                      //
@@ -23,7 +21,7 @@ namespace mod_pchat\attempt;
 ///////////////////////////////////////////////////////////////////////////
 
 /**
- * Account lookup torm for EnglishCentral Activity
+ * Account lookup form for EnglishCentral Activity
  *
  * @package    mod_englishcentral
  * @author     Justin Hunt <poodllsupport@gmail.com>
