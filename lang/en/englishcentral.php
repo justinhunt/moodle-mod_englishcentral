@@ -315,3 +315,16 @@ $string['accountid'] = "EnglishCentral ID";
 $string['lookupinstructions'] = "Select a user and press 'Search' to see that user's EnglishCentral account id.";
 $string['lookupresults'] = 'The EnglishCentral account id for {$a->fullname} is: <big><b>{$a->accountid}</b></big>';
 $string['lookupemptyresult'] = 'No EnglishCentral account id was found for user: {$a->fullname}.';
+
+//cloud poodll auth related strings
+$string['displaysubs'] = '{$a->subscriptionname} : expires {$a->expiredate}';
+$string['noapiuser'] = "No Poodll API user entered..";
+$string['noapisecret'] = "No Poodll API secret entered..";
+$string['credentialsinvalid'] = "The Poodll API user and secret entered could not be used to get access. Please check them.";
+$string['appauthorised'] = "Poodll EnglishCentral is authorised for this site.";
+$string['appnotauthorised'] = "Poodll EnglishCentral is NOT authorised for this site.";
+$string['refreshtoken'] = "Refresh license information";
+$string['notokenincache'] = "Refresh to see license information. Contact Poodll support if there is a problem.";
+$string['poodllapiuser'] = "Poodll API user";
+$string['poodllapiuser_details'] = "";
+$string['poodllapisecret'] = "Poodll API Secret";

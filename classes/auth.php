@@ -76,11 +76,27 @@ class auth {
                         'consumerkey',
                         'consumersecret',
                         'encryptedsecret');
+
+        //get our cloud poodll token (which contains EC creds)
+        $tokenobject=false;
+        if(!empty($ec->config->poodllapiuser) && !empty($ec->config->poodllapisecret)){
+            $tokenobject= cloudpoodllauth::fetch_token($ec->config->poodllapiuser,$ec->config->poodllapisecret);
+        }
+
         foreach ($fields as $field) {
-            if (empty($ec->config->$field)) {
-                $this->$field = '';
-            } else {
+            //as a fallback set the field to blank
+            $this->$field = '';
+            //set the EC credential value from config settings if the field value has been set
+            if (!empty($ec->config->$field)) {
                 $this->$field = $ec->config->$field;
+            //set the EC Credential value from cloudpoodll token if we have it and the field value has been set
+            } else {
+                if ($tokenobject) {
+                    $tokendata = cloudpoodllauth::fetch_token_customproperty($tokenobject,'mod_englishcentral_' . $field);
+                    if($tokendata && !empty($tokendata)){
+                        $this->$field = $tokendata;
+                    }
+                }
             }
         }
 
@@ -360,6 +376,19 @@ class auth {
         $url = "https://$subdomain.$this->domain/$endpoint";
         $url = new \moodle_url($url, $fields);
         return $url->out(false); // join with "&" not "&amp;"
+    }
+
+    public function missing_poodllapicreds() {
+        $missing = array('poodllapiuser' => '/^[0-9a-zA-Z\/+=]+$/',
+                'poodllapisecret' => '/^[0-9a-zA-Z\/+=-]+$/');
+        foreach ($missing as $name => $pattern) {
+            if (isset($this->ec->config->$name) && preg_match($pattern, $this->ec->config->$name)) {
+                unset($missing[$name]);
+            } else {
+                $missing[$name] = $this->ec->get_string($name);
+            }
+        }
+        return (empty($missing) ? '' : $missing);
     }
 
     public function missing_config() {

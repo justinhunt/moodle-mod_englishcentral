@@ -28,6 +28,16 @@ defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
     $plugin = 'mod_englishcentral';
+
+    $settings->add(new admin_setting_configtext($plugin . '/poodllapiuser',
+            get_string('poodllapiuser', $plugin), get_string('poodllapiuser_details', $plugin), '', PARAM_TEXT));
+
+    $tokeninfo = mod_englishcentral\cloudpoodllauth::fetch_token_for_display(get_config($plugin, 'poodllapiuser'),
+            get_config($plugin, 'poodllapisecret'));
+
+    $settings->add(new admin_setting_configtext($plugin . '/poodllapisecret',
+            get_string('poodllapisecret', $plugin), $tokeninfo, '', PARAM_TEXT));
+
     $link = new moodle_url('/mod/englishcentral/support.php');
     $link = html_writer::tag('a', 'Poodll.com (EnglishCentral demo request)', array('href' => $link, 'target' => 'EC'));
     // whenever possible, the support URL will display a form in the browser's preferred language

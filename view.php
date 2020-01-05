@@ -77,8 +77,18 @@ $renderer->attach_activity_and_auth($ec, $auth);
 
 echo $renderer->header($ec->get_string('view'));
 
-if ($msg = $auth->missing_config()) {
-    echo $renderer->show_missingconfig($msg);
+//check for Poodll API creds being set
+$poodllcreds_errormsg = $auth->missing_poodllapicreds();
+//check for EC creds being set
+$eccreds_errormsg = $auth->missing_config();
+
+if($poodllcreds_errormsg && $eccreds_errormsg){
+    echo $renderer->show_missingconfig($poodllcreds_errormsg);
+}
+
+//not sure we need this now ..
+if (false && $eccreds_errormsg) {
+    echo $renderer->show_missingconfig($eccreds_errormsg);
     die;
 }
 
