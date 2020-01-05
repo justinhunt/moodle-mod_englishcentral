@@ -1,6 +1,5 @@
 <?php
 
-
 ///////////////////////////////////////////////////////////////////////////
 //                                                                       //
 // This file is part of Moodle - http://moodle.org/                      //
@@ -22,7 +21,7 @@
 ///////////////////////////////////////////////////////////////////////////
 
 /**
- * Account lookup torm for EnglishCentral Activity
+ * Account lookup form for EnglishCentral Activity
  *
  * @package    mod_englishcentral
  * @author     Justin Hunt <poodllsupport@gmail.com>

@@ -1,890 +1,306 @@
-=====================
-Change log for mod_englishcentral
-=====================
-
-
-2019-10-11 (99)
- -  add group menu to report and fix sorting by percent on report 
-
-2019-10-07 (98)
- -  add cancel key to lookupaccount form 
-
-2019-10-07 (97)
- -  optimize code to lookup EC account id 
-
-2019-10-04 (94)
- -  remove debugging statement from new accountlookup script 
-
-2019-10-03 (93)
- -  remove debugging statement from new accountlookup script 
-
-2019-10-03 (92)
- -  Merge pull request #14 from justinhunt/courseresetissue fixed broken course reset due to incorrect table name - thanks Justin Hunt! 
-
-2019-10-04 (91)
- -  standardize code layout and variable naming in accountlookup script and form 
-
-2019-10-03 (90)
- -  Merge pull request #13 from justinhunt/accountlookup Addition of accountlookup Page - thanks Justin Hunt 
-
-2019-10-02 (89)
- -  add standard JS to keep session alive and so prevent timeouts during AJAX calls 
-
-2019-10-02 (89)
- -  add standard JS to keep session alive and so prevent timeouts during AJAX calls 
-
-2019-10-02 (89)
- -  add standard JS to keep session alive and so prevent timeouts during AJAX calls 
-
-2019-10-02 (89)
- -  add standard JS to keep session alive and so prevent timeouts during AJAX calls 
-
-2019-09-30 (88)
- -  Merge pull request #12 from ccle/index-uses_sections Added support for any format that uses sections 
-
-2019-09-30 (87)
- -  Merge pull request #12 from ccle/index-uses_sections Added support for any format that uses sections 
-
-2019-9-29 (86)
- -  Issue #11: fix link to individual EC activities from index.php, and also use standard Event API to log index view (instead of legacy log) 
-
-2019-7-22 (85)
- -  only allow recognized languages as 'siteLanguage' in classes/auth.php 
-
-2019-06-10 (84)
- -  fix typos in README.txt and change signup URL to the Poodll page 
-
-2019-06-07 (83)
- -  change URL of signuo form to Poodll.com 
-
-2019-06-07 (82)
- -  remove obsolete edit.php 
-
-2019-03-28 (81)
- -  remove obsolete pix/more folder 
-
-2019-03-28 (81)
- -  reduce number of options passed via AMD, and pass additional options via AJAX instead 
-
-2019-03-27 (80)
- -  pass sdkmode and sdkversion to Javascript in order to ensure correct JSDK is used from correct server (development or production) 
-
-2019-03-27 (80)
- -  pass sdkmode and sdkversion to Javascript in order to ensure correct JSDK is used from correct server (development or production) 
-
-2019-03-26 (79)
- -  fix padding on report page when using Boost theme 
-
-2019-03-26 (79)
- -  fix padding on report page when using Boost theme 
-
-2019-03-26 (78)
- -  increase width of progress container so that all pie-charts appear in a single row in Boost theme 
-
-2019-03-26 (77)
- -  use jQuery Deferred oject to ensure ECSDK is fully loaded before being used 
-
-2019-03-26 (77)
- -  use jQuery Deferred oject to ensure ECSDK is fully loaded before being used 
-
-2019-03-11 (76)
- -  restrict results on report page to a specific group if one is slected from the group menu 
-
-2019-02-19 (75)
- -  CONTRIB-7564 replace can_xxx and req(...) methods with direct calls to has/require_capability(...); use literal strings for DB table names in classes/privacy/provider.php 
-
-2018-12-17 (74)
- -  Merge pull request #5 from justinhunt/master 
-
-2018-09-26 (73)
- -  Merge pull request #5 from justinhunt/master Add privacy API support - Thanks to Justin Hunt! 
-
-2018-09-26 (73)
- -  mod/englishcentral fix CSS to display pie charts 
-
-2018-08-24 (72)
- -  mod/englishcentral Fix errors from /lib/rtlcss/RTLCSS.php caused by CSS3 syntax in styles.css 
-
-2018-08-09 (71)
- -  mod/englishcentral change redirection to most recent signup form on englishcentral.com 
-
-2018-08-08 (70)
- -  mod/englishcentral small fixes to improve layout and behavior for JSDK3 
-
-2018-08-08 (70)
- -  mod/englishcentral small fixes to improve layout and behavior for JSDK3 
-
-2018-07-26 (69)
- -  mod/englishcentral move playerversion setting to bottom of settings screen 
-
-2018-07-25 (68)
- -  mod/englishcentral add new setting to allow selectoin of old player, JSDK2, or new player, JSDK3 
-
-2018-07-25 (68)
- -  mod/englishcentral add new setting to allow selectoin of old player, JSDK2, or new player, JSDK3 
-
-2018-07-25 (68)
- -  mod/englishcentral add new setting to allow selectoin of old player, JSDK2, or new player, JSDK3 
-
-2018-07-17 (67)
- -  mod/englishcentral fix issue in update 2018041763, caused by records by empty userid and/or videoid in englishcentral_attempts 
-
-2018-04-25 (66)
- -  mod/englishcentral ensure study goals completion does not go over 100% 
-
-2018-04-25 (65)
- -  mod/englishcentral add new completiong conditions: mingrade, passgrade, goals 
-
-2018-04-18 (64)
- -  mod/englishcentral hide level description on narrow screens so that it does not cover duration 
-
-2018-04-17 (63)
- -  mod/englishcentral change <a> tags to <span> tags to ensure video thumbnails are not clickable while page is being setup 
-
-2018-04-17 (63)
- -  fix error updating regarding number of params expected 
-
-2018-04-13 (62)
- -  send support requests to new landing page at EC 
-
-2018-03-29 (60)
- -  mod/englishcentral aadd activityPanelEnabled=false when initiating EC player; overhaul README.txt 
-
-2018-03-09 (59)
- -  mod/englishcentral only add partnerID to backups when site-admin is doing the backup; also, ensure EC accountid is created for all users 
-
-2018-03-09 (58)
- -  mod/englishcentral replace all tabs with 4 spaces in PHP files 
-
-2018-03-08 (57)
- -  mod/englishcentral implement and test backup and restore functionality 
-
-2018-03-08 (57)
- -  mod/englishcentral implement and test backup and restore functionality 
-
-2018-03-07 (56)
- -  mod/englishcentral allow video search by difficulty 
-
-2018-03-07 (55)
- -  mod/englishcentral add paging bar to bottom of search results 
-
-2018-03-07 (55)
- -  mod/englishcentral add paging bar to bottom of search results 
-
-2018-03-06 (54)
- -  mod/englishcentral add CSS style to search pager-bar and add advanced search fields (not functional yet) 
-
-2018-03-06 (54)
- -  mod/englishcentral add CSS style to search pager-bar and add advanced search fields (not functional yet) 
-
-2018-03-06 (53)
- -  mod/englishcentral add images for beginner/intermediate/advanced difficulty 
-
-2018-03-06 (53)
- -  mod/englishcentral add paging bar to search results 
-
-2018-03-06 (53)
- -  mod/englishcentral fix attempts with invalid ecid + videoid combination, that were orpahned by an earlier bug 
-
-2018-03-06 (52)
- -  mod/englishcentral fix attempts with invalid ecid + videoid combination, that were orpahned by an earlier bug 
-
-2018-03-06 (52)
- -  mod/englishcentral fix attempts with invalid ecid + videoid combination, that were orpahned by an earlier bug 
-
-2018-03-05 (50)
- -  mod/englishcentral fix issue that caused ecid to be set to 1 for all attempts 
-
-2018-03-05 (49)
- -  mod/englishcentral fix issue that prevented previously learned words / spoken lines being transferred to latest attempt 
-
-2018-03-05 (48)
- -  mod/englishcentral show watch/learn/speak status in each video thumbnail 
-
-2018-03-05 (47)
- -  mod/englishcentral add learn/speak status to thumbnail when watch status becomes complete 
-
-2018-03-04 (46)
- -  mod/englishcentral fix problem of NULL videoids when reporting results via AJAX 
-
-2018-03-04 (45)
- -  mod/englishcentral add status (inprogress, completed) icons to thumbnails 
-
-2018-03-04 (44)
- -  mod/englishcentral fix display of donut progress graph for 50% values 
-
-2018-03-03 (43)
- -  mod/englishcentral fix display of donut progress graph for 50% values 
-
-2018-03-03 (43)
- -  mod/englishcentral show progress on outer rim of pie-charts 
-
-2018-03-03 (43)
- -  mod/englishcentral show progress on outer rim of pie-charts 
-
-2018-03-03 (42)
- -  mod/englishcentral show progress on outer rim of pie-charts 
-
-2018-03-03 (41)
- -  mod/englishcentral imrpove layout of progress charts on narrow screens 
-
-2018-03-02 (40)
- -  mod/englishcentral add sort functionality to teacher's progress report 
-
-2018-03-01 (39)
- -  mod/englishcentral add sort functionality to teacher's progress report 
-
-2018-03-01 (39)
- -  mod/englishcentral simplify responsive CSS for report page 
-
-2018-02-28 (38)
- -  mod/englishcentral optimize responsive CSS and remove borders 
-
-2018-02-28 (38)
- -  mod/englishcentral optimize responsive CSS and remove borders 
-
-2018-02-28 (37)
- -  mod/englishcentral expand bors on progress report 
-
-2018-02-28 (36)
- -  mod/englishcentral create report script to show class progress report to teacher 
-
-2018-02-27 (35)
- -  mod/englishcentral update Moodle gradebook when storing results from browser 
-
-2018-02-27 (35)
- -  mod/englishcentral update Moodle gradebook when storing results from browser 
-
-2018-02-25 (34)
- -  mod/englishcentral pass siteLanguage to player 
-
-2018-02-25 (34)
- -  mod/englishcentral improve behavior when Moodle site has no internet connection e.g. development laptop, and sdk_token is not available 
-
-2018-02-25 (34)
- -  mod/englishcentral reduce size of player in small screens 
-
-2018-02-25 (34)
- -  mod/englishcentral reduce size of player in small screens 
-
-2018-02-25 (33)
- -  mod/englishcentral convert VARCHAR fields to TEXT in attempts table 
-
-2018-02-25 (32)
- -  mod/englishcentral convert VARCHAR fields to TEXT in attempts table 
-
-2018-02-25 (31)
- -  mod/englishcentral convert VARCHAR fields to TEXT in attempts table 
-
-2018-02-20 (30)
- -  mod/englishcentral add new page to redirect to EC support page 
-
-2018-02-20 (29)
- -  mod/englishcentral fix counting of completed words in view.js 
-
-2018-02-20 (28)
- -  mod/englishcentral replace tabs with spaces in view.js 
-
-2018-02-20 (27)
- -  mod/englishcentral use colored +/- in icons to add/delete video 
-
-2018-02-16 (26)
- -  mod/englishcentral replace standard add button with one to match the add-video icon 
-
-2018-02-16 (25)
- -  mod/englishcentral add new icons to add/remove video 
-
-2018-02-15 (24)
- -  mod/englishcentral return false from onclick handlers to ensure that EC player does not open in new window 
-
-2018-02-15 (23)
- -  mod/englishcentral force thumbnail width to be 150px 
-
-2018-02-15 (23)
- -  mod/englishcentral force thumbnail width to be 150px 
-
-2018-02-14 (22)
- -  mod/englishcentral mod/englishcentral add new icons to add/remove video 
-
-2018-02-14 (22)
- -  mod/englishcentral add new icons to add/remove video 
-
-2018-02-14 (22)
- -  mod/englishcentral adjust width/height of player in order to see WLS controls 
-
-2018-02-14 (22)
- -  mod/englishcentral adjust width/height of player in order to see WLS controls 
-
-2018-02-10 (21)
- -  mod/englishcentral first attemp to allow dialogids in search box 
-
-2018-02-10 (21)
- -  mod/englishcentral first attemp to allow dialogids in search box 
-
-2018-02-10 (21)
- -  mod/englishcentral fix syntax error (missing semi colon) in view.ajax.php 
-
-2018-02-10 (21)
- -  mod/englishcentral build JS min files using grunt 
-
-2018-02-10 (20)
- -  mod/englishcentral allow thumbnails to be dragged into a particular order, and remember that order in a new field 'sortorder' in the Moodle DB 
-
-2018-02-10 (20)
- -  mod/englishcentral allow thumbnails to be dragged into a particular order, and remember that order in a new field 'sortorder' in the Moodle DB 
-
-2018-02-09 (19)
- -  mod/englishcentral use png image file instead of data URI to show play icon on video thumbnails 
-
-2018-02-07 (18)
- -  mod/englishcentral add new fields in attempts table to store more complete data about WATCH, LEARN, SPEAK 
-
-2018-02-04 (17)
- -  mod/englishcentral pass sdktoken back from browser to Moodle after viewing video 
-
-2018-02-04 (17)
- -  mod/englishcentral imrpove styles for progress container 
-
-2018-02-04 (17)
- -  mod/englishcentral first attempt to generate and display the progress pie-charts 
-
-2018-02-04 (17)
- -  mod/englishcentral fix insertion of main EC js file into view.php 
-
-2018-02-04 (17)
- -  mod/englishcentral add code to storeresults at the end of a video 
-
-2018-02-04 (17)
- -  mod/englishcentral rename time fields to activity/video open/close 
-
-2018-02-03 (16)
- -  mod/englishcentral use consistent coding style to return object in AMD modules 
-
-2018-02-03 (16)
- -  mod/englishcentral fix jshint warnings in amd/src files 
-
-2018-02-03 (15)
- -  mod/englishcentral add mechanism to make multilang strings accessible to JS 
-
-2018-02-02 (14)
- -  mod/englishcentral improve layout of searchresults 
-
-2018-02-01 (13)
- -  mod/englishcentral fix CSS on Boost theme 
-
-2018-02-01 (13)
- -  mod/englishcentral extract all values from search results and insert into HTML elemets. CSS not finished yet, so formatting is still unfinished 
-
-2018-02-01 (12)
- -  mod/englishcentral add new AMD module, html.js, to generate html tags within jquery 
-
-2018-02-01 (12)
- -  mod/englishcentral implement first version of search box using JQuery 
-
-2018-01-31 (11)
- -  mod/englishcentral first attempt to embed player in a popup on the student page 
-
-2018-01-31 (10)
- -  mod/englishcentral add thumbnails of videos to the student view page 
-
-2018-01-31 (10)
- -  mod/englishcentral add thumbnails of videos to the student view page 
-
-2018-01-30 (09)
- -  mod/englishcentral fix doPost and doGet to use ACCEPT_V1 when communicating with EC server 
-
-2018-01-30 (09)
- -  mod/englishcentral fix doPost and doGet to use ACCEPT_V1 when communicating with EC server 
-
-2018-01-30 (08)
- -  mod/englishcentral fix doPost and doGet to use ACCEPT_V1 when communicating with EC server 
-
-2018-01-30 (08)
- -  mod/englishcentral fix doPost and doGet to use ACCEPT_V1 when communicating with EC server 
-
-2018-01-29 (06)
- -  mod/englishcentral fix doPost() to send params via the URL instead of formdata 
-
-2018-01-29 (06)
- -  mod/englishcentral fix small syntax porblem in form.js 
-
-2018-01-29 (06)
- -  mod/englishcentral create new users on EC via the API 
-
-2018-01-28 (05)
- -  mod/englichcentral add access restrictions for available/readonly dates 
-
-2018-01-24 (04)
- -  mod/englishcentral reorganize file structure to to that of standard Moodle 3.x module 
-
-2018-01-24 (04)
- -  mod/englishcentral arrange goals in a horizontal line to form a formula on the EDIT settings page 
-
-2018-01-24 (03)
- -  mod/englishcentral add form.js via AMD 
-
-2018-01-23 (02)
- -  mod/englishcentral add folder structure for AMD files 
-
-2018-01-23 (02)
- -  mod/englishcentral add folder structure for AMD files 
-
-2018-01-22 (01)
- -  mod/englishcentral add new table to allow multiple videos to be used in a single EC activity 
-
-2018-01-22 (00)
- -  mod/englishcentral add new table to map ecid onto multiple videoids 
-
-
- -  divide main edit form into sections 
-
-
- -  populate new repository: mod/englishcentral 
-
- ========================================
+========================================
 Change log for mod_englishcentral
 ========================================
 
+2019-10-29 (05)
+ - standardize layout and spelling in CHANGES.txt
+
+2019-10-29 (05)
+ - remove unnecessary namespace definition from accountlookup form
+
+2019-10-13 (02)
+ - optimize code to sort report by percent
+
+2019-10-12 (01)
+ - Add preliminary version of CHANGES.txt
 
 2019-10-12 (00)
- -  increase width of percent column in report, to ensure it is displayed onBoost theme 
+ - increase width of percent column in report, to ensure it is displayed on Boost theme
 
 2019-10-11 (99)
- -  add group menu to report and fix sorting by percent on report 
+ - add group menu to report and fix sorting by percent on report
 
 2019-10-07 (98)
- -  add cancel key to lookupaccount form 
-
-2019-10-07 (97)
- -  optimize code to lookup EC account id 
+ - add cancel key to lookupaccount form
+ - optimize code to lookup EC account id
 
 2019-10-04 (94)
- -  remove debugging statement from new accountlookup script 
-
-2019-10-03 (93)
- -  remove debugging statement from new accountlookup script 
+ - remove debugging statement from new accountlookup script
 
 2019-10-03 (92)
- -  Merge pull request #14 from justinhunt/courseresetissue fixed broken course reset due to incorrect table name - thanks Justin Hunt! 
+ - Merge pull request #14 from justinhunt/courseresetissue fixed broken course reset due to incorrect table name - thanks Justin Hunt!
 
 2019-10-04 (91)
- -  standardize code layout and variable naming in accountlookup script and form 
+ - standardize code layout and variable naming in accountlookup script and form
 
 2019-10-03 (90)
- -  Merge pull request #13 from justinhunt/accountlookup Addition of accountlookup Page - thanks Justin Hunt 
+ - Merge pull request #13 from justinhunt/accountlookup Addition of accountlookup Page - thanks Justin Hunt
 
 2019-10-02 (89)
- -  add standard JS to keep session alive and so prevent timeouts during AJAX calls 
-
-2019-10-02 (89)
- -  add standard JS to keep session alive and so prevent timeouts during AJAX calls 
-
-2019-10-02 (89)
- -  add standard JS to keep session alive and so prevent timeouts during AJAX calls 
-
-2019-10-02 (89)
- -  add standard JS to keep session alive and so prevent timeouts during AJAX calls 
+ - add standard JS to keep session alive and so prevent timeouts during AJAX calls
 
 2019-09-30 (88)
- -  Merge pull request #12 from ccle/index-uses_sections Added support for any format that uses sections 
-
-2019-09-30 (87)
- -  Merge pull request #12 from ccle/index-uses_sections Added support for any format that uses sections 
+ - Merge pull request #12 from ccle/index-uses_sections Added support for any format that uses sections
 
 2019-9-29 (86)
- -  Issue #11: fix link to individual EC activities from index.php, and also use standard Event API to log index view (instead of legacy log) 
+ - Issue #11: fix link to individual EC activities from index.php, and also use standard Event API to log index view (instead of legacy log)
 
 2019-7-22 (85)
- -  only allow recognized languages as 'siteLanguage' in classes/auth.php 
+ - only allow recognized languages as 'siteLanguage' in classes/auth.php
 
 2019-06-10 (84)
- -  fix typos in README.txt and change signup URL to the Poodll page 
+ - fix typos in README.txt and change signup URL to the Poodll page
 
 2019-06-07 (83)
- -  change URL of signuo form to Poodll.com 
+ - change URL of signuo form to Poodll.com
 
 2019-06-07 (82)
- -  remove obsolete edit.php 
+ - remove obsolete edit.php
 
 2019-03-28 (81)
- -  remove obsolete pix/more folder 
+ - remove obsolete pix/more folder
 
 2019-03-28 (81)
- -  reduce number of options passed via AMD, and pass additional options via AJAX instead 
+ - reduce number of options passed via AMD, and pass additional options via AJAX instead
 
 2019-03-27 (80)
- -  pass sdkmode and sdkversion to Javascript in order to ensure correct JSDK is used from correct server (development or production) 
-
-2019-03-27 (80)
- -  pass sdkmode and sdkversion to Javascript in order to ensure correct JSDK is used from correct server (development or production) 
+ - pass sdkmode and sdkversion to Javascript in order to ensure correct JSDK is used from correct server (development or production)
 
 2019-03-26 (79)
- -  fix padding on report page when using Boost theme 
-
-2019-03-26 (79)
- -  fix padding on report page when using Boost theme 
+ - fix padding on report page when using Boost theme
 
 2019-03-26 (78)
- -  increase width of progress container so that all pie-charts appear in a single row in Boost theme 
+ - increase width of progress container so that all pie-charts appear in a single row in Boost theme
 
 2019-03-26 (77)
- -  use jQuery Deferred oject to ensure ECSDK is fully loaded before being used 
-
-2019-03-26 (77)
- -  use jQuery Deferred oject to ensure ECSDK is fully loaded before being used 
+ - use jQuery Deferred oject to ensure ECSDK is fully loaded before being used
 
 2019-03-11 (76)
- -  restrict results on report page to a specific group if one is slected from the group menu 
+ - restrict results on report page to a specific group if one is slected from the group menu
 
 2019-02-19 (75)
- -  CONTRIB-7564 replace can_xxx and req(...) methods with direct calls to has/require_capability(...); use literal strings for DB table names in classes/privacy/provider.php 
+ - CONTRIB-7564 replace can_xxx and req(...) methods with direct calls to has/require_capability(...); use literal strings for DB table names in classes/privacy/provider.php
 
 2018-12-17 (74)
- -  Merge pull request #5 from justinhunt/master 
+ - Merge pull request #5 from justinhunt/master Add privacy API support - Thanks to Justin Hunt!
 
 2018-09-26 (73)
- -  Merge pull request #5 from justinhunt/master Add privacy API support - Thanks to Justin Hunt! 
-
-2018-09-26 (73)
- -  mod/englishcentral fix CSS to display pie charts 
+ - fix CSS to display pie charts
 
 2018-08-24 (72)
- -  mod/englishcentral Fix errors from /lib/rtlcss/RTLCSS.php caused by CSS3 syntax in styles.css 
+ - Fix errors from /lib/rtlcss/RTLCSS.php caused by CSS3 syntax in styles.css
 
 2018-08-09 (71)
- -  mod/englishcentral change redirection to most recent signup form on englishcentral.com 
+ - change redirection to most recent signup form on englishcentral.com
 
 2018-08-08 (70)
- -  mod/englishcentral small fixes to improve layout and behavior for JSDK3 
-
-2018-08-08 (70)
- -  mod/englishcentral small fixes to improve layout and behavior for JSDK3 
+ - small fixes to improve layout and behavior for JSDK3
 
 2018-07-26 (69)
- -  mod/englishcentral move playerversion setting to bottom of settings screen 
+ - move playerversion setting to bottom of settings screen
 
 2018-07-25 (68)
- -  mod/englishcentral add new setting to allow selectoin of old player, JSDK2, or new player, JSDK3 
-
-2018-07-25 (68)
- -  mod/englishcentral add new setting to allow selectoin of old player, JSDK2, or new player, JSDK3 
-
-2018-07-25 (68)
- -  mod/englishcentral add new setting to allow selectoin of old player, JSDK2, or new player, JSDK3 
+ - add new setting to allow selectoin of old player, JSDK2, or new player, JSDK3
 
 2018-07-17 (67)
- -  mod/englishcentral fix issue in update 2018041763, caused by records by empty userid and/or videoid in englishcentral_attempts 
+ - fix issue in update 2018041763, caused by records by empty userid and/or videoid in englishcentral_attempts
 
 2018-04-25 (66)
- -  mod/englishcentral ensure study goals completion does not go over 100% 
+ - ensure study goals completion does not go over 100%
 
 2018-04-25 (65)
- -  mod/englishcentral add new completiong conditions: mingrade, passgrade, goals 
+ - add new completiong conditions: mingrade, passgrade, goals
 
 2018-04-18 (64)
- -  mod/englishcentral hide level description on narrow screens so that it does not cover duration 
+ - hide level description on narrow screens so that it does not cover duration
 
 2018-04-17 (63)
- -  mod/englishcentral change <a> tags to <span> tags to ensure video thumbnails are not clickable while page is being setup 
-
-2018-04-17 (63)
- -  fix error updating regarding number of params expected 
+ - change <a> tags to <span> tags to ensure video thumbnails are not clickable while page is being setup
+ - fix error updating regarding number of params expected
 
 2018-04-13 (62)
- -  send support requests to new landing page at EC 
+ - send support requests to new landing page at EC
 
 2018-03-29 (60)
- -  mod/englishcentral aadd activityPanelEnabled=false when initiating EC player; overhaul README.txt 
+ - aadd activityPanelEnabled=false when initiating EC player; overhaul README.txt
 
 2018-03-09 (59)
- -  mod/englishcentral only add partnerID to backups when site-admin is doing the backup; also, ensure EC accountid is created for all users 
+ - only add partnerID to backups when site-admin is doing the backup; also, ensure EC accountid is created for all users
 
 2018-03-09 (58)
- -  mod/englishcentral replace all tabs with 4 spaces in PHP files 
+ - replace all tabs with 4 spaces in PHP files
 
 2018-03-08 (57)
- -  mod/englishcentral implement and test backup and restore functionality 
-
-2018-03-08 (57)
- -  mod/englishcentral implement and test backup and restore functionality 
+ - implement and test backup and restore functionality
 
 2018-03-07 (56)
- -  mod/englishcentral allow video search by difficulty 
+ - allow video search by difficulty
 
 2018-03-07 (55)
- -  mod/englishcentral add paging bar to bottom of search results 
-
-2018-03-07 (55)
- -  mod/englishcentral add paging bar to bottom of search results 
+ - add paging bar to bottom of search results
 
 2018-03-06 (54)
- -  mod/englishcentral add CSS style to search pager-bar and add advanced search fields (not functional yet) 
-
-2018-03-06 (54)
- -  mod/englishcentral add CSS style to search pager-bar and add advanced search fields (not functional yet) 
+ - add CSS style to search pager-bar and add advanced search fields (not functional yet)
 
 2018-03-06 (53)
- -  mod/englishcentral add images for beginner/intermediate/advanced difficulty 
-
-2018-03-06 (53)
- -  mod/englishcentral add paging bar to search results 
-
-2018-03-06 (53)
- -  mod/englishcentral fix attempts with invalid ecid + videoid combination, that were orpahned by an earlier bug 
+ - add images for beginner/intermediate/advanced difficulty
+ - add paging bar to search results
 
 2018-03-06 (52)
- -  mod/englishcentral fix attempts with invalid ecid + videoid combination, that were orpahned by an earlier bug 
-
-2018-03-06 (52)
- -  mod/englishcentral fix attempts with invalid ecid + videoid combination, that were orpahned by an earlier bug 
+ - fix attempts with invalid ecid + videoid combination, that were orpahned by an earlier bug
 
 2018-03-05 (50)
- -  mod/englishcentral fix issue that caused ecid to be set to 1 for all attempts 
+ - fix issue that caused ecid to be set to 1 for all attempts
 
 2018-03-05 (49)
- -  mod/englishcentral fix issue that prevented previously learned words / spoken lines being transferred to latest attempt 
+ - fix issue that prevented previously learned words / spoken lines being transferred to latest attempt
 
 2018-03-05 (48)
- -  mod/englishcentral show watch/learn/speak status in each video thumbnail 
+ - show watch/learn/speak status in each video thumbnail
 
 2018-03-05 (47)
- -  mod/englishcentral add learn/speak status to thumbnail when watch status becomes complete 
+ - add learn/speak status to thumbnail when watch status becomes complete
 
 2018-03-04 (46)
- -  mod/englishcentral fix problem of NULL videoids when reporting results via AJAX 
+ - fix problem of NULL videoids when reporting results via AJAX
 
 2018-03-04 (45)
- -  mod/englishcentral add status (inprogress, completed) icons to thumbnails 
+ - add status (inprogress, completed) icons to thumbnails
 
 2018-03-04 (44)
- -  mod/englishcentral fix display of donut progress graph for 50% values 
-
-2018-03-03 (43)
- -  mod/englishcentral fix display of donut progress graph for 50% values 
-
-2018-03-03 (43)
- -  mod/englishcentral show progress on outer rim of pie-charts 
-
-2018-03-03 (43)
- -  mod/englishcentral show progress on outer rim of pie-charts 
+ - fix display of donut progress graph for 50% values
 
 2018-03-03 (42)
- -  mod/englishcentral show progress on outer rim of pie-charts 
+ - show progress on outer rim of pie-charts
 
 2018-03-03 (41)
- -  mod/englishcentral imrpove layout of progress charts on narrow screens 
+ - improve layout of progress charts on narrow screens
 
 2018-03-02 (40)
- -  mod/englishcentral add sort functionality to teacher's progress report 
-
-2018-03-01 (39)
- -  mod/englishcentral add sort functionality to teacher's progress report 
-
-2018-03-01 (39)
- -  mod/englishcentral simplify responsive CSS for report page 
+ - add sort functionality to teacher's progress report
+ - simplify responsive CSS for report page
 
 2018-02-28 (38)
- -  mod/englishcentral optimize responsive CSS and remove borders 
-
-2018-02-28 (38)
- -  mod/englishcentral optimize responsive CSS and remove borders 
+ - optimize responsive CSS and remove borders
 
 2018-02-28 (37)
- -  mod/englishcentral expand bors on progress report 
+ - expand bors on progress report
 
 2018-02-28 (36)
- -  mod/englishcentral create report script to show class progress report to teacher 
+ - create report script to show class progress report to teacher
 
 2018-02-27 (35)
- -  mod/englishcentral update Moodle gradebook when storing results from browser 
-
-2018-02-27 (35)
- -  mod/englishcentral update Moodle gradebook when storing results from browser 
+ - update Moodle gradebook when storing results from browser
 
 2018-02-25 (34)
- -  mod/englishcentral pass siteLanguage to player 
-
-2018-02-25 (34)
- -  mod/englishcentral improve behavior when Moodle site has no internet connection e.g. development laptop, and sdk_token is not available 
-
-2018-02-25 (34)
- -  mod/englishcentral reduce size of player in small screens 
-
-2018-02-25 (34)
- -  mod/englishcentral reduce size of player in small screens 
+ - pass siteLanguage to player
+ - improve behavior when Moodle site has no internet connection e.g. development laptop, and sdk_token is not available
+ - reduce size of player in small screens
 
 2018-02-25 (33)
- -  mod/englishcentral convert VARCHAR fields to TEXT in attempts table 
-
-2018-02-25 (32)
- -  mod/englishcentral convert VARCHAR fields to TEXT in attempts table 
-
-2018-02-25 (31)
- -  mod/englishcentral convert VARCHAR fields to TEXT in attempts table 
+ - convert VARCHAR fields to TEXT in attempts table
 
 2018-02-20 (30)
- -  mod/englishcentral add new page to redirect to EC support page 
+ - add new page to redirect to EC support page
 
 2018-02-20 (29)
- -  mod/englishcentral fix counting of completed words in view.js 
+ - fix counting of completed words in view.js
 
 2018-02-20 (28)
- -  mod/englishcentral replace tabs with spaces in view.js 
+ - replace tabs with spaces in view.js
 
 2018-02-20 (27)
- -  mod/englishcentral use colored +/- in icons to add/delete video 
+ - use colored +/- in icons to add/delete video
 
 2018-02-16 (26)
- -  mod/englishcentral replace standard add button with one to match the add-video icon 
+ - replace standard add button with one to match the add-video icon
 
 2018-02-16 (25)
- -  mod/englishcentral add new icons to add/remove video 
+ - add new icons to add/remove video
 
 2018-02-15 (24)
- -  mod/englishcentral return false from onclick handlers to ensure that EC player does not open in new window 
+ - return false from onclick handlers to ensure that EC player does not open in new window
 
 2018-02-15 (23)
- -  mod/englishcentral force thumbnail width to be 150px 
-
-2018-02-15 (23)
- -  mod/englishcentral force thumbnail width to be 150px 
+ - force thumbnail width to be 150px
 
 2018-02-14 (22)
- -  mod/englishcentral mod/englishcentral add new icons to add/remove video 
+ - add new icons to add/remove video
 
 2018-02-14 (22)
- -  mod/englishcentral add new icons to add/remove video 
-
-2018-02-14 (22)
- -  mod/englishcentral adjust width/height of player in order to see WLS controls 
-
-2018-02-14 (22)
- -  mod/englishcentral adjust width/height of player in order to see WLS controls 
+ - adjust width/height of player in order to see WLS controls
 
 2018-02-10 (21)
- -  mod/englishcentral first attemp to allow dialogids in search box 
-
-2018-02-10 (21)
- -  mod/englishcentral first attemp to allow dialogids in search box 
-
-2018-02-10 (21)
- -  mod/englishcentral fix syntax error (missing semi colon) in view.ajax.php 
-
-2018-02-10 (21)
- -  mod/englishcentral build JS min files using grunt 
+ - first attempt to allow dialogids in search box
+ - fix syntax error (missing semi colon) in view.ajax.php
+ - build JS min files using grunt
 
 2018-02-10 (20)
- -  mod/englishcentral allow thumbnails to be dragged into a particular order, and remember that order in a new field 'sortorder' in the Moodle DB 
-
-2018-02-10 (20)
- -  mod/englishcentral allow thumbnails to be dragged into a particular order, and remember that order in a new field 'sortorder' in the Moodle DB 
+ - allow thumbnails to be dragged into a particular order, and remember that order in a new field 'sortorder' in the Moodle DB
 
 2018-02-09 (19)
- -  mod/englishcentral use png image file instead of data URI to show play icon on video thumbnails 
+ - use png image file instead of data URI to show play icon on video thumbnails
 
 2018-02-07 (18)
- -  mod/englishcentral add new fields in attempts table to store more complete data about WATCH, LEARN, SPEAK 
+ - add new fields in attempts table to store more complete data about WATCH, LEARN, SPEAK
 
 2018-02-04 (17)
- -  mod/englishcentral pass sdktoken back from browser to Moodle after viewing video 
-
-2018-02-04 (17)
- -  mod/englishcentral imrpove styles for progress container 
-
-2018-02-04 (17)
- -  mod/englishcentral first attempt to generate and display the progress pie-charts 
-
-2018-02-04 (17)
- -  mod/englishcentral fix insertion of main EC js file into view.php 
-
-2018-02-04 (17)
- -  mod/englishcentral add code to storeresults at the end of a video 
-
-2018-02-04 (17)
- -  mod/englishcentral rename time fields to activity/video open/close 
+ - pass sdktoken back from browser to Moodle after viewing video
+ - imrpove styles for progress container
+ - first attempt to generate and display the progress pie-charts
+ - fix insertion of main EC js file into view.php
+ - add code to storeresults at the end of a video
+ - rename time fields to activity/video open/close
 
 2018-02-03 (16)
- -  mod/englishcentral use consistent coding style to return object in AMD modules 
-
-2018-02-03 (16)
- -  mod/englishcentral fix jshint warnings in amd/src files 
+ - use consistent coding style to return object in AMD modules
+ - fix jshint warnings in amd/src files
 
 2018-02-03 (15)
- -  mod/englishcentral add mechanism to make multilang strings accessible to JS 
+ - add mechanism to make multilang strings accessible to JS
 
 2018-02-02 (14)
- -  mod/englishcentral improve layout of searchresults 
+ - improve layout of searchresults
 
 2018-02-01 (13)
- -  mod/englishcentral fix CSS on Boost theme 
-
-2018-02-01 (13)
- -  mod/englishcentral extract all values from search results and insert into HTML elemets. CSS not finished yet, so formatting is still unfinished 
+ - fix CSS on Boost theme
+ - extract all values from search results and insert into HTML elemets. CSS not finished yet, so formatting is still unfinished
 
 2018-02-01 (12)
- -  mod/englishcentral add new AMD module, html.js, to generate html tags within jquery 
-
-2018-02-01 (12)
- -  mod/englishcentral implement first version of search box using JQuery 
+ - add new AMD module, html.js, to generate html tags within jquery
+ - implement first version of search box using JQuery
 
 2018-01-31 (11)
- -  mod/englishcentral first attempt to embed player in a popup on the student page 
+ - first attempt to embed player in a popup on the student page
 
 2018-01-31 (10)
- -  mod/englishcentral add thumbnails of videos to the student view page 
-
-2018-01-31 (10)
- -  mod/englishcentral add thumbnails of videos to the student view page 
+ - add thumbnails of videos to the student view page
 
 2018-01-30 (09)
- -  mod/englishcentral fix doPost and doGet to use ACCEPT_V1 when communicating with EC server 
-
-2018-01-30 (09)
- -  mod/englishcentral fix doPost and doGet to use ACCEPT_V1 when communicating with EC server 
-
-2018-01-30 (08)
- -  mod/englishcentral fix doPost and doGet to use ACCEPT_V1 when communicating with EC server 
-
-2018-01-30 (08)
- -  mod/englishcentral fix doPost and doGet to use ACCEPT_V1 when communicating with EC server 
+ - fix doPost and doGet to use ACCEPT_V1 when communicating with EC server
 
 2018-01-29 (06)
- -  mod/englishcentral fix doPost() to send params via the URL instead of formdata 
-
-2018-01-29 (06)
- -  mod/englishcentral fix small syntax porblem in form.js 
-
-2018-01-29 (06)
- -  mod/englishcentral create new users on EC via the API 
+ - fix doPost() to send params via the URL instead of formdata
+ - fix small syntax porblem in form.js
+ - create new users on EC via the API
 
 2018-01-28 (05)
- -  mod/englichcentral add access restrictions for available/readonly dates 
+ - add access restrictions for available/readonly dates
 
 2018-01-24 (04)
- -  mod/englishcentral reorganize file structure to to that of standard Moodle 3.x module 
-
-2018-01-24 (04)
- -  mod/englishcentral arrange goals in a horizontal line to form a formula on the EDIT settings page 
+ - reorganize file structure to to that of standard Moodle 3.x module
+ - arrange goals in a horizontal line to form a formula on the EDIT settings page
 
 2018-01-24 (03)
- -  mod/englishcentral add form.js via AMD 
+ - add form.js via AMD
 
 2018-01-23 (02)
- -  mod/englishcentral add folder structure for AMD files 
-
-2018-01-23 (02)
- -  mod/englishcentral add folder structure for AMD files 
+ - add folder structure for AMD files
 
 2018-01-22 (01)
- -  mod/englishcentral add new table to allow multiple videos to be used in a single EC activity 
+ - add new table to allow multiple videos to be used in a single EC activity
 
 2018-01-22 (00)
- -  mod/englishcentral add new table to map ecid onto multiple videoids 
-
-
- -  divide main edit form into sections 
-
-
- -  populate new repository: mod/englishcentral 
-
- 
+ - add new table to map ecid onto multiple videoids
+ - divide main edit form into sections
+ - populate new repository:
