@@ -38,9 +38,16 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configtext($plugin . '/poodllapisecret',
             get_string('poodllapisecret', $plugin), $tokeninfo, '', PARAM_TEXT));
 
-    $link = new moodle_url('/mod/englishcentral/support.php');
-    $link = html_writer::tag('a', 'Poodll.com (EnglishCentral demo request)', array('href' => $link, 'target' => 'EC'));
+
+    $settings->add(new admin_setting_heading($plugin . '/advancedsection',
+            get_string('advancedsection', $plugin), get_string('advancedsection_details', $plugin)));
+
+    //$link = new moodle_url('/mod/englishcentral/support.php');
+   // $link = html_writer::tag('a', 'Poodll.com (EnglishCentral demo request)', array('href' => $link, 'target' => 'EC'));
     // whenever possible, the support URL will display a form in the browser's preferred language
+    $link = new moodle_url('https://poodll.com/contact');
+    $link = html_writer::tag('a', 'Poodll.com', array('href' => $link, 'target' => 'EC'));
+
 
     $name = 'partnerid';
     $label = get_string($name, $plugin);
