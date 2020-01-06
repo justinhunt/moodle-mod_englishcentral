@@ -150,7 +150,7 @@ class cloudpoodllauth {
 
         // Send the request & save response to $resp
         $token_url = "https://cloud.poodll.com/local/cpapi/poodlltoken.php";
-        $token_url = "https://localhost/moodle/local/cpapi/poodlltoken.php";
+        //$token_url = "https://localhost/moodle/local/cpapi/poodlltoken.php";
         $postdata = array(
                 'username' => $apiuser,
                 'password' => $apisecret,
@@ -243,6 +243,12 @@ class cloudpoodllauth {
         // Is app authorised?
         if (!property_exists($tokenobject, 'apps') || !in_array(self::M_COMPONENT, $tokenobject->apps)) {
             $message = get_string('appnotauthorised', self::M_COMPONENT);
+            return $message;
+        }
+
+        // Do we have custom properties - in gthis case that would indicate our subscription had expired
+        if (!self::fetch_token_customproperty($tokenobject,self::M_COMPONENT .'_partnerid')) {
+            $message = get_string('subscriptionhasnocreds', self::M_COMPONENT);
             return $message;
         }
 

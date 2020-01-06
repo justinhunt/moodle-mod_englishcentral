@@ -84,9 +84,16 @@ $eccreds_errormsg = $auth->missing_config();
 
 if($poodllcreds_errormsg && $eccreds_errormsg){
     echo $renderer->show_missingconfig($poodllcreds_errormsg);
+}else{
+    $token = mod_englishcentral\cloudpoodllauth::fetch_token($ec->config->poodllapiuser,$ec->config->poodllapisecret);
+    $msg = mod_englishcentral\cloudpoodllauth::fetch_token_error($token);
+    if(!empty($msg)){
+        echo $renderer->show_invalidconfig($msg);
+        die;
+    }
 }
 
-//not sure we need this now ..
+//We do not need this if we are encouraging users to sign up with Cloud Poodll
 if (false && $eccreds_errormsg) {
     echo $renderer->show_missingconfig($eccreds_errormsg);
     die;
