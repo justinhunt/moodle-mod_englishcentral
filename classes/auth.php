@@ -72,31 +72,32 @@ class auth {
 
         $this->ec = $ec;
 
+        // Specify names of EC config fields.
         $fields = array('partnerid',
                         'consumerkey',
                         'consumersecret',
                         'encryptedsecret');
 
-        //get our cloud poodll token (which contains EC creds)
-        $tokenobject=false;
-        if(!empty($ec->config->poodllapiuser) && !empty($ec->config->poodllapisecret)){
-            $tokenobject= cloudpoodllauth::fetch_token($ec->config->poodllapiuser,$ec->config->poodllapisecret);
+        // Fetch the Cloud Poodll token (which contains EC credentials).
+        if (empty($ec->config->poodllapiuser) || empty($ec->config->poodllapisecret)) {
+            $tokenobject = false;
+        } else {
+            $tokenobject = cloudpoodllauth::fetch_token($ec->config->poodllapiuser, $ec->config->poodllapisecret);
         }
 
         foreach ($fields as $field) {
-            //as a fallback set the field to blank
-            $this->$field = '';
-            //set the EC credential value from config settings if the field value has been set
-            if (!empty($ec->config->$field)) {
-                $this->$field = $ec->config->$field;
-            //set the EC Credential value from cloudpoodll token if we have it and the field value has been set
-            } else {
+            if (empty($ec->config->$field)) {
+                $this->$field = '';
+                // If the Cloud Poodll token is available, use it to set this $field value.
                 if ($tokenobject) {
-                    $tokendata = cloudpoodllauth::fetch_token_customproperty($tokenobject,'mod_englishcentral_' . $field);
-                    if($tokendata && !empty($tokendata)){
+                    $tokendata = cloudpoodllauth::fetch_token_customproperty($tokenobject, "mod_englishcentral_$field");
+                    if ($tokendata && !empty($tokendata)) {
                         $this->$field = $tokendata;
                     }
                 }
+            } else {
+                // A value for this $field already exists, so use that.
+                $this->$field = $ec->config->$field;
             }
         }
 
@@ -380,7 +381,7 @@ class auth {
 
     public function missing_poodllapicreds() {
         $missing = array('poodllapiuser' => '/^[0-9a-zA-Z\/+=]+$/',
-                'poodllapisecret' => '/^[0-9a-zA-Z\/+=-]+$/');
+                         'poodllapisecret' => '/^[0-9a-zA-Z\/+=-]+$/');
         foreach ($missing as $name => $pattern) {
             if (isset($this->ec->config->$name) && preg_match($pattern, $this->ec->config->$name)) {
                 unset($missing[$name]);

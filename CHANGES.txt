@@ -2,6 +2,9 @@
 Change log for mod_englishcentral
 ========================================
 
+2020-01-22 (08)
+ - standardize logic and whitespace in recently merged code
+
 2019-10-29 (05)
  - standardize layout and spelling in CHANGES.txt
 
