@@ -84,7 +84,8 @@ $eccreds_errormsg = $auth->missing_config();
 
 if ($poodllcreds_errormsg && $eccreds_errormsg) {
     echo $renderer->show_missingconfig($poodllcreds_errormsg);
-} else {
+    die;
+}else if(!$poodllcreds_errormsg){
     $token = mod_englishcentral\cloudpoodllauth::fetch_token($ec->config->poodllapiuser, $ec->config->poodllapisecret);
     if ($msg = mod_englishcentral\cloudpoodllauth::fetch_token_error($token)) {
         echo $renderer->show_invalidconfig($msg);
