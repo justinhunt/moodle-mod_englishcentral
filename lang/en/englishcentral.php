@@ -315,3 +315,24 @@ $string['accountid'] = "EnglishCentral ID";
 $string['lookupinstructions'] = "Select a user and press 'Search' to see that user's EnglishCentral account id.";
 $string['lookupresults'] = 'The EnglishCentral account id for {$a->fullname} is: <big><b>{$a->accountid}</b></big>';
 $string['lookupemptyresult'] = 'No EnglishCentral account id was found for user: {$a->fullname}.';
+
+//cloud poodll auth related strings
+$string['displaysubs'] = '{$a->subscriptionname} : expires {$a->expiredate}';
+$string['noapiuser'] = "No Poodll API user entered. Please subscribe or take a free trial at <a href='https://poodll.com/plugin-poodll-englishcentral'>https://poodll.com</a>";
+$string['noapisecret'] = "No Poodll API secret entered. Please subscribe or take a free trial at <a href='https://poodll.com/plugin-poodll-englishcentral'>https://poodll.com</a>";
+$string['credentialsinvalid'] = "The Poodll API user and secret entered could not be used to get access. Please check them.  Contact <a href='https://poodll.com/contact'>Poodll support </a>if there is a problem.";
+$string['appauthorised'] = "Poodll EnglishCentral is authorised for this site.";
+$string['appnotauthorised'] = "Poodll EnglishCentral is NOT authorised for this site. Is your site URL registered and your subscription current?";
+$string['refreshtoken'] = "Refresh license information";
+$string['notokenincache'] = "Refresh to see license information. Contact <a href='https://poodll.com/contact'>Poodll support </a>if there is a problem.";
+$string['poodllapiuser'] = "Poodll API user";
+$string['poodllapiuser_details'] = "";
+$string['poodllapisecret'] = "Poodll API Secret";
+//these errors are displayed on activity page
+$string['nocredentials'] = 'Poodll API user and secret not entered. Please enter them on <a href="{$a}">the settings page.</a> You can get them from <a href="https://poodll.com/member">Poodll.com.</a>';
+$string['novalidcredentials'] = 'Poodll API user and secret were rejected and could not gain access. Please check them on <a href="{$a}">the settings page.</a> You can get them from <a href="https://poodll.com/member">Poodll.com.</a>';
+$string['nosubscriptions'] = "There is no current subscription for this site/plugin.";
+$string['subscriptionhasnocreds'] = "The Poodll EnglishCentral subscription is expired or not yet set up. Contact <a href='https://poodll.com/contact'>Poodll support</a>";
+
+$string['advancedsection'] = 'Advanced Settings';
+$string['advancedsection_details'] = 'The settings from here should usually be left untouched. You may be directed by Poodll support to use them in some cases.';

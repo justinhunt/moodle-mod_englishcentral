@@ -77,8 +77,25 @@ $renderer->attach_activity_and_auth($ec, $auth);
 
 echo $renderer->header($ec->get_string('view'));
 
-if ($msg = $auth->missing_config()) {
-    echo $renderer->show_missingconfig($msg);
+//check for Poodll API creds being set
+$poodllcreds_errormsg = $auth->missing_poodllapicreds();
+//check for EC creds being set
+$eccreds_errormsg = $auth->missing_config();
+
+if($poodllcreds_errormsg && $eccreds_errormsg){
+    echo $renderer->show_missingconfig($poodllcreds_errormsg);
+}else{
+    $token = mod_englishcentral\cloudpoodllauth::fetch_token($ec->config->poodllapiuser,$ec->config->poodllapisecret);
+    $msg = mod_englishcentral\cloudpoodllauth::fetch_token_error($token);
+    if(!empty($msg)){
+        echo $renderer->show_invalidconfig($msg);
+        die;
+    }
+}
+
+//We do not need this if we are encouraging users to sign up with Cloud Poodll
+if (false && $eccreds_errormsg) {
+    echo $renderer->show_missingconfig($eccreds_errormsg);
     die;
 }
 
