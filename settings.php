@@ -29,18 +29,22 @@ defined('MOODLE_INTERNAL') || die;
 if ($ADMIN->fulltree) {
     $plugin = 'mod_englishcentral';
 
-    $settings->add(new admin_setting_configtext($plugin . '/poodllapiuser',
-            get_string('poodllapiuser', $plugin), get_string('poodllapiuser_details', $plugin), '', PARAM_TEXT));
+    $name = 'poodllapiuser';
+    $label = get_string($name, $plugin);
+    $details = get_string($name.'_details', $plugin);
+    $settings->add(new admin_setting_configtext("$plugin/$name", $label, $details, '', PARAM_TEXT));
 
-    $tokeninfo = mod_englishcentral\cloudpoodllauth::fetch_token_for_display(get_config($plugin, 'poodllapiuser'),
-            get_config($plugin, 'poodllapisecret'));
+    $name = 'poodllapisecret';
+    $label = get_string($name, $plugin);
+    $details = mod_englishcentral\cloudpoodllauth::fetch_token_for_display(
+        get_config($plugin, 'poodllapiuser'),
+        get_config($plugin, 'poodllapisecret'));
+    $settings->add(new admin_setting_configtext("$plugin/$name", $label, $details, '', PARAM_TEXT));
 
-    $settings->add(new admin_setting_configtext($plugin . '/poodllapisecret',
-            get_string('poodllapisecret', $plugin), $tokeninfo, '', PARAM_TEXT));
-
-
-    $settings->add(new admin_setting_heading($plugin . '/advancedsection',
-            get_string('advancedsection', $plugin), get_string('advancedsection_details', $plugin)));
+    $name = 'advancedsection';
+    $label = get_string($name, $plugin);
+    $details = get_string($name.'_details', $plugin);
+    $settings->add(new admin_setting_heading("$plugin/$name", $label, $details));
 
     //$link = new moodle_url('/mod/englishcentral/support.php');
    // $link = html_writer::tag('a', 'Poodll.com (EnglishCentral demo request)', array('href' => $link, 'target' => 'EC'));

@@ -114,10 +114,10 @@ class backup_englishcentral_activity_structure_step extends backup_activity_stru
                     $partnerid = get_config('mod_englishcentral', 'partnerid');
                     //if there is no partner id in config, try to fetch it via CloudPoodll Token
                     if(!$partnerid || empty($partnerid)){
-                        $apiuser=get_config('mod_englishcentral', 'poodllapiuser');
-                        $apisecret=get_config('mod_englishcentral', 'poodllapisecret');
+                        $apiuser = get_config('mod_englishcentral', 'poodllapiuser');
+                        $apisecret = get_config('mod_englishcentral', 'poodllapisecret');
                         if($apiuser && $apisecret){
-                            $tokenobject = \mod_englishcentral\cloudpoodllauth::fetch_token($apiuser,$apisecret);
+                            $tokenobject = \mod_englishcentral\cloudpoodllauth::fetch_token($apiuser, $apisecret);
                             if($tokenobject){
                                 $partnerid = \mod_englishcentral\cloudpoodllauth::fetch_token_customproperty($tokenobject,
                                         'mod_englishcentral_partnerid');
