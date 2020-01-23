@@ -2,6 +2,9 @@
 Change log for mod_englishcentral
 ========================================
 
+2020-01-23 (09)
+ - clarify logic to check EC and Poodll config settings in view.php
+
 2020-01-22 (08)
  - standardize logic and whitespace in recently merged code
 

@@ -576,7 +576,7 @@ function xmldb_englishcentral_upgrade($oldversion) {
 
     $newversion = 2018042565;
     if ($oldversion < $newversion) {
-        // add custom completion fields for TaskChain module
+        // add custom completion fields for EnglishCentral module
         $table = new xmldb_table('englishcentral');
         $fields = array(
             new xmldb_field('completionmingrade',  XMLDB_TYPE_FLOAT, '6,2', null, XMLDB_NOTNULL, null, 0.00),

@@ -379,7 +379,7 @@ class auth {
         return $url->out(false); // join with "&" not "&amp;"
     }
 
-    public function missing_poodllapicreds() {
+    public function missing_poodllapi_config() {
         $missing = array('poodllapiuser' => '/^[0-9a-zA-Z\/+=]+$/',
                          'poodllapisecret' => '/^[0-9a-zA-Z\/+=-]+$/');
         foreach ($missing as $name => $pattern) {
@@ -390,6 +390,13 @@ class auth {
             }
         }
         return (empty($missing) ? '' : $missing);
+    }
+
+    public function invalid_poodllapi_config() {
+        $apiuser = $this->ec->config->poodllapiuser;
+        $apisecret = $this->ec->config->poodllapisecret;
+        $token = \mod_englishcentral\cloudpoodllauth::fetch_token($apiuser, $apisecret);
+        return \mod_englishcentral\cloudpoodllauth::fetch_token_error($token);
     }
 
     public function missing_config() {
