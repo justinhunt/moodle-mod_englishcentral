@@ -2,6 +2,9 @@
 Change log for mod_englishcentral
 ========================================
 
+2020-03-25 (12)
+ - Remove default some config settings, because they cause errors in JSDK.
+
 2020-03-01 (10)
  - include current version in tool to redo upgrade
 
