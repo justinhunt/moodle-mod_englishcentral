@@ -46,8 +46,8 @@ if ($ADMIN->fulltree) {
     $details = get_string($name.'_details', $plugin);
     $settings->add(new admin_setting_heading("$plugin/$name", $label, $details));
 
-    //$link = new moodle_url('/mod/englishcentral/support.php');
-   // $link = html_writer::tag('a', 'Poodll.com (EnglishCentral demo request)', array('href' => $link, 'target' => 'EC'));
+    // $link = new moodle_url('/mod/englishcentral/support.php');
+    // $link = html_writer::tag('a', 'Poodll.com (EnglishCentral demo request)', array('href' => $link, 'target' => 'EC'));
     // whenever possible, the support URL will display a form in the browser's preferred language
     $link = new moodle_url('https://poodll.com/contact');
     $link = html_writer::tag('a', 'Poodll.com', array('href' => $link, 'target' => 'EC'));
@@ -56,25 +56,25 @@ if ($ADMIN->fulltree) {
     $name = 'partnerid';
     $label = get_string($name, $plugin);
     $explain = get_string($name.'explain', $plugin, $link);
-    $default = get_string($name.'default', $plugin);
+    $default = ''; // get_string($name.'default', $plugin);
     $settings->add(new admin_setting_configtext("$plugin/$name", $label, $explain, $default, PARAM_TEXT));
 
     $name = 'consumerkey';
     $label = get_string($name, $plugin);
     $explain = get_string($name.'explain', $plugin, $link);
-    $default = get_string($name.'default', $plugin);
+    $default = ''; // get_string($name.'default', $plugin);
     $settings->add(new admin_setting_configtext("$plugin/$name", $label, $explain, $default, PARAM_TEXT));
 
     $name = 'consumersecret';
     $label = get_string($name, $plugin);
     $explain = get_string($name.'explain', $plugin, $link);
-    $default = get_string($name.'default', $plugin);
+    $default = ''; // get_string($name.'default', $plugin);
     $settings->add(new admin_setting_configtext("$plugin/$name", $label, $explain, $default, PARAM_TEXT));
 
     $name = 'encryptedsecret';
     $label = get_string($name, $plugin);
     $explain = get_string($name.'explain', $plugin, $link);
-    $default = get_string($name.'default', $plugin);
+    $default = ''; // get_string($name.'default', $plugin);
     $settings->add(new admin_setting_configtext("$plugin/$name", $label, $explain, $default, PARAM_TEXT));
 
     $name = 'developmentmode';

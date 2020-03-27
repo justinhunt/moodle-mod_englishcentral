@@ -598,6 +598,19 @@ function xmldb_englishcentral_upgrade($oldversion) {
         upgrade_mod_savepoint(true, "$newversion", 'englishcentral');
     }
 
+    $newversion = 2020032512;
+    if ($oldversion < $newversion) {
+        // Remove default config settings, because they cause errors in JSDK.
+        $params = array('partnerid', 'consumerkey', 'consumersecret', 'encryptedsecret');
+        list($select, $params) = $DB->get_in_or_equal($params);
+
+        $select = 'plugin = ? AND name '.$select.' AND '.$DB->sql_like('value', '?');
+        $params = array_merge(array('mod_englishcentral'), $params, array('YOUR %'));
+
+        $DB->set_field_select('config_plugins', 'value', '', $select, $params);
+        upgrade_mod_savepoint(true, "$newversion", 'englishcentral');
+    }
+
     return true;
 }
 
