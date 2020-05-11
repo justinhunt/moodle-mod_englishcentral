@@ -49,7 +49,6 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         {"key": "addthisvideo",       "component": VIEW.plugin},
         {"key": "advanced",           "component": VIEW.plugin},
         {"key": "beginner",           "component": VIEW.plugin},
-        {"key": "clickwhenfinished",  "component": VIEW.plugin},
         {"key": "confirmremovevideo", "component": VIEW.plugin},
         {"key": "copyright",          "component": VIEW.plugin},
         {"key": "description",        "component": VIEW.plugin},
@@ -72,7 +71,6 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         VIEW.str.addthisvideo = s[i++];
         VIEW.str.advanced = s[i++];
         VIEW.str.beginner = s[i++];
-        VIEW.str.clickwhenfinished = s[i++];
         VIEW.str.confirmremovevideo = s[i++];
         VIEW.str.copyright = s[i++];
         VIEW.str.description = s[i++];

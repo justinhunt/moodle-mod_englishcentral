@@ -310,9 +310,9 @@ function englishcentral_get_user_grades($englishcentral, $userid=0) {
     if ($userid) {
         $where .= ' AND userid = ?';
         $params[] = $userid;
-    } else {
-        $where .= ' GROUP BY userid';
     }
+
+    $where .= ' GROUP BY userid';
 
     return $DB->get_records_sql("SELECT $select FROM $from WHERE $where", $params);
 }

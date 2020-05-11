@@ -569,11 +569,11 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
 
     public function show_video_status($video) {
         $output = '';
-        if ($video->watchcomplete) {
+        if (isset($video->watchcomplete) && $video->watchcomplete) {
             $output .= html_writer::tag('span', $video->watchcomplete, array('class' => 'watch-status completed'));
             $output .= html_writer::tag('span', $video->learncount, array('class' => 'learn-status'));
             $output .= html_writer::tag('span', $video->speakcount, array('class' => 'speak-status'));
-        } else if ($video->watchcount) {
+        } else if (isset($video->watchcount) && $video->watchcount) {
             // we could try a fancy unicode char, core_text::code2utf8(0x27eb)
             $output .= html_writer::tag('span', '~', array('class' => 'watch-status inprogress'));
         }
