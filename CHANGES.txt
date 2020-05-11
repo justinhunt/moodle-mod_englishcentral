@@ -2,6 +2,9 @@
 Change log for mod_englishcentral
 ========================================
 
+2020-05-11 (15)
+ - Adding support for @ and . in Poodll API username
+
 2020-03-25 (12)
  - Remove default some config settings, because they cause errors in JSDK.
  - added support for @ mark and periods in Poodll API user
