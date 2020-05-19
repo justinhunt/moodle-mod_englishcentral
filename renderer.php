@@ -700,7 +700,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
             if ($goals->$type) {
                 $text = $this->ec->get_string($type.'goal');
                 $sort = $this->get_sort_icon($url, $type);
-                $percent = round(100 * min(1, $goals->$type / $goals->total));
+                $percent = (100 * min(1, $goals->$type / $goals->total));
                 $style = "margin-left: $left%; width: $percent%;";
                 $params = array('class' => $type, 'style' => $style);
                 $title .= html_writer::tag('span', $text.' '.$sort, $params);
@@ -793,12 +793,12 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
             $bar = '';
         } else {
             $value = min($item->$type, $goals->$type);
-            $width = round(100 * min(1, $value / $goals->$type)).'%;';
+            $width = (100 * min(1, $value / $goals->$type)).'%;';
             $params = array('class' => 'bar', 'style' => 'width: '.$width);
             $bar = html_writer::tag('span', '', $params);
         }
 
-        $width = round(100 * min(1, $goals->$type / $goals->total)).'%';
+        $width = (100 * min(1, $goals->$type / $goals->total)).'%';
         $params = array('class' => $type, 'style' => 'width: '.$width);
 
         return html_writer::tag('span', $bar.$text, $params);

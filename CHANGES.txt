@@ -2,6 +2,9 @@
 Change log for mod_englishcentral
 ========================================
 
+2020-05-19 (17)
+ - do not round Watch/Learn/Speak width percentages on EC report because certain combinations, e.g. 4-10-10, lead to total width of greater than 100%
+
 2020-05-11 (16)
  - mod/englishcentral fix SQL issue causing problems on PostgreSQL servers
 
