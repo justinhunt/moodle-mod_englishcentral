@@ -569,11 +569,11 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
 
     public function show_video_status($video) {
         $output = '';
-        if ($video->watchcomplete) {
+        if (isset($video->watchcomplete) && $video->watchcomplete) {
             $output .= html_writer::tag('span', $video->watchcomplete, array('class' => 'watch-status completed'));
             $output .= html_writer::tag('span', $video->learncount, array('class' => 'learn-status'));
             $output .= html_writer::tag('span', $video->speakcount, array('class' => 'speak-status'));
-        } else if ($video->watchcount) {
+        } else if (isset($video->watchcount) && $video->watchcount) {
             // we could try a fancy unicode char, core_text::code2utf8(0x27eb)
             $output .= html_writer::tag('span', '~', array('class' => 'watch-status inprogress'));
         }
@@ -700,7 +700,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
             if ($goals->$type) {
                 $text = $this->ec->get_string($type.'goal');
                 $sort = $this->get_sort_icon($url, $type);
-                $percent = round(100 * min(1, $goals->$type / $goals->total));
+                $percent = (100 * min(1, $goals->$type / $goals->total));
                 $style = "margin-left: $left%; width: $percent%;";
                 $params = array('class' => $type, 'style' => $style);
                 $title .= html_writer::tag('span', $text.' '.$sort, $params);
@@ -793,12 +793,12 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
             $bar = '';
         } else {
             $value = min($item->$type, $goals->$type);
-            $width = round(100 * min(1, $value / $goals->$type)).'%;';
+            $width = (100 * min(1, $value / $goals->$type)).'%;';
             $params = array('class' => 'bar', 'style' => 'width: '.$width);
             $bar = html_writer::tag('span', '', $params);
         }
 
-        $width = round(100 * min(1, $goals->$type / $goals->total)).'%';
+        $width = (100 * min(1, $goals->$type / $goals->total)).'%';
         $params = array('class' => $type, 'style' => 'width: '.$width);
 
         return html_writer::tag('span', $bar.$text, $params);

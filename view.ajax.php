@@ -31,7 +31,14 @@ require_sesskey();
 
 // get expected input params
 $id = optional_param('id', 0, PARAM_INT); // course_modules id
-$data = optional_param('data', '', PARAM_RAW);
+$name = 'data'; // we expect an array, but it may be scalar
+if (isset($_POST[$name]) && is_array($_POST[$name])) {
+    $data = optional_param_array($name, '', PARAM_RAW);
+} else if (isset($_GET[$name]) AND is_array($_GET[$name])) {
+    $data = optional_param_array($name, '', PARAM_RAW);
+} else {
+    $data = optional_param($name, '', PARAM_RAW);
+}
 $action = optional_param('action', '', PARAM_ALPHA);
 
 // extract key records from DB
@@ -77,7 +84,7 @@ switch ($action) {
     case 'storeresults':
         if (is_array($data) && array_key_exists('dialogID', $data)) {
             $data = (object)$data;
-            $dialog = $auth->fetch_dialog_progress($data->dialogID, $data->sdk_token);
+            $dialog = $auth->fetch_dialog_progress($data->dialogID, $data->sdktoken);
             $ec->update_progress($dialog);
             echo $renderer->show_progress();
         }
