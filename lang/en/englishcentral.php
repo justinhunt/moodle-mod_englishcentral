@@ -336,3 +336,9 @@ $string['subscriptionhasnocreds'] = 'The Poodll EnglishCentral subscription is e
 
 $string['advancedsection'] = 'Advanced Settings';
 $string['advancedsection_details'] = 'The settings from here should usually be left untouched. You may be directed by Poodll support to use them in some cases.';
+$string['enablesetuptab']="Enable setup tab";
+$string['enablesetuptab_details']="Show a tab containing the activity instance settings to admins. Not super useful in most cases.";
+$string['setup']="Setup";
+$string['view']="View";
+$string['reports']="Reports";
+$string['report']="Reports";

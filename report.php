@@ -75,6 +75,6 @@ $PAGE->requires->js_call_amd("$ec->plugin/report", 'init');
 $renderer = $PAGE->get_renderer($ec->plugin);
 $renderer->attach_activity_and_auth($ec, $auth);
 
-echo $renderer->header(get_string('report'));
+echo $renderer->header(get_string('report'),'report');
 echo $renderer->show_progress_report();
 echo $renderer->footer();

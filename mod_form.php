@@ -28,6 +28,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use mod_englishcentral\constants;
+use mod_englishcentral\utils;
+
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
 require_once($CFG->dirroot.'/mod/englishcentral/lib.php');
 
@@ -39,131 +42,58 @@ class mod_englishcentral_mod_form extends moodleform_mod {
     /** size of numeric text boxes */
     const TEXT_NUM_SIZE = 4;
 
+    public function __construct($current, $section, $cm, $course, $ajaxformdata=null, $customdata=null) {
+        global $CFG;
+        $this->current   = $current;
+        $this->_instance = $current->instance;
+        $this->_section  = $section;
+        $this->_cm       = $cm;
+        $this->_course   = $course;
+        if ($this->_cm) {
+            $this->context = context_module::instance($this->_cm->id);
+        } else {
+            $this->context = context_course::instance($course->id);
+        }
+        // Set the course format.
+        require_once($CFG->dirroot . '/course/format/lib.php');
+        $this->courseformat = course_get_format($course);
+        // Guess module name if not set.
+        if (is_null($this->_modname)) {
+            $matches = array();
+            if (!preg_match('/^mod_([^_]+)_mod_form$/', get_class($this), $matches)) {
+                debugging('Rename form to mod_xx_mod_form, where xx is name of your module');
+                print_error('unknownmodulename');
+            }
+            $this->_modname = $matches[1];
+        }
+        $this->init_features();
+        $action = 'modedit.php';
+        moodleform::__construct(  $action, $customdata, 'post', '', null, true, $ajaxformdata);
+    }
+
     /**
      * Defines forms elements
      */
     public function definition() {
         global $PAGE;
 
-        $plugin = 'mod_englishcentral';
-        $config = get_config($plugin);
-
-        $PAGE->requires->js_call_amd("$plugin/form", 'init');
-
         $mform = $this->_form;
 
-        $dateoptions = array('optional' => true);
-        $textoptions = array('size' => self::TEXT_NUM_SIZE);
+        //Add this activity specific form fields
+        //We want to do this procedurally because in setup tabs we want to show a subset of this form
+        // with just the activity specific fields,and we use a custom form and the same elements
+        utils::add_mform_elements($mform,$this->context);
 
-        //-------------------------------------------------------------------------------
-        $name = 'general';
-        $label = get_string($name, 'form');
-        $mform->addElement('header', $name, $label);
-        //-------------------------------------------------------------------------------
-
-        // Adding the standard "name" field
-        $name = 'name';
-        $label = get_string('activityname', $plugin);
-        $mform->addElement('text', $name, $label, array('size'=>'64'));
-        if (empty($CFG->formatstringstriptags)) {
-            $mform->setType($name, PARAM_CLEAN);
-        } else {
-            $mform->setType($name, PARAM_TEXT);
-        }
-        $mform->addRule($name, null, 'required', null, 'client');
-        $mform->addRule($name, get_string('maximumchars', null, 255), 'maxlength', 255, 'client');
-        $mform->addHelpButton($name, 'activityname', $plugin);
-
-        // Adding the standard "intro" and "introformat" fields
-        $this->standard_intro_elements();
-
-        //-----------------------------------------------------------------------------
-        $name = 'timing';
-        $label = get_string($name, 'form');
-        $mform->addElement('header', $name, $label);
-        $mform->setExpanded($name, true);
-        //-----------------------------------------------------------------------------
-
-        $name = 'activityopen';
-        $label = get_string($name, $plugin);
-        $mform->addElement('date_time_selector', $name, $label, $dateoptions);
-        $mform->addHelpButton($name, $name, $plugin);
-        $this->set_type_default_advanced($mform, $config, $name, PARAM_INT);
-
-        $name = 'videoopen';
-        $label = get_string($name, $plugin);
-        $mform->addElement('date_time_selector', $name, $label, $dateoptions);
-        $mform->addHelpButton($name, $name, $plugin);
-        $this->set_type_default_advanced($mform, $config, $name, PARAM_INT);
-
-        $name = 'videoclose';
-        $label = get_string($name, $plugin);
-        $mform->addElement('date_time_selector', $name, $label, $dateoptions);
-        $mform->addHelpButton($name, $name, $plugin);
-        $this->set_type_default_advanced($mform, $config, $name, PARAM_INT);
-
-        $name = 'activityclose';
-        $label = get_string($name, $plugin);
-        $mform->addElement('date_time_selector', $name, $label, $dateoptions);
-        $mform->addHelpButton($name, $name, $plugin);
-        $this->set_type_default_advanced($mform, $config, $name, PARAM_INT);
-
-        //-------------------------------------------------------------------------------
-        $name = 'goals';
-        $label = get_string($name, $plugin);
-        $mform->addElement('header', $name, $label);
-        $mform->setExpanded($name, true);
-        //-------------------------------------------------------------------------------
-
-        $names = array('watchgoal' => 10,
-                       'learngoal' => 20,
-                       'speakgoal' => 10,
-                       'studygoal' => 60);
-        foreach ($names as $name => $default) {
-            $label = get_string($name, $plugin);
-            $units = get_string($name.'units', $plugin);
-            $elements = array(
-                $mform->createElement('text', $name, '', $textoptions),
-                $mform->createElement('static', '', '', $units)
-            );
-            $mform->addElement('group', $name.'group', $label, $elements, ' ', false);
-            $mform->setType($name, PARAM_INT);
-            $mform->setDefault($name, $default);
-            $mform->addHelpButton($name.'group', $name, $plugin);
-        }
-
-        // add grade elements
+        // Grade.
         $this->standard_grading_coursemodule_elements();
 
-        // add standard elements
+        // add standard elements, common to all modules
         $this->standard_coursemodule_elements();
-
-        // add standard buttons
+        // add standard buttons, common to all modules
         $this->add_action_buttons();
+
     }
 
-    /**
-     * set_type_default_advanced
-     *
-     * @param $mform
-     * @param $config
-     * @param $name of field
-     * @param $type PARAM_xxx constant value
-     * @param $default (optional, default = null)
-     * @todo Finish documenting this function
-     */
-    private function set_type_default_advanced($mform, $config, $name, $type, $default=null) {
-        $mform->setType($name, $type);
-        if (isset($config->$name)) {
-            $mform->setDefault($name, $config->$name);
-        } else if ($default) {
-            $mform->setDefault($name, $default);
-        }
-        $adv_name = 'adv'.$name;
-        if (isset($config->$adv_name)) {
-            $mform->setAdvanced($name, $config->$adv_name);
-        }
-    }
 
     /**
      * return a field value from the original record

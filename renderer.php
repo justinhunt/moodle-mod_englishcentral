@@ -17,6 +17,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use \mod_englishcentral\constants;
+use \mod_englishcentral\utils;
+
 
 /**
  * A custom renderer class that extends the plugin_renderer_base.
@@ -56,7 +59,9 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
      * @param string $extrapagetitle String to append to the page title.
      * @return string
      */
-    public function header($extrapagetitle=null) {
+    public function header($extrapagetitle=null,$currenttab='view') {
+        global $CFG;
+
         if (isset($this->ec->id)) {
             $activityname = format_string($this->ec->name, true, $this->ec->course);
             $title = $this->ec->course->shortname.': '.$activityname;
@@ -71,6 +76,17 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
 
         if (isset($this->ec->id)) {
             if (has_capability('mod/englishcentral:manage', $this->ec->context)) {
+
+                //are we showing tabs or not?
+                if (get_config(constants::M_COMPONENT,'enablesetuptab')) {
+                        $moduleinstance =$this->ec;
+                        ob_start();
+                        include($CFG->dirroot.'/mod/englishcentral/tabs.php');
+                        $output .= ob_get_contents();
+                        ob_end_clean();
+                }
+
+
                 if ($this->page->url == $this->ec->get_view_url()) {
                     $icon = $this->pix_icon('i/report', 'report', 'moodle', array('class'=>'icon'));
                     $icon = html_writer::link($this->ec->get_report_url(), $icon);
@@ -88,6 +104,53 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         }
         return $output;
     }
+
+
+    /**
+     * Returns the header for the module
+     *
+     * @param mod $instance
+     * @param string $currenttab current tab that is shown.
+     * @param int    $item id of the anything that needs to be displayed.
+     * @param string $extrapagetitle String to append to the page title.
+     * @return string
+     */
+    public function xxxheader($moduleinstance, $cm, $currenttab = '', $itemid = null, $extrapagetitle = null) {
+        global $CFG;
+
+        $activityname = format_string($moduleinstance->name, true, $moduleinstance->course);
+        if (empty($extrapagetitle)) {
+            $title = $this->page->course->shortname.": ".$activityname;
+        } else {
+            $title = $this->page->course->shortname.": ".$activityname.": ".$extrapagetitle;
+        }
+
+        // Build the buttons
+        $context = \context_module::instance($cm->id);
+
+        /// Header setup
+        $this->page->set_title($title);
+        $this->page->set_heading($this->page->course->fullname);
+        $output = $this->output->header();
+
+        if (has_capability('mod/solo:selecttopics', $context) || has_capability('mod/solo:viewreports', $context)) {
+
+
+            if (!empty($currenttab)) {
+                ob_start();
+                include($CFG->dirroot.'/mod/solo/tabs.php');
+                $output .= ob_get_contents();
+                ob_end_clean();
+            }
+        } else {
+            $output .= $this->output->heading($activityname);
+        }
+
+
+        return $output;
+    }
+
+
 
     /**
      * Return HTML to display limited header

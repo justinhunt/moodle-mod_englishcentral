@@ -89,4 +89,9 @@ if ($ADMIN->fulltree) {
     $default = get_string($name.'default', $plugin);
     $options = array('JSDK2' => 'JSDK2', 'JSDK3' => 'JSDK3');
     $settings->add(new admin_setting_configselect("$plugin/$name", $label, $explain, $default, $options));
+
+    $settings->add(new admin_setting_configcheckbox($plugin .  '/enablesetuptab',
+            get_string('enablesetuptab', $plugin ), get_string('enablesetuptab_details',$plugin ), 0));
+
+
 }
