@@ -105,7 +105,7 @@ function englishcentral_update_instance(stdClass $data, mod_englishcentral_mod_f
  * @param stdClass $data recently submitted formdata
  * @return boolean Success/Failure
  */
-function englishcentral_process_formdata(stdClass $data, mod_englishcentral_mod_form $mform) {
+function englishcentral_process_formdata(stdClass $data, mod_englishcentral_mod_form $mform = null) {
     global $DB;
 
     // add/update record in main EC table
