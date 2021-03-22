@@ -75,7 +75,8 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         $output = $this->output->header();
 
         if (isset($this->ec->id)) {
-            if (has_capability('mod/englishcentral:manage', $this->ec->context)) {
+            if (has_capability('mod/englishcentral:manage', $this->ec->context) ||
+                    has_capability('mod/englishcentral:viewreports', $this->ec->context)) {
 
                 //are we showing tabs or not?
                 if (get_config(constants::M_COMPONENT,'enablesetuptab')) {
