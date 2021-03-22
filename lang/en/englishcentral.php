@@ -42,6 +42,8 @@ $string['englishcentral:manage'] = 'Manage an English Central activity';
 $string['englishcentral:manageattempts'] = 'Manage attempts at an English Central activity';
 $string['englishcentral:submit'] = 'Submit data to an English Central activity';
 $string['englishcentral:view'] = 'View an English Central activity';
+$string['englishcentral:viewreports'] = 'View reports for an English Central activity';
+
 
 // completion
 $string['completiongoals'] = 'Require study goals';

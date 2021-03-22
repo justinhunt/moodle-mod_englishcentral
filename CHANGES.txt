@@ -1,6 +1,8 @@
 ========================================
 Change log for mod_englishcentral
 ========================================
+2021-03-27 (19)
+- set permission so non editing teacher can see reports
 
 2021-03-10 (18)
  - added ability to display edit settings in a tab

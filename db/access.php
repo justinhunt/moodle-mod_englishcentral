@@ -81,6 +81,17 @@ $capabilities = array(
             ),
             'clonepermissionsfrom' => 'moodle/course:manageactivities'
     ),
+
+    'mod/englishcentral:viewreports' => array(
+                'captype' => 'write',
+                'contextlevel' => CONTEXT_COURSE,
+                'archetypes' => array(
+                        'teacher' => CAP_ALLOW,
+                        'editingteacher' => CAP_ALLOW,
+                        'manager' => CAP_ALLOW
+                ),
+                'clonepermissionsfrom' => 'moodle/grade:viewall'
+    ),
     
     'mod/englishcentral:view' => array(
         'captype' => 'read',
