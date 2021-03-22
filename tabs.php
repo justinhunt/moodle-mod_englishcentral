@@ -56,7 +56,7 @@ if(has_capability('mod/englishcentral:manage',$context) && $config->enablesetupt
             get_string('setup', constants::M_COMPONENT), get_string('setup', constants::M_COMPONENT));
 }
 
-if(has_capability('mod/englishcentral:manage',$context) ) {
+if(has_capability('mod/englishcentral:viewreports',$context) ) {
     $row[] = new tabobject('report', "$CFG->wwwroot/mod/englishcentral/report.php?id=$cm->id",
             get_string('reports', constants::M_COMPONENT), get_string('reports', constants::M_COMPONENT));
 }

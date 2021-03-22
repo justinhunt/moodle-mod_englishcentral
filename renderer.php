@@ -84,7 +84,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
                 include($CFG->dirroot.'/mod/englishcentral/tabs.php');
                 $output .= ob_get_contents();
                 ob_end_clean();
-                
+
                 if ($this->page->url == $this->ec->get_view_url()) {
                     $icon = $this->pix_icon('i/report', 'report', 'moodle', array('class'=>'icon'));
                     $icon = html_writer::link($this->ec->get_report_url(), $icon);
