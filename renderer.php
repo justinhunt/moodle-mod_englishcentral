@@ -78,16 +78,13 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
             if (has_capability('mod/englishcentral:manage', $this->ec->context) ||
                     has_capability('mod/englishcentral:viewreports', $this->ec->context)) {
 
-                //are we showing tabs or not?
-                if (get_config(constants::M_COMPONENT,'enablesetuptab')) {
-                        $moduleinstance =$this->ec;
-                        ob_start();
-                        include($CFG->dirroot.'/mod/englishcentral/tabs.php');
-                        $output .= ob_get_contents();
-                        ob_end_clean();
-                }
-
-
+                //set up tabs
+                $moduleinstance =$this->ec;
+                ob_start();
+                include($CFG->dirroot.'/mod/englishcentral/tabs.php');
+                $output .= ob_get_contents();
+                ob_end_clean();
+                
                 if ($this->page->url == $this->ec->get_view_url()) {
                     $icon = $this->pix_icon('i/report', 'report', 'moodle', array('class'=>'icon'));
                     $icon = html_writer::link($this->ec->get_report_url(), $icon);
