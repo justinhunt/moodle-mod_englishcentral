@@ -32,5 +32,5 @@ defined('MOODLE_INTERNAL') || die();
 $plugin->component = 'mod_englishcentral';
 $plugin->maturity  = MATURITY_STABLE;
 $plugin->requires  = 2015051100; // Moodle 2.9 (because we want to use AMD)
-$plugin->version   = 2021032719;
-$plugin->release   = '2021-03-27 (19)';
+$plugin->version   = 2021052520;
+$plugin->release   = '2021-05-25 (20)';

@@ -1,6 +1,9 @@
 ========================================
 Change log for mod_englishcentral
 ========================================
+2021-05-25 (20)
+- changed user name fields retrieval code in reports
+
 2021-03-27 (19)
 - set permission so non editing teacher can see reports
 

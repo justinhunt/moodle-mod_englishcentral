@@ -666,7 +666,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
     }
 
     public function show_progress_report() {
-        global $DB;
+        global $DB, $CFG;
         $output = '';
 
         $this->setup_sort();
@@ -704,7 +704,16 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         $from   = "(SELECT $select FROM $from WHERE $where) items,".
                   '{user} u';
         $where  = 'items.userid = u.id';
-        $select = 'items.*,'.get_all_user_name_fields(true, 'u');
+
+        //get_all_user_name_fields deprecated in 3.11
+        if($CFG->version<2021051700) {
+            $select = 'items.*,' . get_all_user_name_fields(true, 'u');
+        }else{
+            $userfields = \core_user\fields::for_name();
+            $usersql = $userfields->get_sql('u');
+            //note no concatenating comma, thats how userfields -> selects works
+            $select = 'items.*' . $usersql->selects;
+        }
 
         if ($this->sort=='firstname' || $this->sort=='lastname') {
             $order = 'u.'.$this->sort;
