@@ -94,10 +94,16 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
                 } else {
                     $icon = '';
                 }
-                $help = $this->help_icon('overview', $this->ec->plugin);
-                $output .= $this->heading($activityname.$help.$icon);
+                //dont show the heading in an iframe, it will be outside this anyway
+                if(!$this->ec->foriframe) {
+                    $help = $this->help_icon('overview', $this->ec->plugin);
+                    $output .= $this->heading($activityname.$help.$icon);
+                }
+
             } else {
-                $output .= $this->output->heading($activityname);
+                if(!$this->ec->foriframe) {
+                    $output .= $this->output->heading($activityname);
+                }
             }
         }
         return $output;
