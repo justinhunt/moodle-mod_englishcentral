@@ -611,6 +611,22 @@ function xmldb_englishcentral_upgrade($oldversion) {
         upgrade_mod_savepoint(true, "$newversion", 'englishcentral');
     }
 
+    // Add foriframe option to englishcentral table
+    $newversion = 2021053100;
+    if ($oldversion < $newversion) {
+        $table = new xmldb_table('englishcentral');
+
+
+        // Define field itemtts to be added to englishcentral
+        $field= new xmldb_field('foriframe', XMLDB_TYPE_INTEGER, '2', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
+
+        // add richtextprompt field to minilesson table
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        upgrade_mod_savepoint(true, 2021053100, 'englishcentral');
+    }
+
     return true;
 }
 
