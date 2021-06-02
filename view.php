@@ -27,7 +27,9 @@
  */
 
 require_once('../../config.php');
-require_once($CFG->dirroot.'/mod/englishcentral/lib.php');;
+require_once($CFG->dirroot.'/mod/englishcentral/lib.php');
+
+use \mod_englishcentral\constants;
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID
 $ecid = optional_param('ecid', 0, PARAM_INT);  // englishcentral instance ID
@@ -64,7 +66,13 @@ $completion->set_module_viewed($cm);
 /// Set up the page header
 $PAGE->set_url('/mod/englishcentral/view.php', array('id' => $cm->id));
 $PAGE->set_context($context);
-$PAGE->set_pagelayout('course');
+
+$config = get_config(constants::M_COMPONENT);
+if($config->enablesetuptab){
+    $PAGE->set_pagelayout('popup');
+}else{
+    $PAGE->set_pagelayout('course');
+}
 
 // Add standard JS keep the session alive (Moodle >= 2.9).
 \core\session\manager::keepalive();

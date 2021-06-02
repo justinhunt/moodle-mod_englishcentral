@@ -64,7 +64,9 @@ require_login($course, true, $cm);
 $PAGE->set_title(format_string($moduleinstance->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
-$PAGE->set_pagelayout('course');
+
+//Page layout if setup is enabled is always popup
+$PAGE->set_pagelayout('popup');
 
 
 

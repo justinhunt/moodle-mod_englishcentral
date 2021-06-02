@@ -27,7 +27,9 @@
  */
 
 require_once('../../config.php');
-require_once($CFG->dirroot.'/mod/englishcentral/lib.php');;
+require_once($CFG->dirroot.'/mod/englishcentral/lib.php');
+
+use \mod_englishcentral\constants;
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID
 $ecid = optional_param('ecid', 0, PARAM_INT);  // englishcentral instance ID
@@ -65,7 +67,14 @@ if ($mode) {
 }
 $PAGE->set_url('/mod/englishcentral/report.php', $params);
 $PAGE->set_context($context);
-$PAGE->set_pagelayout('report');
+
+$config = get_config(constants::M_COMPONENT);
+if($config->enablesetuptab){
+    $PAGE->set_pagelayout('popup');
+}else{
+    $PAGE->set_pagelayout('report');
+}
+
 
 $ec = \mod_englishcentral\activity::create($instance, $cm, $course, $context);
 $auth = \mod_englishcentral\auth::create($ec);
