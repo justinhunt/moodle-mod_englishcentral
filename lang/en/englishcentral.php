@@ -30,18 +30,18 @@
 defined('MOODLE_INTERNAL') || die();
 
 // required plugin strings
-$string['modulename'] = 'EnglishCentral';
-$string['modulenameplural'] = 'EnglishCentral Activities';
+$string['modulename'] = 'Poodll EnglishCentral';
+$string['modulenameplural'] = 'Poodll EnglishCentral Activities';
 $string['modulename_help'] = 'Use the EnglishCentral module to allow your students to use EnglishCentral videos within Moodle Courses';
 $string['pluginadministration'] = 'EnglishCentral Administration';
-$string['pluginname'] = 'EnglishCentral';
+$string['pluginname'] = 'Poodll EnglishCentral';
 
 // capabilities
-$string['englishcentral:addinstance'] = 'Add a new English Central activity';
-$string['englishcentral:manage'] = 'Manage an English Central activity';
-$string['englishcentral:manageattempts'] = 'Manage attempts at an English Central activity';
-$string['englishcentral:submit'] = 'Submit data to an English Central activity';
-$string['englishcentral:view'] = 'View an English Central activity';
+$string['englishcentral:addinstance'] = 'Add a new EnglishCentral activity';
+$string['englishcentral:manage'] = 'Manage an EnglishCentral activity';
+$string['englishcentral:manageattempts'] = 'Manage attempts at an EnglishCentral activity';
+$string['englishcentral:submit'] = 'Submit data to an EnglishCentral activity';
+$string['englishcentral:view'] = 'View an EnglishCentral activity';
 $string['englishcentral:viewreports'] = 'View reports for an English Central activity';
 
 
