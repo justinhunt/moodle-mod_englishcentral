@@ -1,6 +1,9 @@
 ========================================
 Change log for mod_englishcentral
 ========================================
+2021-08-18 (22)
+- fix for arraykey_exists call on stdClass in grade_item_update on php8
+
 2021-05-31 (21)
 - set internal flag for iframe use
 
