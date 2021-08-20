@@ -380,7 +380,7 @@ class auth {
     }
 
     public function missing_poodllapi_config() {
-        $missing = array('poodllapiuser' => '/^[0-9a-zA-Z\/\.@+=]+$/',
+        $missing = array('poodllapiuser' => '/^[0-9a-zA-Z\/\.@+=_-]+$/',
                          'poodllapisecret' => '/^[0-9a-zA-Z\/+=-]+$/');
         foreach ($missing as $name => $pattern) {
             if (isset($this->ec->config->$name) && preg_match($pattern, $this->ec->config->$name)) {
