@@ -15,22 +15,32 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-
 /**
- * Defines the version of englishcentral
+ * A Free Trial Jumper
  *
- * This code fragment is called by moodle_needs_upgrading() and
- * /admin/index.php
  *
  * @package    mod_englishcentral
- * @copyright  2014 Justin Hunt, 2018 Gordon Bateson
+ * @copyright  Justin Hunt (justin@poodll.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'mod_englishcentral';
-$plugin->maturity  = MATURITY_STABLE;
-$plugin->requires  = 2015051100; // Moodle 2.9 (because we want to use AMD)
-$plugin->version   = 2021122200;
-$plugin->release   = '2021-12-22 (23)';
+require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
+
+use \mod_englishcentral\constants;
+
+require_login(0, false);
+$systemcontext = context_system::instance();
+$PAGE->set_context($systemcontext);
+$PAGE->set_url('/' . CONSTANTS::M_URL . '/fetchcbpage.php');
+
+if(has_capability('moodle/site:config',$systemcontext)){
+
+    $amddata=['poodllcbsite'=>'poodllcom','wwwroot'=>$CFG->wwwroot,
+        'first_name'=>$USER->firstname,'last_name'=>$USER->lastname,'email'=>$USER->email,'country'=>$USER->country];
+    echo $OUTPUT->header();
+    echo $OUTPUT->render_from_template( constants::M_COMPONENT . '/fetchcbpage',$amddata);
+    echo $OUTPUT->footer();
+}else{
+    echo "no permission to do that action";
+}
