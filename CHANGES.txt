@@ -1,6 +1,12 @@
 ========================================
 Change log for mod_englishcentral
 ========================================
+
+2022-01-14 (25)
+- More completion fixes. Completion on goals now fully implemented
+- \core_completion\activity_custom_completion implemented
+-  \core\activity_dates implemented
+
 2022-01-09 (24)
 - Fixed issue with new installs since 2018-04-25 (65) not having all the completion fields in DB they needed (upgraded installs were ok)
 

@@ -688,12 +688,7 @@ function englishcentral_get_completion_state($course, $cm, $userid, $type) {
                 case 'completiongoals':
                     // if goals have been set up, calculate total percent
                     $progress = $ec->get_progress();
-                    if ($state = ($ec->watchgoal + $ec->learngoal + $ec->speakgoal)) {
-                        $state = (($progress->watch + $progress->learn + $progress->speak) / $state);
-                        $state = (round(100 * $state, 0) >= 100);
-                    } else {
-                        $state = false; // unusual - no goals have been set up !!
-                    }
+
                     if ($goals = ($ec->watchgoal + $ec->learngoal + $ec->speakgoal)) {
 						$state = 0;
 						$state += max(0, min($progress->watch, $ec->watchgoal));
@@ -718,6 +713,59 @@ function englishcentral_get_completion_state($course, $cm, $userid, $type) {
 
     return $state;
 }
+
+/**
+ * Add a get_coursemodule_info function in case any forum type wants to add 'extra' information
+ * for the course (see resource).
+ *
+ * Given a course_module object, this function returns any "extra" information that may be needed
+ * when printing this activity in a course listing.  See get_array_of_activities() in course/lib.php.
+ *
+ * @param stdClass $coursemodule The coursemodule object (record).
+ * @return cached_cm_info An object on information that the courses
+ *                        will know about (most noticeably, an icon).
+ */
+function englishcentral_get_coursemodule_info($coursemodule) {
+    global $DB;
+
+    $dbparams = ['id' => $coursemodule->instance];
+    $fields = 'id, name, intro, introformat, completionmingrade, completionpass, completiongoals, activityopen, activityclose, watchgoal,learngoal,speakgoal';
+    if (!$ec = $DB->get_record('englishcentral', $dbparams, $fields)) {
+        return false;
+    }
+
+    $result = new cached_cm_info();
+    $result->name = $ec->name;
+
+    if ($coursemodule->showdescription) {
+        // Convert intro to html. Do not filter cached version, filters run at display time.
+        $result->content = format_module_intro('englishcentral', $ec, $coursemodule->id, false);
+    }
+
+    // Populate the custom completion rules as key => value pairs, but only if the completion mode is 'automatic'.
+    if ($coursemodule->completion == COMPLETION_TRACKING_AUTOMATIC) {
+        $result->customdata['customcompletionrules']['completionmingrade'] = $ec->completionmingrade;
+        //how to get pass grade?
+        $result->customdata['customcompletionrules']['completionpass'] = $ec->completionpass;
+        if($ec->completiongoals) {
+            //TO DO: put the watch learn and speak goals as stdclass, in the completion goals array item, and fetch for
+            // display in custom_completion get_custom_rule_description
+            $result->customdata['customcompletionrules']['completiongoals'] = true;
+        }
+    }
+
+    // Populate some other values that can be used in calendar or on dashboard.
+    if ($ec->activityopen) {
+        $result->customdata['activityopen'] = $ec->activityopen;
+    }
+    if ($ec->activityclose) {
+        $result->customdata['cutoffdate'] = $ec->activityclose;
+        $result->customdata['activityclose'] = $ec->activityclose;
+    }
+
+    return $result;
+}
+
 
 /**
  * This function receives a calendar event and returns the action associated with it, or null if there is none.

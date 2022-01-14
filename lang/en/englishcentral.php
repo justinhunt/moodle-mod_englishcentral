@@ -50,6 +50,12 @@ $string['completiongoals'] = 'Require study goals';
 $string['completionmingrade'] = 'Require minimum grade';
 $string['completionpass'] = 'Require passing grade';
 
+
+$string['completiondetail:mingrade'] = 'Minimum grade: {$a}';
+$string['completiondetail:pass'] = 'Achieve pass grade';
+$string['completiondetail:goals'] = 'Complete the watch,learn and speak goals';
+
+
 // activity settings
 $string['consumerkey'] = 'Consumer Key';
 $string['consumerkeydefault'] = 'YOUR CONSUMER KEY';
@@ -350,3 +356,4 @@ $string['freetrial_desc'] = "A dialog should appear that allows you to register 
 $string['memberdashboard'] = "Member Dashboard";
 $string['memberdashboard_desc'] = "";
 $string['fillcredentials']="Set API user and secret with existing credentials";
+
