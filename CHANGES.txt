@@ -1,6 +1,8 @@
 ========================================
 Change log for mod_englishcentral
 ========================================
+2022-01-24 (26)
+- fixed issue where API secret check was too strict, and reported secret as missing
 
 2022-01-14 (25)
 - More completion fixes. Completion on goals now fully implemented
