@@ -150,7 +150,7 @@ class mod_englishcentral_mod_form extends moodleform_mod {
         // add "grade passed" completion condition
         $name = 'completionpass';
         $label = get_string($name, $plugin);
-        $mform->addElement('checkbox', $name, '', $label);
+        $mform->addElement('advcheckbox', $name, '', $label);
         $mform->setType($name, PARAM_INT);
         $mform->setDefault($name, 0);
         $names[] = $name;
@@ -159,7 +159,7 @@ class mod_englishcentral_mod_form extends moodleform_mod {
         // add "status completed" completion condition
         $name = 'completiongoals';
         $label = get_string($name, $plugin);
-        $mform->addElement('checkbox', $name, '', $label);
+        $mform->addElement('advcheckbox', $name, '', $label);
         $mform->setType($name, PARAM_INT);
         $mform->setDefault($name, 0);
         $names[] = $name;

@@ -383,7 +383,9 @@ class auth {
         $missing = array('poodllapiuser' => '/^[0-9a-zA-Z\/\.@+=_-]+$/',
                          'poodllapisecret' => '/^[0-9a-zA-Z\/+=-]+$/');
         foreach ($missing as $name => $pattern) {
-            if (isset($this->ec->config->$name) && preg_match($pattern, $this->ec->config->$name)) {
+            //the patterns dont match what might actually be in the secret, so commented for now. Justin 20212/01/23
+            //if (isset($this->ec->config->$name) && preg_match($pattern, $this->ec->config->$name)) {
+            if (isset($this->ec->config->$name) && !empty($this->ec->config->$name)) {
                 unset($missing[$name]);
             } else {
                 $missing[$name] = $this->ec->get_string($name);

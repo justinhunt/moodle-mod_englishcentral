@@ -50,6 +50,12 @@ $string['completiongoals'] = 'Require study goals';
 $string['completionmingrade'] = 'Require minimum grade';
 $string['completionpass'] = 'Require passing grade';
 
+
+$string['completiondetail:mingrade'] = 'Minimum grade: {$a}';
+$string['completiondetail:pass'] = 'Achieve pass grade';
+$string['completiondetail:goals'] = 'Complete the watch,learn and speak goals';
+
+
 // activity settings
 $string['consumerkey'] = 'Consumer Key';
 $string['consumerkeydefault'] = 'YOUR CONSUMER KEY';
@@ -344,3 +350,10 @@ $string['setup']="Setup";
 $string['view']="View";
 $string['reports']="Reports";
 $string['report']="Reports";
+
+$string['freetrial'] = "Get Cloud Poodll API Credentials and a Free Trial";
+$string['freetrial_desc'] = "A dialog should appear that allows you to register for a free trial with Poodll. After registering you should login to the members dashboard to get your API user and secret. And to register your site URL.";
+$string['memberdashboard'] = "Member Dashboard";
+$string['memberdashboard_desc'] = "";
+$string['fillcredentials']="Set API user and secret with existing credentials";
+

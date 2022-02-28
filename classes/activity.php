@@ -303,6 +303,11 @@ class activity {
         }
 
         englishcentral_update_grades($this, $USER->id);
+        // Update completion state.
+        $completion = new \completion_info($this->course);
+        if ($completion->is_enabled($this->cm) && ($this->completiongoals)) {
+            $completion->update_state($this->cm, COMPLETION_COMPLETE);
+        }
     }
 
     /**

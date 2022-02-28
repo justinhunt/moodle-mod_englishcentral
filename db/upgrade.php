@@ -624,8 +624,31 @@ function xmldb_englishcentral_upgrade($oldversion) {
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
-        upgrade_mod_savepoint(true, 2021053100, 'englishcentral');
+        upgrade_mod_savepoint(true, $newversion, 'englishcentral');
     }
+
+    $newversion = 2022010900;
+    if ($oldversion < $newversion) {
+        // add custom completion fields for EnglishCentral module
+        $table = new xmldb_table('englishcentral');
+        $fields = array(
+            new xmldb_field('completionmingrade',  XMLDB_TYPE_FLOAT, '6,2', null, XMLDB_NOTNULL, null, 0.00),
+            new xmldb_field('completionpass', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, 0),
+            new xmldb_field('completiongoals', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, 0)
+        );
+        $previous = '';
+        foreach ($fields as $field) {
+            if ($previous) {
+                $field->setPrevious($previous);
+            }
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+            $previous = $field->getName();
+        }
+        upgrade_mod_savepoint(true, $newversion, 'englishcentral');
+    }
+
 
     return true;
 }
