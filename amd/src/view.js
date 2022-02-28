@@ -444,7 +444,19 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
                 "Authorization": VIEW.authorization,
                 "Content-Type": "application/json"
             },
-            "success": function(info) {
+            "success": function(dialogs) {
+                var info = false;
+                // If we have results, format as view expects and list them up
+                if (dialogs && dialogs.length>0) {
+                    info = {count: dialogs.length, results: []};
+                    for(var i = 0; i<dialogs.length;i++){
+                        var highlights={};
+                        highlights.en_name= ["<em>" + dialogs[i].title +"</em>"];
+                        highlights.en_topic= ["<em>" + dialogs[i].topics[0].name +"</em>"];
+                        highlights.en_description=  [dialogs[i].description];
+                        info.results.push({score: 150,value: dialogs[i],highlights: highlights});
+                    }
+                }
                 VIEW.format_results(info);
             }
         });
