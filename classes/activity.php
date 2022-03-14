@@ -382,6 +382,7 @@ class activity {
             switch ($activity->activityTypeID) {
 
                 case \mod_englishcentral\auth::ACTIVITYTYPE_WATCHING: // =9
+                case \mod_englishcentral\auth::ACTIVITYTYPE_WATCHCOMPREHENSIONCHOICE: //=40
                     $progress['watchcomplete'] = (empty($activity->completed) ? 0 : 1);
                     foreach ($activity->watchedDialogLines as $line) {
                         $progress['watchlineids'][$line->dialogLineID] = 1;

@@ -22,7 +22,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since       2.9
  */
-define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($, JUI, STR, HTML) {
+define(["jquery", "jqueryui","core/log", "core/str", "mod_englishcentral/html"], function($, JUI, LOG, STR, HTML) {
 
     /** @alias module:mod_englishcentral/view */
     var VIEW = {};
@@ -262,7 +262,7 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
             }
             if (setHandler) {
                 ecsdk[setHandler](function(data) {
-
+LOG.debug(data);
                     switch (data.eventType) {
                         case "CompleteActivityWatch":
                         case "LearnedWord":
