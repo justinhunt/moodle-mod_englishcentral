@@ -2,6 +2,9 @@
 Change log for mod_englishcentral
 ========================================
 2022-03-18 (27)
+2022-03-18 (28)
+ - rebuild amd/build/view.min.js.map
+
  - add link to Lesson plan for each video
 
 2022-01-24 (26)
