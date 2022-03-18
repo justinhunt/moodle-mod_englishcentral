@@ -594,8 +594,20 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
 
         $output .= html_writer::start_tag('div', array('class' => 'thumb-outline'));
 
-        $params = array('class' => 'activity-title',
-                        'data-url' => $video->dialogURL);
+        $params = array('class' => 'activity-title', 'data-url' => $video->dialogURL);
+        $showdetails = false;
+        if ($this->ec->showdetails) {
+            $is_student = has_capability('mod/englishcentral:view', $this->ec->context);
+            $is_teacher = has_capability('mod/englishcentral:addinstance', $this->ec->context);
+            switch ($this->ec->showdetails) {
+                case 1: $showdetails = ($is_student && ($is_teacher == false)); break;
+                case 2: $showdetails = (($is_student == false) && $is_teacher); break;
+                case 3: $showdetails = ($is_student || $is_teacher); break;
+            }
+        }
+        if ($showdetails) {
+            $params['data-video-details-url'] = $video->videoDetailsURL;
+        }
         $output .= html_writer::tag('span', $video->title, $params);
 
         $params = array('class' => 'thumb-frame',
@@ -610,22 +622,29 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
 
         $output .= html_writer::end_tag('span');
 
-        $params = array('class' => 'difficulty-level-indicator '.$difficulty);
-        $output .= html_writer::start_tag('span', $params);
+        if ($this->ec->showlevelnumber || $this->ec->showleveltext) {
 
-        $label = $this->ec->get_string('levelx', $video->difficulty);
-        $params = array('class' => 'difficulty-level text-center'); //  difficulty-icon
-        $output .= html_writer::tag('span', $label, $params);
+            $params = array('class' => 'difficulty-level-indicator '.$difficulty);
+            $output .= html_writer::start_tag('span', $params);
 
-        $label = $this->ec->get_string($difficulty);
-        $params = array('class' => 'difficulty-label');
-        $output .= html_writer::tag('span', $label, $params);
+            if ($this->ec->showlevelnumber) {
+                $label = $this->ec->get_string('levelx', $video->difficulty);
+                $params = array('class' => 'difficulty-level text-center');
+                $output .= html_writer::tag('span', $label, $params);
+            }
+            if ($this->ec->showleveltext) {
+                $label = $this->ec->get_string($difficulty);
+                $params = array('class' => 'difficulty-label');
+                $output .= html_writer::tag('span', $label, $params);
+            }
+            $output .= html_writer::end_tag('span');
+        }
 
-        $output .= html_writer::end_tag('span'); // difficulty-level-indicator
-
-        $label = $video->duration;
-        $params = array('class' => 'duration');
-        $output .= html_writer::tag('span', $label, $params);
+        if ($this->ec->showduration) {
+            $label = $video->duration;
+            $params = array('class' => 'duration');
+            $output .= html_writer::tag('span', $label, $params);
+        }
 
         $output .= html_writer::end_tag('div'); // activity-outline
 

@@ -22,7 +22,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since       2.9
  */
-define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($, JUI, STR, HTML) {
+define(["jquery", "jqueryui","core/log", "core/str", "mod_englishcentral/html"], function($, JUI, LOG, STR, HTML) {
 
     /** @alias module:mod_englishcentral/view */
     var VIEW = {};
@@ -56,6 +56,7 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         {"key": "error",              "component": "error"},
         {"key": "goals",              "component": VIEW.plugin},
         {"key": "hideadvanced",       "component": "form"},
+        {"key": "info",               "component": "moodle"},
         {"key": "intermediate",       "component": VIEW.plugin},
         {"key": "level",              "component": VIEW.plugin},
         {"key": "ok",                 "component": "moodle"},
@@ -78,6 +79,7 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
         VIEW.str.error = s[i++];
         VIEW.str.goals = s[i++];
         VIEW.str.hideadvanced = s[i++];
+        VIEW.str.info = s[i++];
         VIEW.str.intermediate = s[i++];
         VIEW.str.level = s[i++];
         VIEW.str.ok = s[i++];
@@ -139,6 +141,29 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
                 cache: true
             }).done(function() {
                 VIEW.ECSDK.resolve(window.ECSDK);
+            });
+
+            $(".activity-title").each(function(){
+                var url = this.dataset.videoDetailsUrl;
+                if (url) {
+                    var src = $(".removevideo img").prop("src")
+                        .replace("removevideo", "i/info")
+                        .replace("mod_englishcentral", "core");
+                    var img = HTML.emptytag("img", {
+                        "src": src,
+                        "class": "icon infoicon",
+                        "title": VIEW.str.info,
+                        "style": "position: absolute; left: 100%;"
+                    });
+                    img = $(HTML.tag("a", img, {"href": url}));
+                    img.click(function(evt){
+                        VIEW.open_window(this.href);
+                        evt.stopPropagation();
+                        evt.preventDefault();
+                        return false;
+                    });
+                    $(this).before(img);
+                }
             });
         });
 
@@ -262,7 +287,8 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
             }
             if (setHandler) {
                 ecsdk[setHandler](function(data) {
-
+// TODO: remove use of LOG in production sites.
+LOG.debug(data);
                     switch (data.eventType) {
                         case "CompleteActivityWatch":
                         case "LearnedWord":
@@ -444,7 +470,19 @@ define(["jquery", "jqueryui", "core/str", "mod_englishcentral/html"], function($
                 "Authorization": VIEW.authorization,
                 "Content-Type": "application/json"
             },
-            "success": function(info) {
+            "success": function(dialogs) {
+                var info = false;
+                // If we have results, format as view expects and list them up
+                if (dialogs && dialogs.length>0) {
+                    info = {count: dialogs.length, results: []};
+                    for(var i = 0; i<dialogs.length;i++){
+                        var highlights={};
+                        highlights.en_name= ["<em>" + dialogs[i].title +"</em>"];
+                        highlights.en_topic= ["<em>" + dialogs[i].topics[0].name +"</em>"];
+                        highlights.en_description=  [dialogs[i].description];
+                        info.results.push({score: 150,value: dialogs[i],highlights: highlights});
+                    }
+                }
                 VIEW.format_results(info);
             }
         });

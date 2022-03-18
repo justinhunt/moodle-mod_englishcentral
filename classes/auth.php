@@ -57,6 +57,7 @@ class auth {
     const ACTIVITYTYPE_WATCHING = 9;
     const ACTIVITYTYPE_LEARNING = 10;
     const ACTIVITYTYPE_SPEAKING = 11;
+    const ACTIVITYTYPE_WATCHCOMPREHENSIONCHOICE = 40;
 
     const SDK_MODE_PRODUCTION   = 0;
     const SDK_MODE_DEVELOPMENT  = 1;
@@ -258,7 +259,7 @@ class auth {
         $endpoint = 'rest/content/dialog';
         $fields = array('dialogIDs' => implode(',', $videoids),
                         'siteLanguage' => $this->get_site_language(),
-                        'fields' => 'dialogID,title,difficulty,duration,dialogURL,thumbnailURL');
+                        'fields' => 'dialogID,title,difficulty,duration,dialogURL,thumbnailURL,videoDetailsURL');
         return $this->doGet($subdomain, $endpoint, $fields, self::ACCEPT_V1);
     }
 
@@ -357,7 +358,8 @@ class auth {
             'vi', // Vietnamese Tiếng Việt
             'zh', // Chinese    简体中文
             'he', // Hebrew     עִברִית 
-            'ar'  // Arabic     عربى 
+            'ar', // Arabic     عربى 
+            'fr', // French     Français
         );
         if (in_array($lang, $langs)) {
             return $lang;
@@ -380,10 +382,12 @@ class auth {
     }
 
     public function missing_poodllapi_config() {
-        $missing = array('poodllapiuser' => '/^[0-9a-zA-Z\/\.@+=]+$/',
+        $missing = array('poodllapiuser' => '/^[0-9a-zA-Z\/\.@+=_-]+$/',
                          'poodllapisecret' => '/^[0-9a-zA-Z\/+=-]+$/');
         foreach ($missing as $name => $pattern) {
-            if (isset($this->ec->config->$name) && preg_match($pattern, $this->ec->config->$name)) {
+            //the patterns dont match what might actually be in the secret, so commented for now. Justin 20212/01/23
+            //if (isset($this->ec->config->$name) && preg_match($pattern, $this->ec->config->$name)) {
+            if (isset($this->ec->config->$name) && !empty($this->ec->config->$name)) {
                 unset($missing[$name]);
             } else {
                 $missing[$name] = $this->ec->get_string($name);

@@ -555,7 +555,7 @@ function xmldb_englishcentral_upgrade($oldversion) {
         $select = $DB->sql_concat('userid', "'_'", 'videoid');
         $select = "MIN(id) AS minid, $select AS ids, COUNT(*) AS countrecords";
         $from   = '{'.$table.'}';
-        $group  = 'userid, videoid'; 
+        $group  = 'userid, videoid';
         $having = 'countrecords > ?';
         $params = array(1);
         $records = "SELECT $select FROM $from GROUP BY $group HAVING $having";
@@ -616,15 +616,59 @@ function xmldb_englishcentral_upgrade($oldversion) {
     if ($oldversion < $newversion) {
         $table = new xmldb_table('englishcentral');
 
-
-        // Define field itemtts to be added to englishcentral
+        // Define field items to be added to englishcentral
         $field= new xmldb_field('foriframe', XMLDB_TYPE_INTEGER, '2', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
 
         // add richtextprompt field to minilesson table
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
-        upgrade_mod_savepoint(true, 2021053100, 'englishcentral');
+        upgrade_mod_savepoint(true, $newversion, 'englishcentral');
+    }
+
+    $newversion = 2022010900;
+    if ($oldversion < $newversion) {
+        // add custom completion fields for EnglishCentral module
+        $table = new xmldb_table('englishcentral');
+        $fields = array(
+            new xmldb_field('completionmingrade',  XMLDB_TYPE_FLOAT, '6,2', null, XMLDB_NOTNULL, null, 0.00),
+            new xmldb_field('completionpass', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, 0),
+            new xmldb_field('completiongoals', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, 0)
+        );
+        $previous = '';
+        foreach ($fields as $field) {
+            if ($previous) {
+                $field->setPrevious($previous);
+            }
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+            $previous = $field->getName();
+        }
+        upgrade_mod_savepoint(true, $newversion, 'englishcentral');
+    }
+
+    $newversion = 2022031827;
+    if ($oldversion < $newversion) {
+        $table = new xmldb_table('englishcentral');
+        $fields = array(
+            new xmldb_field('showduration', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, 1),
+            new xmldb_field('showlevelnumber', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, 1),
+            new xmldb_field('showleveltext', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, 1),
+            new xmldb_field('showdetails', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, 0)
+        );
+        $previous = 'studygoal';
+        foreach ($fields as $field) {
+            if ($previous) {
+                $field->setPrevious($previous);
+            }
+            if ($dbman->field_exists($table, $field)) {
+                $dbman->change_field_type($table, $field);
+            } else {
+                $dbman->add_field($table, $field);
+            }
+            $previous = $field->getName();
+        }
     }
 
     return true;

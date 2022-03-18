@@ -303,6 +303,11 @@ class activity {
         }
 
         englishcentral_update_grades($this, $USER->id);
+        // Update completion state.
+        $completion = new \completion_info($this->course);
+        if ($completion->is_enabled($this->cm) && ($this->completiongoals)) {
+            $completion->update_state($this->cm, COMPLETION_COMPLETE);
+        }
     }
 
     /**
@@ -377,6 +382,7 @@ class activity {
             switch ($activity->activityTypeID) {
 
                 case \mod_englishcentral\auth::ACTIVITYTYPE_WATCHING: // =9
+                case \mod_englishcentral\auth::ACTIVITYTYPE_WATCHCOMPREHENSIONCHOICE: //=40
                     $progress['watchcomplete'] = (empty($activity->completed) ? 0 : 1);
                     foreach ($activity->watchedDialogLines as $line) {
                         $progress['watchlineids'][$line->dialogLineID] = 1;
