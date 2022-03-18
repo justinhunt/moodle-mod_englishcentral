@@ -146,23 +146,28 @@ define(["jquery", "jqueryui","core/log", "core/str", "mod_englishcentral/html"],
             $(".activity-title").each(function(){
                 var url = this.dataset.videoDetailsUrl;
                 if (url) {
+                    // Create the icon
                     var src = $(".removevideo img").prop("src")
                         .replace("removevideo", "i/info")
                         .replace("mod_englishcentral", "core");
-                    var img = HTML.emptytag("img", {
+                    var icon = HTML.emptytag("img", {
                         "src": src,
                         "class": "icon infoicon",
-                        "title": VIEW.str.info,
-                        "style": "position: absolute; left: 100%;"
+                        "title": VIEW.str.info
                     });
-                    img = $(HTML.tag("a", img, {"href": url}));
-                    img.click(function(evt){
+                    // Convert icon to a clickable link.
+                    icon = $(HTML.tag("a", icon, {
+                        "href": url,
+                        "style": "position: absolute;"
+                    }));
+                    icon.click(function(evt){
                         VIEW.open_window(this.href);
                         evt.stopPropagation();
                         evt.preventDefault();
                         return false;
                     });
-                    $(this).before(img);
+                    // Make room for the icon, and then insert it.
+                    $(this).css({"margin-left": "20px"}).before(icon);
                 }
             });
         });
