@@ -186,6 +186,8 @@ function englishcentral_grade_item_update($englishcentral, $grades=null) {
     require_once($CFG->dirroot.'/lib/gradelib.php');
 
     $params = array('itemname' => $englishcentral->name);
+    // isset($englishcentral->cmidnumber)
+    // property_exists($englishcentral, 'cmidnumber')
     if (array_key_exists('cmidnumber', (array)$englishcentral)) {
         $params['idnumber'] = $englishcentral->cmidnumber;
     }

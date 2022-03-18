@@ -48,6 +48,38 @@ define(["jquery"], function($) {
         $("#fgroup_id_watchgoalgroup").after('<div class="mathsymbol"> + </div>');
         $("#fgroup_id_learngoalgroup").after('<div class="mathsymbol"> + </div>');
         $("#fgroup_id_speakgoalgroup").after('<div class="mathsymbol"> = </div>');
+
+        // Fix layout on Boost-based themes.
+        // We want the goals to appear as boxes:
+        // [Watch] + [Learn] + [Speak] = [Study goals]
+        var goals = document.querySelector("#id_goals");
+        if (goals) {
+            var selectors = ["form-group", "row", "col-md-3", "d-flex", "col-md-9", "align-items-start", "align-self-start"];
+            selectors.forEach(function(s){
+                goals.querySelectorAll("." + s).forEach(function(elm){
+                    elm.classList.remove(s);
+                    if (s == "form-group") {
+                        elm.classList.add("d-inline-block");
+                    }
+                    if (s == "row") {
+                        elm.classList.add("rounded");
+                        elm.classList.add("px-2");
+                        elm.classList.add("mb-2");
+                        elm.classList.add("align-top");
+                        elm.style.minHeight = "80px";
+                    }
+                });
+            });
+            goals.querySelectorAll(".col-form-label").forEach(function(elm){
+                for (var i=0; i < elm.children.length; i++) {
+                    var child = elm.children[i];
+                    child.classList.add("d-inline-block");
+                    if (child.matches("[id^='fgroup_'][id$='_label']")) {
+                        child.classList.add("font-weight-bold");
+                    }
+                }
+            });
+        }
     };
 
     return FORM;

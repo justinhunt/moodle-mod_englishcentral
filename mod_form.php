@@ -44,31 +44,28 @@ class mod_englishcentral_mod_form extends moodleform_mod {
 
     public function __construct($current, $section, $cm, $course, $ajaxformdata=null, $customdata=null) {
         global $CFG;
+
         $this->current   = $current;
         $this->_instance = $current->instance;
         $this->_section  = $section;
         $this->_cm       = $cm;
         $this->_course   = $course;
-        if ($this->_cm) {
-            $this->context = context_module::instance($this->_cm->id);
+        $this->_modname = 'englishcentral';
+
+        // Set context
+        if ($cm) {
+            $this->context = context_module::instance($cm->id);
         } else {
             $this->context = context_course::instance($course->id);
         }
+
         // Set the course format.
         require_once($CFG->dirroot . '/course/format/lib.php');
         $this->courseformat = course_get_format($course);
-        // Guess module name if not set.
-        if (is_null($this->_modname)) {
-            $matches = array();
-            if (!preg_match('/^mod_([^_]+)_mod_form$/', get_class($this), $matches)) {
-                debugging('Rename form to mod_xx_mod_form, where xx is name of your module');
-                print_error('unknownmodulename');
-            }
-            $this->_modname = $matches[1];
-        }
+
         $this->init_features();
-        $action = 'modedit.php';
-        moodleform::__construct(  $action, $customdata, 'post', '', null, true, $ajaxformdata);
+
+        moodleform::__construct('modedit.php', $customdata, 'post', '', null, true, $ajaxformdata);
     }
 
     /**
@@ -89,9 +86,9 @@ class mod_englishcentral_mod_form extends moodleform_mod {
 
         // add standard elements, common to all modules
         $this->standard_coursemodule_elements();
+
         // add standard buttons, common to all modules
         $this->add_action_buttons();
-
     }
 
 

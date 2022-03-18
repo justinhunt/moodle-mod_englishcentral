@@ -1,13 +1,22 @@
 ========================================
 Change log for mod_englishcentral
 ========================================
+2022-03-18 (27)
+2022-03-18 (29)
+ - move the video details icon from the right of the title to the left
+
+2022-03-18 (28)
+ - rebuild amd/build/view.min.js.map
+
+ - add link to Lesson plan for each video
+
 2022-01-24 (26)
 - fixed issue where API secret check was too strict, and reported secret as missing
 
 2022-01-14 (25)
 - More completion fixes. Completion on goals now fully implemented
 - \core_completion\activity_custom_completion implemented
--  \core\activity_dates implemented
+- \core\activity_dates implemented
 
 2022-01-09 (24)
 - Fixed issue with new installs since 2018-04-25 (65) not having all the completion fields in DB they needed (upgraded installs were ok)
