@@ -1,10 +1,10 @@
 ========================================
 Change log for mod_englishcentral
 ========================================
-2022-01-24 (26)
 2022-03-18 (27)
  - add link to Lesson plan for each video
 
+2022-01-24 (26)
 - fixed issue where API secret check was too strict, and reported secret as missing
 
 2022-01-14 (25)
