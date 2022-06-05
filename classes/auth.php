@@ -259,7 +259,7 @@ class auth {
         $endpoint = 'rest/content/dialog';
         $fields = array('dialogIDs' => implode(',', $videoids),
                         'siteLanguage' => $this->get_site_language(),
-                        'fields' => 'dialogID,title,difficulty,duration,dialogURL,thumbnailURL');
+                        'fields' => 'dialogID,title,difficulty,duration,dialogURL,thumbnailURL,videoDetailsURL');
         return $this->doGet($subdomain, $endpoint, $fields, self::ACCEPT_V1);
     }
 
@@ -358,7 +358,8 @@ class auth {
             'vi', // Vietnamese Tiếng Việt
             'zh', // Chinese    简体中文
             'he', // Hebrew     עִברִית 
-            'ar'  // Arabic     عربى 
+            'ar', // Arabic     عربى 
+            'fr', // French     Français
         );
         if (in_array($lang, $langs)) {
             return $lang;

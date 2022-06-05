@@ -56,6 +56,7 @@ define(["jquery", "jqueryui","core/log", "core/str", "mod_englishcentral/html"],
         {"key": "error",              "component": "error"},
         {"key": "goals",              "component": VIEW.plugin},
         {"key": "hideadvanced",       "component": "form"},
+        {"key": "info",               "component": "moodle"},
         {"key": "intermediate",       "component": VIEW.plugin},
         {"key": "level",              "component": VIEW.plugin},
         {"key": "ok",                 "component": "moodle"},
@@ -78,6 +79,7 @@ define(["jquery", "jqueryui","core/log", "core/str", "mod_englishcentral/html"],
         VIEW.str.error = s[i++];
         VIEW.str.goals = s[i++];
         VIEW.str.hideadvanced = s[i++];
+        VIEW.str.info = s[i++];
         VIEW.str.intermediate = s[i++];
         VIEW.str.level = s[i++];
         VIEW.str.ok = s[i++];
@@ -139,6 +141,34 @@ define(["jquery", "jqueryui","core/log", "core/str", "mod_englishcentral/html"],
                 cache: true
             }).done(function() {
                 VIEW.ECSDK.resolve(window.ECSDK);
+            });
+
+            $(".activity-title").each(function(){
+                var url = this.dataset.videoDetailsUrl;
+                if (url) {
+                    // Create the icon
+                    var src = $(".removevideo img").prop("src")
+                        .replace("removevideo", "i/info")
+                        .replace("mod_englishcentral", "core");
+                    var icon = HTML.emptytag("img", {
+                        "src": src,
+                        "class": "icon infoicon",
+                        "title": VIEW.str.info
+                    });
+                    // Convert icon to a clickable link.
+                    icon = $(HTML.tag("a", icon, {
+                        "href": url,
+                        "style": "position: absolute;"
+                    }));
+                    icon.click(function(evt){
+                        VIEW.open_window(this.href);
+                        evt.stopPropagation();
+                        evt.preventDefault();
+                        return false;
+                    });
+                    // Make room for the icon, and then insert it.
+                    $(this).css({"margin-left": "20px"}).before(icon);
+                }
             });
         });
 
@@ -262,6 +292,7 @@ define(["jquery", "jqueryui","core/log", "core/str", "mod_englishcentral/html"],
             }
             if (setHandler) {
                 ecsdk[setHandler](function(data) {
+// TODO: remove use of LOG in production sites.
 LOG.debug(data);
                     switch (data.eventType) {
                         case "CompleteActivityWatch":

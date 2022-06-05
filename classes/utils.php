@@ -119,7 +119,43 @@ class utils {
             $mform->addHelpButton($name.'group', $name, $plugin);
         }
 
+        //-----------------------------------------------------------------------------
+        $name = 'display';
+        $label = get_string($name, 'form');
+        $mform->addElement('header', $name, $label);
+        $mform->setExpanded($name, true);
+        //-----------------------------------------------------------------------------
 
+        $name = 'showduration';
+        $label = get_string($name, $plugin);
+        $mform->addElement('selectyesno', $name, $label);
+        $mform->addHelpButton($name, $name, $plugin);
+        $mform->setDefault($name, 1);
+
+        self::set_type_default_advanced($mform, $config, $name, PARAM_INT);
+
+        $name = 'showlevelnumber';
+        $label = get_string($name, $plugin);
+        $mform->addElement('selectyesno', $name, $label);
+        $mform->addHelpButton($name, $name, $plugin);
+        $mform->setDefault($name, 1);
+
+
+        $name = 'showleveltext';
+        $label = get_string($name, $plugin);
+        $mform->addElement('selectyesno', $name, $label);
+        $mform->addHelpButton($name, $name, $plugin);
+        $mform->setDefault($name, 1);
+
+        $name = 'showdetails';
+        $label = get_string($name, $plugin);
+        $options = array(get_string('no'),
+                         get_string('showtostudentsonly', $plugin),
+                         get_string('showtoteachersonly', $plugin),
+                         get_string('showtoteachersandstudents', $plugin));
+        $mform->addElement('select', $name, $label, $options);
+        $mform->addHelpButton($name, $name, $plugin);
+        $mform->setDefault($name, 3);
 
     } //end of add_mform_elements
 
