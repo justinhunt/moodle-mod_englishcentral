@@ -1,6 +1,10 @@
 ========================================
 Change log for mod_englishcentral
 ========================================
+2022-06-05(30)
+- Better free trial link
+- rebuilt js for < M3.8
+
 2022-03-18 (27)
 2022-03-18 (29)
  - move the video details icon from the right of the title to the left
