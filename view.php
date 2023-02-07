@@ -120,14 +120,20 @@ $opts = array('cmid'          => $ec->cm->id,
               'targetwindow'  => 'EC');
 $PAGE->requires->js_call_amd("$ec->plugin/view", 'init', array($opts));
 
-echo $renderer->show_progress();
+
 
 if ($ec->viewable) {
+    /*
+    $firstthumbnail = 'https://cdna.englishcentral.com/dialogs/12320/thumb_99214_20120928134621.jpg';
+    echo $renderer->show_player($firstthumbnail);
+    */
+    echo $renderer->show_player();
     echo $renderer->show_videos();
     echo $renderer->show_search();
-    echo $renderer->show_player();
 } else {
     echo $renderer->show_notviewable($ec);
 }
 
+// Displays the student's learning progress charts
+echo $renderer->show_progress();
 echo $renderer->footer();

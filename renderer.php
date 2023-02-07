@@ -612,6 +612,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
 
         $params = array('class' => 'thumb-frame',
                         'data-url' => $video->dialogURL,
+                        'data-demopicurl' => $video->demoPictureURL,
                         'style' => 'background-image: url("'.$video->thumbnailURL.'");');
         $output .= html_writer::start_tag('span', $params);
 
@@ -1127,10 +1128,22 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         return $output;
     }
 
+
     /**
      * create a container for the EC player
      */
-    public function show_player() {
-        return html_writer::tag('div', '', array('id' => 'id_playercontainer'));
+
+    //fetch modal content
+    /*
+    public function show_player($firstthumbnail){
+        $data=[];
+        $data['firstthumbnail']=$firstthumbnail;
+        return $this->render_from_template('mod_englishcentral/showplayer', $data);
     }
+    */
+    public function show_player() {
+        $data=[];
+        return $this->render_from_template('mod_englishcentral/showplayer', $data);
+    }
+
 }
