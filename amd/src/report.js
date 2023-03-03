@@ -22,7 +22,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since       2.9
  */
-define(["jquery", "jqueryui", "core/str"], function($, JUI, STR) {
+define(["jquery", "jqueryui", "core/str"], function ($, JUI, STR) {
 
     /** @alias module:mod_englishcentral/report */
     var REPORT = {};
@@ -35,11 +35,11 @@ define(["jquery", "jqueryui", "core/str"], function($, JUI, STR) {
 
     // set up strings
     STR.get_strings([
-        {"key": "videoswatched",    "component": REPORT.plugin},
-        {"key": "wordslearned",     "component": REPORT.plugin},
-        {"key": "linesspoken",      "component": REPORT.plugin},
-        {"key": "overallprogress",  "component": REPORT.plugin}
-    ]).done(function(s) {
+        { "key": "videoswatched", "component": REPORT.plugin },
+        { "key": "wordslearned", "component": REPORT.plugin },
+        { "key": "linesspoken", "component": REPORT.plugin },
+        { "key": "overallprogress", "component": REPORT.plugin }
+    ]).done(function (s) {
         var i = 0;
         REPORT.str.videoswatched = s[i++];
         REPORT.str.wordslearned = s[i++];
@@ -47,9 +47,9 @@ define(["jquery", "jqueryui", "core/str"], function($, JUI, STR) {
         REPORT.str.overallprogress = s[i++];
     });
 
-    REPORT.init = function() {
+    REPORT.init = function () {
         if (window.outerWidth > 1000) {
-            $(".bars .text").each(function(){
+            $(".bars .text").each(function () {
                 $(this).text($(this).prop("title"));
             });
         }

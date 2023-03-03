@@ -23,7 +23,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since       2.9
  */
-define(["jquery", "jqueryui", "core/log", "core/str", "mod_englishcentral/html"], function ($, JUI, LOG, STR, HTML) {
+define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral/html"], function ($, JUI, LOG, STR, HTML) {
 
     /** @alias module:mod_englishcentral/view */
     var VIEW = {};
