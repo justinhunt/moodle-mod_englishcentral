@@ -259,7 +259,7 @@ class auth {
         $endpoint = 'rest/content/dialog';
         $fields = array('dialogIDs' => implode(',', $videoids),
                         'siteLanguage' => $this->get_site_language(),
-                        'fields' => 'dialogID,title,difficulty,duration,dialogURL,thumbnailURL,videoDetailsURL,demoPictureURL');
+                        'fields' => 'dialogID,title,difficulty,duration,dialogURL,thumbnailURL,videoDetailsURL,demoPictureURL,description,topics');
         return $this->doGet($subdomain, $endpoint, $fields, self::ACCEPT_V1);
     }
 
