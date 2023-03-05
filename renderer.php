@@ -439,11 +439,12 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         $output .= html_writer::tag('div', $timing, array('class' => 'timing'));
 
         // format titlecharts
-        $output .= $this->show_titlechart('total', $percent, '%', 'achieved', $percent);
+        $output .= html_writer::start_tag('div', array('class' => 'titlechart-container'));
         $output .= $this->show_titlechart_type('watch', $progress);
         $output .= $this->show_titlechart_type('learn', $progress);
         $output .= $this->show_titlechart_type('speak', $progress);
-
+        $output .= $this->show_titlechart('total', $percent, '%', 'achieved', $percent);
+        $output .= html_writer::end_tag('div');
         $output .= $this->output->box_end();
         return $output;
     }
@@ -613,7 +614,20 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         $params = array('class' => 'thumb-frame',
                         'data-url' => $video->dialogURL,
                         'data-demopicurl' => $video->demoPictureURL,
-                        'style' => 'background-image: url("'.$video->thumbnailURL.'");');
+                        'style' => 'background-image: url("'.$video->thumbnailURL.'");',
+                        'description' => $video->description
+                    ); 
+
+        $topicsList = array('topics' => $video->topics);
+
+        $newTopicsList = [];
+
+        foreach($topicsList['topics'][0] as $key => $value) {
+            array_push($newTopicsList, $value);
+        }
+
+        $params['topics'] = $newTopicsList[1];
+
         $output .= html_writer::start_tag('span', $params);
 
         $params = array('class' => 'play-icon');
@@ -669,6 +683,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
 
     // this method is not used,
     // nor is the addvideo icon
+    
     protected function show_addvideo_icon() {
         return $this->show_videos_icon('add');
     }
@@ -686,9 +701,11 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         }
         $image_url = $this->$image_url($type.'video', $this->ec->plugin);
         $image = html_writer::empty_tag('img', array('src' => $image_url, 'title' => $text));
+        $removeText = html_writer::tag('span', $this->ec->get_string('removevideo'), array('class' => 'remove-text'));
+        $removeIcon = html_writer::tag('div', '', array('class' => 'remove-icon'));
         $help = $this->ec->get_string($type.'videohelp');
         $help = html_writer::tag('span', $help, array('class' => 'videohelp'));
-        return html_writer::tag('div', $image.$help, array('class' => 'videoicon '.$type.'video'));
+        return html_writer::tag('div', $image.$removeIcon.$removeText.$help, array('class' => 'videoicon '.$type.'video'));
     }
 
     public function show_progress_report() {
@@ -1005,19 +1022,25 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         $output = '';
 		if (has_capability('mod/englishcentral:manage', $this->ec->context)) {
 
+
+
             // start settings/form
             $output .= html_writer::start_tag('form', array('class' => 'search-form'));
+            $output .= html_writer::tag('dt', $this->ec->get_string('videosearch'), array('class' => 'visible', 'id' => 'search-label'));
             $output .= html_writer::start_tag('dl', array('class' => 'search-fields'));
 
             // text box size
             $size = ''; // 30
-
+            $output .= html_writer::start_tag('div', array('id' => 'search-fields-main'));
             $output .= $this->show_search_term('searchterm', $size);
+            $output .= $this->show_search_button('searchbutton');
+            $output .= html_writer::end_tag('div');
+            $output .= html_writer::start_tag('div', array('id' => 'search-fields-advanced'));
             $output .= $this->show_search_level('level'); // =difficulty
             //$output .= $this->show_search_topics('topics', $size);
             //$output .= $this->show_search_duration('duration');
             //$output .= $this->show_search_copyright('copyright', $size);
-            $output .= $this->show_search_button('searchbutton');
+            $output .= html_writer::end_tag('div');
 
             // end settings/form
             $output .= html_writer::end_tag('dl');
@@ -1030,7 +1053,22 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
             $output .= html_writer::tag('div', '', array('class' => 'search-results'));
 
             // enclose search-box and search-results in container
+            $output = html_writer::tag('div', $output, array('id' => 'search-inner-container'));
+
+            $output .= html_writer::tag('div', '', array('id' => 'close-search-button'));
+            // append element to display button-alike-behavior
+
+            $output .= html_writer::start_tag('div', array('id' => 'faux-search-button'));
+            $output .= html_writer::start_tag('div', array('class' => 'faux-search-button-icon'));
+            $output .= html_writer::end_tag('div');
+            $output .= html_writer::tag('span', $this->ec->get_string('addvideo'), array('class' => 'faux-search-button-text'));
+            $output .= html_writer::end_tag('div');
+
+            // enclose search-box and search-results in container
             $output = html_writer::tag('div', $output, array('id' => 'id_searchcontainer'));
+
+            // append element to display search-results
+            $output .= html_writer::tag('div', '', array('class' => 'add-video-box'));
         }
         return $output;
     }
@@ -1044,7 +1082,6 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         if ($size) {
             $params['size'] = $size;
         }
-        $output .= html_writer::tag('dt', $this->ec->get_string('videosearch'), array('class' => 'visible'));
         $output .= html_writer::tag('dd', html_writer::empty_tag('input', $params), array('class' => 'visible'));
         return $output;
     }
@@ -1121,6 +1158,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         $params = array('type' => 'submit',
                         'name' => $name,
                         'id' => 'id_'.$name,
+                        'class' => 'btn btn-primary',
                         'value' => get_string('search'));
         $output .= html_writer::empty_tag('input', $params);
         $output .= html_writer::tag('a', get_string('showadvanced', 'form'), array('class' => 'search-advanced'));
