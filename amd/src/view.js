@@ -191,11 +191,26 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
         var levelNumber = activityLevel.slice(-1);
         var videoPlaceholderTextLabel = $('.video-placeholder-text-label');
         videoPlaceholderTextLabel.text(levelNumber);
+        if (levelNumber == 1 || levelNumber == 2) {
+            videoPlaceholderTextLabel.addClass('label-green');
+        } else if (levelNumber == 3 || levelNumber == 4) {
+            videoPlaceholderTextLabel.addClass('label-blue');
+        } else {
+            videoPlaceholderTextLabel.addClass('label-black');
+        }
 
         // Getting and setting the difficulty label
         var difficultyLabel = thumbOutline.find('.difficulty-label').text();
         var videoPlaceholderTextLevel = $('.video-placeholder-text-level');
         videoPlaceholderTextLevel.text(difficultyLabel);
+
+        if (levelNumber == 1 || levelNumber == 2) {
+            videoPlaceholderTextLevel.addClass('level-green');
+        } else if (levelNumber == 3 || levelNumber == 4) {
+            videoPlaceholderTextLevel.addClass('level-blue');
+        } else {
+            videoPlaceholderTextLevel.addClass('level-black');
+        }
 
         // Getting and setting the video description
         var activityDescription = thumbOutline.find('.thumb-frame').attr("description");
