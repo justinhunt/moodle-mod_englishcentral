@@ -438,8 +438,9 @@
 
 #page-mod-englishcentral-view .search-advanced {
     display: inline-block;
-    margin-left: 12px;
     cursor: pointer;
+    margin-left: -38px;
+    margin-top: 12px;
 }
 
 #page-mod-englishcentral-view .itemsfound {
@@ -496,11 +497,6 @@
     font-weight: bold;
 }
 
-
-#page-mod-englishcentral-view .result-info {
-    margin-left: 36px;
-}
-
 #page-mod-englishcentral-view .result-item {
     margin: 12px;
     padding: 24px;
@@ -508,8 +504,10 @@
     border: 1px solid #e8ecef;
     border-radius: 6px;
     cursor: pointer;
-    width: 100%;
+    width: min-content;
     display: flex;
+    flex-direction: column;
+    position: relative;
 }
 
 #page-mod-englishcentral-view .result-item:hover {
@@ -537,8 +535,7 @@
     position: relative;
 }
 
-#page-mod-englishcentral-view .result-difficulty,
-#page-mod-englishcentral-view .result-duration {
+#page-mod-englishcentral-view .result-difficulty {
     background-color: #1d2125;
     bottom: 5px;
     color: #ccc;
@@ -587,16 +584,21 @@
 }
 
 #page-mod-englishcentral-view .result-duration {
-    border-radius: 4px 0 4px 0;
-    font-size: 0.8em;
-    right: 10px;
-    width: 38px;
+    position: absolute;
+    top: 91px;
+    left: 129px;
+    background-color: rgba(29, 33, 37, .7);
+    color: #fff;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 0 6px;
 }
 
 #page-mod-englishcentral-view .result-title {
     font-size: 18px;
     line-height: initial;
-    margin: 0;
+    margin-bottom: 12px;
 }
 
 #page-mod-englishcentral-view .result-details {
@@ -868,6 +870,13 @@
     display: block;
     height: 100px;
     width: 160px;
+}
+
+
+#page-mod-englishcentral-view .search-results .thumb-frame {
+    height: 110px;
+    width: 178px;
+    margin-bottom: 24px;
 }
 
 #page-mod-englishcentral-view .activity-thumbnail.ui-sortable-handle.ui-sortable-helper .thumb-frame {
@@ -1357,15 +1366,58 @@ Layers affected:
         width: 110px;
         height: 66px;
     }
-
+    /*
     #page-mod-englishcentral-view dl.search-fields {
         min-width: 400px;
+    }
+    */
+}
+
+@media screen and (min-width: 474px) {
+    #page-mod-englishcentral-view .search-advanced {
+        margin-left: 12px;
+        margin-top: 0;
     }
 }
 
 @media screen and (min-width: 500px) {
     #page-mod-englishcentral-view .titlechart {
         padding: 0 12px;
+    }
+
+    #page-mod-englishcentral-view .result-item {
+        width: 100%;
+    }
+}
+
+@media screen and (min-width: 670px) {
+    #page-mod-englishcentral-view .result-item {
+        margin: 12px;
+        padding: 24px;
+        background: #fff;
+        border: 1px solid #e8ecef;
+        border-radius: 6px;
+        cursor: pointer;
+        width: 100%;
+        display: flex;
+        position: relative;
+        flex-direction: row;
+    }
+
+    #page-mod-englishcentral-view .result-info {
+        margin-left: 36px;
+    }
+
+    #page-mod-englishcentral-view .search-results .thumb-frame {
+        height: 66px;
+        width: 110px;
+        margin-bottom: 0;
+    }
+
+    #page-mod-englishcentral-view .result-duration {
+        top: 47px;
+        left: auto;
+        right: 3px;
     }
 }
 
@@ -1471,6 +1523,16 @@ Layers affected:
 
     #page-mod-englishcentral-view #id_progresscontainer .titlechart .title {
         font-size: 18px;
+    }
+
+    #page-mod-englishcentral-view .result-duration {
+        top: 91px;
+        right: 3px;
+    }
+
+    #page-mod-englishcentral-view .search-results .thumb-frame {
+        height: 110px;
+        width: 178px;
     }
 }
 
@@ -1744,7 +1806,7 @@ Layers affected:
 
 #search-fields-main {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
 }
 
 #search-fields-main > dd:first-of-type {
@@ -1780,12 +1842,12 @@ Layers affected:
     padding-bottom: 0;
 }
 
-
+/*
 .result-thumb {
     height: 110px;
     width: 178px;
 }
-
+*/
 
 /* Left-aligning activity header, centered in Moodle4 by defaiult */
 #page-mod-englishcentral-view .header-maxwidth,
@@ -1813,4 +1875,24 @@ Layers affected:
     -webkit-transform: scale(1.2); /* Ch <36, Saf 5.1+, iOS < 9.2, An =<4.4.4 */
     -ms-transform: scale(1.2); /* IE 9 */
     transform: scale(1.2); /* IE 10, Fx 16+, Op 12.1+ */
+}
+
+#page-mod-englishcentral-view .video-info {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    height: 36px;
+    width: 36px;
+    background-color: #fff;
+    background-image: url([[pix:mod_englishcentral|ec-raw-logo]]);
+    background-repeat: no-repeat;
+    background-size: 17px 12.5px;
+    background-position: center;
+    border: 1px solid #e9ecee;
+    border-radius: 100%;
+}
+
+#page-mod-englishcentral-view .video-info:hover {
+    border: 3px solid #e2f4ff;
+    border-radius: 100%;
 }

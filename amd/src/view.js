@@ -68,7 +68,8 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
         { "key": "transcript", "component": VIEW.plugin },
         { "key": "videosearch", "component": VIEW.plugin },
         { "key": "videosearchhelp", "component": VIEW.plugin },
-        { "key": "videosearchprompt", "component": VIEW.plugin }
+        { "key": "videosearchprompt", "component": VIEW.plugin },
+        { "key": "videodetails", "component": VIEW.plugin }
     ]).done(function (s) {
         var i = 0;
         VIEW.str.addthisvideo = s[i++];
@@ -92,6 +93,7 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
         VIEW.str.videosearch = s[i++];
         VIEW.str.videosearchhelp = s[i++];
         VIEW.str.videosearchprompt = s[i++];
+        VIEW.str.videodetails = s[i++];
     });
 
     VIEW.init = function (opts) {
@@ -698,12 +700,16 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
             var id = "#id_add_video_" + data.dialogId;
             $(id).data(data);
             $(id).parent().click(function (evt) {
+                if ($(evt.target).closest('.result-info').length) {
+                    return; // Exit the function early
+                }
+                // Run your add_video function
                 VIEW.add_video(evt, this);
             });
             $(id).siblings(".result-thumb").click(function () {
-                VIEW.open_window($(this).data("url"));
+                // VIEW.open_window($(this).data("url"));
             });
-            $(id).siblings(".result-info").find(".icon").click(function () {
+            $(id).siblings(".result-info").find(".video-info").click(function () {
                 var id = $(this).closest(".result-info").siblings(".result-add").prop("id");
                 VIEW.open_window(VIEW.videoinfourl + "/" + VIEW.get_videoid_from_id(id));
             });
@@ -910,16 +916,19 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
         var src = $(".removevideo img").prop("src")
             .replace("removevideo", "i/info")
             .replace("mod_englishcentral", "core");
-        var img = HTML.emptytag("img", {
-            "src": src,
-            "class": "icon"
-        });
         var title = r.value.title;
         if (r.highlights.en_name) {
             title = r.highlights.en_name[0];
         }
-        html += HTML.tag("h2", title + img, {
+        html += HTML.tag("h2", title, {
             "class": "result-title"
+        });
+        html += HTML.tag("div", "", {
+            "src": src,
+            "class": "video-info",
+            "data-toggle": "tooltip",
+            "data-placement": "left",
+            "title": VIEW.str.videodetails
         });
         html += VIEW.format_details(r);
         return HTML.tag("div", html, {
