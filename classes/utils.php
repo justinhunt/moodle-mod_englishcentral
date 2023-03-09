@@ -182,5 +182,26 @@ class utils {
         }
     }
 
+    public static function add_video($ecid,$videoid){
+            global $DB;
+
+            $table = 'englishcentral_videos';
+            $record = array('ecid' => $ecid,
+                'videoid' => $videoid);
+            if ($record['id'] = $DB->get_field($table, 'id', $record)) {
+                // video is already in our database - unexpected !!
+            } else {
+                if ($sortorder = $DB->get_field($table, 'MAX(sortorder)', array('ecid' => $ecid))) {
+                    $sortorder++;
+                } else {
+                    $sortorder = 1;
+                }
+                unset($record['id']);
+                $record['sortorder'] = $sortorder;
+                $record['id'] = $DB->insert_record($table, $record);
+            }
+            return $record['id'];
+    }
+
 
 }

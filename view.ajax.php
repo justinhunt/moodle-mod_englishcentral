@@ -104,20 +104,8 @@ switch ($action) {
         if (is_array($data) && array_key_exists('dialogId', $data)) {
             $data = (object)$data;
             $table = 'englishcentral_videos';
-            $record = array('ecid' => $ec->id,
-                            'videoid' => intval($data->dialogId));
-            if ($record['id'] = $DB->get_field($table, 'id', $record)) {
-                // video is already in our database - unexpected !!
-            } else {
-                if ($sortorder = $DB->get_field($table, 'MAX(sortorder)', array('ecid' => $ec->id))) {
-                    $sortorder++;
-                } else {
-                    $sortorder = 1;
-                }
-                unset($record['id']);
-                $record['sortorder'] = $sortorder;
-                $record['id'] = $DB->insert_record($table, $record);
-            }
+            $videoid = intval($data->dialogId);
+            $recordid=\mod_englishcentral\utils::add_video($ec->id,$videoid);
             echo $renderer->show_video($data);
         }
         break;
