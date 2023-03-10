@@ -119,7 +119,7 @@ $opts = array('cmid'          => $ec->cm->id,
               'videoinfourl'  => $ec->get_videoinfo_url(false),
               'targetwindow'  => 'EC');
 $PAGE->requires->js_call_amd("$ec->plugin/view", 'init', array($opts));
-$PAGE->requires->js_call_amd("$ec->plugin/initialView", 'init', array($opts));
+
 
 
 if ($ec->viewable) {
