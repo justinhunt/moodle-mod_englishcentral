@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+/* eslint-disable no-console */
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -67,7 +68,8 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
         { "key": "transcript", "component": VIEW.plugin },
         { "key": "videosearch", "component": VIEW.plugin },
         { "key": "videosearchhelp", "component": VIEW.plugin },
-        { "key": "videosearchprompt", "component": VIEW.plugin }
+        { "key": "videosearchprompt", "component": VIEW.plugin },
+        { "key": "videodetails", "component": VIEW.plugin }
     ]).done(function (s) {
         var i = 0;
         VIEW.str.addthisvideo = s[i++];
@@ -91,6 +93,7 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
         VIEW.str.videosearch = s[i++];
         VIEW.str.videosearchhelp = s[i++];
         VIEW.str.videosearchprompt = s[i++];
+        VIEW.str.videodetails = s[i++];
     });
 
     VIEW.init = function (opts) {
@@ -174,6 +177,77 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
                 }
             });
         });
+
+        /* Composing video placeholder on initial load by getting data from the first element loaded in the video thumbnails */
+        var activityThumbnail = $('.activity-thumbnail').first();
+        var thumbOutline = activityThumbnail.children('.thumb-outline');
+        var videoPlaceholderVideo = $('.video-placeholder-video');
+
+        // Getting and setting the title
+        var activityTitle = thumbOutline.children('.activity-title').text();
+        var videoPlaceholderTextTitle = $('.video-placeholder-text-title');
+        videoPlaceholderTextTitle.text(activityTitle);
+
+        // Getting and setting the difficulty level
+        var activityLevel = thumbOutline.find('.difficulty-level').text();
+        var levelNumber = activityLevel.slice(-1);
+        var videoPlaceholderTextLabel = $('.video-placeholder-text-label');
+        videoPlaceholderTextLabel.text(levelNumber);
+        if (levelNumber == 1 || levelNumber == 2) {
+            videoPlaceholderTextLabel.addClass('label-green');
+        } else if (levelNumber == 3 || levelNumber == 4) {
+            videoPlaceholderTextLabel.addClass('label-blue');
+        } else {
+            videoPlaceholderTextLabel.addClass('label-black');
+        }
+
+        // Getting and setting the difficulty label
+        var difficultyLabel = thumbOutline.find('.difficulty-label').text();
+        var videoPlaceholderTextLevel = $('.video-placeholder-text-level');
+        videoPlaceholderTextLevel.text(difficultyLabel);
+
+        if (levelNumber == 1 || levelNumber == 2) {
+            videoPlaceholderTextLevel.addClass('level-green');
+        } else if (levelNumber == 3 || levelNumber == 4) {
+            videoPlaceholderTextLevel.addClass('level-blue');
+        } else {
+            videoPlaceholderTextLevel.addClass('level-black');
+        }
+
+        // Getting and setting the video description
+        var activityDescription = thumbOutline.find('.thumb-frame').attr("description");
+        var videoPlaceholderTextDescription = $('.video-placeholder-text-description');
+        videoPlaceholderTextDescription.text(activityDescription);
+
+        // Getting and setting the topics
+        var activityTopics = thumbOutline.find('.thumb-frame').attr("topics");
+        var videoPlaceholderTextTags = $('.video-placeholder-text-tags');
+        videoPlaceholderTextTags.text(activityTopics);
+
+        // Creating, appending, getting and setting the image
+        var activityImage = thumbOutline.children('.thumb-frame').attr("data-demopicurl");
+        var activityVideoId = thumbOutline.children('.thumb-frame').attr("data-url");
+        var $newImage = $("<img>");
+        $newImage.attr("src", activityImage);
+        $newImage.attr("data-url", activityVideoId);
+        $newImage.attr("class", "video-placeholder-video-image");
+        videoPlaceholderVideo.append($newImage);
+
+        // Setting the social buttons
+        var fauxSocialButtons = $('.video-placeholder-text-social');
+        fauxSocialButtons.attr("data-url", activityVideoId);
+
+        // Setting the text progress
+        var videoPlaceholderTextProgress = $('.video-placeholder-text-progress');
+        videoPlaceholderTextProgress.attr("data-url", activityVideoId);
+
+        // Creating, appending, getting and setting the big play button
+        var $bigPlayButton = $("<img>");
+        $bigPlayButton.attr("src", 'pix/big-play-icon.svg');
+        $bigPlayButton.attr("data-url", activityVideoId);
+        $bigPlayButton.attr("class", "video-placeholder-video-big-play-button");
+        videoPlaceholderVideo.append($bigPlayButton);
+
 
         $(".activity-title, .thumb-frame, .video-placeholder-video-image, .video-placeholder-video-big-play-button, .video-placeholder-text-social, .video-placeholder-text-progress")
             .click(function (evt) {
@@ -281,6 +355,34 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
             }
             $("#" + VIEW.searchcontainer + " .search-fields").find("dt:not(.visible), dd:not(.visible)").toggle();
         });
+
+        // Setting 'Add video' interaction mechanics
+        var idSearchContainer = $('#id_searchcontainer');
+        var fauxsearchButton = $('#faux-search-button');
+        var closeSearchButton = $('#close-search-button');
+        var searchBox = $('.search-box');
+        var searchResults = $('.search-results');
+
+        if (fauxsearchButton || closeSearchButton) {
+
+            // When clicking on the "Add video" button, it displays the full search view.
+            fauxsearchButton.click(function () {
+                searchBox.css("display", "flex");
+                searchResults.css("display", "flex");
+                idSearchContainer.css({ "width": "auto", "height": "auto" });
+                fauxsearchButton.css("display", "none");
+                closeSearchButton.css("display", "flex");
+            });
+            // When clicking on the times closing button, it hides the full search view and returns to the initial state.
+            closeSearchButton.click(function () {
+                searchBox.css("display", "none");
+                searchResults.css("display", "none");
+                idSearchContainer.css({ "width": "178px", "height": "110px" });
+                fauxsearchButton.css("display", "flex");
+                closeSearchButton.css("display", "none");
+            });
+        }
+
     };
 
     VIEW.play_video = function (evt, elm) {
@@ -598,12 +700,16 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
             var id = "#id_add_video_" + data.dialogId;
             $(id).data(data);
             $(id).parent().click(function (evt) {
+                if ($(evt.target).closest('.result-info').length) {
+                    return; // Exit the function early
+                }
+                // Run your add_video function
                 VIEW.add_video(evt, this);
             });
             $(id).siblings(".result-thumb").click(function () {
-                VIEW.open_window($(this).data("url"));
+                // VIEW.open_window($(this).data("url"));
             });
-            $(id).siblings(".result-info").find(".icon").click(function () {
+            $(id).siblings(".result-info").find(".video-info").click(function () {
                 var id = $(this).closest(".result-info").siblings(".result-add").prop("id");
                 VIEW.open_window(VIEW.videoinfourl + "/" + VIEW.get_videoid_from_id(id));
             });
@@ -810,16 +916,19 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
         var src = $(".removevideo img").prop("src")
             .replace("removevideo", "i/info")
             .replace("mod_englishcentral", "core");
-        var img = HTML.emptytag("img", {
-            "src": src,
-            "class": "icon"
-        });
         var title = r.value.title;
         if (r.highlights.en_name) {
             title = r.highlights.en_name[0];
         }
-        html += HTML.tag("h2", title + img, {
+        html += HTML.tag("h2", title, {
             "class": "result-title"
+        });
+        html += HTML.tag("div", "", {
+            "src": src,
+            "class": "video-info",
+            "data-toggle": "tooltip",
+            "data-placement": "left",
+            "title": VIEW.str.videodetails
         });
         html += VIEW.format_details(r);
         return HTML.tag("div", html, {

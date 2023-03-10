@@ -173,6 +173,7 @@ $string['xitemsfound'] = '{$a} items found';
 $string['videosearch'] = 'Video search';
 $string['videosearchhelp'] = 'Please type one or more search terms into the "Video search" text box.';
 $string['videosearchprompt'] = 'Enter search terms here';
+$string['videodetails'] = 'EnglishCentral video details';
 $string['duration1'] = '<b>Short</b> (up to 1 minute)';
 $string['duration2'] = '<b>Medium</b> (1 to 3 minutes)';
 $string['duration3'] = '<b>Long</b> (over 3 minutes)';
