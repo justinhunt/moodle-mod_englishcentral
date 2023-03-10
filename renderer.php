@@ -95,13 +95,13 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
                     $icon = '';
                 }
                 //dont show the heading in an iframe, it will be outside this anyway
-                if(!$this->ec->foriframe) {
+                if(!$this->ec->foriframe && $CFG->version<4.0) {
                     $help = $this->help_icon('overview', $this->ec->plugin);
                     $output .= $this->heading($activityname.$help.$icon);
                 }
 
             } else {
-                if(!$this->ec->foriframe) {
+                if(!$this->ec->foriframe && $CFG->version<4.0) {
                     $output .= $this->output->heading($activityname);
                 }
             }
