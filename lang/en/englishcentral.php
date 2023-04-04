@@ -370,4 +370,7 @@ $string['freetrial_desc'] = "A dialog should appear that allows you to register 
 $string['memberdashboard'] = "Member Dashboard";
 $string['memberdashboard_desc'] = "";
 $string['fillcredentials']="Set API user and secret with existing credentials";
-
+$string['progressdials'] = 'Progress Dials';
+$string['progressdials_details'] = '';
+$string['progressdials_top']="Above the player and thumbnails";
+$string['progressdials_bottom']="Below the player and thumbnails";

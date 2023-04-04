@@ -120,7 +120,10 @@ $opts = array('cmid'          => $ec->cm->id,
               'targetwindow'  => 'EC');
 $PAGE->requires->js_call_amd("$ec->plugin/view", 'init', array($opts));
 
-
+// Displays the student's learning progress charts
+if($config->progressdials == constants::M_PROGRESSDIALS_TOP) {
+    echo $renderer->show_progress();
+}
 
 if ($ec->viewable) {
     /*
@@ -135,5 +138,7 @@ if ($ec->viewable) {
 }
 
 // Displays the student's learning progress charts
-echo $renderer->show_progress();
+if($config->progressdials == constants::M_PROGRESSDIALS_BOTTOM) {
+    echo $renderer->show_progress();
+}
 echo $renderer->footer();

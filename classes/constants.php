@@ -21,5 +21,7 @@ const M_URL='/mod/englishcentral';
 const M_PATH='/mod/englishcentral';
 const M_CLASS='mod_englishcentral';
 const M_PLUGINSETTINGS ='/admin/settings.php?section=modsettingenglishcentral';
+const M_PROGRESSDIALS_TOP=1;
+const M_PROGRESSDIALS_BOTTOM=0;
 
 }

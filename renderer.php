@@ -111,52 +111,6 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
 
 
     /**
-     * Returns the header for the module
-     *
-     * @param mod $instance
-     * @param string $currenttab current tab that is shown.
-     * @param int    $item id of the anything that needs to be displayed.
-     * @param string $extrapagetitle String to append to the page title.
-     * @return string
-     */
-    public function xxxheader($moduleinstance, $cm, $currenttab = '', $itemid = null, $extrapagetitle = null) {
-        global $CFG;
-
-        $activityname = format_string($moduleinstance->name, true, $moduleinstance->course);
-        if (empty($extrapagetitle)) {
-            $title = $this->page->course->shortname.": ".$activityname;
-        } else {
-            $title = $this->page->course->shortname.": ".$activityname.": ".$extrapagetitle;
-        }
-
-        // Build the buttons
-        $context = \context_module::instance($cm->id);
-
-        /// Header setup
-        $this->page->set_title($title);
-        $this->page->set_heading($this->page->course->fullname);
-        $output = $this->output->header();
-
-        if (has_capability('mod/solo:selecttopics', $context) || has_capability('mod/solo:viewreports', $context)) {
-
-
-            if (!empty($currenttab)) {
-                ob_start();
-                include($CFG->dirroot.'/mod/solo/tabs.php');
-                $output .= ob_get_contents();
-                ob_end_clean();
-            }
-        } else {
-            $output .= $this->output->heading($activityname);
-        }
-
-
-        return $output;
-    }
-
-
-
-    /**
      * Return HTML to display limited header
      */
     public function notabsheader() {
