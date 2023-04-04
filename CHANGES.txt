@@ -1,6 +1,9 @@
 ========================================
 Change log for mod_englishcentral
 ========================================
+2023-04-04 (32)
+- Moved Progress Dials
+
 2023-03-10 (31)
 - Redesigned UI
 - Removed doubled up title for M4.0 and above

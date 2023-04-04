@@ -30,7 +30,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use mod_englishcentral\constants;
+
 defined('MOODLE_INTERNAL') || die();
+
 
 /**
  * Execute englishcentral upgrade from the given old version
@@ -669,6 +672,11 @@ function xmldb_englishcentral_upgrade($oldversion) {
             }
             $previous = $field->getName();
         }
+    }
+
+    $newversion = 2023040432;
+    if ($oldversion < $newversion) {
+        set_config('progressdials', constants::M_PROGRESSDIALS_TOP,constants::M_COMPONENT);
     }
 
     return true;

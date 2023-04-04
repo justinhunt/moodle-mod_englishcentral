@@ -86,7 +86,7 @@ if ($ADMIN->fulltree) {
     $name = 'progressdials';
     $label = get_string($name, constants::M_COMPONENT);
     $details = get_string($name . '_details', constants::M_COMPONENT);
-    $default = constants::M_PROGRESSDIALS_TOP;
+    $default = constants::M_PROGRESSDIALS_BOTTOM;
     $options = array(constants::M_PROGRESSDIALS_BOTTOM=>get_string('progressdials_bottom',constants::M_COMPONENT),
         constants::M_PROGRESSDIALS_TOP=>get_string('progressdials_top',constants::M_COMPONENT));
     $settings->add(new admin_setting_configselect(constants::M_COMPONENT . "/$name",

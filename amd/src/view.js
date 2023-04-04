@@ -327,7 +327,7 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
         $("#" + VIEW.searchcontainer + " .search-form").submit(function (evt) {
 
             // Remove player and previous search results
-            VIEW.clear_player_and_searchresults();
+            VIEW.clear_searchresults();
 
             // RegExp to match a list of comma-separated values
             var list = new RegExp("^\s*[0-9]+([, \\t\\r\\n]+[0-9]+)*\s*$");
@@ -559,6 +559,10 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
             // Initialize EC player
             ecsdk.loadWidget("player", options);
         });
+    };
+
+    VIEW.clear_searchresults = function () {
+        $("#" + VIEW.searchcontainer + " .search-results").html("");
     };
 
     VIEW.clear_player_and_searchresults = function () {
