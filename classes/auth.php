@@ -263,6 +263,22 @@ class auth {
         return $this->doGet($subdomain, $endpoint, $fields, self::ACCEPT_V1);
     }
 
+    public function fetch_course_content($courseid) {
+        $subdomain = 'bridge';
+        $endpoint = 'rest/content/course/' . $courseid;
+        $fields = array(
+            'siteLanguage' => $this->get_site_language());
+        return $this->doGet($subdomain, $endpoint, $fields, self::ACCEPT_V1);
+    }
+
+    public function fetch_dialog_content($videoid) {
+        $subdomain = 'bridge';
+        $endpoint = "rest/content/dialog/$videoid";
+        $fields = array(
+            'siteLanguage' => $this->get_site_language());
+        return $this->doGet($subdomain, $endpoint, $fields, self::ACCEPT_V1);
+    }
+
     public function fetch_dialog_progress($videoid, $sdk_token='') {
         if ($sdk_token) {
             $this->set_sdk_token($sdk_token);
