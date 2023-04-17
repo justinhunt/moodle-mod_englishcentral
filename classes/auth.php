@@ -254,6 +254,20 @@ class auth {
         return $this->return_value($response, 'accountID', 0);
     }
 
+    public function fetch_goal_list() {
+        $subdomain = 'bridge';
+        $endpoint = 'rest/content/goal';
+        $fields = array();
+        return $this->doGet($subdomain, $endpoint, $fields, self::ACCEPT_V1);
+    }
+
+    public function fetch_course_list($goalid) {
+        $subdomain = 'bridge';
+        $endpoint = 'rest/content/course';
+        $fields = array('goalID'=>$goalid,'pageSize'=>25,'fields'=>'courseID,name,description,difficulty');
+        return $this->doGet($subdomain, $endpoint, $fields, self::ACCEPT_V1);
+    }
+
     public function fetch_dialog_list($videoids) {
         $subdomain = 'bridge';
         $endpoint = 'rest/content/dialog';
