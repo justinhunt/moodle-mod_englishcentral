@@ -560,7 +560,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
                 case 3: $showdetails = ($is_student || $is_teacher); break;
             }
         }
-        if ($showdetails) {
+        if ($showdetails && isset($video->videoDetailsURL)) {
             $params['data-video-details-url'] = $video->videoDetailsURL;
         }
         $output .= html_writer::tag('span', $video->title, $params);
@@ -576,11 +576,19 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
 
         $newTopicsList = [];
 
-        foreach($topicsList['topics'][0] as $key => $value) {
-            array_push($newTopicsList, $value);
+        if(is_array($topicsList['topics'][0] )) {
+            foreach ($topicsList['topics'][0] as $key => $value) {
+                array_push($newTopicsList, $value);
+            }
+        }else{
+            array_push($newTopicsList, $topicsList['topics'][0]);
         }
 
-        $params['topics'] = $newTopicsList[1];
+        if(count($newTopicsList)>0) {
+            $params['topics'] = $newTopicsList[1];
+        }else{
+            $params['topics'] = '';
+        }
 
         $output .= html_writer::start_tag('span', $params);
 
