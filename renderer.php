@@ -585,7 +585,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         }
 
         if(count($newTopicsList)>0) {
-            $params['topics'] = $newTopicsList[1];
+            $params['topics'] = $newTopicsList[0];
         }else{
             $params['topics'] = '';
         }
