@@ -580,8 +580,10 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
             foreach ($topicsList['topics'][0] as $key => $value) {
                 array_push($newTopicsList, $value);
             }
-        }else{
-            array_push($newTopicsList, $topicsList['topics'][0]);
+        }else {
+            foreach ($topicsList['topics'] as $thetopic) {
+                array_push($newTopicsList, $thetopic->name);
+            }
         }
 
         if(count($newTopicsList)>0) {
