@@ -1558,7 +1558,7 @@ Layers affected:
     }
 
     #page-mod-englishcentral-view .video-placeholder-video {
-        min-width: unset;
+        min-width: 700px;
     }
 }
 
