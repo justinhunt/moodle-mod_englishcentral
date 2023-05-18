@@ -261,10 +261,10 @@ class auth {
         return $this->doGet($subdomain, $endpoint, $fields, self::ACCEPT_V1);
     }
 
-    public function fetch_course_list($goalid) {
+    public function fetch_course_list($goalid,$difficulty) {
         $subdomain = 'bridge';
         $endpoint = 'rest/content/course';
-        $fields = array('goalID'=>$goalid,'pageSize'=>25,'fields'=>'courseID,name,description,difficulty');
+        $fields = array('goalID'=>$goalid,'difficulty'=>$difficulty,'pageSize'=>25,'fields'=>'courseID,name,description,difficulty');
         return $this->doGet($subdomain, $endpoint, $fields, self::ACCEPT_V1);
     }
 
