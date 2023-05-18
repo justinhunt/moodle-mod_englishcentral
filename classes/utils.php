@@ -188,7 +188,7 @@ class utils {
             $table = 'englishcentral_videos';
             $record = array('ecid' => $ecid,
                 'videoid' => $videoid);
-            if ($record['id'] = $DB->get_field($table, 'id', $record)) {
+            if ($record['videoid'] == $DB->get_field($table, 'videoid', $record)) {
                 // video is already in our database - unexpected !!
             } else {
                 if ($sortorder = $DB->get_field($table, 'MAX(sortorder)', array('ecid' => $ecid))) {
@@ -196,7 +196,6 @@ class utils {
                 } else {
                     $sortorder = 1;
                 }
-                unset($record['id']);
                 $record['sortorder'] = $sortorder;
                 $record['id'] = $DB->insert_record($table, $record);
             }

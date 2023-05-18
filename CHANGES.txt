@@ -1,6 +1,10 @@
 ========================================
 Change log for mod_englishcentral
 ========================================
+2023-05-XX (33)
+- Added calls to API for course details
+
+
 2023-04-04 (32)
 - Moved Progress Dials
 
