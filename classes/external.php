@@ -6,13 +6,15 @@
  * @author  Justin Hunt - poodll.com
  */
 
+global $CFG;
+require_once($CFG->libdir . '/externallib.php');
 
 use mod_englishcentral\utils;
 use mod_englishcentral\constants;
 
-use core_external\external_api;
-use core_external\external_function_parameters;
-use core_external\external_value;
+use external_api;
+use external_function_parameters;
+use external_value;
 
 /**
  * External class.
@@ -24,17 +26,13 @@ class mod_englishcentral_external extends external_api {
 
     public static function add_video_parameters() {
         return new external_function_parameters([
-            'modid' => new external_value(PARAM_INT),
-            'term' => new external_value(PARAM_RAW),
-            'definition' => new external_value(PARAM_RAW),
-            'translations' => new external_value(PARAM_RAW),
-            'sourcedef' => new external_value(PARAM_RAW),
-            'modelsentence' => new external_value(PARAM_RAW),
+            'ecid' => new external_value(PARAM_INT),
+            'videoid' => new external_value(PARAM_INT)
         ]);
     }
 
-    public static function add_video($modid,$term, $definition,$translations,$sourcedef,$modelsentence){
-        $ret= utils::add_video($modid,$term, $definition,$translations,$sourcedef,$modelsentence);
+    public static function add_video($ecid,$videoid){
+        $ret= utils::add_video($ecid,$videoid);
         if($ret){
             return true;
         }else{
