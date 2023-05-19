@@ -1,8 +1,10 @@
 ========================================
 Change log for mod_englishcentral
 ========================================
-2023-05-XX (33)
+2023-05-19 (33)
 - Added calls to API for course details
+- Added style changes so placeholder image is full size
+- M4.2 Support
 
 
 2023-04-04 (32)
