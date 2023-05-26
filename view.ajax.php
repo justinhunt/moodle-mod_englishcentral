@@ -77,7 +77,8 @@ switch ($action) {
             'authorization' => $auth->get_authorization(),
             'sitelanguage'  => $auth->get_site_language(),
             'searchurl'     => $auth->get_search_url(),
-            'fetchurl'      => $auth->get_fetch_url())
+            'fetchurl'      => $auth->get_fetch_url(),
+            'settings'      => $auth->get_player_settings())
         );
         break;
 

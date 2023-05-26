@@ -225,6 +225,15 @@ class auth {
         return $this->authorization;
     }
 
+    public function get_player_settings() {
+        global $CFG;
+        $settings = new \stdClass();
+        if(isset($CFG->ec_experimental) && $CFG->ec_experimental){
+            $settings->chatMode = true;
+        }
+        return $settings;
+    }
+
     public function create_accountid() {
         if (has_capability('mod/englishcentral:manage', $this->ec->context)) {
             $isTeacher = 1;

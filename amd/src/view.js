@@ -526,7 +526,8 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
                 "partnerKey": VIEW.consumerkey,
                 "partnerSdkToken": VIEW.sdktoken,
                 "container": VIEW.playercontainer,
-                "dialogId": dialogId
+                "dialogId": dialogId,
+                "settings": VIEW.settings
             };
 
             if (VIEW.sdkversion == "JSDK3") {
@@ -555,7 +556,7 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
                     options.height = 655;
                 }
             }
-
+LOG.debug('options: ' + JSON.stringify(options));
             // Initialize EC player
             ecsdk.loadWidget("player", options);
         });
