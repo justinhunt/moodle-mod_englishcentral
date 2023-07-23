@@ -18,7 +18,7 @@
  * The mod_page course module viewed event.
  *
  * @package    mod_englishcentral
- * @copyright  2014 Justin Hunt
+ * @copyright  2023 Justin Hunt
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -30,22 +30,46 @@ defined('MOODLE_INTERNAL') || die();
  *
  * @package    mod_englishcentral
  * @since      Moodle 2.7
- * @copyright  2014 Justin Hunt
+ * @copyright  2023 Justin Hunt
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class course_module_viewed extends \core\event\course_module_viewed {
+class progress_updated extends \core\event\base {
 
     /**
      * Init method.
      */
     protected function init() {
-        $this->data['crud'] = 'r';
+        $this->data['crud'] = 'c';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
         $this->data['objecttable'] = 'englishcentral';
     }
 
     public static function get_objectid_mapping() {
-        return array('db' => 'englishcentral', 'restore' => 'englishcentral');
+        return array('db' => 'englishcentral_attempts', 'restore' => 'englishcentral_attempts');
+    }
+
+    public static function get_other_mapping() {
+        return array(
+            'ecid' => array('db' => 'englishcentral', 'restore' => 'englishcentral')
+        );
+    }
+
+    /**
+     * Return localised event name.
+     *
+     * @return string
+     */
+    public static function get_name() {
+        return get_string('progressupdated', 'mod_englishcentral');
+    }
+
+    /**
+     * Returns description of what happened.
+     *
+     * @return string
+     */
+    public function get_description() {
+        return "The user with id '$this->userid' progressed in the EnglishCentral activity with course module id '$this->contextinstanceid'.";
     }
 }
 

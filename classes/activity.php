@@ -297,10 +297,19 @@ class activity {
         }
 
         if (empty($attempt->id)) {
-            $DB->insert_record($table, $attempt);
+            $attempt->id = $DB->insert_record($table, $attempt);
         } else {
             $DB->update_record($table, $attempt);
         }
+
+        // trigger progress update event
+        $event = \mod_englishcentral\event\progress_updated::create(array(
+            'context' => $this->context,
+            'objectid' => $attempt->id,
+            'other' => array('ecid' => $this->id)
+        ));
+        $event->add_record_snapshot($table, $attempt);
+        $event->trigger();
 
         englishcentral_update_grades($this, $USER->id);
         // Update completion state.

@@ -77,7 +77,8 @@ class auth {
         $fields = array('partnerid',
                         'consumerkey',
                         'consumersecret',
-                        'encryptedsecret');
+                        'encryptedsecret',
+                        'mimichat');
 
         // Fetch the Cloud Poodll token (which contains EC credentials).
         if (empty($ec->config->poodllapiuser) || empty($ec->config->poodllapisecret)) {
@@ -226,11 +227,9 @@ class auth {
     }
 
     public function get_player_settings() {
-        global $CFG;
         $settings = new \stdClass();
-        if(isset($CFG->ec_experimental) && $CFG->ec_experimental){
-            $settings->chatMode = true;
-        }
+        $chatmode = get_config('mod_englishcentral', 'chatmode');
+        $settings->chatMode = $this->mimichat=='enabled' ? $chatmode : false;
         return $settings;
     }
 

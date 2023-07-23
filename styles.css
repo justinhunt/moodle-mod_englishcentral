@@ -1896,3 +1896,6 @@ Layers affected:
     border: 3px solid #e2f4ff;
     border-radius: 100%;
 }
+#page-mod-englishcentral-view .page-mod-englishcentral-hide {
+    display: none;
+}

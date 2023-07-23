@@ -130,7 +130,12 @@ if ($ec->viewable) {
     $firstthumbnail = 'https://cdna.englishcentral.com/dialogs/12320/thumb_99214_20120928134621.jpg';
     echo $renderer->show_player($firstthumbnail);
     */
-    echo $renderer->show_player();
+    if($ec->get_videoids()){
+        $hidden=false;
+    } else{
+        $hidden=true;
+    }
+    echo $renderer->show_player($hidden);
     echo $renderer->show_videos();
     echo $renderer->show_search();
 } else {

@@ -827,10 +827,17 @@ LOG.debug('options: ' + JSON.stringify(options));
             "success": function (html) {
                 $(html).insertBefore(".removevideo").find(".thumb-frame").click(function (evt) {
                     VIEW.play_video(evt, this);
+                    $(".video-placeholder").hide();
+                    $(".faux-loader").show();
+                    $(".faux-loader").delay(2000).fadeOut('slow');
                     evt.stopPropagation();
                     evt.preventDefault();
                     return false;
                 });
+                //show the remove button if it is hidden
+                $(".videoicon.removevideo").removeClass('page-mod-englishcentral-hide');
+                //show the preview panel if it is hidden
+                $(".player-container-class").removeClass('page-mod-englishcentral-hide');
             }
         });
 

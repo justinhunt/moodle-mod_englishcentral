@@ -517,8 +517,9 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
             $output .= html_writer::tag('p', $this->ec->get_string('novideos'));
         }
 
-		if (has_capability('mod/englishcentral:manage', $this->ec->context)) {
-            $output .= $this->show_removevideo_icon();
+		if (has_capability('mod/englishcentral:manage', $this->ec->context) ) {
+		    $initially_visible = $videoids;
+            $output .= $this->show_removevideo_icon($initially_visible);
             //$output .= $this->show_addvideo_icon();
         }
 
@@ -652,11 +653,11 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         return $this->show_videos_icon('add');
     }
 
-    protected function show_removevideo_icon() {
-        return $this->show_videos_icon('remove');
+    protected function show_removevideo_icon($initially_visible=true) {
+        return $this->show_videos_icon('remove',$initially_visible);
     }
 
-    protected function show_videos_icon($type) {
+    protected function show_videos_icon($type,$initially_visible=true){
         $text = $this->ec->get_string($type.'video');
         if (method_exists($this, 'image_url')) {
             $image_url = 'image_url'; // Moodle >= 3.3
@@ -669,7 +670,8 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         $removeIcon = html_writer::tag('div', '', array('class' => 'remove-icon'));
         $help = $this->ec->get_string($type.'videohelp');
         $help = html_writer::tag('span', $help, array('class' => 'videohelp'));
-        return html_writer::tag('div', $image.$removeIcon.$removeText.$help, array('class' => 'videoicon '.$type.'video'));
+        $hidden = $initially_visible ? '' : ' page-mod-englishcentral-hide';
+        return html_writer::tag('div', $image.$removeIcon.$removeText.$help, array('class' => 'videoicon '.$type.'video' . $hidden));
     }
 
     public function show_progress_report() {
@@ -1143,8 +1145,13 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         return $this->render_from_template('mod_englishcentral/showplayer', $data);
     }
     */
-    public function show_player() {
+    public function show_player($hidden=false) {
         $data=[];
+        if($hidden){
+            $data['display']='page-mod-englishcentral-hide';
+        }else{
+            $data['display']='';
+        }
         return $this->render_from_template('mod_englishcentral/showplayer', $data);
     }
 

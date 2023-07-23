@@ -374,3 +374,7 @@ $string['progressdials'] = 'Progress Dials Location';
 $string['progressdials_details'] = '';
 $string['progressdials_top']="Top (above player)";
 $string['progressdials_bottom']="Bottom (Below player)";
+
+$string['chatmode']="Enable Chat Mode";
+$string['chatmode_details']="If enabled on your account, chat mode will become available in the EnglishCentral player.";
+$string['progressupdated']="Progress Updated Event";
