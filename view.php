@@ -107,8 +107,11 @@ if ($ec->not_available()) {
     echo $renderer->show_notavailable();
     die;
 }
+//instructions /intro if less then Moodle 4.0 show
+if($CFG->version<2022041900) {
+    echo $renderer->show_intro();
+}
 
-echo $renderer->show_intro();
 //echo $renderer->show_dates_available();
 
 // Because of the limit on the number of options passed,
