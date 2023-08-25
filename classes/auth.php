@@ -229,7 +229,7 @@ class auth {
     public function get_player_settings() {
         $settings = new \stdClass();
         $chatmode = get_config('mod_englishcentral', 'chatmode');
-        $settings->chatMode = $this->mimichat=='enabled' ? $chatmode : false;
+        $settings->chatMode = $chatmode ? $this->mimichat=='enabled' : false;
         return $settings;
     }
 
