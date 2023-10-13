@@ -1,9 +1,10 @@
 ========================================
 Change log for mod_englishcentral
 ========================================
-2023-XX-XX (37)
+2023-10-13 (36)
 - Fixed issue with broken admin setting for ec chat
 - tweaked monster size of progress dials block
+- Returned default position to page top
 
 2023-07-30 (35)
 - Fixed issue with description being displayed twice in M4.0 and above
