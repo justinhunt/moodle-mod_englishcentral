@@ -33,6 +33,7 @@ use \mod_englishcentral\constants;
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID
 $ecid = optional_param('ecid', 0, PARAM_INT);  // englishcentral instance ID
+$embed = optional_param('embed', 0, PARAM_INT); // course_module ID, or
 
 if ($id) {
     $cm = get_coursemodule_from_id('englishcentral', $id, 0, false, MUST_EXIST);
@@ -68,7 +69,7 @@ $PAGE->set_url('/mod/englishcentral/view.php', array('id' => $cm->id));
 $PAGE->set_context($context);
 
 $config = get_config(constants::M_COMPONENT);
-if($config->enablesetuptab){
+if($config->enablesetuptab|| $embed==2){
     $PAGE->set_pagelayout('popup');
 }else{
     $PAGE->set_pagelayout('course');
