@@ -679,7 +679,7 @@ function xmldb_englishcentral_upgrade($oldversion) {
         set_config('progressdials', constants::M_PROGRESSDIALS_TOP,constants::M_COMPONENT);
     }
 
-    $newversion = 2023111233;
+    $newversion = 2023111237;
     if ($oldversion < $newversion) {
         // Add auth table.
         $table = new xmldb_table('englishcentral_auth');
