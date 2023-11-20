@@ -1,6 +1,10 @@
 ========================================
 Change log for mod_englishcentral
 ========================================
+
+2023-11-12 (37);
+- Added mobile app support
+
 2023-10-13 (36)
 - Fixed issue with broken admin setting for ec chat
 - tweaked monster size of progress dials block
