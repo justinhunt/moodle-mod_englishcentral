@@ -47,6 +47,7 @@ if(!empty($userid) && !empty($secret) ) {
         $embed = 2;
     }
 }
+$ismobile=$embed==2;
 
 if ($id) {
     $cm = get_coursemodule_from_id('englishcentral', $id, 0, false, MUST_EXIST);
@@ -138,7 +139,7 @@ $opts = array('cmid'          => $ec->cm->id,
 $PAGE->requires->js_call_amd("$ec->plugin/view", 'init', array($opts));
 
 // Displays the student's learning progress charts
-if($config->progressdials == constants::M_PROGRESSDIALS_TOP) {
+if($config->progressdials == constants::M_PROGRESSDIALS_TOP && !$ismobile) {
     echo $renderer->show_progress();
 }
 
@@ -160,7 +161,7 @@ if ($ec->viewable) {
 }
 
 // Displays the student's learning progress charts
-if($config->progressdials == constants::M_PROGRESSDIALS_BOTTOM) {
+if($config->progressdials == constants::M_PROGRESSDIALS_BOTTOM || $ismobile) {
     echo $renderer->show_progress();
 }
 echo $renderer->footer();
