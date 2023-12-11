@@ -59,7 +59,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
      * @param string $extrapagetitle String to append to the page title.
      * @return string
      */
-    public function header($extrapagetitle=null,$currenttab='view') {
+    public function header($extrapagetitle=null,$hidetabs=false) {
         global $CFG;
 
         if (isset($this->ec->id)) {
@@ -75,8 +75,9 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         $output = $this->output->header();
 
         if (isset($this->ec->id)) {
-            if (has_capability('mod/englishcentral:manage', $this->ec->context) ||
-                    has_capability('mod/englishcentral:viewreports', $this->ec->context)) {
+            if ((has_capability('mod/englishcentral:manage', $this->ec->context) ||
+                    has_capability('mod/englishcentral:viewreports', $this->ec->context)) &&
+                    !$hidetabs) {
 
                 //set up tabs
                 $moduleinstance =$this->ec;

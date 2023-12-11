@@ -85,8 +85,11 @@ $PAGE->set_context($context);
 $config = get_config(constants::M_COMPONENT);
 if($config->enablesetuptab|| $embed==2){
     $PAGE->set_pagelayout('popup');
+    $PAGE->add_body_class('poodll-ec-embed');
+    $hidetabs=true;
 }else{
     $PAGE->set_pagelayout('course');
+    $hidetabs=false;
 }
 
 // Add standard JS keep the session alive (Moodle >= 2.9).
@@ -98,7 +101,7 @@ $auth = \mod_englishcentral\auth::create($ec);
 $renderer = $PAGE->get_renderer($ec->plugin);
 $renderer->attach_activity_and_auth($ec, $auth);
 
-echo $renderer->header($ec->get_string('view'));
+echo $renderer->header($ec->get_string('view'),$hidetabs);
 
 // Check that either EC config exists
 // or Poodll config exists and is valid

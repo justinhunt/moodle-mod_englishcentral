@@ -1899,3 +1899,6 @@ Layers affected:
 #page-mod-englishcentral-view .page-mod-englishcentral-hide {
     display: none;
 }
+body.poodll-ec-embed #page {
+    margin-top: 5px;
+}
