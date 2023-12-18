@@ -18,12 +18,18 @@
             window.scrollBy(0, offset);
             console.log("appresizer.js scrolling up by " + offset + " pixels");
 
+        }else{
+            console.log("appresizer.js no element with class " + theclassname + " found");
         }
     }
 
     // Attach the event listener to the 'load' event of the iframe
-    window.addEventListener('load', scrollElementUpByHeight);
-    //document.getElementById('englishcentral-mobileapp-iframe').addEventListener('load', scrollElementUpByHeight);
+    window.addEventListener('load', function(e){
+        document.getElementById('englishcentral-mobileapp-iframe').addEventListener('load', scrollElementUpByHeight);
+        //just in case
+        scrollElementUpByHeight();
+    });
+    //
 
 
 })();
