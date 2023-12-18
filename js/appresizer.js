@@ -1,6 +1,7 @@
 //EC iframe Resizer
 (function () {
-    if ( !window.addEventListener || window.ecappResizerInitialized) {
+    //if ( !window.addEventListener || window.ecappResizerInitialized) {
+     if ( !window.addEventListener ) {
         console.log("appresizer.js cant run without a window");
         return; // Not supported
     }
