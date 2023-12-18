@@ -94,7 +94,7 @@ class mobile {
                     'html' => $OUTPUT->render_from_template('mod_englishcentral/mobile_view_page', $data),
                 ),
             ),
-            //'javascript' => file_get_contents($CFG->dirroot . '/mod/englishcentral/js/h5p-resizer.js'),
+            'javascript' => file_get_contents($CFG->dirroot . '/mod/englishcentral/js/appresizer.js'),
         );
     }
 }
