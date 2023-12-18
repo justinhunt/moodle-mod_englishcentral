@@ -9,11 +9,16 @@
     // Scroll the page content 120 pixels higher
     // Function to scroll the specified element by its own height
     function scrollElementUpByHeight() {
+        console.log("appresizer.js scrolling");
         var collapsed = true;
         var thepage = document.querySelector('page-core-site-plugins-module-index');
         if(thepage) {
+            console.log("appresizer.js collapsing");
             thepage.classList.toggle('collapsible-header-page-is-collapsed', collapsed);
             CoreEvents.trigger(COLLAPSIBLE_HEADER_UPDATED, {collapsed});
+            console.log("appresizer.js collapsed");
+        }else{
+            console.log("appresizer.js no page found");
         }
     }
 
