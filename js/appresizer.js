@@ -22,7 +22,8 @@
     }
 
     // Attach the event listener to the 'load' event of the iframe
-    document.getElementById('englishcentral-mobileapp-iframe').addEventListener('load', scrollElementUpByHeight);
+    window.addEventListener('load', scrollElementUpByHeight);
+    //document.getElementById('englishcentral-mobileapp-iframe').addEventListener('load', scrollElementUpByHeight);
 
 
 })();
