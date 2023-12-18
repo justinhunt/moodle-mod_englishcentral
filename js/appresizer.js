@@ -1,9 +1,10 @@
 //EC iframe Resizer
 (function () {
-    if (window==null || !window.addEventListener || window.ecappResizerInitialized) {
+    if ( !window.addEventListener || window.ecappResizerInitialized) {
         console.log("appresizer.js cant run without a window");
         return; // Not supported
     }
+    console.log("appresizer.js initializing");
     window.ecappResizerInitialized = true;
     // Scroll the page content 120 pixels higher
     // Function to scroll the specified element by its own height
