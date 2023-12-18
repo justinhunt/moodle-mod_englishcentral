@@ -9,17 +9,11 @@
     // Scroll the page content 120 pixels higher
     // Function to scroll the specified element by its own height
     function scrollElementUpByHeight() {
-        var theclassname = 'collapsible-header-expanded';
-        var element = document.querySelector('.' + theclassname);
-
-        if (element) {
-            // Scroll the element up by its own height
-            var offset= element.offsetHeight;
-            window.scrollBy(0, offset);
-            console.log("appresizer.js scrolling up by " + offset + " pixels");
-
-        }else{
-            console.log("appresizer.js no element with class " + theclassname + " found");
+        var collapsed = true;
+        var thepage = document.querySelector('page-core-site-plugins-module-index');
+        if(thepage) {
+            thepage.classList.toggle('collapsible-header-page-is-collapsed', collapsed);
+            CoreEvents.trigger(COLLAPSIBLE_HEADER_UPDATED, {collapsed});
         }
     }
 
