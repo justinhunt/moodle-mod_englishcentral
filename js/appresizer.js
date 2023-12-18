@@ -25,11 +25,12 @@
 
     // Attach the event listener to the 'load' event of the iframe
     window.addEventListener('load', function(e){
+        console.log("appresizer.js windowload");
         document.getElementById('englishcentral-mobileapp-iframe').addEventListener('load', scrollElementUpByHeight);
         //just in case
         scrollElementUpByHeight();
     });
-    //
+    scrollElementUpByHeight();
 
 
 })();
