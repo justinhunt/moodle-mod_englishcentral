@@ -4,10 +4,21 @@
     console.log("appresizer.js initializing");
 
     // Scroll the page content higher
+    var availableRetries=5;
     function disableCollapsibleHeader() {
+        console.log("collapsing header .. retries left:"+availableRetries);
         console.log("doing disable collapsible header");// First select the current page.
         var page = document.querySelector('page-core-site-plugins-module-index.ion-page.collapsible-header-page.collapsible-header-page-is-active');
-        if (!page) {console.log("no page so unable to disable collapsible header");return;}
+        if (!page) {
+            if(availableRetries>0) {
+                availableRetries--;
+                setTimeout(disableCollapsibleHeader, 1000);
+                console.log("no page so unable to disable collapsible header ..  try again:" + availableRetries);
+            }else{
+                console.log("no page so unable to disable collapsible header ..  giving up:");
+            }
+            return;
+        }
 
         // Disable the collapsible-header
         page.style.setProperty('--collapsible-header-progress', 1);
@@ -19,15 +30,7 @@
         document.querySelector('ion-content:not(.disable-scroll-y)').scrollTo({top: 80});
     }
 
-    // Attach the event listener to the 'load' event of the iframe
-    window.addEventListener('load', function(e){
-        console.log("appresizer.js windowload event");
-        console.log("register event to collapse header #2");
-        document.getElementById('englishcentral-mobileapp-iframe').addEventListener('load', disableCollapsibleHeader);
-
-    });
     //try it once
-    console.log("collapsing header #1");
     disableCollapsibleHeader();
-    
+
 })();
