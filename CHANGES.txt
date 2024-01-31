@@ -1,6 +1,8 @@
 ========================================
 Change log for mod_englishcentral
 ========================================
+2024-01-31 (38)
+- Better support for mobile app
 
 2023-11-12 (37);
 - Added mobile app support
