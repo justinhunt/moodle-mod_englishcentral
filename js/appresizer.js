@@ -8,8 +8,10 @@
 
     // Scroll the page content higher
     function disableCollapsibleHeader() {
-        console.log("disabling collapsible header");// First select the current page.
+        console.log("doing disable collapsible header");// First select the current page.
         var page = document.querySelector('page-core-site-plugins-module-index.ion-page.collapsible-header-page.collapsible-header-page-is-active');
+        if (!page) {console.log("no page so unable to disable collapsible header");return;}
+        
         // Disable the collapsible-header
         page.style.setProperty('--collapsible-header-progress', 1);
         page.classList.add('collapsible-header-page-is-collapsed');
@@ -22,12 +24,13 @@
 
     // Attach the event listener to the 'load' event of the iframe
     window.addEventListener('load', function(e){
-        console.log("appresizer.js windowload even");
-
-        //document.getElementById('englishcentral-mobileapp-iframe').addEventListener('load', disableCollapsibleHeader);
+        console.log("appresizer.js windowload event");
+        console.log("collapsing header #2");
+        document.getElementById('englishcentral-mobileapp-iframe').addEventListener('load', disableCollapsibleHeader);
 
     });
     //try it once
+    console.log("collapsing header #1");
     disableCollapsibleHeader();
 
 
