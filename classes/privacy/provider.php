@@ -218,9 +218,10 @@ class provider implements
 
 
         foreach ($attempts as $attempt) {
-            $attempt->timemodified =\core_privacy\local\request\transform::datetime($attempt->timemodified);
+            $attempt->timemodified =\core_privacy\local\request\transform::datetime($attempt->timecreated);
             $context = \context_module::instance($attempt->cmid);
-            self::export_attempt_data_for_user($attempt, $context, $user);
+            $attemptdata = get_object_vars($attempt);
+            self::export_attempt_data_for_user($attemptdata, $context, $user);
         }
         $attempts->close();
     }
