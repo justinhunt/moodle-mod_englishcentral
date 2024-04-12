@@ -323,33 +323,28 @@ class auth {
     }
 
     public function doCurl($url, $header, $json_decode=false, $post=null, $fields=null) {
+        global $CFG;
 
-        // NOTE: we could also use the Moodle API (lib/filelib.php)
-        // download_file_content($url, $headers=null, $postdata=null, $fullresponse=false,
-        //                       $timeout=300, $connecttimeout=20, $skipcertverify=false,
-        //                       $tofile=NULL, $calctimeout=false)
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL,             $url);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION,  true);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER,  true);
-        curl_setopt($ch, CURLOPT_AUTOREFERER,     true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_HTTPHEADER,   $header);
+        //use Moodle Curl to ensure we use a proxy if Moodle server is using one
+        require_once($CFG->libdir.'/filelib.php');
+        $curl = new \curl();
+        $curlopts=[];
+        $curlopts['CURLOPT_FOLLOWLOCATION']=  true;
+        $curlopts['CURLOPT_RETURNTRANSFER']=  true;
+        $curlopts['CURLOPT_AUTOREFERER']=  true;
+        $curlopts['CURLOPT_SSL_VERIFYPEER']=  false;
+        $curl->setHeader($header);
+        $curl->setopt($curlopts);
 
-        if ($post) {
-            curl_setopt($ch, CURLOPT_POST, $post);
-            if ($fields) {
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
-            }
+        if($post) {
+            $response = $curl->post($url, $fields);
+        }else{
+            $response = $curl->get($url,$fields);
         }
-
-        $response = curl_exec($ch);
-        curl_close($ch);
-
+        //if its JSON process that before returning
         if ($json_decode && $this->is_json($response)) {
             $response = json_decode($response);
         }
-
         return $response;
     }
 

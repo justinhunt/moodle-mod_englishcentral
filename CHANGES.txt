@@ -1,6 +1,9 @@
 ========================================
 Change log for mod_englishcentral
 ========================================
+2024-04-12 (39)
+- Added support for a proxy server if Moodle is using one
+
 2024-01-31 (38)
 - Better support for mobile app
 
