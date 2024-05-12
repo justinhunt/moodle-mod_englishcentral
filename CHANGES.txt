@@ -1,6 +1,9 @@
 ========================================
 Change log for mod_englishcentral
 ========================================
+2024-05-12 (40)
+- Tweaks to format functions for PHP8.2
+
 2024-04-12 (39)
 - Added support for a proxy server if Moodle is using one
 

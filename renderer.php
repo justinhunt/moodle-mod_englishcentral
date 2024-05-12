@@ -63,7 +63,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         global $CFG;
 
         if (isset($this->ec->id)) {
-            $activityname = format_string($this->ec->name, true, $this->ec->course);
+            $activityname = format_string($this->ec->name, true, $this->ec->course->id);
             $title = $this->ec->course->shortname.': '.$activityname;
             if ($extrapagetitle) {
                 $title .= ': '.$extrapagetitle;
