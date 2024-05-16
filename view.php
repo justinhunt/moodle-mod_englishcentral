@@ -78,6 +78,9 @@ $event->trigger();
 $completion = new completion_info($course);
 $completion->set_module_viewed($cm);
 
+//log usage
+\mod_englishcentral\cloudpoodllauth::stage_remote_process_job($cm->id);
+
 /// Set up the page header
 $PAGE->set_url('/mod/englishcentral/view.php', array('id' => $cm->id));
 $PAGE->set_context($context);

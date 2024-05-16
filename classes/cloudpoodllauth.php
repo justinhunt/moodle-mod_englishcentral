@@ -41,6 +41,7 @@ class cloudpoodllauth {
     const M_URL = '/mod/englishcentral';
     const M_CLASS = 'mod_englishcentral';
     const M_PLUGINSETTINGS = '/admin/settings.php?section=modsettingenglishcentral';
+    const CLOUDPOODLL = 'https://cloud.poodll.com';
 
     //see if this is truly json or some error
     public static function is_json($string) {
@@ -149,8 +150,7 @@ class cloudpoodllauth {
 
 
         // Send the request & save response to $resp
-        $token_url = "https://cloud.poodll.com/local/cpapi/poodlltoken.php";
-        //$token_url = "https://localhost/moodle/local/cpapi/poodlltoken.php";
+        $token_url = self::CLOUDPOODLL . "/local/cpapi/poodlltoken.php";
         $postdata = array(
                 'username' => $apiuser,
                 'password' => $apisecret,
@@ -267,6 +267,70 @@ class cloudpoodllauth {
         if(isset($tokenobject->custom->{$property})){
             return $tokenobject->custom->{$property};
         }else{
+            return false;
+        }
+    }
+
+    //stage remote processing job ..just logging really
+    public static function stage_remote_process_job($cmid) {
+
+        global $CFG, $USER;
+
+        $token=false;
+        $conf= get_config(constants::M_COMPONENT);
+        if (!empty($conf->poodllapiuser) && !empty($conf->poodllapisecret)) {
+            $token = self::fetch_token($conf->poodllapiuser, $conf->poodllapisecret);
+        }
+        if(!$token || empty($token)){
+            return false;
+        }
+
+        $host = parse_url($CFG->wwwroot, PHP_URL_HOST);
+        if (!$host) {
+            $host = "unknown";
+        }
+        //owner
+        $owner = hash('md5',$USER->username);
+        $ownercomphash = hash('md5',$USER->username . constants::M_COMPONENT . $cmid . date("Y-m-d"));
+
+        //The REST API we are calling
+        $functionname = 'local_cpapi_stage_remoteprocess_job';
+
+        //log.debug(params);
+        $params = array();
+        $params['wstoken'] = $token->token;
+        $params['wsfunction'] = $functionname;
+        $params['moodlewsrestformat'] = 'json';
+        $params['appid'] = constants::M_COMPONENT;
+        $params['region'] = "useast1";
+        $params['host'] = $host;
+        $params['s3outfilename'] = $ownercomphash; //we just want a unique value per session here
+        $params['owner'] = $owner;
+        $params['transcode'] =  '0';
+        $params['transcoder'] = 'default';
+        $params['transcribe'] =  '0';
+        $params['subtitle'] = '0';
+        $params['language'] = 'en-US';
+        $params['vocab'] = 'none';
+        $params['s3path'] ='/';
+        $params['mediatype'] = 'other';
+        $params['notificationurl'] = 'none';
+        $params['sourcemimetype'] = 'unknown';
+
+        $serverurl = self::CLOUDPOODLL . '/webservice/rest/server.php';
+        $response = self::curl_fetch($serverurl, $params);
+        if (!self::is_json($response)) {
+            return false;
+        }
+        $payloadobject = json_decode($response);
+
+        //returnCode > 0  indicates an error
+        if ($payloadobject->returnCode > 0) {
+            return false;
+            //if all good, then lets just return true
+        } else if ($payloadobject->returnCode === 0) {
+            return true;
+        } else {
             return false;
         }
     }

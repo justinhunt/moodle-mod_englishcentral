@@ -68,7 +68,7 @@ class auth {
     function __construct($ec) {
 
         if (empty($ec->config)) {
-            $this->config = new stdClass();
+            $this->config = new \stdClass();
         }
 
         $this->ec = $ec;
