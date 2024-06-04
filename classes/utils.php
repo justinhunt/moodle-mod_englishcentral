@@ -201,4 +201,13 @@ class utils {
             }
             return $record['id'];
     }
+
+    public static function super_trim($str){
+        if($str==null){
+            return '';
+        }else{
+            $str = trim($str);
+            return $str;
+        }
+    }
 }

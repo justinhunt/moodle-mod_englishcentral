@@ -3,6 +3,7 @@ Change log for mod_englishcentral
 ========================================
 2024-05-16 (41)
 - Fixes for external API calls on pre M40 sites
+- Added Usage logging
 
 2024-05-12 (40)
 - Tweaks to format functions for PHP8.2
