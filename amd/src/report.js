@@ -27,7 +27,7 @@ define(["jquery", "jqueryui", "core/str"], function ($, JUI, STR) {
     /** @alias module:mod_englishcentral/report */
     var REPORT = {};
 
-    // cache full plugin name
+    // Cache the full plugin name.
     REPORT.plugin = "mod_englishcentral";
 
     // initialize string cache

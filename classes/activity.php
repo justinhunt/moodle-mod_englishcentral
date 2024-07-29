@@ -126,6 +126,51 @@ class activity {
         return ($this->viewable ? false : true);
     }
 
+    /*
+     * Detect if watch goal is set.
+     *
+     * @return boolean TRUE if watch goal is > 0; otherwise FALSE.
+     */
+    public function watchgoal_set() {
+        return ($this->watchgoal ? true : false);
+    }
+
+    /*
+     * Detect if learn goal is set.
+     *
+     * @return boolean TRUE if learn goal is > 0; otherwise FALSE.
+     */
+    public function learngoal_set() {
+        return ($this->learngoal ? true : false);
+    }
+
+    /*
+     * Detect if speak goal is set.
+     *
+     * @return boolean TRUE if speak goal is > 0; otherwise FALSE.
+     */
+    public function speakgoal_set() {
+        return ($this->speakgoal ? true : false);
+    }
+
+    /*
+     * Detect if chat goal is set.
+     *
+     * @return boolean TRUE if chat goal is > 0; otherwise FALSE.
+     */
+    public function chatgoal_set() {
+        return ($this->chatgoal ? true : false);
+    }
+
+    /*
+     * Detect if chat mode is enabled for this Moodle site.
+     *
+     * @return boolean TRUE if chat mode is enabled; otherwise FALSE.
+     */
+    public function chatmode_enabled() {
+        return ($this->config->chatmode ? true : false);
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     // URLs API
     ////////////////////////////////////////////////////////////////////////////////
@@ -155,6 +200,7 @@ class activity {
             case 'ja': // Japanese
             case 'pt': // Portuguese
             case 'ru': // Russian
+            case 'th': // Thai
             case 'tr': // Turkish
             case 'vi': // Vietnamese
                 return "https://$lang.englishcentral.com/videodetails";
@@ -261,6 +307,7 @@ class activity {
             'watch' => 0,
             'learn' => 0,
             'speak' => 0,
+            'chat' => 0,
         );
         $table = 'englishcentral_attempts';
         $params = array('ecid' => $this->id,
@@ -270,6 +317,7 @@ class activity {
                 $progress->watch += $attempt->watchcomplete;
                 $progress->learn += $attempt->learncount;
                 $progress->speak += $attempt->speakcount;
+                $progress->chat += $attempt->chatcount;
             }
         }
         return $progress;
@@ -348,6 +396,11 @@ class activity {
             'speakcount'    => 0,
             'speaklineids'  => array(), // dialogLineID's of lines spoken,
 
+            'chatcomplete' => 0,
+            'chattotal'    => 0,
+            'chatcount'    => 0,
+            'chatquestionids'  => array(), // chatQuestionID's of chat questions discussed,
+
             'totalpoints'   => 0,
 
             // this info is no longer available
@@ -365,10 +418,11 @@ class activity {
         }
 
         // populate the $progress array with values earned hitherto
-        foreach (array('watchlineids', 'learnwordids', 'speaklineids') as $ids) {
-            if (isset($attempt->$ids) && $attempt->$ids) {
-                $progress[$ids] = explode(',', $attempt->$ids);
-                $progress[$ids] = array_fill_keys($progress[$ids], 1);
+        $names = array('watchlineids', 'learnwordids', 'speaklineids', 'discussquestion');
+        foreach ($names as $names) {
+            if (isset($attempt->$names) && $attempt->$names) {
+                $progress[$names] = explode(',', $attempt->$names);
+                $progress[$names] = array_fill_keys($progress[$names], 1);
             }
         }
 
@@ -390,7 +444,7 @@ class activity {
             // extract DB fields
             switch ($activity->activityTypeID) {
 
-                case \mod_englishcentral\auth::ACTIVITYTYPE_WATCHING: // =9
+                case \mod_englishcentral\auth::ACTIVITYTYPE_WATCH: // =9
                 case \mod_englishcentral\auth::ACTIVITYTYPE_WATCHCOMPREHENSIONCHOICE: //=40
                     $progress['watchcomplete'] = (empty($activity->completed) ? 0 : 1);
                     foreach ($activity->watchedDialogLines as $line) {
@@ -398,7 +452,7 @@ class activity {
                     }
                     break;
 
-                case \mod_englishcentral\auth::ACTIVITYTYPE_LEARNING: // =10
+                case \mod_englishcentral\auth::ACTIVITYTYPE_LEARN: // =10
                     $progress['learncomplete'] = (empty($activity->completed) ? 0 : 1);
                     foreach ($activity->learnedDialogLines as $line) {
                         foreach($line->learnedWords as $word) {
@@ -409,10 +463,17 @@ class activity {
                     }
                     break;
 
-                case \mod_englishcentral\auth::ACTIVITYTYPE_SPEAKING: // =11
+                case \mod_englishcentral\auth::ACTIVITYTYPE_SPEAK: // =11
                     $progress['speakcomplete'] = (empty($activity->completed) ? 0 : 1);
                     foreach ($activity->spokenDialogLines as $line) {
                         $progress['speaklineids'][$line->dialogLineID] = 1;
+                    }
+                    break;
+
+                case \mod_englishcentral\auth::ACTIVITYTYPE_CHAT: // =55
+                    $progress['chatcomplete'] = (empty($activity->completed) ? 0 : 1);
+                    foreach ($activity->submittedQuestionIds as $questionid) {
+                        $progress['chatquestionids'][$questionid] = 1;
                     }
                     break;
             }
@@ -421,10 +482,12 @@ class activity {
         $progress['watchcount'] += count($progress['watchlineids']);
         $progress['learncount'] += count($progress['learnwordids']);
         $progress['speakcount'] += count($progress['speaklineids']);
+        $progress['chatcount'] += count($progress['chatquestionids']);
 
         $progress['watchlineids'] = implode(',', array_keys($progress['watchlineids']));
         $progress['learnwordids'] = implode(',', array_keys($progress['learnwordids']));
         $progress['speaklineids'] = implode(',', array_keys($progress['speaklineids']));
+        $progress['chatquestionids'] = implode(',', array_keys($progress['chatquestionids']));
 
         return $progress;
     }
@@ -432,7 +495,8 @@ class activity {
     public function get_attempts_fields($addvideoid=true) {
         $fields = 'watchcount,watchcomplete,'.
                   'learncount,learncomplete,'.
-                  'speakcount,speakcomplete';
+                  'speakcount,speakcomplete,'.
+                  'chatcount,chatcomplete';
         if ($addvideoid) {
             $fields = "videoid,$fields";
         }

@@ -69,12 +69,11 @@ $PAGE->set_url('/mod/englishcentral/report.php', $params);
 $PAGE->set_context($context);
 
 $config = get_config(constants::M_COMPONENT);
-if($config->enablesetuptab){
+if ($config->enablesetuptab){
     $PAGE->set_pagelayout('popup');
-}else{
+} else{
     $PAGE->set_pagelayout('report');
 }
-
 
 $ec = \mod_englishcentral\activity::create($instance, $cm, $course, $context);
 $auth = \mod_englishcentral\auth::create($ec);

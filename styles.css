@@ -14,27 +14,38 @@
 
 /** styles for goals on EDIT form  */
 
-#page-mod-englishcentral-mod #fgroup_id_watchgoalgroup {
+#page-mod-englishcentral-mod #fgroup_id_watchgoalgroup,
+#page-mod-englishcentral-setup #fgroup_id_watchgoalgroup {
     background: #d4edf7;
     border: 2px solid #23a1da; /* BLUE */
 }
 
-#page-mod-englishcentral-mod #fgroup_id_learngoalgroup {
+#page-mod-englishcentral-mod #fgroup_id_learngoalgroup,
+#page-mod-englishcentral-setup #fgroup_id_learngoalgroup {
     background: #fbe0d0;
     border: 2px solid #eb6613; /* RED */
 }
 
-#page-mod-englishcentral-mod #fgroup_id_speakgoalgroup {
+#page-mod-englishcentral-mod #fgroup_id_speakgoalgroup,
+#page-mod-englishcentral-setup #fgroup_id_speakgoalgroup {
     background: #e9f4d7;
     border: 2px solid #a4d05c; /* GREEN */
 }
 
-#page-mod-englishcentral-mod #fgroup_id_studygoalgroup {
+#page-mod-englishcentral-mod #fgroup_id_chatgoalgroup,
+#page-mod-englishcentral-setup #fgroup_id_chatgoalgroup {
+    background: #e6dcef;
+    border: 2px solid #5e387d; /* PURPLE */
+}
+
+#page-mod-englishcentral-mod #fgroup_id_studygoalgroup,
+#page-mod-englishcentral-setup #fgroup_id_studygoalgroup {
     background: #f8f8f8;
     border: 2px solid    #aaa; /* GREY */
 }
 
-#page-mod-englishcentral-mod .mathsymbol {
+#page-mod-englishcentral-mod .mathsymbol,
+#page-mod-englishcentral-setup .mathsymbol {
     display: inline-block;
     font-size: 2.0em;
     margin-top: 40px;
@@ -82,16 +93,18 @@
 }
 
 #page-mod-englishcentral-view .timing {
-    display: inline-block;
+    display: block;
     text-align: left;
     vertical-align: top;
     width: 100%;
+    margin-bottom: 12px;
+    margin-top: 0px;
 }
 
 #page-mod-englishcentral-view #id_progresscontainer .title {
     padding: 6px;
-    font-size: 16px;
-  /*  margin-bottom: 36px;*/
+    font-size: calc(28px + 1vw);
+    margin-bottom: 0;
     margin-top: 0;
 }
 
@@ -168,8 +181,14 @@
   #e9f4d7 light
   #d3e9af medium
   #a4d05c English Central
+
+  CHAT (purple)
+  #e6dcef light
+  #ceb9df medium
+  #5e387d English Central
 *************************/
 
+/* medium outer rings */
 #page-mod-englishcentral-view .chart.total {
     background: #ddd;
 }
@@ -181,6 +200,9 @@
 }
 #page-mod-englishcentral-view .chart.speak {
     background: #d3e9af;
+}
+#page-mod-englishcentral-view .chart.chat {
+    background: #ceb9df;
 }
 
 #page-mod-englishcentral-view .chart.total {
@@ -194,6 +216,9 @@
 }
 #page-mod-englishcentral-view .chart.speak {
     background-image: linear-gradient(to right, transparent 50%, #a4d05c 0);
+}
+#page-mod-englishcentral-view .chart.chat {
+    background-image: linear-gradient(to right, transparent 50%, #5e387d 0);
 }
 
 #page-mod-englishcentral-view .chart .outerring {
@@ -218,6 +243,9 @@
 #page-mod-englishcentral-view .chart.speak.under50 .outerring {
     background-color: #d3e9af;
 }
+#page-mod-englishcentral-view .chart.chat.under50 .outerring {
+    background-color: #ceb9df;
+}
 
 #page-mod-englishcentral-view .chart.total.over50 .outerring {
     background-color: #aaa;
@@ -230,6 +258,9 @@
 }
 #page-mod-englishcentral-view .chart.speak.over50 .outerring {
     background-color: #a4d05c;
+}
+#page-mod-englishcentral-view .chart.chat.over50 .outerring {
+    background-color: #5e387d;
 }
 
 #page-mod-englishcentral-view .innertext {
@@ -256,6 +287,9 @@
 #page-mod-englishcentral-view .chart.speak .innertext {
     background: #f4f9eb;
 }
+#page-mod-englishcentral-view .chart.chat .innertext {
+    background: #f3edf7;
+}
 
 #page-mod-englishcentral-view .line1,
 #page-mod-englishcentral-view .line2 {
@@ -275,7 +309,7 @@
         text-align: left;
     }
     #page-mod-englishcentral-view .timing {
-        width: 180px;
+        max-width: 360px;
     }
     #page-mod-englishcentral-view .chart {
         width: 120px;
@@ -328,7 +362,7 @@
 }
 
 /* We should probably delete the function creating the image, */
-/* however we should guarantee it does'nt affect other parts of the activity. */
+/* however we should guarantee it doesn't affect other parts of the activity. */
 
 #page-mod-englishcentral-view .videoicon img {
     height: 0;
@@ -765,7 +799,8 @@
 
 #page-mod-englishcentral-view .video-placeholder-text-watch-the-video,
 #page-mod-englishcentral-view .video-placeholder-text-learn-the-words,
-#page-mod-englishcentral-view .video-placeholder-text-speak-the-lines {
+#page-mod-englishcentral-view .video-placeholder-text-speak-the-lines,
+#page-mod-englishcentral-view .video-placeholder-text-chat-the-lines {
     display: flex;
     align-items: center;
     border-bottom: 1px solid #d4d6da;
@@ -775,7 +810,8 @@
 
 #page-mod-englishcentral-view .video-placeholder-text-watch-the-video::before,
 #page-mod-englishcentral-view .video-placeholder-text-learn-the-words::before,
-#page-mod-englishcentral-view .video-placeholder-text-speak-the-lines::before {
+#page-mod-englishcentral-view .video-placeholder-text-speak-the-lines::before,
+#page-mod-englishcentral-view .video-placeholder-text-chat-the-lines::before {
     background-size: 22px;
     background-repeat: no-repeat;
     height: 22px;
@@ -795,6 +831,10 @@
 
 #page-mod-englishcentral-view .video-placeholder-text-speak-the-lines::before {
     background-image: url([[pix:mod_englishcentral|speak-the-lines-ec-icon]]);
+}
+
+#page-mod-englishcentral-view .video-placeholder-text-speak-the-lines::before {
+    background-image: url([[pix:mod_englishcentral|chat-the-lines-ec-icon]]);
 }
 
 
@@ -900,7 +940,8 @@
 
 #page-mod-englishcentral-view .activity-thumbnail .watch-status,
 #page-mod-englishcentral-view .activity-thumbnail .learn-status,
-#page-mod-englishcentral-view .activity-thumbnail .speak-status {
+#page-mod-englishcentral-view .activity-thumbnail .speak-status,
+#page-mod-englishcentral-view .activity-thumbnail .chat-status {
     border-style: solid;
     border-width: 2px;
     border-radius: 50%;
@@ -918,15 +959,19 @@
 
 #page-mod-englishcentral-view .activity-thumbnail .watch-status {
     background: #23a1da;
-    top: 15px;
+    top: -2px;
 }
 #page-mod-englishcentral-view .activity-thumbnail .learn-status {
     background: #eb6613;
-    top: 40px;
+    top: 16px;
 }
 #page-mod-englishcentral-view .activity-thumbnail .speak-status {
     background: #a4d05c;
-    top: 65px;
+    top: 34px;
+}
+#page-mod-englishcentral-view .activity-thumbnail .chat-status {
+    background: #5e387d;
+    top: 52px;
 }
 
 #page-mod-englishcentral-view .activity-title {
@@ -1437,7 +1482,8 @@ Layers affected:
     }
     #page-mod-englishcentral-view .activity-thumbnail .watch-status,
     #page-mod-englishcentral-view .activity-thumbnail .learn-status,
-    #page-mod-englishcentral-view .activity-thumbnail .speak-status {
+    #page-mod-englishcentral-view .activity-thumbnail .speak-status,
+    #page-mod-englishcentral-view .activity-thumbnail .chat-status {
         right: -2px;
     }
 
@@ -1513,16 +1559,17 @@ Layers affected:
         padding: 0 24px;
     }
 
-    #page-mod-englishcentral-view .titlechart:last-of-type {
-        margin-left: 36px;
-    }
-
     #page-mod-englishcentral-view #id_progresscontainer .title {
-        font-size: 20px;
+        /* font-size: calc(20px + 1vw); */
     }
 
     #page-mod-englishcentral-view #id_progresscontainer .titlechart .title {
         font-size: 18px;
+    }
+
+    #page-mod-englishcentral-view .titlechart:first-of-type .chart {
+        height: 180px;
+        width: 180px;
     }
 
     #page-mod-englishcentral-view .result-duration {
@@ -1587,7 +1634,8 @@ Layers affected:
 
 #page-mod-englishcentral-report .title .watch,
 #page-mod-englishcentral-report .title .learn,
-#page-mod-englishcentral-report .title .speak {
+#page-mod-englishcentral-report .title .speak,
+#page-mod-englishcentral-report .title .chat {
     font-size: smaller;
     height: 16px;
     margin: 0;
@@ -1634,7 +1682,8 @@ Layers affected:
 
 #page-mod-englishcentral-report .watch,
 #page-mod-englishcentral-report .learn,
-#page-mod-englishcentral-report .speak {
+#page-mod-englishcentral-report .speak,
+#page-mod-englishcentral-report .chat {
     border-style: solid;
     border-width: 2px 0;
     display: inline-block;
@@ -1657,6 +1706,10 @@ Layers affected:
     background: #e9f4d7; /* light GREEN */
     border-color: #a4d05c; /* Eng.C GREEN */
 }
+#page-mod-englishcentral-report .chat {
+    background: #e6dcef; /* light PURPLE */
+    border-color: #5e387d; /* dark PURPLE */
+}
 
 #page-mod-englishcentral-report .watch .bar {
     background: #a9dbef; /* medium BLUE */
@@ -1666,6 +1719,9 @@ Layers affected:
 }
 #page-mod-englishcentral-report .speak .bar {
     background: #d3e9af; /* medium GREEN */
+}
+#page-mod-englishcentral-report .chat .bar {
+    background: #ceb9df; /* medium PURPLE */
 }
 
 #page-mod-englishcentral-report .bar,
@@ -1695,7 +1751,8 @@ Layers affected:
 
     #page-mod-englishcentral-report .title .watch,
     #page-mod-englishcentral-report .title .learn,
-    #page-mod-englishcentral-report .title .speak {
+    #page-mod-englishcentral-report .title .speak,
+    #page-mod-englishcentral-report .title .chat {
         font-size: small;
     }
 

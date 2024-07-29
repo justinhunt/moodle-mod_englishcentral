@@ -2,8 +2,10 @@
 Change log for mod_englishcentral
 ========================================
 2024-05-16 (41)
+2024-06-08 (35)
+ - add progress dial for Mimi chats
+
 - Fixes for external API calls on pre M40 sites
-- Added Usage logging
 
 2024-05-12 (40)
 - Tweaks to format functions for PHP8.2
@@ -18,7 +20,7 @@ Change log for mod_englishcentral
 - Added mobile app support
 
 2023-10-13 (36)
-- Fixed issue with broken admin setting for ec chat
+- Fixed issue with broken admin setting for ec discuss
 - tweaked monster size of progress dials block
 - Returned default position to page top
 
@@ -27,7 +29,7 @@ Change log for mod_englishcentral
 
 2023-07-23 (34)
 - Added a progress updated event
-- Added flags for enabling ChatMode if it is on your account
+- Added flags for enabling DiscussMode if it is on your account
 
 2023-05-19 (33)
 - Added calls to API for course details

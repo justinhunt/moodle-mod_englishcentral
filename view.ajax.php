@@ -88,6 +88,7 @@ switch ($action) {
             $dialog = $auth->fetch_dialog_progress($data->dialogID, $data->sdktoken);
             $ec->update_progress($dialog);
             echo $renderer->show_progress();
+            //echo \html_writer::tag('pre', print_r($dialog, true), array('class' => 'border rounded bg-light px-2'));
         }
         break;
 
