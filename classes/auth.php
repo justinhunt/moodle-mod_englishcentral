@@ -41,6 +41,30 @@ defined('MOODLE_INTERNAL') || die();
  */
 class auth {
 
+    // Accepted media types used by EC's API.
+    const ACCEPT_V1 = 'application/vnd.englishcentral-v1+json,application/json;q=0.9,*/*;q=0.8';
+    const ACCEPT_V2 = 'application/vnd.englishcentral-v2+json,application/json;q=0.9,*/*;q=0.8';
+    const ACCEPT_V3 = 'application/vnd.englishcentral-v3+json,application/json;q=0.9,*/*;q=0.8';
+    const ACCEPT_V4 = 'application/vnd.englishcentral-v4+json,application/json;q=0.9,*/*;q=0.8';
+
+    // EC constants for EC chatBotId's
+    const CHAT_BOT_ID_DEFAULT = 1;
+    const CHAT_BOT_ID_GENERIC = 3;
+    const CHAT_BOT_ID_DIALOG_MANAGER = 4;
+    const CHAT_BOT_ID_DQ = 5;
+    const CHAT_BOT_ID_LT_2 = 6;
+    const CHAT_BOT_ID_ROLEPLAY = 7;
+
+    // EC constants for EC activityType's
+    const ACTIVITYTYPE_WATCH = 9; // watchActivity
+    const ACTIVITYTYPE_LEARN = 10; // learnActivity
+    const ACTIVITYTYPE_SPEAK = 11; // speakActivity
+    const ACTIVITYTYPE_CHAT = 55; // discussionActivity
+    const ACTIVITYTYPE_WATCHCOMPREHENSIONCHOICE = 40;
+
+    const SDK_MODE_PRODUCTION   = 0;
+    const SDK_MODE_DEVELOPMENT  = 1;
+
     protected $ec = null; // EC activity
     protected $jwt_token = null; // JWT token
     protected $sdk_token = null; // SDK token
@@ -48,19 +72,6 @@ class auth {
 
     protected $uniqueid = null; // user's unique ID on this Moodle site
     protected $accountid = null; // the EC accountid of the current user
-
-    const ACCEPT_V1 = 'application/vnd.englishcentral-v1+json,application/json;q=0.9,*/*;q=0.8';
-    const ACCEPT_V2 = 'application/vnd.englishcentral-v2+json,application/json;q=0.9,*/*;q=0.8';
-    const ACCEPT_V3 = 'application/vnd.englishcentral-v3+json,application/json;q=0.9,*/*;q=0.8';
-    const ACCEPT_V4 = 'application/vnd.englishcentral-v4+json,application/json;q=0.9,*/*;q=0.8';
-
-    const ACTIVITYTYPE_WATCHING = 9;
-    const ACTIVITYTYPE_LEARNING = 10;
-    const ACTIVITYTYPE_SPEAKING = 11;
-    const ACTIVITYTYPE_WATCHCOMPREHENSIONCHOICE = 40;
-
-    const SDK_MODE_PRODUCTION   = 0;
-    const SDK_MODE_DEVELOPMENT  = 1;
 
     /**
      * construct English Central object
@@ -72,31 +83,19 @@ class auth {
         }
 
         $this->ec = $ec;
+        $this->set_mimichat($ec);
 
         // Specify names of EC config fields.
-        $fields = array('partnerid',
+        $fields = array('poodllapiuser',
+                        'poodllapisecret',
+                        'partnerid',
                         'consumerkey',
                         'consumersecret',
-                        'encryptedsecret',
-                        'mimichat');
-
-        // Fetch the Cloud Poodll token (which contains EC credentials).
-        if (empty($ec->config->poodllapiuser) || empty($ec->config->poodllapisecret)) {
-            $tokenobject = false;
-        } else {
-            $tokenobject = cloudpoodllauth::fetch_token($ec->config->poodllapiuser, $ec->config->poodllapisecret);
-        }
+                        'encryptedsecret');
 
         foreach ($fields as $field) {
             if (empty($ec->config->$field)) {
                 $this->$field = '';
-                // If the Cloud Poodll token is available, use it to set this $field value.
-                if ($tokenobject) {
-                    $tokendata = cloudpoodllauth::fetch_token_customproperty($tokenobject, "mod_englishcentral_$field");
-                    if ($tokendata && !empty($tokendata)) {
-                        $this->$field = $tokendata;
-                    }
-                }
             } else {
                 // A value for this $field already exists, so use that.
                 $this->$field = $ec->config->$field;
@@ -110,10 +109,62 @@ class auth {
         }
     }
 
+    /*
+     * Detect if mimichat is enabled.
+     *
+     * @return boolean TRUE if mimichat is enabled; otherwise FALSE.
+     */
+    public function mimichat_enabled() {
+        return ($this->mimichat ? true : false);
+    }
+
+    /**
+     * Set chatmode to enabled or disabled.
+     *
+     * @param object $ec an EC activity
+     * @return boolean TRUE if the mimichat property was set; otherwise FALSE.
+     */
+    public function set_mimichat($ec) {
+
+        // Default value is false (i.e. not available/enabled).
+        $this->mimichat = false;
+
+        // Check that chatmode is enabled in the EC plugin settings for this Moodle site.
+        if (empty($ec->config->chatmode)) {
+            return true;
+        }
+
+        // Normal Moodle users are verified via Poodll API
+        if ($apiuser = $ec->config->poodllapiuser) {
+            if ($apisecret = $ec->config->poodllapisecret) {
+                $token = cloudpoodllauth::fetch_token($apiuser, $apisecret);
+                $field = 'mod_englishcentral_mimichat';
+                $value = cloudpoodllauth::fetch_token_customproperty($token, $field);
+                $this->mimichat = ($value === 'enabled');
+                return true;
+            }
+        }
+
+        // Developers may be registered directly with EC using a partnerid.
+        if ($partnerid = $ec->config->partnerid) {
+            if ($consumerkey = $ec->config->consumerkey) {
+                if ($consumersecret = $ec->config->consumersecret) {
+                    if ($encryptedsecret = $ec->config->encryptedsecret) {
+                        // Verify if mimichat is enabled for this partnerid.
+                        $value = '1';
+                        $this->mimichat = ($value === '1');
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
     /**
      * Creates a new EnglishCentral auth object
      *
-     * @param object $ec a EC activity
+     * @param object $ec an EC activity
      * @return object the new EC auth object
      */
     static public function create($ec) {
@@ -122,7 +173,7 @@ class auth {
 
     public function get_uniqueid() {
         global $DB, $USER;
-        if ($this->uniqueid===null) {
+        if ($this->uniqueid === null) {
             $table = 'englishcentral_accountids';
             $params = array('userid' => $USER->id);
             $this->uniqueid = $DB->get_field($table, 'id', $params);
@@ -143,7 +194,7 @@ class auth {
 
     public function get_accountid() {
         global $DB, $USER;
-        if ($this->accountid===null) {
+        if ($this->accountid === null) {
             $table = 'englishcentral_accountids';
             $params = array('userid' => $USER->id);
             $this->accountid = $DB->get_field($table, 'accountid', $params);
@@ -159,7 +210,7 @@ class auth {
     }
 
     public function get_jwt_token() {
-        if ($this->jwt_token===null) {
+        if ($this->jwt_token === null) {
             $payload = array('userID' => $this->get_uniqueid(),
                              'consumerKey' => $this->consumerkey,
                              'exp' => round((microtime(true) + 10000) * 1000));
@@ -174,9 +225,7 @@ class auth {
     }
 
     public function get_sdk_token() {
-        if ($this->sdk_token===null) {
-            $jwt_token = $this->get_jwt_token();
-
+        if ($this->sdk_token === null) {
             $url = $this->get_url('bridge', 'rest/identity/authorize');
 
             $fields = array('partnerID' => $this->partnerid,
@@ -186,7 +235,7 @@ class auth {
             $fields = http_build_query($fields, '', '&', PHP_QUERY_RFC1738);
 
             $header = array('Accept: ' . self::ACCEPT_V1,
-                            'AuthorizeRequest: ' . $jwt_token,
+                            'AuthorizeRequest: ' . $this->get_jwt_token(),
                             'Content-Length: ' . strlen($fields),
                             'Content-Type: application/x-www-form-urlencoded');
 
@@ -214,7 +263,7 @@ class auth {
     }
 
     public function get_authorization() {
-        if ($this->authorization===null) {
+        if ($this->authorization === null) {
             if ($sdk_token = $this->get_sdk_token()) {
                 $consumersecret = \mod_englishcentral\jwt\JWT::urlsafeB64Decode($this->encryptedsecret);
                 $payload = \mod_englishcentral\jwt\JWT::decode($sdk_token, $consumersecret, array('HS256'));
@@ -227,10 +276,9 @@ class auth {
     }
 
     public function get_player_settings() {
-        $settings = new \stdClass();
-        $chatmode = get_config('mod_englishcentral', 'chatmode');
-        $settings->chatMode = $chatmode ? $this->mimichat=='enabled' : false;
-        return $settings;
+        return (object)array(
+            'chatMode' => $this->mimichat_enabled()
+        );
     }
 
     public function create_accountid() {
@@ -288,16 +336,14 @@ class auth {
     public function fetch_course_content($courseid) {
         $subdomain = 'bridge';
         $endpoint = 'rest/content/course/' . $courseid;
-        $fields = array(
-            'siteLanguage' => $this->get_site_language());
+        $fields = array('siteLanguage' => $this->get_site_language());
         return $this->doGet($subdomain, $endpoint, $fields, self::ACCEPT_V1);
     }
 
     public function fetch_dialog_content($videoid) {
         $subdomain = 'bridge';
         $endpoint = "rest/content/dialog/$videoid";
-        $fields = array(
-            'siteLanguage' => $this->get_site_language());
+        $fields = array('siteLanguage' => $this->get_site_language());
         return $this->doGet($subdomain, $endpoint, $fields, self::ACCEPT_V1);
     }
 
@@ -308,6 +354,24 @@ class auth {
         $subdomain = 'reportcard';
         $endpoint = "rest/report/dialog/$videoid/progress";
         return $this->doGet($subdomain, $endpoint, array(), self::ACCEPT_V2);
+    }
+
+    // This method is not used and does not seem to work, but
+    // it could be used to get more info about a conversation.
+    // https://chat.englishcentral.com/documentation/resource_ConversationREST.html
+    // https://chat.englishcentral.com/rest/conversation/list?accountId=xxx&dialogId=xxx&chatBotId=5
+    public function fetch_chat_progress($videoid, $sdk_token='') {
+        if ($sdk_token) {
+            $this->set_sdk_token($sdk_token);
+        }
+        $subdomain = 'chat';
+        $endpoint = 'rest/conversation/list';
+        $fields = array(
+            'chatBotId' => self::CHAT_BOT_ID_DQ, // =5
+            'accountId' => $this->get_accountid(),
+            'dialogId' => $videoid,
+        );
+        return $this->doGet($subdomain, $endpoint, $fields, self::ACCEPT_V1);
     }
 
     public function doGet($subdomain, $endpoint, $fields, $accept) {
@@ -325,23 +389,24 @@ class auth {
     public function doCurl($url, $header, $json_decode=false, $post=null, $fields=null) {
         global $CFG;
 
-        //use Moodle Curl to ensure we use a proxy if Moodle server is using one
+        // Use Moodle Curl to ensure we use a proxy if Moodle server is using one.
         require_once($CFG->libdir.'/filelib.php');
         $curl = new \curl();
-        $curlopts=[];
-        $curlopts['CURLOPT_FOLLOWLOCATION']=  true;
-        $curlopts['CURLOPT_RETURNTRANSFER']=  true;
-        $curlopts['CURLOPT_AUTOREFERER']=  true;
-        $curlopts['CURLOPT_SSL_VERIFYPEER']=  false;
         $curl->setHeader($header);
-        $curl->setopt($curlopts);
+        $curl->setopt(array(
+            'CURLOPT_AUTOREFERER' => true,
+            'CURLOPT_FOLLOWLOCATION' => true,
+            'CURLOPT_RETURNTRANSFER' => true,
+            'CURLOPT_SSL_VERIFYPEER' => false,
+        ));
 
-        if($post) {
+        if ($post) {
             $response = $curl->post($url, $fields);
-        }else{
+        } else {
             $response = $curl->get($url,$fields);
         }
-        //if its JSON process that before returning
+
+        // If its JSON, process that before returning.
         if ($json_decode && $this->is_json($response)) {
             $response = json_decode($response);
         }
@@ -380,8 +445,9 @@ class auth {
     public function get_site_language($default='en') {
         $lang = substr(current_language(), 0, 2);
         $langs = array(
-            // only the following languages are available on the EC site
-            'en', // English
+            // Only the following languages are available on the EC site.
+            // See language menu on: https://www.englishcentral.com/browse/videos.
+            'en', // English    English
             'es', // Spanish    Español
             'ja', // Japanese   日本語
             'ko', // Korean     한국어
@@ -390,9 +456,10 @@ class auth {
             'tr', // Turkish    Türkçe
             'vi', // Vietnamese Tiếng Việt
             'zh', // Chinese    简体中文
-            'he', // Hebrew     עִברִית 
-            'ar', // Arabic     عربى 
+            'he', // Hebrew     עִברִית
+            'ar', // Arabic     عربى
             'fr', // French     Français
+            'th', // Thai       ภาษาไทย (added 2024-06-06)
         );
         if (in_array($lang, $langs)) {
             return $lang;
@@ -418,8 +485,8 @@ class auth {
         $missing = array('poodllapiuser' => '/^[0-9a-zA-Z\/\.@+=_-]+$/',
                          'poodllapisecret' => '/^[0-9a-zA-Z\/+=-]+$/');
         foreach ($missing as $name => $pattern) {
-            //the patterns dont match what might actually be in the secret, so commented for now. Justin 20212/01/23
-            //if (isset($this->ec->config->$name) && preg_match($pattern, $this->ec->config->$name)) {
+            // The patterns don't match what might actually be in the secret, so commented for now. Justin 20212/01/23
+            // if (isset($this->ec->config->$name) && preg_match($pattern, $this->ec->config->$name)) {
             if (isset($this->ec->config->$name) && !empty($this->ec->config->$name)) {
                 unset($missing[$name]);
             } else {
@@ -442,7 +509,7 @@ class auth {
                          'consumersecret' => '/^[0-9a-fA-F]{64}$/',
                          'encryptedsecret' => '/^[0-9a-zA-Z\/+=]+$/');
         foreach ($missing as $name => $pattern) {
-            if ($name=='consumersecret' && $this->ec->config->$name==$this->ec->config->encryptedsecret) {
+            if ($name=='consumersecret' && $this->ec->config->$name == $this->ec->config->encryptedsecret) {
                 unset($missing[$name]);
             } else if (isset($this->ec->config->$name) && preg_match($pattern, $this->ec->config->$name)) {
                 unset($missing[$name]);
@@ -455,7 +522,7 @@ class auth {
 
     public function invalid_config() {
         $sdk_token = $this->get_sdk_token();
-        // the token is usually 189 chars long and split into 3 parts delimited by [\.].
+        // The token is usually 189 chars long and split into 3 parts delimited by [\.].
         // Parts 1 & 2 contain [0-9a-zA-Z]. The 3rd part can additionally contain [_-].
         if (preg_match('/^[0-9a-zA-Z\._-]{180,200}$/', $sdk_token)) {
             return ''; // token is valid - YAY!
@@ -464,11 +531,11 @@ class auth {
             // JSON error message from EC server
             return json_decode($sdk_token)->log;
         }
-        if (strpos($sdk_token, '<!DOCTYPE html>')===0) {
-            // HTML error message, maybe a wrong URL or invalid data was sent to EC
+        if (strpos($sdk_token, '<!DOCTYPE html>') === 0) {
+            // HTML error message, maybe a wrong URL or invalid data was sent to EC.
             return preg_replace('/^(.*?<body[^>]*>)|(<\/body>.*$)/', '', $sdk_token);
         }
-        // some other problematic token
+        // Some other problematic token.
         return $sdk_token;
     }
 }

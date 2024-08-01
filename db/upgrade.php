@@ -700,6 +700,54 @@ function xmldb_englishcentral_upgrade($oldversion) {
         upgrade_mod_savepoint(true, $newversion, 'englishcentral');
     }
 
+    $newversion = 2024060534;
+    if ($oldversion < $newversion) {
+        $tables = array(
+            'englishcentral' => array(
+                new xmldb_field('chatgoal', XMLDB_TYPE_INTEGER, '6', null, XMLDB_NOTNULL, null, '0', 'speakgoal')
+            ),
+            'englishcentral_attempts' => array(
+                new xmldb_field('chatcomplete', XMLDB_TYPE_INTEGER,  '2', null, null, null, null, 'speaklineids'),
+                new xmldb_field('chattotal', XMLDB_TYPE_INTEGER, '10'),
+                new xmldb_field('chatcount', XMLDB_TYPE_INTEGER, '10'),
+                new xmldb_field('chatquestionids', XMLDB_TYPE_TEXT),
+            ),
+        );
+        foreach ($tables as $table => $fields) {
+            $table = new xmldb_table($table);
+            $previous = '';
+            foreach ($fields as $field) {
+                if ($previous) {
+                    $field->setPrevious($previous);
+                }
+                if ($dbman->field_exists($table, $field)) {
+                    $dbman->change_field_type($table, $field);
+                } else {
+                    $dbman->add_field($table, $field);
+                }
+                $previous = $field->getName();
+            }
+        }
+    }
+
+    $newversion = 2024060835;
+    if ($oldversion < $newversion) {
+
+        // Remove deprecated config settings.
+        $config = get_config('mod_englishcentral');
+        $names = array(
+            'hiddenchallengemode', 'lightboxmode',
+            'learnmode', 'speakmode', 'watchmode',
+            'simpleui', 'speaklitemode',
+        );
+        foreach ($names as $name) {
+            if (property_exists($config, $name)) {
+                unset_config($name, 'mod_englishcentral');
+                unset($config->$name);
+            }
+        }
+    }
+
     return true;
 }
 

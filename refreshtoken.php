@@ -18,7 +18,6 @@
 /**
  * A token refreshing helper for EnglishCentral
  *
- *
  * @package    mod_englishcentral
  * @copyright  Justin Hunt (justin@poodll.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -32,11 +31,10 @@ require_login(0, false);
 $systemcontext = context_system::instance();
 
 if (has_capability('moodle/site:config', $systemcontext)) {
-    $apiuser = get_config(cloudpoodllauth::M_COMPONENT, 'poodllapiuser');
-    $apisecret = get_config(cloudpoodllauth::M_COMPONENT, 'poodllapisecret');
-    $force = true;
-    if ($apiuser && $apisecret) {
-        cloudpoodllauth::fetch_token($apiuser, $apisecret, $force);
+    if ($apiuser = get_config(cloudpoodllauth::M_COMPONENT, 'poodllapiuser')) {
+        if ($apisecret = get_config(cloudpoodllauth::M_COMPONENT, 'poodllapisecret')) {
+            cloudpoodllauth::fetch_token($apiuser, $apisecret, true); // force = TRUE.
+        }
     }
 }
-redirect($CFG->wwwroot . '/admin/settings.php?section=modsettingenglishcentral');
+redirect($CFG->wwwroot.'/admin/settings.php?section=modsettingenglishcentral');

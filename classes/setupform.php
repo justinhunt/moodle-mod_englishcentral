@@ -65,7 +65,7 @@ class setupform extends \moodleform {
      * An array of options used in the htmleditor
      * @var array
      */
-    protected $editoroptions = array();
+    protected $editoroptions = array(); // ['noclean' => true]
 
 	/**
      * An array of options used in the filemanager
@@ -87,53 +87,51 @@ class setupform extends \moodleform {
      * and then calls custom_definition();
      */
     public final function definition() {
-        global $CFG;
-
         $mform = $this->_form;
+
+        // Unpack the customdata.
         $context = $this->_customdata['context'];
-        utils::add_mform_elements($mform,$context,true);
+        $instance = $this->_customdata['instance'];
+        $cm = $this->_customdata['cm'];
+        $course = $this->_customdata['course'];
 
-		//add the action buttons
-        $this->add_action_buttons(get_string('cancel'), get_string('savechangesanddisplay'));
+        utils::add_mform_elements($mform, $instance, $cm, $course, $context, true);
 
+        $this->add_action_buttons(
+            get_string('cancel'),
+            get_string('savechangesanddisplay')
+        );
     }
 
-    protected final function add_media_upload($name, $count=-1, $label = null, $required = false) {
-		if($count>-1){
-			$name = $name . $count ;
+    protected final function add_media_upload($name, $count=-1, $label=null, $required=false) {
+		if ($count > -1) {
+			$name = $name.$count;
 		}
-		
-		$this->_form->addElement('filemanager',
-                           $name,
-                           $label,
-                           null,
-						   $this->filemanageroptions
-                           );
-		
+		$this->_form->addElement('filemanager', $name, $label, null, $this->filemanageroptions);
 	}
 
 	protected final function add_media_prompt_upload($label = null, $required = false) {
-		return $this->add_media_upload(constants::AUDIOPROMPT,-1,$label,$required);
+		return $this->add_media_upload(constants::AUDIOPROMPT,-1, $label, $required);
 	}
 
-
     /**
-     * Convenience function: Adds an response editor
+     * Helper function to add a response editor
      *
      * @param int $count The count of the element to add
-     * @param string $label, null means default
-     * @param bool $required
-     * @return void
+     * @param string $label, (optional, default=null)
+     * @param bool $required whether or no the element is required
+     * @return void, but will add an editor element to $mform
      */
     protected final function add_editorarearesponse($count, $label = null, $required = false) {
+        $name = constants::TEXTANSWER.$count.'_editor';
         if ($label === null) {
             $label = get_string('response', constants::M_COMPONENT);
         }
-        //edoptions = array('noclean'=>true)
-        $this->_form->addElement('editor', constants::TEXTANSWER .$count. '_editor', $label, array('rows'=>'4', 'columns'=>'80'), $this->editoroptions);
-        $this->_form->setDefault(constants::TEXTANSWER .$count. '_editor', array('text'=>'', 'format'=>FORMAT_MOODLE));
+        $options = array('rows' => '4', 'columns' => '80');
+        $this->_form->addElement('editor', $name, $label, $options, $this->editoroptions);
+        $this->_form->setDefault($name, array('text'=>'', 'format' => FORMAT_MOODLE));
         if ($required) {
-            $this->_form->addRule(constants::TEXTANSWER .$count. '_editor', get_string('required'), 'required', null, 'client');
+            $this->_form->addRule($name, get_string('required'), 'required', null, 'client');
         }
     }
 

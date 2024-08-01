@@ -15,23 +15,26 @@ use \mod_englishcentral\constants;
 
 class utils {
 
-    public static function add_mform_elements($mform, $context,$setuptab=false) {
+    public static function add_mform_elements($mform, $instance, $cm, $course, $context, $setuptab=false) {
         global $CFG, $PAGE;
+
         $plugin = 'mod_englishcentral';
         $config = get_config($plugin);
 
-        //if this is setup tab we need to add a field to tell it the id of the activity
-        if($setuptab) {
+        $ec = \mod_englishcentral\activity::create($instance, $cm, $course, $context);
+        $auth = \mod_englishcentral\auth::create($ec);
+
+        // if this is setup tab we need to add a field to tell it the id of the activity
+        if ($setuptab) {
             $mform->addElement('hidden', 'n');
             $mform->setType('n', PARAM_INT);
         }
 
-
         $dateoptions = array('optional' => true);
         $textoptions = array('size' => \mod_englishcentral_mod_form::TEXT_NUM_SIZE);
 
-
         $PAGE->requires->js_call_amd("$plugin/form", 'init');
+
         //-------------------------------------------------------------------------------
         $name = 'general';
         $label = get_string($name, 'form');
@@ -51,18 +54,21 @@ class utils {
         $mform->addRule($name, get_string('maximumchars', null, 255), 'maxlength', 255, 'client');
         $mform->addHelpButton($name, 'activityname', $plugin);
 
-
-        // Adding the standard "intro" and "introformat" fields
-        //we do not support this in tabs
-        if(!$setuptab) {
+        // Adding the standard "intro" and "introformat" fields.
+        // Note that we do not support this in tabs.
+        if(! $setuptab) {
             $label = get_string('moduleintro');
-            $mform->addElement('editor', 'introeditor', $label, array('rows' => 10), array('maxfiles' => EDITOR_UNLIMITED_FILES,
-                    'noclean' => true, 'context' => $context, 'subdirs' => true));
+            $params = array(
+                'context' => $context,
+                'maxfiles' => EDITOR_UNLIMITED_FILES,
+                'noclean' => true,
+                'subdirs' => true,
+            );
+            $mform->addElement('editor', 'introeditor', $label, array('rows' => 10), $params);
             $mform->setType('introeditor', PARAM_RAW); // no XSS prevention here, users must be trusted
             $mform->addElement('advcheckbox', 'showdescription', get_string('showdescription'));
             $mform->addHelpButton('showdescription', 'showdescription');
         }
-
 
         //-----------------------------------------------------------------------------
         $name = 'timing';
@@ -102,21 +108,30 @@ class utils {
         $mform->setExpanded($name, true);
         //-------------------------------------------------------------------------------
 
-        $names = array('watchgoal' => 10,
-                'learngoal' => 20,
-                'speakgoal' => 10,
-                'studygoal' => 60);
-        foreach ($names as $name => $default) {
-            $label = get_string($name, $plugin);
-            $units = get_string($name.'units', $plugin);
+        $goals = array(
+            'watchgoal' => 5,
+            'learngoal' => 10,
+            'speakgoal' => 10,
+            'chatgoal'  => 5,
+            'studygoal' => 70,
+        );
+        if ($ec->chatmode_enabled() && $auth->mimichat_enabled()) {
+            // Keep the chat goal.
+        } else {
+            // Remove the chat goal.
+            unset($goals['chatgoal']);
+        }
+        foreach ($goals as $goal => $default) {
+            $label = get_string($goal, $plugin);
+            $units = get_string($goal.'units', $plugin);
             $elements = array(
-                    $mform->createElement('text', $name, '', $textoptions),
+                    $mform->createElement('text', $goal, '', $textoptions),
                     $mform->createElement('static', '', '', $units)
             );
-            $mform->addElement('group', $name.'group', $label, $elements, ' ', false);
-            $mform->setType($name, PARAM_INT);
-            $mform->setDefault($name, $default);
-            $mform->addHelpButton($name.'group', $name, $plugin);
+            $mform->addElement('group', $goal.'group', $label, $elements, ' ', false);
+            $mform->setType($goal, PARAM_INT);
+            $mform->setDefault($goal, $default);
+            $mform->addHelpButton($goal.'group', $goal, $plugin);
         }
 
         //-----------------------------------------------------------------------------
@@ -140,7 +155,6 @@ class utils {
         $mform->addHelpButton($name, $name, $plugin);
         $mform->setDefault($name, 1);
 
-
         $name = 'showleveltext';
         $label = get_string($name, $plugin);
         $mform->addElement('selectyesno', $name, $label);
@@ -157,7 +171,7 @@ class utils {
         $mform->addHelpButton($name, $name, $plugin);
         $mform->setDefault($name, 3);
 
-    } //end of add_mform_elements
+    }
 
     /**
      * set_type_default_advanced
@@ -182,32 +196,19 @@ class utils {
         }
     }
 
-    public static function add_video($ecid,$videoid){
+    public static function add_video($ecid, $videoid){
             global $DB;
 
             $table = 'englishcentral_videos';
-            $record = array('ecid' => $ecid,
-                'videoid' => $videoid);
-            if ($record['videoid'] == $DB->get_field($table, 'videoid', $record)) {
-                // video is already in our database - unexpected !!
+            $record = array('ecid' => $ecid, 'videoid' => $videoid);
+            if ($record['id'] == $DB->get_field($table, 'id', $record)) {
+                // Video is already in the database - unexpected !!
             } else {
-                if ($sortorder = $DB->get_field($table, 'MAX(sortorder)', array('ecid' => $ecid))) {
-                    $sortorder++;
-                } else {
-                    $sortorder = 1;
-                }
-                $record['sortorder'] = $sortorder;
+                unset($record['id']);
+                $sortorder = $DB->get_field($table, 'MAX(sortorder)', array('ecid' => $ecid));
+                $record['sortorder'] = (empty($sortorder) ? 1 : ($sortorder + 1));
                 $record['id'] = $DB->insert_record($table, $record);
             }
             return $record['id'];
-    }
-
-    public static function super_trim($str){
-        if($str==null){
-            return '';
-        }else{
-            $str = trim($str);
-            return $str;
-        }
     }
 }
