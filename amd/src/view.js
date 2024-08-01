@@ -104,7 +104,7 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
             VIEW[i] = opts[i];
         }
 
-        // Get more options asynchronously from Moodle.
+        // Get more options asynchronously from Moodle
         VIEW.getoptions = $.Deferred();
         $.ajax({
             "url": VIEW.viewajaxurl,
@@ -178,9 +178,7 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
             });
         });
 
-        // Composing video placeholder on initial load
-        // by getting data from the first element loaded
-        // in the video thumbnails
+        /* Composing video placeholder on initial load by getting data from the first element loaded in the video thumbnails */
         var activityThumbnail = $('.activity-thumbnail').first();
         var thumbOutline = activityThumbnail.children('.thumb-outline');
         var videoPlaceholderVideo = $('.video-placeholder-video');
@@ -249,6 +247,7 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
         $bigPlayButton.attr("data-url", activityVideoId);
         $bigPlayButton.attr("class", "video-placeholder-video-big-play-button");
         videoPlaceholderVideo.append($bigPlayButton);
+
 
         $(".activity-title, .thumb-frame, .video-placeholder-video-image, .video-placeholder-video-big-play-button, .video-placeholder-text-social, .video-placeholder-text-progress")
             .click(function (evt) {
@@ -400,7 +399,6 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
             if (ecsdk.setOnProgressEventHandler) {
                 setHandler = "setOnProgressEventHandler";
             } else if (ecsdk.setOnModeEndHandler) {
-                // The old way. May be deprecated.
                 setHandler = "setOnModeEndHandler";
             }
             if (setHandler) {
@@ -408,13 +406,10 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
                     // TODO: remove use of LOG in production sites.
                     LOG.debug(data);
                     switch (data.eventType) {
-
-                        // Starting events.
-                        case "StartActivityWatch":
-                        case "StartActivityLearn":
-                        case "StartActivitySpeak":
-                        case "StartDiscussion":
-                            return false;
+                        case "CompleteActivityWatch":
+                        case "LearnedWord":
+                        case "DialogLineSpeak":
+                            break;
 
                         case "DialogLineWatch":
                             var thumbframe = ".thumb-frame[data-url$=" + data.dialogID + "]";
@@ -423,24 +418,16 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
                             }
                             break;
 
-                        // Intermittent events.
-                        case "TypedWord":
-                        case "StudiedWord":
-                        case "DiscussionQuestionDraft":
-                        case "DiscussionQuestionAnswer":
-                            return false;
-
-                        // Final step before completion events.
-                        case "DialogLineSpeak":
-                        case "LearnedWord":
-                            break;
-
-                        // Completion events.
-                        case "CompleteActivityWatch":
                         case "CompleteActivityLearn":
                         case "CompleteActivitySpeak":
-                        case "CompleteDiscussion":
-                            break;
+                            return false;
+
+                        case "StartActivityWatch":
+                        case "StartActivityLearn":
+                        case "TypedWord":
+                        case "StudiedWord":
+                        case "StartActivitySpeak":
+                            return false;
 
                         default:
                             // Oops - an unexpected value
@@ -524,7 +511,7 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
                             "dataType": "html"
                         }).done(function (html) {
                             var thumb = $(".thumb-frame[data-url$=" + data.dialogID + "]");
-                            thumb.find(".watch-status, .learn-status, .speak-status, .chat-status").remove();
+                            thumb.find(".watch-status, .learn-status, .speak-status").remove();
                             thumb.find(".play-icon").after(html);
                         });
                     });
@@ -569,9 +556,7 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
                     options.height = 655;
                 }
             }
-
-            LOG.debug('options: ' + JSON.stringify(options));
-
+LOG.debug('options: ' + JSON.stringify(options));
             // Initialize EC player
             ecsdk.loadWidget("player", options);
         });

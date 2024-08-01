@@ -18,7 +18,6 @@
         <FIELD NAME="watchgoal" TYPE="int" LENGTH="6" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="target number of videos to watch"/>
         <FIELD NAME="learngoal" TYPE="int" LENGTH="6" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="target number of words to learn"/>
         <FIELD NAME="speakgoal" TYPE="int" LENGTH="6" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="target number of lines to speak"/>
-        <FIELD NAME="chatgoal" TYPE="int" LENGTH="6" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="target number of discuss questions"/>
         <FIELD NAME="studygoal" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="target number of mins/hours to study"/>
         <FIELD NAME="showduration" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="1" SEQUENCE="false"/>
         <FIELD NAME="showlevelnumber" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="1" SEQUENCE="false"/>
@@ -87,10 +86,6 @@
         <FIELD NAME="speaktotal" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="speakcount" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="speaklineids" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="comma-separated list of line ids"/>
-        <FIELD NAME="chatcomplete" TYPE="int" LENGTH="2" NOTNULL="false" SEQUENCE="false"/>
-        <FIELD NAME="chattotal" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
-        <FIELD NAME="chatcount" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
-        <FIELD NAME="chatquestionids" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="comma-separated list of question ids"/>
         <FIELD NAME="totalpoints" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="sessiongrade" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="sessionscore" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>

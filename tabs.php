@@ -29,43 +29,39 @@ defined('MOODLE_INTERNAL') || die();
 
 use \mod_englishcentral\constants;
 
+/// This file to be included so we can assume config.php has already been included.
+global $DB;
 if (empty($moduleinstance)) {
     print_error('cannotcallscript');
 }
-
-if (! isset($currenttab)) {
+if (!isset($currenttab)) {
     $currenttab = 'view';
 }
-
-if (! isset($cm)) {
+if (!isset($cm)) {
     $cm = get_coursemodule_from_instance(constants::M_MODNAME, $moduleinstance->id);
     $context = context_module::instance($cm->id);
 }
-
-if (! isset($course)) {
+if (!isset($course)) {
     $course = $moduleinstance->course;
 }
-
 $userid = optional_param('userid', 0, PARAM_INT);
 $config = get_config(constants::M_COMPONENT);
 
 $tabs = $row = $inactive = $activated = array();
 
-$url = "$CFG->wwwroot/mod/englishcentral/view.php?id=$cm->id";
-$label = get_string('view', constants::M_COMPONENT);
-$row[] = new tabobject('view', $url, $label, $label);
+$row[] = new tabobject('view', "$CFG->wwwroot/mod/englishcentral/view.php?id=$cm->id", get_string('view', constants::M_COMPONENT), get_string('view', constants::M_COMPONENT));
 
 if(has_capability('mod/englishcentral:manage',$context) && $config->enablesetuptab) {
-    $url = "$CFG->wwwroot/mod/englishcentral/setup.php?id=$cm->id";
-    $label = get_string('setup', constants::M_COMPONENT);
-    $row[] = new tabobject('setup', $url, $label, $label);
+    $row[] = new tabobject('setup', "$CFG->wwwroot/mod/englishcentral/setup.php?id=$cm->id",
+            get_string('setup', constants::M_COMPONENT), get_string('setup', constants::M_COMPONENT));
 }
 
 if(has_capability('mod/englishcentral:viewreports',$context) ) {
-    $url = "$CFG->wwwroot/mod/englishcentral/report.php?id=$cm->id";
-    $label = get_string('reports', constants::M_COMPONENT);
-    $row[] = new tabobject('report', $label, $label, $label);
+    $row[] = new tabobject('report', "$CFG->wwwroot/mod/englishcentral/report.php?id=$cm->id",
+            get_string('reports', constants::M_COMPONENT), get_string('reports', constants::M_COMPONENT));
 }
+
+
 
 $tabs[] = $row;
 

@@ -57,10 +57,9 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
      * Returns the header for the englishcentral module
      *
      * @param string $extrapagetitle String to append to the page title.
-     * @param boolean $showtabs If TRUE, we show tabs; otherwise, we don't.
      * @return string
      */
-    public function header($extrapagetitle=null, $showtabs=true) {
+    public function header($extrapagetitle=null,$hidetabs=false) {
         global $CFG;
 
         if (isset($this->ec->id)) {
@@ -76,17 +75,13 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         $output = $this->output->header();
 
         if (isset($this->ec->id)) {
-            if ($showtabs) {
-                if (! has_capability('mod/englishcentral:viewreports', $this->ec->context)) {
-                    if (! has_capability('mod/englishcentral:manage', $this->ec->context)) {
-                        $showtabs = false;
-                    }
-                }
-            }
-            if ($showtabs) {
+            if ((has_capability('mod/englishcentral:manage', $this->ec->context) ||
+                    has_capability('mod/englishcentral:viewreports', $this->ec->context)) &&
+                    !$hidetabs) {
 
+                //set up tabs
+                $moduleinstance =$this->ec;
                 ob_start();
-                $moduleinstance = $this->ec; // Required by tabs.php.
                 include($CFG->dirroot.'/mod/englishcentral/tabs.php');
                 $output .= ob_get_contents();
                 ob_end_clean();
@@ -100,8 +95,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
                 } else {
                     $icon = '';
                 }
-
-                // Don't show the heading in an iframe, it will be outside this anyway.
+                //dont show the heading in an iframe, it will be outside this anyway
                 if(!$this->ec->foriframe && $CFG->version<4.0) {
                     $help = $this->help_icon('overview', $this->ec->plugin);
                     $output .= $this->heading($activityname.$help.$icon);
@@ -173,7 +167,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
     public function show_support_form() {
         global $CFG, $DB, $USER;
 
-        // available from June 2018.
+        // available from June 2018
         $signup = self::SIGNUP_POODLL;
 
         $fullname = fullname($USER);
@@ -258,7 +252,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
 
         $button = $this->single_button(new moodle_url($url, $params), get_string('continue'), 'post');
 
-        // Remove sesskey from $button; it's not necessary and could be a security risk.
+        // remove sesskey from $button; it's not necessary and could be a security risk
         $button = preg_replace('/<input[^>]*name="sesskey"[^>]*>/', '', $button);
 
         if ($anchor) {
@@ -298,15 +292,15 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
     }
 
     public function show_notavailable() {
-        return $this->show_notification('notavailable');
+        $output = $this->notification($this->ec->get_string('notavailable'), 'warning');
+        $output .= $this->show_dates_available();
+        $output .= $this->course_continue_button();
+        $output .= $this->footer();
+        return $output;
     }
 
     public function show_notviewable() {
-        return $this->show_notification('notviewable');
-    }
-
-    public function show_notification($strname, $strtype='warning') {
-        $output = $this->notification($this->ec->get_string($strname), $strtype);
+        $output = $this->notification($this->ec->get_string('notviewable'), 'warning');
         $output .= $this->show_dates_viewable();
         $output .= $this->course_continue_button();
         $output .= $this->footer();
@@ -373,25 +367,12 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
 
         // calculate total percent
         $percent = 0;
-        $divisor = 0;
-        if ($this->ec->watchgoal_set()) {
-            $percent += max(0, min($progress->watch, $this->ec->watchgoal));
-            $divisor += $this->ec->watchgoal;
-        }
-        if ($this->ec->learngoal_set()) {
-            $percent += max(0, min($progress->learn, $this->ec->learngoal));
-            $divisor += $this->ec->learngoal;
-        }
-        if ($this->ec->speakgoal_set()) {
-            $percent += max(0, min($progress->speak, $this->ec->speakgoal));
-            $divisor += $this->ec->speakgoal;
-        }
-        if ($this->ec->chatgoal_set()) {
-            $percent += max(0, min($progress->chat, $this->ec->chatgoal));
-            $divisor += $this->ec->chatgoal;
-        }
+        $percent += max(0, min($progress->watch, $this->ec->watchgoal));
+        $percent += max(0, min($progress->learn, $this->ec->learngoal));
+        $percent += max(0, min($progress->speak, $this->ec->speakgoal));
         if ($percent) {
-            $percent = round(100 * $percent / $divisor, 0);
+            $percent /= ($this->ec->watchgoal + $this->ec->learngoal + $this->ec->speakgoal);
+            $percent = round(100 * $percent, 0);
         }
 
         $output = '';
@@ -414,19 +395,10 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
 
         // format titlecharts
         $output .= html_writer::start_tag('div', array('class' => 'titlechart-container'));
+        $output .= $this->show_titlechart_type('watch', $progress);
+        $output .= $this->show_titlechart_type('learn', $progress);
+        $output .= $this->show_titlechart_type('speak', $progress);
         $output .= $this->show_titlechart('total', $percent, '%', 'achieved', $percent);
-        if ($this->ec->watchgoal_set()) {
-            $output .= $this->show_titlechart_type('watch', $progress);
-        }
-        if ($this->ec->learngoal_set()) {
-            $output .= $this->show_titlechart_type('learn', $progress);
-        }
-        if ($this->ec->speakgoal_set()) {
-            $output .= $this->show_titlechart_type('speak', $progress);
-        }
-        if ($this->ec->chatgoal_set() && $this->auth->mimichat_enabled()) {
-            $output .= $this->show_titlechart_type('chat', $progress);
-        }
         $output .= html_writer::end_tag('div');
         $output .= $this->output->box_end();
         return $output;
@@ -668,7 +640,6 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
             $output .= html_writer::tag('span', $video->watchcomplete, array('class' => 'watch-status completed'));
             $output .= html_writer::tag('span', $video->learncount, array('class' => 'learn-status'));
             $output .= html_writer::tag('span', $video->speakcount, array('class' => 'speak-status'));
-            $output .= html_writer::tag('span', $video->chatcount, array('class' => 'chat-status'));
         } else if (isset($video->watchcount) && $video->watchcount) {
             // we could try a fancy unicode char, core_text::code2utf8(0x27eb)
             $output .= html_writer::tag('span', '~', array('class' => 'watch-status inprogress'));
@@ -723,16 +694,14 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         // initialize study goals
         $goals = (object)array('watch' => 0,
                                'learn' => 0,
-                               'speak' => 0,
-                               'chat' => 0);
+                               'speak' => 0);
 
         // Create SQL to fetch aggregate items from the EC attempts table.
         $select = 'userid,'.
-                  'SUM(watchcomplete) + SUM(learncount) + SUM(speakcount) + SUM(chatcount) AS percent,'.
+                  'SUM(watchcomplete) + SUM(learncount) + SUM(speakcount) AS percent,'.
                   'SUM(watchcomplete) AS watch,'.
                   'SUM(learncount) AS learn,'.
-                  'SUM(speakcount) AS speak,'.
-                  'SUM(chatcount) AS chat';
+                  'SUM(speakcount) AS speak';
         $from   = '{englishcentral_attempts}';
         $where  = 'ecid = ?';
         $params = array($this->ec->id);
@@ -771,24 +740,21 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
                 $goals->watch = max($goals->watch, $item->watch);
                 $goals->learn = max($goals->learn, $item->learn);
                 $goals->speak = max($goals->speak, $item->speak);
-                $goals->chat = max($goals->chat, $item->chat);
             }
         } else {
             $items = array();
         }
 
         // override goals with teacher-specified goals, if available
-        if ($this->ec->watchgoal + $this->ec->learngoal + $this->ec->speakgoal + $this->ec->chatgoal) {
+        if ($this->ec->watchgoal + $this->ec->learngoal + $this->ec->speakgoal) {
             $goals->watch = intval($this->ec->watchgoal);
             $goals->learn = intval($this->ec->learngoal);
             $goals->speak = intval($this->ec->speakgoal);
-            $goals->chat = intval($this->ec->chatgoal);
         }
 
         $goals->total = ($goals->watch +
                          $goals->learn +
-                         $goals->speak +
-                         $goals->chat);
+                         $goals->speak);
 
         $type = 'firstname';
         $fullname = get_string($type, 'moodle');
@@ -810,7 +776,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
 
         $title = '';
         $left = 0;
-        foreach (array('watch', 'learn', 'speak', 'chat') as $type) {
+        foreach (array('watch', 'learn', 'speak') as $type) {
             if ($goals->$type) {
                 $text = $this->ec->get_string($type.'goal');
                 $sort = $this->get_sort_icon($url, $type);
@@ -826,8 +792,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         foreach ($items as $userid => $item) {
             $item->total = (min($goals->watch, $item->watch) +
                             min($goals->learn, $item->learn) +
-                            min($goals->speak, $item->learn) +
-                            min($goals->chat, $item->chat));
+                            min($goals->speak, $item->speak));
             if ($goals->total==0) {
                 $item->percent = '';
             } else {
@@ -888,7 +853,6 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         $output .= $this->show_progress_report_bar($item, $goals, 'watch');
         $output .= $this->show_progress_report_bar($item, $goals, 'learn');
         $output .= $this->show_progress_report_bar($item, $goals, 'speak');
-        $output .= $this->show_progress_report_bar($item, $goals, 'chat');
         return $output;
     }
 
@@ -902,7 +866,6 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
             case 'watch': $title = $this->ec->get_string('watchvideos', $text); break;
             case 'learn': $title = $this->ec->get_string('learnwords', $text); break;
             case 'speak': $title = $this->ec->get_string('speaklines', $text); break;
-            case 'chat': $title = $this->ec->get_string('chatquestions', $text); break;
         }
         $text = html_writer::tag('span', $text, array('class' => 'text', 'title' => $title));
 
