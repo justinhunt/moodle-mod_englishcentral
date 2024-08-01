@@ -44,15 +44,19 @@ $string['englishcentral:submit'] = 'Submit data to an EnglishCentral activity';
 $string['englishcentral:view'] = 'View an EnglishCentral activity';
 $string['englishcentral:viewreports'] = 'View reports for an English Central activity';
 
+
 // completion
 $string['completiongoals'] = 'Require study goals';
 $string['completionmingrade'] = 'Require minimum grade';
 $string['completionpass'] = 'Require passing grade';
+
+
 $string['completiondetail:mingrade'] = 'Minimum grade: {$a}';
 $string['completiondetail:pass'] = 'Achieve pass grade';
 $string['completiondetail:goals'] = 'Complete the watch,learn and speak goals';
 
-// Activity settings
+
+// activity settings
 $string['consumerkey'] = 'Consumer Key';
 $string['consumerkeydefault'] = 'YOUR CONSUMER KEY';
 $string['consumerkeyexplain'] = 'Your consumer key is available from {$a}';
@@ -69,11 +73,7 @@ $string['partneriddefault'] = 'YOUR PARTNER ID';
 $string['partneridexplain'] = 'Your partnerid is available from {$a}';
 
 $string['achieved'] = 'achieved';
-$string['chatgoal_help'] = 'The target number of chat questions to discuss.';
-$string['chatgoal'] = 'Chat';
-$string['chatgoalunits'] = 'questions';
-$string['chatquestions'] = '{$a} questions';
-$string['goals_help'] = 'Define goals for Watch, Learn, Speak, Chat and Study time';
+$string['goals_help'] = 'Define goals for Watch, Learn, Speak and Study time';
 $string['goals'] = 'Goals';
 $string['learngoal_help'] = 'The target number of unique words to learn.';
 $string['learngoal'] = 'Learn';
@@ -91,8 +91,7 @@ The study time is calculated using the following formula:
 
 (number of videos watched) x 6 minutes
 + (number of words learned) x 1 minute
-+ (number of lines spoken) x 1 minute
-+ (number of chat questions) x 4 minutes';
++ (number of lines spoken) x 1 minute';
 $string['studygoal'] = 'Study time';
 $string['studygoalunits'] = 'minutes';
 $string['totalgoal_help'] = 'The total progress as a percentage. it is calculated as using the following formula:
@@ -102,10 +101,9 @@ $string['totalgoal_help'] = 'The total progress as a percentage. it is calculate
 * **number of items studied**:
 (number of videos watched) +
 (number of words learned) +
-(number of lines spoken) +
-(number of chat questions discussed)
+(number of lines spoken)
 * **total study goal**:
-(watch goal) + (learn goal) + (speak goal) + (chat goal)';
+(watch goal) + (learn goal) + (speak goal)';
 $string['totalgoal'] = 'Total';
 $string['watchgoal_help'] = 'The target number of videos to watch.';
 $string['watchgoal'] = 'Watch';
@@ -202,137 +200,137 @@ $string['showtostudentsonly'] = 'Yes, show to students only';
 $string['showtoteachersandstudents'] = 'Yes, show to teachers and students';
 $string['showtoteachersonly'] = 'Yes, show to teachers only';
 
-// Deprecated strings (listed in "mod/englishcentral/lang/en/deprecated.txt").
+// deprecated strings
+
 $string['englishcentral'] = 'English Central';
 $string['englishcentralfieldset'] = 'Custom example fieldset';
 $string['englishcentralsettings'] = 'Enter English Central Video Title and ID';
-$string['hiddenchallengemode'] = 'Hidden challenge';
-$string['learnmode'] = 'Learn mode';
-$string['lightboxmode'] = 'Lightbox mode';
+$string['hiddenchallengemode'] ='Hidden challenge';
+$string['learnmode'] ='Learn mode';
+$string['lightboxmode'] ='Lightbox mode';
 $string['playersettings'] = 'Player settings';
-$string['simpleui'] = 'Simple UI';
-$string['speaklitemode'] = 'SpeakLite mode';
-$string['speakmode'] = 'Speak mode';
+$string['simpleui'] ='Simple UI';
+$string['speaklitemode'] ='SpeakLite mode';
+$string['speakmode'] ='Speak mode';
 $string['videoid'] = 'Video ID';
 $string['videotitle'] = 'Video Title';
-$string['watchmode'] = 'Watch mode';
+$string['watchmode'] ='Watch mode';
 
-// Tabs
-$string['overview'] = 'Overview';
-$string['overview_help'] = 'In an EnglishCentral activity, students interact with a selected set of videos and work toward the Watch, Learn and Study goals set by the teacher.
+//tabs
+$string['overview'] ='Overview';
+$string['overview_help'] ='In an EnglishCentral activity, students interact with a selected set of videos and work toward the Watch, Learn and Study goals set by the teacher.
 
 To set up the activity, the teacher first defines the following study goals:
 
 * the number of videos to Watch
 * the number of words to Learn
 * the number of lines to Speak
-* the number of Chat questions to discuss
 
 The teacher then searches the EnglishCentral video library and selects which videos should be added to this EnglishCentral activity.
 
-When the students view the activity, they first choose one or more of the videos they would like to watch. After watching a video, they can choose which words from the video they would like to learn, and which lines they wish to practice speaking. Finally, they can confirm their understanding and chat about the video with an AI ChatBot using the discussion questions as prompts.
+Finally, the students choose one or more of the videos they would like to watch. After watching a video, they can choose which words from the video they would like to learn, and which lines they wish to practice speaking.
 
-As each student studies, the dials on their scoreboard are updated to give feedback about their progress towards the Watch, Learn, Speak and Chat goals.';
-$string['preview'] = 'Preview';
-$string['previewenglishcentral'] = 'Preview English Central';
-$string['view'] = 'View';
+As each student studies, the dials on their scoreboard are updated to give feedback about their progress towards the Watch, Learn and Speak goals.';
+$string['preview'] ='Preview';
+$string['previewenglishcentral'] ='Preview English Central';
+$string['view'] ='View';
 
 //reports
-$string['activetime'] = 'Active Time';
+$string['activetime'] ='Active Time';
 $string['allattempts'] = 'Attempts Manager';
-$string['allusers'] = 'All Users (most recent attempt)';
-$string['allusersreport'] = 'All Users Report';
+$string['allusers'] ='All Users (most recent attempt)';
+$string['allusersreport'] ='All Users Report';
 $string['attemptdetails'] = 'Attempt Details';
 $string['attemptdetailsheader'] = '{$a->name} attempt details for {$a->username} on {$a->date}';
 $string['attemptsmanager'] = 'Attempts Manager';
-$string['badcount'] = 'Bad Count';
-$string['completed'] = 'Completed';
+$string['badcount'] ='Bad Count';
+$string['completed'] ='Completed';
 $string['compositescore'] = 'Overall Score';
-$string['confirmattemptdelete'] = 'Are you sure you want to delete this attempt?';
-$string['confirmattemptdeleteall'] = 'Are you sure you want to delete ALL attempts?';
-$string['confirmattemptdeletealltitle'] = 'Delete ALL attempts?';
-$string['confirmattemptdeletetitle'] = 'Delete attempt?';
-$string['date'] = 'Date';
-$string['defaultsettings'] = 'Default Settings';
-$string['delete'] = 'Delete';
-$string['deleteallattempts'] = 'Delete All Attempts';
-$string['deleteattempt'] = 'delete';
-$string['details'] = 'Details';
-$string['email'] = 'Email';
-$string['exceededattempts'] = 'You have completed the maximum {$a} attempts.';
-$string['exportcsv'] = 'Export to CSV';
-$string['exportexcel'] = 'Export to Excel(csv)';
-$string['exportpdf'] = 'Export to PDF';
-$string['finish'] = 'Finish';
-$string['fullname'] = 'Full Name';
-$string['goodcount'] = 'Good Count';
-$string['gradeaverage'] = 'average score of all attempts';
-$string['gradehighest'] = 'highest scoring attempt';
-$string['gradelatest'] = 'score of latest attempt';
-$string['gradelowest'] = 'lowest scoring attempt';
-$string['gradenone'] = 'No grade';
-$string['gradeoptions'] = 'Grade Options';
-$string['item'] = 'Item';
-$string['lastaccess'] = 'Last Access';
-$string['linesrecorded'] = 'Lines recorded';
-$string['lineswatched'] = 'Lines watched';
-$string['maxattempts'] = 'Maximum attempts';
-$string['myattempts'] = 'My Attempts';
-$string['nodataavailable'] = 'No data available';
-$string['phoneme'] = 'Phoneme';
-$string['phonemes'] = 'Phonemes';
+$string['confirmattemptdelete'] ='Are you sure you want to delete this attempt?';
+$string['confirmattemptdeleteall'] ='Are you sure you want to delete ALL attempts?';
+$string['confirmattemptdeletealltitle'] ='Delete ALL attempts?';
+$string['confirmattemptdeletetitle'] ='Delete attempt?';
+$string['date'] ='Date';
+$string['defaultsettings'] ='Default Settings';
+$string['delete'] ='Delete';
+$string['deleteallattempts'] ='Delete All Attempts';
+$string['deleteattempt'] ='delete';
+$string['details'] ='Details';
+$string['email'] ='Email';
+$string['exceededattempts'] ='You have completed the maximum {$a} attempts.';
+$string['exportcsv'] ='Export to CSV';
+$string['exportexcel'] ='Export to Excel(csv)';
+$string['exportpdf'] ='Export to PDF';
+$string['finish'] ='Finish';
+$string['fullname'] ='Full Name';
+$string['goodcount'] ='Good Count';
+$string['gradeaverage'] ='average score of all attempts';
+$string['gradehighest'] ='highest scoring attempt';
+$string['gradelatest'] ='score of latest attempt';
+$string['gradelowest'] ='lowest scoring attempt';
+$string['gradenone'] ='No grade';
+$string['gradeoptions'] ='Grade Options';
+$string['item'] ='Item';
+$string['lastaccess'] ='Last Access';
+$string['linesrecorded'] ='Lines recorded';
+$string['lineswatched'] ='Lines watched';
+$string['maxattempts'] ='Maximum attempts';
+$string['myattempts'] ='My Attempts';
+$string['nodataavailable'] ='No data available';
+$string['phoneme'] ='Phoneme';
+$string['phonemes'] ='Phonemes';
 $string['phonemesheader'] = '{$a->englishcentralname} Phonemes for {$a->username} attempt on {$a->attemptdate}';
 $string['playerversion'] = 'Player version';
 $string['playerversiondefault'] = 'JSDK3';
 $string['playerversionexplain'] = 'Generally you should use the most recent version available, but in some circumstances, you may wish to select an older version.';
-$string['points'] = 'Points';
-$string['reattempt'] = 'Try Again';
-$string['reports'] = 'Reports';
-$string['reporttitle'] = 'Report Title {$a}';
-$string['returntoreports'] = 'Return to reports';
-$string['selectanother'] = 'Back to Course';
-$string['sessionactivetime'] = 'Session active time';
-$string['sessiongrade'] = 'Session grade';
-$string['sessionresults'] = 'Session results';
-$string['sessionscore'] = 'Average score';
-$string['sessionscore'] = 'Session Score';
-$string['start'] = 'Start';
-$string['status'] = 'Status';
-$string['total'] = 'Total';
-$string['totalactivetime'] = 'Total active time';
-$string['unlimited'] = 'unlimited';
-$string['username'] = 'Username';
-$string['value'] = 'Value';
-$string['viewreport'] = 'Details';
-$string['viewreports'] = 'View reports';
+$string['points'] ='Points';
+$string['reattempt'] ='Try Again';
+$string['reports'] ='Reports';
+$string['reporttitle'] ='Report Title {$a}';
+$string['returntoreports'] ='Return to reports';
+$string['selectanother'] ='Back to Course';
+$string['sessionactivetime'] ='Session active time';
+$string['sessiongrade'] ='Session grade';
+$string['sessionresults'] ='Session results';
+$string['sessionscore'] ='Average score';
+$string['sessionscore'] ='Session Score';
+$string['start'] ='Start';
+$string['status'] ='Status';
+$string['total'] ='Total';
+$string['totalactivetime'] ='Total active time';
+$string['unlimited'] ='unlimited';
+$string['username'] ='Username';
+$string['value'] ='Value';
+$string['viewreport'] ='Details';
+$string['viewreports'] ='View reports';
 
 //privacy api strings
-$string['privacy:metadata:attempttable'] = 'The table in which the user\'s English Central attempt data is stored.';
-$string['privacy:metadata:attemptid'] = 'The unique identifier of a user\'s English Central activity attempt.';
-$string['privacy:metadata:ecid'] = 'The unique identifier of an English Central activity instance.';
-$string['privacy:metadata:userid'] = 'The user id for the English Central attempt';
-$string['privacy:metadata:videoid'] = 'The id of the video for the current attempt';
-$string['privacy:metadata:watchcomplete'] = 'The percentage of the watch session completed';
-$string['privacy:metadata:watchtotal'] = 'The watch session total items';
-$string['privacy:metadata:watchcount'] = 'The watch session items watched';
-$string['privacy:metadata:watchlineids'] = 'The watch session item line ids';
-$string['privacy:metadata:learntotal'] = 'The learn session total items';
-$string['privacy:metadata:learncount'] = 'The learn session items done';
-$string['privacy:metadata:learnwordids'] = 'The ids of the learnt words';
-$string['privacy:metadata:speakcomplete'] = 'The percentage of the speak session completed';
-$string['privacy:metadata:speaktotal'] = 'The speak session total items';
-$string['privacy:metadata:speakcount'] = 'The speak session items watched';
-$string['privacy:metadata:speaklineids'] = 'The speak session item line ids';
-$string['privacy:metadata:totalpoints'] = 'The total points for the session';
-$string['privacy:metadata:sessiongrade'] = 'The session grade';
-$string['privacy:metadata:sessionscore'] = 'The session score';
-$string['privacy:metadata:activetime'] = 'The time active on session';
-$string['privacy:metadata:totaltime'] = 'The total session time';
-$string['privacy:metadata:timecompleted'] = 'The time the activity was completed';
-$string['privacy:metadata:timecreated'] = 'The time the session was created';
-$string['privacy:metadata:status'] = 'The activity status';
-$string['privacy:metadata:englishcentralcom:accountid'] = 'The English Central plugin matches the Moodle userid with a unique English Central account id. The account id is stored at englishcentral.com.';
-$string['privacy:metadata:englishcentralcom'] = 'The English Central plugin stores session data against the Moodle users English Central account id.';
+$string['privacy:metadata:attempttable']='The table in which the user\'s English Central attempt data is stored.';
+$string['privacy:metadata:attemptid']='The unique identifier of a user\'s English Central activity attempt.';
+$string['privacy:metadata:ecid']='The unique identifier of an English Central activity instance.';
+$string['privacy:metadata:userid']='The user id for the English Central attempt';
+$string['privacy:metadata:videoid']='The id of the video for the current attempt';
+$string['privacy:metadata:watchcomplete']='The percentage of the watch session completed';
+$string['privacy:metadata:watchtotal']='The watch session total items';
+$string['privacy:metadata:watchcount']='The watch session items watched';
+$string['privacy:metadata:watchlineids']='The watch session item line ids';
+$string['privacy:metadata:learntotal']='The learn session total items';
+$string['privacy:metadata:learncount']='The learn session items done';
+$string['privacy:metadata:learnwordids']='The ids of the learnt words';
+$string['privacy:metadata:speakcomplete']='The percentage of the speak session completed';
+$string['privacy:metadata:speaktotal']='The speak session total items';
+$string['privacy:metadata:speakcount']='The speak session items watched';
+$string['privacy:metadata:speaklineids']='The speak session item line ids';
+$string['privacy:metadata:totalpoints']='The total points for the session';
+$string['privacy:metadata:sessiongrade']='The session grade';
+$string['privacy:metadata:sessionscore']='The session score';
+$string['privacy:metadata:activetime']='The time active on session';
+$string['privacy:metadata:totaltime']='The total session time';
+$string['privacy:metadata:timecompleted']='The time the activity was completed';
+$string['privacy:metadata:timecreated']='The time the session was created';
+$string['privacy:metadata:status']='The activity status';
+$string['privacy:metadata:englishcentralcom:accountid']='The English Central plugin matches the Moodle userid with a unique English Central account id. The account id is stored at englishcentral.com.';
+$string['privacy:metadata:englishcentralcom']='The English Central plugin stores session data against the Moodle users English Central account id.';
 
 $string['accountlookup'] = 'Account Lookup';
 $string['accountid'] = 'EnglishCentral ID';
@@ -340,7 +338,7 @@ $string['lookupinstructions'] = 'Select a user and press "Search" to see that us
 $string['lookupresults'] = 'The EnglishCentral account id for {$a->fullname} is: <big><b>{$a->accountid}</b></big>';
 $string['lookupemptyresult'] = 'No EnglishCentral account id was found for user: {$a->fullname}.';
 
-// CloudPoodll auth related strings
+//cloud poodll auth related strings
 $string['displaysubs'] = '{$a->subscriptionname} : expires {$a->expiredate}';
 $string['noapiuser'] = 'No Poodll API user entered. Please subscribe or take a free trial at <a href="https://poodll.com/plugin-poodll-englishcentral" target="EC">https://poodll.com</a>';
 $string['noapisecret'] = 'No Poodll API secret entered. Please subscribe or take a free trial at <a href="https://poodll.com/plugin-poodll-englishcentral" target="EC">https://poodll.com</a>';
@@ -352,8 +350,7 @@ $string['notokenincache'] = 'Refresh to see license information. Contact <a href
 $string['poodllapiuser'] = 'Poodll API user';
 $string['poodllapiuser_details'] = '';
 $string['poodllapisecret'] = 'Poodll API Secret';
-
-// These errors are displayed on activity page
+//these errors are displayed on activity page
 $string['nocredentials'] = 'Poodll API user and secret not entered. Please enter them on <a href="{$a}">the settings page.</a> You can get them from <a href="https://poodll.com/member" target="EC">Poodll.com.</a>';
 $string['novalidcredentials'] = 'Poodll API user and secret were rejected and could not gain access. Please check them on <a href="{$a}">the settings page.</a> You can get them from <a href="https://poodll.com/member" target="EC">Poodll.com.</a>';
 $string['nosubscriptions'] = 'There is no current subscription for this site/plugin.';
@@ -361,28 +358,23 @@ $string['subscriptionhasnocreds'] = 'The Poodll EnglishCentral subscription is e
 
 $string['advancedsection'] = 'Advanced Settings';
 $string['advancedsection_details'] = 'The settings from here should usually be left untouched. You may be directed by Poodll support to use them in some cases.';
+$string['enablesetuptab']="Enable setup tab";
+$string['enablesetuptab_details']="Show a tab containing the activity instance settings to admins. Not super useful in most cases.";
+$string['setup']="Setup";
+$string['view']="View";
+$string['reports']="Reports";
+$string['report']="Reports";
 
-$string['forceembedlayout'] = 'Force embedded layout';
-$string['forceembedlayout_details'] = 'Force embedded window.';
-
-$string['enablesetuptab'] = 'Enable setup tab';
-$string['enablesetuptab_details'] = 'Show a tab containing the activity instance settings to admins. This setting appears to be just for developers. It will also force the "embed" page layout.';
-
-$string['setup'] = 'Setup';
-$string['view'] = 'View';
-$string['reports'] = 'Reports';
-$string['report'] = 'Reports';
-
-$string['freetrial'] = 'Get Cloud Poodll API Credentials and a Free Trial';
-$string['freetrial_desc'] = 'A dialog should appear that allows you to register for a free trial with Poodll. After registering you should login to the members dashboard to get your API user and secret. And to register your site URL.';
-$string['memberdashboard'] = 'Member Dashboard';
+$string['freetrial'] = "Get Cloud Poodll API Credentials and a Free Trial";
+$string['freetrial_desc'] = "A dialog should appear that allows you to register for a free trial with Poodll. After registering you should login to the members dashboard to get your API user and secret. And to register your site URL.";
+$string['memberdashboard'] = "Member Dashboard";
 $string['memberdashboard_desc'] = "";
-$string['fillcredentials'] = 'Set API user and secret with existing credentials';
+$string['fillcredentials']="Set API user and secret with existing credentials";
 $string['progressdials'] = 'Progress Dials Location';
 $string['progressdials_details'] = '';
-$string['progressdials_top'] = 'Top (above player)';
-$string['progressdials_bottom'] = 'Bottom (Below player)';
+$string['progressdials_top']="Top (above player)";
+$string['progressdials_bottom']="Bottom (Below player)";
 
-$string['chatmode'] = 'Enable Chat Mode';
-$string['chatmode_details'] = 'If enabled on your account, chat mode will become available in the EnglishCentral player.';
-$string['progressupdated'] = 'Progress Updated Event';
+$string['chatmode']="Enable Chat Mode";
+$string['chatmode_details']="If enabled on your account, chat mode will become available in the EnglishCentral player.";
+$string['progressupdated']="Progress Updated Event";

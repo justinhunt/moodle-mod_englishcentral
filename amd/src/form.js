@@ -32,40 +32,26 @@ define(["jquery"], function($) {
         $("#id_studygoal").prop("type", "hidden");
         $("#id_studygoal").after('<span id="id_studygoaltext"></span>');
 
-        $("#id_watchgoal, #id_learngoal, #id_speakgoal, #id_chatgoal").change(function(){
+        $("#id_watchgoal, #id_learngoal, #id_speakgoal").change(function(){
             var watch = $("#id_watchgoal").val();
             var learn = $("#id_learngoal").val();
             var speak = $("#id_speakgoal").val();
-            var chat = $("#id_chatgoal").val();
             var mins = (isNaN(watch) ? 0 : parseInt(watch) * 6) // 6 mins per video watched
                      + (isNaN(learn) ? 0 : parseInt(learn))     // 1 min per word learned
-                     + (isNaN(speak) ? 0 : parseInt(speak))     // 1 min per word spoken
-                     + (isNaN(chat) ? 0 : parseInt(chat) * 4);  // 4 mins per chat question
+                     + (isNaN(speak) ? 0 : parseInt(speak));    // 1 min per line spoken
             $("#id_studygoal").val(mins);
             $("#id_studygoaltext").text(mins);
         });
 
         $("#id_watchgoal").trigger("change");
 
-        var lastgoal = null;
-        var goaltypes = new Array('watch', 'learn', 'speak', 'chat');
-        for (var i = 0; i < goaltypes.length; i++) {
-            var type = goaltypes[i];
-            var nextgoal = document.querySelector("#fgroup_id_" + type + "goalgroup");
-            if (nextgoal) {
-                if (lastgoal) {
-                    $(lastgoal).after('<div class="mathsymbol"> + </div>');
-                }
-                lastgoal = nextgoal;
-            }
-        }
-        if (lastgoal) {
-            $(lastgoal).after('<div class="mathsymbol"> = </div>');
-        }
+        $("#fgroup_id_watchgoalgroup").after('<div class="mathsymbol"> + </div>');
+        $("#fgroup_id_learngoalgroup").after('<div class="mathsymbol"> + </div>');
+        $("#fgroup_id_speakgoalgroup").after('<div class="mathsymbol"> = </div>');
 
         // Fix layout on Boost-based themes.
         // We want the goals to appear as boxes:
-        // [Watch] + [Learn] + [Speak] + [Chat] = [Study goals]
+        // [Watch] + [Learn] + [Speak] = [Study goals]
         var goals = document.querySelector("#id_goals");
         if (goals) {
             var selectors = ["form-group", "row", "col-md-3", "d-flex", "col-md-9", "align-items-start", "align-self-start"];

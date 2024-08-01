@@ -60,7 +60,7 @@ class mod_englishcentral_mod_form extends moodleform_mod {
         }
 
         // Set the course format.
-        require_once($CFG->dirroot.'/course/format/lib.php');
+        require_once($CFG->dirroot . '/course/format/lib.php');
         $this->courseformat = course_get_format($course);
 
         $this->init_features();
@@ -76,12 +76,10 @@ class mod_englishcentral_mod_form extends moodleform_mod {
 
         $mform = $this->_form;
 
-        // Add this activity-specific form fields.
-        // We want to do this procedurally because in setup tabs
-        // we want to show only a subset of this form
-        // with just the activity-specific fields,
-        // and we use a custom form and the same elements.
-        utils::add_mform_elements($mform, $this->current, $this->_cm, $this->_course, $this->context);
+        //Add this activity specific form fields
+        //We want to do this procedurally because in setup tabs we want to show a subset of this form
+        // with just the activity specific fields,and we use a custom form and the same elements
+        utils::add_mform_elements($mform,$this->context);
 
         // Grade.
         $this->standard_grading_coursemodule_elements();
@@ -133,11 +131,11 @@ class mod_englishcentral_mod_form extends moodleform_mod {
         } else {
             $value = floatval($this->current->$name);
         }
-        $mform->addGroup(array(
-            $mform->createElement('checkbox', $name.'enabled', '', $label),
-            $mform->createElement('static', $name.'space', '', ' &nbsp; '),
-            $mform->createElement('text', $name, '', array('size' => 3)),
-        ), $name.'group', '', '', false);
+        $group = array();
+        $group[] = &$mform->createElement('checkbox', $name.'enabled', '', $label);
+        $group[] = &$mform->createElement('static', $name.'space', '', ' &nbsp; ');
+        $group[] = &$mform->createElement('text', $name, '', array('size' => 3));
+        $mform->addGroup($group, $name.'group', '', '', false);
         $mform->setType($name, PARAM_FLOAT);
         $mform->setDefault($name, 0.00);
         $mform->setType($name.'enabled', PARAM_INT);
