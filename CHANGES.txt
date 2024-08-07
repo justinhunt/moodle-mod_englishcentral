@@ -18,7 +18,7 @@ Change log for mod_englishcentral
 - Added mobile app support
 
 2023-10-13 (36)
-- Fixed issue with broken admin setting for ec chat
+- Fixed issue with broken admin setting for ec Discuss
 - tweaked monster size of progress dials block
 - Returned default position to page top
 
@@ -27,7 +27,7 @@ Change log for mod_englishcentral
 
 2023-07-23 (34)
 - Added a progress updated event
-- Added flags for enabling ChatMode if it is on your account
+- Added flags for enabling DiscussMode if it is on your account
 
 2023-05-19 (33)
 - Added calls to API for course details

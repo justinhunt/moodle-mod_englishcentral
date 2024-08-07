@@ -74,9 +74,15 @@ $PAGE->set_pagelayout('popup');
 // Render template and display page.
 $renderer = $PAGE->get_renderer(constants::M_COMPONENT);
 
-$mform = new \mod_englishcentral\setupform(null,['context'=>$modulecontext]);
+$mform = new \mod_englishcentral\setupform(null, [
+    'context' => $modulecontext,
+    'instance' => $moduleinstance,
+    'cm' => $cm,
+    'course' => $course,
+]);
 
-$redirecturl = new moodle_url('/mod/englishcentral/view.php', array('id'=>$cm->id));
+$redirecturl = new moodle_url('/mod/englishcentral/view.php', array('id' => $cm->id));
+
 //if the cancel button was pressed, we are out of here
 if ($mform->is_cancelled()) {
     redirect($redirecturl);

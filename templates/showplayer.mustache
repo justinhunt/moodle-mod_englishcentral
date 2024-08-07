@@ -14,10 +14,13 @@
                 <div class="video-placeholder-text-level"></div>
                 <div class="video-placeholder-text-tags"></div>
             </div>
-            <div class="video-placeholder-text-progress">
-                <div class="video-placeholder-text-watch-the-video">Watch the video</div>
-                <div class="video-placeholder-text-learn-the-words">Learn the words</div>
-                <div class="video-placeholder-text-speak-the-lines">Speak the lines</div>
+            <div class="video-placeholder-text-progress {{#mimichat}}chat_enabled{{/mimichat}}">
+                <div class="video-placeholder-text-row video-placeholder-text-watch-the-video">Watch the video</div>
+                <div class="video-placeholder-text-row video-placeholder-text-learn-the-words">Learn the words</div>
+                <div class="video-placeholder-text-row video-placeholder-text-speak-the-lines">Speak the lines</div>
+                {{#mimichat}}
+                    <div class="video-placeholder-text-row video-placeholder-text-chat-about-video">Chat about the video</div>
+                {{/mimichat}}
             </div>
         </div>
     </div>

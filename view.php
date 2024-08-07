@@ -159,7 +159,12 @@ if ($ec->viewable) {
     } else{
         $hidden=true;
     }
-    echo $renderer->show_player($hidden);
+    if($auth->mimichat_enabled()){
+        $mimichat=true;
+    }else{
+        $mimichat=false;
+    }
+    echo $renderer->show_player($hidden,$mimichat);
     echo $renderer->show_videos();
     echo $renderer->show_search();
 } else {
