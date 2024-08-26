@@ -91,7 +91,7 @@ if($config->enablesetuptab|| $embed==2){
     $PAGE->add_body_class('poodll-ec-embed');
     $hidetabs=true;
 }else{
-    $PAGE->set_pagelayout('course');
+    $PAGE->set_pagelayout('incourse');
     $hidetabs=false;
 }
 

@@ -43,7 +43,7 @@ $PAGE->set_url('/mod/englishcentral/accountlookup.php', array('id' => $id));
 $PAGE->set_title(format_string($instance->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
-$PAGE->set_pagelayout('course');
+$PAGE->set_pagelayout('incourse');
 
 //get EC class
 $ec = \mod_englishcentral\activity::create($instance, $cm, $course, $context);

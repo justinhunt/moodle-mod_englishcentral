@@ -1,6 +1,9 @@
 ========================================
 Change log for mod_englishcentral
 ========================================
+2024-08-26 (42)
+- Fix for layout(display of introduction) issue on Adaptable theme
+
 2024-05-16 (41)
 - Fixes for external API calls on pre M40 sites
 - Added Usage logging

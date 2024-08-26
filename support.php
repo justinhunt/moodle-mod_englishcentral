@@ -36,7 +36,7 @@ $auth = \mod_englishcentral\auth::create($ec);
 
 $PAGE->set_url('/mod/englishcentral/support.php');
 $PAGE->set_context($ec->context);
-$PAGE->set_pagelayout('course');
+$PAGE->set_pagelayout('incourse');
 
 // initialize the renderer
 $renderer = $PAGE->get_renderer($ec->plugin);
