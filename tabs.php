@@ -64,7 +64,7 @@ if(has_capability('mod/englishcentral:manage',$context) && $config->enablesetupt
 if(has_capability('mod/englishcentral:viewreports',$context) ) {
     $url = "$CFG->wwwroot/mod/englishcentral/report.php?id=$cm->id";
     $label = get_string('reports', constants::M_COMPONENT);
-    $row[] = new tabobject('report', $label, $label, $label);
+    $row[] = new tabobject('report', $url, $label, $label);
 }
 
 $tabs[] = $row;

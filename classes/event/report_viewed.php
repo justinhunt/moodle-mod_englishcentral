@@ -85,17 +85,6 @@ class report_viewed extends \core\event\base {
     }
 
     /**
-     * Return the legacy event log data.
-     *
-     * @return array
-     */
-    protected function get_legacy_logdata() {
-        $cmid = $this->contextinstanceid;
-        $url = 'report.php?id=' . $cmid . '&mode=' . $this->other['mode'];
-        return array($this->courseid, 'englishcentral', 'report', $url, $this->other['ecid'], $cmid);
-    }
-
-    /**
      * Custom validation.
      *
      * @throws \coding_exception

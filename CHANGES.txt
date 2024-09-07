@@ -1,6 +1,9 @@
 ========================================
 Change log for mod_englishcentral
 ========================================
+2024-09-07 (43)
+- Fix for broken reports link on tabs
+
 2024-08-26 (42)
 - Fix for layout(display of introduction) issue on Adaptable theme
 
