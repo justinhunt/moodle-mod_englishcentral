@@ -1,6 +1,9 @@
 ========================================
 Change log for mod_englishcentral
 ========================================
+2024-10-07 (44)
+- Changes for PHP 8.3 and 8.2
+
 2024-09-07 (43)
 - Fix for broken reports link on tabs
 

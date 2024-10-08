@@ -73,10 +73,28 @@ class auth {
     protected $uniqueid = null; // user's unique ID on this Moodle site
     protected $accountid = null; // the EC accountid of the current user
 
+    public $poodllapiuser = null; // Poodll API user
+
+    public $poodllapisecret = null; // Poodll API secret
+
+    public $partnerid = null; // EC partner ID   
+
+    public $consumerkey = null; // EC consumer key
+
+    public $consumersecret = null; // EC consumer secret
+
+    public $encryptedsecret = null; // EC encrypted secret
+
+    public $mimichat = null; // EC chatmode
+
+    public $domain = null; // EnglishCentral API endpoint domain
+
+
+
     /**
      * construct English Central object
      */
-    function __construct($ec) {
+    public function __construct($ec) {
 
         if (empty($ec->config)) {
             $this->config = new \stdClass();
