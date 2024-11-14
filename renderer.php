@@ -537,7 +537,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
                 $connection_available = false;
             }
         } else {
-            $output .= html_writer::tag('p', $this->ec->get_string('novideos'));
+            $output .= html_writer::tag('p', $this->ec->get_string('novideos'),['class'=>'ec-novideos-label']);
         }
 
 		if (has_capability('mod/englishcentral:manage', $this->ec->context) ) {

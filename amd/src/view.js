@@ -178,81 +178,12 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
             });
         });
 
-        // Composing video placeholder on initial load
-        // by getting data from the first element loaded
-        // in the video thumbnails
-        var activityThumbnail = $('.activity-thumbnail').first();
-        var thumbOutline = activityThumbnail.children('.thumb-outline');
-        var videoPlaceholderVideo = $('.video-placeholder-video');
-
-        // Getting and setting the title
-        var activityTitle = thumbOutline.children('.activity-title').text();
-        var videoPlaceholderTextTitle = $('.video-placeholder-text-title');
-        videoPlaceholderTextTitle.text(activityTitle);
-
-        // Getting and setting the difficulty level
-        var activityLevel = thumbOutline.find('.difficulty-level').text();
-        var levelNumber = activityLevel.slice(-1);
-        var videoPlaceholderTextLabel = $('.video-placeholder-text-label');
-        videoPlaceholderTextLabel.text(levelNumber);
-        if (levelNumber == 1 || levelNumber == 2) {
-            videoPlaceholderTextLabel.addClass('label-green');
-        } else if (levelNumber == 3 || levelNumber == 4) {
-            videoPlaceholderTextLabel.addClass('label-blue');
-        } else {
-            videoPlaceholderTextLabel.addClass('label-black');
-        }
-
-        // Getting and setting the difficulty label
-        var difficultyLabel = thumbOutline.find('.difficulty-label').text();
-        var videoPlaceholderTextLevel = $('.video-placeholder-text-level');
-        videoPlaceholderTextLevel.text(difficultyLabel);
-
-        if (levelNumber == 1 || levelNumber == 2) {
-            videoPlaceholderTextLevel.addClass('level-green');
-        } else if (levelNumber == 3 || levelNumber == 4) {
-            videoPlaceholderTextLevel.addClass('level-blue');
-        } else {
-            videoPlaceholderTextLevel.addClass('level-black');
-        }
-
-        // Getting and setting the video description
-        var activityDescription = thumbOutline.find('.thumb-frame').attr("description");
-        var videoPlaceholderTextDescription = $('.video-placeholder-text-description');
-        videoPlaceholderTextDescription.text(activityDescription);
-
-        // Getting and setting the topics
-        var activityTopics = thumbOutline.find('.thumb-frame').attr("topics");
-        var videoPlaceholderTextTags = $('.video-placeholder-text-tags');
-        videoPlaceholderTextTags.text(activityTopics);
-
-        // Creating, appending, getting and setting the image
-        var activityImage = thumbOutline.children('.thumb-frame').attr("data-demopicurl");
-        var activityVideoId = thumbOutline.children('.thumb-frame').attr("data-url");
-        var $newImage = $("<img>");
-        $newImage.attr("src", activityImage);
-        $newImage.attr("data-url", activityVideoId);
-        $newImage.attr("class", "video-placeholder-video-image");
-        videoPlaceholderVideo.append($newImage);
-
-        // Setting the social buttons
-        var fauxSocialButtons = $('.video-placeholder-text-social');
-        fauxSocialButtons.attr("data-url", activityVideoId);
-
-        // Setting the text progress
-        var videoPlaceholderTextProgress = $('.video-placeholder-text-progress');
-        videoPlaceholderTextProgress.attr("data-url", activityVideoId);
-
-        // Creating, appending, getting and setting the big play button
-        var $bigPlayButton = $("<img>");
-        $bigPlayButton.attr("src", 'pix/big-play-icon.svg');
-        $bigPlayButton.attr("data-url", activityVideoId);
-        $bigPlayButton.attr("class", "video-placeholder-video-big-play-button");
-        videoPlaceholderVideo.append($bigPlayButton);
+        VIEW.init_big_player_placeholder();
 
 
-        $(".activity-title, .thumb-frame, .video-placeholder-video-image, .video-placeholder-video-big-play-button, .video-placeholder-text-social, .video-placeholder-text-progress")
-            .click(function (evt) {
+        $('body').on('click',
+            '.activity-title, .englishcentral_videos .thumb-frame, .video-placeholder-video-image, .video-placeholder-video-big-play-button, .video-placeholder-text-social, .video-placeholder-text-progress',
+            function (evt) {
                 VIEW.play_video(evt, this);
                 $(".video-placeholder").hide();
                 $(".faux-loader").show();
@@ -260,7 +191,7 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
                 evt.stopPropagation();
                 evt.preventDefault();
                 return false;
-            });
+        });
 
         // Make the video thumnails sortable
         $(".englishcentral_videos").sortable({
@@ -384,6 +315,82 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
                 closeSearchButton.css("display", "none");
             });
         }
+
+    };
+
+    VIEW.init_big_player_placeholder = function(){
+        // Composing video placeholder on initial load
+        // by getting data from the first element loaded
+        // in the video thumbnails
+        var activityThumbnail = $('.activity-thumbnail').first();
+        var thumbOutline = activityThumbnail.children('.thumb-outline');
+        var videoPlaceholderVideo = $('.video-placeholder-video');
+
+        // Getting and setting the title
+        var activityTitle = thumbOutline.children('.activity-title').text();
+        var videoPlaceholderTextTitle = $('.video-placeholder-text-title');
+        videoPlaceholderTextTitle.text(activityTitle);
+
+        // Getting and setting the difficulty level
+        var activityLevel = thumbOutline.find('.difficulty-level').text();
+        var levelNumber = activityLevel.slice(-1);
+        var videoPlaceholderTextLabel = $('.video-placeholder-text-label');
+        videoPlaceholderTextLabel.text(levelNumber);
+        if (levelNumber == 1 || levelNumber == 2) {
+            videoPlaceholderTextLabel.addClass('label-green');
+        } else if (levelNumber == 3 || levelNumber == 4) {
+            videoPlaceholderTextLabel.addClass('label-blue');
+        } else {
+            videoPlaceholderTextLabel.addClass('label-black');
+        }
+
+        // Getting and setting the difficulty label
+        var difficultyLabel = thumbOutline.find('.difficulty-label').text();
+        var videoPlaceholderTextLevel = $('.video-placeholder-text-level');
+        videoPlaceholderTextLevel.text(difficultyLabel);
+
+        if (levelNumber == 1 || levelNumber == 2) {
+            videoPlaceholderTextLevel.addClass('level-green');
+        } else if (levelNumber == 3 || levelNumber == 4) {
+            videoPlaceholderTextLevel.addClass('level-blue');
+        } else {
+            videoPlaceholderTextLevel.addClass('level-black');
+        }
+
+        // Getting and setting the video description
+        var activityDescription = thumbOutline.find('.thumb-frame').attr("description");
+        var videoPlaceholderTextDescription = $('.video-placeholder-text-description');
+        videoPlaceholderTextDescription.text(activityDescription);
+
+        // Getting and setting the topics
+        var activityTopics = thumbOutline.find('.thumb-frame').attr("topics");
+        var videoPlaceholderTextTags = $('.video-placeholder-text-tags');
+        videoPlaceholderTextTags.text(activityTopics);
+
+        // Creating, appending, getting and setting the image
+        var activityImage = thumbOutline.children('.thumb-frame').attr("data-demopicurl");
+        var activityVideoId = thumbOutline.children('.thumb-frame').attr("data-url");
+        var $newImage = $("<img>");
+        $newImage.attr("src", activityImage);
+        $newImage.attr("data-url", activityVideoId);
+        $newImage.attr("class", "video-placeholder-video-image");
+        videoPlaceholderVideo.empty();
+        videoPlaceholderVideo.append($newImage);
+
+        // Setting the social buttons
+        var fauxSocialButtons = $('.video-placeholder-text-social');
+        fauxSocialButtons.attr("data-url", activityVideoId);
+
+        // Setting the text progress
+        var videoPlaceholderTextProgress = $('.video-placeholder-text-progress');
+        videoPlaceholderTextProgress.attr("data-url", activityVideoId);
+
+        // Creating, appending, getting and setting the big play button
+        var $bigPlayButton = $("<img>");
+        $bigPlayButton.attr("src", 'pix/big-play-icon.svg');
+        $bigPlayButton.attr("data-url", activityVideoId);
+        $bigPlayButton.attr("class", "video-placeholder-video-big-play-button");
+        videoPlaceholderVideo.append($bigPlayButton);
 
     };
 
@@ -716,6 +723,7 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
                 "difficulty": v.difficulty,
                 "dialogURL": v.dialogURL,
                 "thumbnailURL": v.thumbnailURL,
+                "demoPictureURL": v.demoPictureURL,
                 "description": v.description,
                 "topics": JSON.stringify(v.topics),
             };
@@ -855,6 +863,11 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
                 $(".videoicon.removevideo").removeClass('page-mod-englishcentral-hide');
                 //show the preview panel if it is hidden
                 $(".player-container-class").removeClass('page-mod-englishcentral-hide');
+                //hide the no videos link if it is showing, and also set the big player placeholder
+                if($(".ec-novideos-label").hasClass('page-mod-englishcentral-hide')==false){
+                    $(".ec-novideos-label").addClass('page-mod-englishcentral-hide');
+                    VIEW.init_big_player_placeholder();
+                }
             }
         });
 
