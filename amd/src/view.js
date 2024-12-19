@@ -61,6 +61,7 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
         { "key": "info", "component": "moodle" },
         { "key": "intermediate", "component": VIEW.plugin },
         { "key": "level", "component": VIEW.plugin },
+        { "key": "noitemsfound", "component": VIEW.plugin },
         { "key": "ok", "component": "moodle" },
         { "key": "search", "component": "moodle" },
         { "key": "showadvanced", "component": "form" },
@@ -85,6 +86,7 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
         VIEW.str.info = s[i++];
         VIEW.str.intermediate = s[i++];
         VIEW.str.level = s[i++];
+        VIEW.str.noitemsfound = s[i++];
         VIEW.str.ok = s[i++];
         VIEW.str.search = s[i++];
         VIEW.str.showadvanced = s[i++];
@@ -656,6 +658,10 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
                 },
                 "success": function (info) {
                     VIEW.format_results(info);
+                },
+                "error" : function (e) {
+                    var html = VIEW.format_noresult();
+                    $(".search-results").html(html);
                 }
             });
         }
@@ -685,7 +691,10 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
 
         // Finish early if there are no results
         if ((!info) || (!info.results) || info.results.length == 0) {
-            return html;
+             // Populate search results
+             html += VIEW.format_noresult();
+             $(".search-results").html(html);
+             return;
         }
 
         // Cache the paging-bar (we need it twice)
@@ -878,6 +887,13 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
             });
         });
         // https://stackoverflow.com/questions/1807187/how-to-remove-an-element-slowly-with-jquery
+    };
+
+    // If no search results were returned we send back a message about that.
+    VIEW.format_noresult = function() {
+        return HTML.tag("div", VIEW.str.noitemsfound, {
+            "class": "itemsfound"
+        });
     };
 
     // "dialogID": 11875,

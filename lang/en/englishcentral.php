@@ -386,3 +386,4 @@ $string['progressdials_bottom'] = 'Bottom (Below player)';
 $string['chatmode'] = 'Enable Chat Mode';
 $string['chatmode_details'] = 'If enabled on your account, chat mode will become available in the EnglishCentral player.';
 $string['progressupdated'] = 'Progress Updated Event';
+$string['noitemsfound'] = 'No videos found. Please try a different search.';
