@@ -428,7 +428,7 @@ class activity {
         $event->add_record_snapshot($table, $attempt);
         $event->trigger();
 
-        englishcentral_update_grades($this, $USER->id);
+        englishcentral_update_grades($this->ecinstance, $USER->id);
         // Update completion state.
         $completion = new \completion_info($this->course);
         if ($completion->is_enabled($this->cm) && ($this->completiongoals)) {

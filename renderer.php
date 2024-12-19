@@ -59,7 +59,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
      * @param string $extrapagetitle String to append to the page title.
      * @return string
      */
-    public function header($extrapagetitle=null,$hidetabs=false) {
+    public function header($extrapagetitle=null, $hidetabs=false) {
         global $CFG;
 
         if (isset($this->ec->id)) {
@@ -74,35 +74,40 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
 
         $output = $this->output->header();
 
-        if (isset($this->ec->id)) {
+        if (isset($this->ec->ecinstance)) {
             if ((has_capability('mod/englishcentral:manage', $this->ec->context) ||
                     has_capability('mod/englishcentral:viewreports', $this->ec->context)) &&
                     !$hidetabs) {
 
-                //set up tabs
-                $moduleinstance =$this->ec;
+                if ($this->page->url == $this->ec->get_view_url()) {
+                    $icon = $this->pix_icon('i/report', 'report', 'moodle', ['class' => 'icon']);
+                    $icon = html_writer::link($this->ec->get_report_url(), $icon);
+                    // Tabs.php uses the $currenttab var.
+                    $currenttab = 'view';
+                } else if ($this->page->url == $this->ec->get_report_url()) {
+                    $icon = $this->pix_icon('i/preview', 'view', 'moodle', ['class' => 'icon']);
+                    $icon = html_writer::link($this->ec->get_view_url(), $icon);
+                    // Tabs.php uses the $currenttab var.
+                    $currenttab = 'report';
+                } else {
+                    $icon = '';
+                }
+
+                // Set up tabs.
+                $moduleinstance = $this->ec;
                 ob_start();
                 include($CFG->dirroot.'/mod/englishcentral/tabs.php');
                 $output .= ob_get_contents();
                 ob_end_clean();
-
-                if ($this->page->url == $this->ec->get_view_url()) {
-                    $icon = $this->pix_icon('i/report', 'report', 'moodle', array('class'=>'icon'));
-                    $icon = html_writer::link($this->ec->get_report_url(), $icon);
-                } else if ($this->page->url == $this->ec->get_report_url()) {
-                    $icon = $this->pix_icon('i/preview', 'view', 'moodle', array('class'=>'icon'));
-                    $icon = html_writer::link($this->ec->get_view_url(), $icon);
-                } else {
-                    $icon = '';
-                }
+ 
                 //dont show the heading in an iframe, it will be outside this anyway
-                if(!$this->ec->foriframe && $CFG->version<4.0) {
+                if (!$this->ec->foriframe && $CFG->version < 4.0) {
                     $help = $this->help_icon('overview', $this->ec->plugin);
                     $output .= $this->heading($activityname.$help.$icon);
                 }
 
             } else {
-                if(!$this->ec->foriframe && $CFG->version<4.0) {
+                if (!$this->ec->foriframe && $CFG->version < 4.0) {
                     $output .= $this->output->heading($activityname);
                 }
             }
@@ -820,9 +825,9 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         foreach ($items as $userid => $item) {
             $item->total = (min($goals->watch, $item->watch) +
                             min($goals->learn, $item->learn) +
-                            min($goals->speak, $item->learn) +
+                            min($goals->speak, $item->speak) +
                             min($goals->chat, $item->chat));
-            if ($goals->total==0) {
+            if ($goals->total == 0) {
                 $item->percent = '';
             } else {
                 $item->percent = round(100 * min(1, $item->total / $goals->total)).'%';
@@ -830,7 +835,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
             $items[$userid] = $item;
         }
 
-        if ($this->sort=='percent') {
+        if ($this->sort == 'percent') {
             uasort($items, array($this, 'uasort_percent'));
         }
 

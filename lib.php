@@ -300,9 +300,12 @@ function englishcentral_get_user_grades($englishcentral, $userid=0) {
     if ($englishcentral->speakgoal) {
         $goal += intval($englishcentral->speakgoal);
     }
+    if ($englishcentral->chatgoal) {
+        $goal += intval($englishcentral->chatgoal);
+    }
 
     if ($goal) {
-        $select = 'SUM(watchcomplete) + SUM(learncount) + SUM(speakcount)';
+        $select = 'SUM(watchcomplete) + SUM(learncount) + SUM(speakcount) + SUM(chatcount)';
         $select = "ROUND(100 * ($select) / ?, 0)";
         // Note: MSSQL always requires precision for ROUND function.
     } else {
