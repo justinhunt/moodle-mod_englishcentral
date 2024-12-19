@@ -66,6 +66,12 @@ if(has_capability('mod/englishcentral:viewreports', $context) ) {
     $row[] = new tabobject('report', $url, $label, $label);
 }
 
+if(has_capability('mod/englishcentral:viewdevelopertools', $context) ) {
+    $url = "$CFG->wwwroot/mod/englishcentral/developer.php?id=$cm->id";
+    $label = get_string('developertools', constants::M_COMPONENT);
+    $row[] = new tabobject('developer', $url, $label, $label);
+}
+
 $tabs[] = $row;
 
 print_tabs($tabs, $currenttab, $inactive, $activated);

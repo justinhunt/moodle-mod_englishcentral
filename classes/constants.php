@@ -16,6 +16,7 @@ namespace mod_englishcentral;
     const M_COMPONENT='mod_englishcentral';
     const M_TABLE='englishcentral';
     const M_ATTEMPTSTABLE='englishcentral_attempts';
+    const M_VIDEOSTABLE='englishcentral_videos';
     const M_AUTHTABLE='englishcentral_auth';
     const M_MODNAME='englishcentral';
     const M_URL='/mod/englishcentral';

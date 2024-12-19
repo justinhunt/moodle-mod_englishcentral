@@ -248,6 +248,10 @@ class activity {
         return $this->url('report.php', $escaped, $params);
     }
 
+    public function get_developertools_url($escaped=null, $params=[]) {
+        return $this->url('developer.php', $escaped, $params);
+    }
+
     public function get_view_url($escaped=null, $params=[]) {
         return $this->url('view.php', $escaped, $params);
     }

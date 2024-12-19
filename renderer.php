@@ -76,7 +76,8 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
 
         if (isset($this->ec->ecinstance)) {
             if ((has_capability('mod/englishcentral:manage', $this->ec->context) ||
-                    has_capability('mod/englishcentral:viewreports', $this->ec->context)) &&
+                    has_capability('mod/englishcentral:viewreports', $this->ec->context) ||
+                    has_capability('mod/englishcentral:viewdevelopertools', $this->ec->context)) &&
                     !$hidetabs) {
 
                 if ($this->page->url == $this->ec->get_view_url()) {
@@ -89,6 +90,11 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
                     $icon = html_writer::link($this->ec->get_view_url(), $icon);
                     // Tabs.php uses the $currenttab var.
                     $currenttab = 'report';
+                } else if (strpos($this->page->url, $this->ec->get_developertools_url()) === 0) {
+                    $icon = $this->pix_icon('i/settings', 'developertools', constants::M_COMPONENT, ['class' => 'icon']);
+                    $icon = html_writer::link($this->ec->get_developertools_url(), $icon);
+                    // Tabs.php uses the $currenttab var.
+                    $currenttab = 'developer';
                 } else {
                     $icon = '';
                 }
@@ -1192,6 +1198,19 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
             $data['display']='';
         }
         return $this->render_from_template('mod_englishcentral/showplayer', $data);
+    }
+
+    /*
+    * Developer tools for generating random data etc
+    */
+    public function developerpage($cmid,$moduleid){
+        $items = array();
+        $items[]= "<div>Generate random attempts from the last attempt in the table, 1 for each enrolled user</div>";
+        $sb= new \single_button(
+            new \moodle_url(constants::M_URL . '/developer.php', array('action' => 'generatedata', 'id' => $cmid, 'n' => $moduleid)),
+            "Generate Attempt Data", 'get');
+        $items[]=$this->render($sb);
+        return $items;
     }
 
 }

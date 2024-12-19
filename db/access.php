@@ -104,6 +104,11 @@ $capabilities = [
                 ],
         ],
 
+        'mod/englishcentral:viewdevelopertools' => [
+            'captype' => 'write',
+            'contextlevel' => CONTEXT_COURSE
+        ],
+
         'mod/englishcentral:submit' => [
                 'riskbitmask' => RISK_SPAM,
                 'captype' => 'write',

@@ -43,6 +43,7 @@ $string['englishcentral:manageattempts'] = 'Manage attempts at an EnglishCentral
 $string['englishcentral:submit'] = 'Submit data to an EnglishCentral activity';
 $string['englishcentral:view'] = 'View an EnglishCentral activity';
 $string['englishcentral:viewreports'] = 'View reports for an English Central activity';
+$string['englishcentral:viewdevelopertools'] = 'View developer tools for an English Central activity';
 
 // completion
 $string['completiongoals'] = 'Require study goals';
@@ -387,3 +388,4 @@ $string['chatmode'] = 'Enable Chat Mode';
 $string['chatmode_details'] = 'If enabled on your account, chat mode will become available in the EnglishCentral player.';
 $string['progressupdated'] = 'Progress Updated Event';
 $string['noitemsfound'] = 'No videos found. Please try a different search.';
+$string['developertools']="Developer Tools";
