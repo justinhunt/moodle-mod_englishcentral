@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -14,7 +13,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
 
 /**
  * English strings for englishcentral
@@ -238,7 +236,7 @@ $string['preview'] = 'Preview';
 $string['previewenglishcentral'] = 'Preview English Central';
 $string['view'] = 'View';
 
-//reports
+// reports
 $string['activetime'] = 'Active Time';
 $string['allattempts'] = 'Attempts Manager';
 $string['allusers'] = 'All Users (most recent attempt)';
@@ -307,7 +305,7 @@ $string['value'] = 'Value';
 $string['viewreport'] = 'Details';
 $string['viewreports'] = 'View reports';
 
-//privacy api strings
+// privacy api strings
 $string['privacy:metadata:attempttable'] = 'The table in which the user\'s English Central attempt data is stored.';
 $string['privacy:metadata:attemptid'] = 'The unique identifier of a user\'s English Central activity attempt.';
 $string['privacy:metadata:ecid'] = 'The unique identifier of an English Central activity instance.';
@@ -388,4 +386,94 @@ $string['chatmode'] = 'Enable Chat Mode';
 $string['chatmode_details'] = 'If enabled on your account, chat mode will become available in the EnglishCentral player.';
 $string['progressupdated'] = 'Progress Updated Event';
 $string['noitemsfound'] = 'No videos found. Please try a different search.';
-$string['developertools']="Developer Tools";
+$string['developertools'] = "Developer Tools";
+/* Reports */
+$string['reportsmenutoptext'] = "Review attempts on Poodll EnglishCentral activities using the reports below.";
+$string['showingattempt'] = 'Showing attempt for: {$a}';
+$string['basicreport'] = 'Basic Report';
+$string['returntoreports'] = 'Return to Reports';
+$string['returntogradinghome'] = 'Return to Grading Top';
+$string['exportexcel'] = 'Export to CSV';
+
+$string['studentid'] = "St. No.";
+$string['studentname'] = "Student Name";
+$string['activityname'] = "RA. Name.";
+$string['errorcount'] = "No. errors";
+$string['activitywords'] = "No. Words in Passage";
+$string['readingtime'] = "Read Time (secs)";
+$string['oralreadingscore'] = "Oral Reading Score";
+$string['oralreadingscore_p'] = 'Oral Reading Score(%)';
+$string['reportsmenutoptext'] = "Review attempts on EnglishCentral activities using the reports below.";
+$string['attemptssummary_explanation'] = "A summary of EnglishCentral attempts per user in this activity.";
+
+$string['customfont'] = "Custom font";
+$string['customfont_help'] = "A font name that will override site default for this passage when displayed. Must be exact in spelling and case. eg Andika or Comic Sans MS";
+$string['advancedheader'] = "Advanced";
+
+$string['missedwords'] = "Missed Words";
+$string['missedwordsheading'] = "Missed Words";
+$string['missedwordsreport'] = "Missed Words";
+$string['missedwords_explanation'] = "The top error words in the most recent attempts";
+$string['missed_count'] = "Missed Count";
+$string['rank'] = "Rank";
+$string['nodataavailable'] = 'No Data Available Yet';
+$string['datatables_info'] = "Showing _START_ to _END_ of _TOTAL_ entries";
+$string['datatables_infoempty'] = "Showing 0 to 0 of 0 entries";
+$string['datatables_infofiltered'] = "(filtered from _MAX_ total entries)";
+$string['datatables_infothousands'] = ",";
+$string['datatables_lengthmenu'] = "Show _MENU_ entries";
+$string['datatables_search'] = "Search:";
+$string['datatables_zerorecords'] = "No matching records found";
+$string['datatables_paginate_first'] = "First";
+$string['datatables_paginate_last'] = "Last";
+$string['datatables_paginate_next'] = "Next";
+$string['datatables_paginate_previous'] = "Previous";
+$string['datatables_emptytable'] = "No data available in table";
+$string['datatables_aria_sortascending'] = "activate to sort column ascending";
+$string['datatables_aria_sortdescending'] = "activate to sort column descending";
+$string['attemptsperpage'] = "Attempts to show per page: ";
+$string['attemptsreport'] = 'Attempts Report';
+$string['attemptssummaryreport'] = 'Attempts Summary Report';
+$string['myattemptssummary'] = 'Attempts Summary ({$a} attempts)';
+$string['summaryexplainer'] = 'The table below shows your average and your highest scores for this activity.';
+$string['id'] = 'ID';
+$string['name'] = 'Name';
+$string['timecreated'] = 'Time Created';
+$string['basicheading'] = 'Basic Report';
+$string['attemptsheading'] = 'Attempts Report: {$a}';
+$string['userattemptsheading'] = 'Attempts by User: {$a->username} on Activity: {$a->activityname}';
+$string['attemptssummaryheading'] = 'Attempts Summary Report';
+$string['gradingheading'] = 'Grading latest attempts for each user.';
+$string['machinegradingheading'] = 'Machine evaluated latest attempt for each user.';
+$string['gradingbyuserheading'] = 'Grading all attempts for: {$a}';
+$string['deletenow'] = '';
+$string['watch'] = "Watch";
+$string['learn'] = "Learn";
+$string['speak'] = "Speak";
+$string['chat'] = "Chat";
+$string['total'] = "Total";
+$string['watch_p'] = "Watch(%)";
+$string['learn_p'] = "Learn(%)";
+$string['speak_p'] = "Speak(%)";
+$string['chat_p'] = "Chat(%)";
+$string['total_p'] = "Total(%)";
+$string['attempts'] = "Attempts";
+$string['firstattempt'] = "First Attempt";
+$string['videoname'] = "Video";
+$string['activetime'] = "Active Time";
+$string['totaltime'] = "Total Time";
+$string['timecompleted'] = "Time Completed";
+$string['videoperformancereport'] = 'Video Performance Report';
+$string['videoperformanceheading'] = 'Video Performance on Activity: {$a}';
+$string['videoperformance_explanation'] = 'Information on how videos were viewed and practiced with in this activity.';
+$string['totalwatches'] = "Total Watches";
+$string['averagelearn'] = "Average Learn";
+$string['averagespeak'] = "Average Speak";
+$string['averagechat'] = "Average Chat";
+$string['courseattemptsreport'] = 'Course Attempts Report';
+$string['courseattemptsheading'] = 'Course Attempts Report: {$a}';
+$string['courseattempts_explanation'] = "A summary of EnglishCentral attempts per user in this course.";
+$string['usercourseattemptsreport'] = 'User Course Attempts Report';
+$string['usercourseattempts_explanation'] = "All a users attempts on EnglishCentral activities within this course";
+$string['usercourseattemptsheading'] = 'Attempts by User: {$a->username} in course: {$a->coursename}';
+$string['activities'] = "Activities";

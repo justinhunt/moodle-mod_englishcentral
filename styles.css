@@ -1964,3 +1964,21 @@ body.poodll-ec-embed #page {
 #page-mod-englishcentral-view .activity-topics {
     display: flex;
  }
+
+ .englishcentral_reportsmenu_box {
+    text-align: center;
+    display: flex;
+  }
+  
+  .englishcentral_reportsmenu_item {
+    width: 150px;
+    margin: 10px;
+    border: 1px solid grey;
+    padding: 8px;
+    margin-right: 20px;
+  }
+  
+  .englishcentral_reportsmenu_itembutton button{
+    height: 80px;
+    width: 100px;
+  }
