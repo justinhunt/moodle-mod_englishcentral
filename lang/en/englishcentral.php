@@ -404,7 +404,7 @@ $string['readingtime'] = "Read Time (secs)";
 $string['oralreadingscore'] = "Oral Reading Score";
 $string['oralreadingscore_p'] = 'Oral Reading Score(%)';
 $string['reportsmenutoptext'] = "Review attempts on EnglishCentral activities using the reports below.";
-$string['attemptssummary_explanation'] = "A summary of EnglishCentral attempts per user in this activity.";
+$string['attempts_explanation'] = "A summary of EnglishCentral attempts per user in this activity.";
 
 $string['customfont'] = "Custom font";
 $string['customfont_help'] = "A font name that will override site default for this passage when displayed. Must be exact in spelling and case. eg Andika or Comic Sans MS";
@@ -477,3 +477,4 @@ $string['usercourseattemptsreport'] = 'User Course Attempts Report';
 $string['usercourseattempts_explanation'] = "All a users attempts on EnglishCentral activities within this course";
 $string['usercourseattemptsheading'] = 'Attempts by User: {$a->username} in course: {$a->coursename}';
 $string['activities'] = "Activities";
+$string['graphicalattempts_explanation'] = 'A summary of EnglishCentral attempts per user in this activity [Graphical]';

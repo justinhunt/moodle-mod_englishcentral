@@ -81,15 +81,15 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
                     !$hidetabs) {
 
                 if ($this->page->url == $this->ec->get_view_url()) {
-                    $icon = $this->pix_icon('i/report', 'report', 'moodle', ['class' => 'icon']);
-                    $icon = html_writer::link($this->ec->get_report_url(), $icon);
-                    // Tabs.php uses the $currenttab var.
-                    $currenttab = 'view';
-                } else if ($this->page->url == $this->ec->get_report_url()) {
                     $icon = $this->pix_icon('i/preview', 'view', 'moodle', ['class' => 'icon']);
                     $icon = html_writer::link($this->ec->get_view_url(), $icon);
                     // Tabs.php uses the $currenttab var.
-                    $currenttab = 'report';
+                    $currenttab = 'view';
+                } else if (strpos($this->page->url, $this->ec->get_report_url()) === 0) {
+                    $icon = $this->pix_icon('i/report', 'reports', 'moodle', ['class' => 'icon']);
+                    $icon = html_writer::link($this->ec->get_report_url(), $icon);
+                    // Tabs.php uses the $currenttab var.
+                    $currenttab = 'reports';
                 } else if (strpos($this->page->url, $this->ec->get_developertools_url()) === 0) {
                     $icon = $this->pix_icon('i/settings', 'developertools', constants::M_COMPONENT, ['class' => 'icon']);
                     $icon = html_writer::link($this->ec->get_developertools_url(), $icon);
@@ -1204,12 +1204,19 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
     * Developer tools for generating random data etc
     */
     public function developerpage($cmid,$moduleid){
-        $items = array();
+        $items = [];
+        //Update gradebook
+        $items[]= "<div>Update all grades in gradebook for this activity. Maybe useful if you changed goals.</div>";
+        $gradesbtn= new \single_button(
+            new \moodle_url(constants::M_URL . '/developer.php', array('action' => 'updategrades', 'id' => $cmid, 'n' => $moduleid)),
+            "Update All Grades", 'get');
+        $items[]=$this->render($gradesbtn);
+        $items[]='<br/><br/>';
         $items[]= "<div>Generate random attempts from the last attempt in the table, 1 for each enrolled user</div>";
-        $sb= new \single_button(
+        $gendatabtn= new \single_button(
             new \moodle_url(constants::M_URL . '/developer.php', array('action' => 'generatedata', 'id' => $cmid, 'n' => $moduleid)),
             "Generate Attempt Data", 'get');
-        $items[]=$this->render($sb);
+        $items[]=$this->render($gendatabtn);
         return $items;
     }
 

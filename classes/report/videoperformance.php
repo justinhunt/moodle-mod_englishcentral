@@ -69,11 +69,7 @@ class videoperformance extends basereport {
         return get_string('videoperformanceheading', constants::M_COMPONENT, $ec->name);
     }
 
-    public function fetch_formatted_description() {
-
-        return get_string('videoperformance_explanation', constants::M_COMPONENT);
-
-    }
+  
 
     public function process_raw_data($formdata) {
         global $DB, $USER;

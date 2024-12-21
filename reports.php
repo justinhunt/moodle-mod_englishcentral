@@ -95,7 +95,10 @@ if ($config->enablesetuptab) {
 $PAGE->requires->jquery();
 
 // This puts all our display logic into the renderer.php files in this plugin
+$ec = \mod_englishcentral\activity::create($moduleinstance, $cm, $course, $modulecontext);
+$auth = \mod_englishcentral\auth::create($ec);
 $renderer = $PAGE->get_renderer(constants::M_COMPONENT);
+$renderer->attach_activity_and_auth($ec, $auth);
 $reportrenderer = $PAGE->get_renderer(constants::M_COMPONENT, 'report');
 
 // From here we actually display the page.
@@ -106,7 +109,7 @@ switch ($showreport) {
 
     // not a true report, separate implementation in renderer
     case 'menu':
-        echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('reports', constants::M_COMPONENT));
+        echo $renderer->header(get_string('reports', constants::M_COMPONENT));
         echo $reportrenderer->render_reportmenu($moduleinstance, $cm);
         // Finish the page
         echo $renderer->footer();
@@ -118,7 +121,6 @@ switch ($showreport) {
         //later it gets turned into urls for the export buttons
         $formdata = new stdClass();
         break;
-
 
     case 'attempts':
         $report = new \mod_englishcentral\report\attempts($cm);
@@ -170,7 +172,7 @@ switch ($showreport) {
         break;
 
     default:
-        echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('reports', constants::M_COMPONENT));
+        echo $renderer->header(get_string('reports', constants::M_COMPONENT));
         echo "unknown report type.";
         echo $renderer->footer();
         return;
@@ -208,6 +210,30 @@ switch ($format) {
         $reportrenderer->render_section_csv($reportheading, $report->fetch_name(), $report->fetch_head(), $reportrows,
                 $report->fetch_fields());
         exit;
+
+    case 'graphical':
+        // Hosting the original graphical report here. We need to hack it up a bit. TO DO .. integrate this properly
+        // NB it handles username sorting better than Datatables .. TO DO .. do this in datatables.
+        if ($showreport == 'attempts') {
+            $PAGE->requires->js_call_amd("$ec->plugin/report", 'init');
+            echo $renderer->header(get_string('reports', constants::M_COMPONENT));
+            echo $extraheader;
+            // Standard graphical attempts report already has groups.
+            // echo $groupmenu;
+            // We need to house it in a div of id: page-mod-englishcentral-report for the original CSS to apply.
+            $progressreport = $renderer->show_progress_report();
+            echo \html_writer::div($progressreport, 'page-mod-englishcentral-report', ['id' => 'page-mod-englishcentral-report']);
+        } else {
+            echo $renderer->header(get_string('reports', constants::M_COMPONENT));
+            echo $extraheader;
+            echo $groupmenu;
+            echo $reportrenderer->render_section_graph($reportheading, $reportdescription, $report->fetch_name(), $report->fetch_head(), $reportrows,
+                    $report->fetch_fields());
+        }
+        echo $reportrenderer->show_reports_footer($moduleinstance, $cm, $formdata, $showreport);
+        echo $renderer->footer();
+        break;
+
     default:
 
         $reportrows = $report->fetch_formatted_rows(true, $paging);
@@ -216,7 +242,7 @@ switch ($format) {
 
             // css must be required before header sent out
             $PAGE->requires->css( new \moodle_url('https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css'));
-            echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('reports', constants::M_COMPONENT));
+            echo $renderer->header(get_string('reports', constants::M_COMPONENT));
             echo $extraheader;
             echo $groupmenu;
             echo $reportrenderer->render_section_html($reportheading, $reportdescription, $report->fetch_name(), $report->fetch_head(), $reportrows,
@@ -224,7 +250,7 @@ switch ($format) {
 
         }else {
             $pagingbar = $reportrenderer->show_paging_bar($allrowscount, $paging, $PAGE->url);
-            echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('reports', constants::M_COMPONENT));
+            echo $renderer->header(get_string('reports', constants::M_COMPONENT));
             echo $extraheader;
             echo $groupmenu;
             echo $pagingbar;

@@ -61,9 +61,9 @@ if(has_capability('mod/englishcentral:manage', $context) && $config->enablesetup
 }
 
 if(has_capability('mod/englishcentral:viewreports', $context) ) {
-    $url = "$CFG->wwwroot/mod/englishcentral/report.php?id=$cm->id";
+    $url = "$CFG->wwwroot/mod/englishcentral/reports.php?id=$cm->id";
     $label = get_string('reports', constants::M_COMPONENT);
-    $row[] = new tabobject('report', $url, $label, $label);
+    $row[] = new tabobject('reports', $url, $label, $label);
 }
 
 if(has_capability('mod/englishcentral:viewdevelopertools', $context) ) {

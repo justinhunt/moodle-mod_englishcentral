@@ -750,13 +750,17 @@ function xmldb_englishcentral_upgrade($oldversion) {
         upgrade_mod_savepoint(true, $newversion, 'englishcentral');
     }
 
-    $newversion = 2024122046;
+    $newversion = 2024122047;
     if ($oldversion < $newversion) {
         // Add auth table.
         $table = new xmldb_table('englishcentral_videos');
-        $field = new xmldb_field('name', XMLDB_TYPE_CHAR, '255', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 'video name');
-        if (!$dbman->field_exists($table, $field)) {
-            $dbman->add_field($table, $field);
+        $fields = [];
+        $fields[] = new xmldb_field('name', XMLDB_TYPE_CHAR, '255', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 'video name');
+        $fields[] = new xmldb_field('detailsjson', XMLDB_TYPE_TEXT, null, null, null, null);
+        foreach ($fields as $field) {
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
         }
         upgrade_mod_savepoint(true, $newversion, 'englishcentral');
     }

@@ -1971,7 +1971,7 @@ body.poodll-ec-embed #page {
   }
   
   .englishcentral_reportsmenu_item {
-    width: 150px;
+    width: 250px;
     margin: 10px;
     border: 1px solid grey;
     padding: 8px;
@@ -1979,6 +1979,11 @@ body.poodll-ec-embed #page {
   }
   
   .englishcentral_reportsmenu_itembutton button{
-    height: 80px;
-    width: 100px;
+    width: 200px;
+    height: 60px;
+  }
+  .mod_ec_returntoreports {
+    margin: auto;
+    display: block;
+    width: 120px;
   }

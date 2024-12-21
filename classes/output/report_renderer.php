@@ -38,12 +38,19 @@ class report_renderer extends \plugin_renderer_base {
         $reports[] = ['button' => $this->render($basic),
         'text' => get_string('attemptssummary_explanation', constants::M_COMPONENT)];
 */
+        $graphicalattempts = new \single_button(
+            new \moodle_url(constants::M_URL . '/reports.php',
+                    ['report' => 'attempts', 'id' => $cm->id, 'n' => $moduleinstance->id,'format' => 'graphical']),
+            get_string('attemptsreport', constants::M_COMPONENT), 'get');
+        $reports[] = ['button' => $this->render($graphicalattempts),
+        'text' => get_string('graphicalattempts_explanation', constants::M_COMPONENT)];
+
         $attempts = new \single_button(
                 new \moodle_url(constants::M_URL . '/reports.php',
                         ['report' => 'attempts', 'id' => $cm->id, 'n' => $moduleinstance->id]),
                 get_string('attemptsreport', constants::M_COMPONENT), 'get');
         $reports[] = ['button' => $this->render($attempts),
-            'text' => get_string('attemptssummary_explanation', constants::M_COMPONENT)];
+            'text' => get_string('attempts_explanation', constants::M_COMPONENT)];
 
         $videoperformance = new \single_button(
             new \moodle_url(constants::M_URL . '/reports.php',
@@ -140,6 +147,17 @@ class report_renderer extends \plugin_renderer_base {
         exit();
     }
 
+    public function render_section_graph($sectiontitle, $sectiondescription, $report, $head, $rows, $fields) {
+        global $CFG;
+        if (empty($rows)) {
+            return $this->render_empty_section_html($sectiontitle);
+        }
+
+        $html = '';
+        return $html;
+
+    }
+
     public function render_section_html($sectiontitle, $sectiondescription, $report, $head, $rows, $fields) {
         global $CFG;
         if (empty($rows)) {
@@ -211,7 +229,7 @@ class report_renderer extends \plugin_renderer_base {
         // print's a popup link to your custom page
         $link = new \moodle_url(constants::M_URL . '/reports.php',
                 ['report' => 'menu', 'id' => $cm->id, 'n' => $moduleinstance->id]);
-        $ret = \html_writer::link($link, get_string('returntoreports', constants::M_COMPONENT));
+        $ret = \html_writer::link($link, get_string('returntoreports', constants::M_COMPONENT),['class'=>'mod_ec_returntoreports']);
         $ret .= $this->render_exportbuttons_html($cm, $formdata, $showreport);
         return $ret;
     }

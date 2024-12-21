@@ -358,12 +358,33 @@ class auth {
     }
 
     public function fetch_dialog_list($videoids) {
+        global $DB;
+
         $subdomain = 'bridge';
         $endpoint = 'rest/content/dialog';
         $fields = array('dialogIDs' => implode(',', $videoids),
                         'siteLanguage' => $this->get_site_language(),
                         'fields' => 'dialogID,title,difficulty,duration,dialogURL,thumbnailURL,videoDetailsURL,demoPictureURL,description,topics');
-        return $this->doGet($subdomain, $endpoint, $fields, self::ACCEPT_V1);
+        $dialoglist = $this->doGet($subdomain, $endpoint, $fields, self::ACCEPT_V1);
+
+        // Cache the dialogs listings for later use in reports, and here eventually
+        // Ideally we should do this when add a video. TO DO do that
+        list($dialogswhere, $allparams) = $DB->get_in_or_equal($videoids);
+        $sql = "SELECT * FROM {" . constants::M_VIDEOSTABLE . "} vt ";
+        $sql .= "WHERE videoid " . $dialogswhere;
+        $cachedvideoslist = $DB->get_records_sql($sql, $allparams);
+        foreach ($cachedvideoslist as $cachedvideo) {
+            if ($cachedvideo->detailsjson === null) {
+                foreach($dialoglist as $thedialog){
+                    if($thedialog->dialogID == $cachedvideo->videoid){
+                        $DB->update_record(constants::M_VIDEOSTABLE,
+                        ['id' => $cachedvideo->id, 'name' => $thedialog->title,
+                                        'detailsjson' => json_encode($thedialog)]);
+                    }
+                }
+            }
+        }
+        return $dialoglist;
     }
 
     public function fetch_course_content($courseid) {
