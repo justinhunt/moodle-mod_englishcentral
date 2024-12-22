@@ -81,14 +81,14 @@ class videoperformance extends basereport {
         $this->rawdata = [];
         $emptydata = [];
 
-        $selectsql = 'SELECT vid.id as videoid, vid.name as videoname , COUNT(watchcomplete) as totalwatches,'.
+        $selectsql = 'SELECT vid.videoid as videoid, vid.name as videoname , COUNT(watchcomplete) as totalwatches,'.
         'ROUND(AVG(learncount),1) AS averagelearn,'.
         'ROUND(AVG(speakcount),1) AS averagespeak,'.
         'ROUND(AVG(chatcount),1) AS averagechat ' .
         ' FROM {' . constants::M_ATTEMPTSTABLE . '} tu ';
 
         $selectsql .= 'INNER JOIN {' . constants::M_VIDEOSTABLE . '} vid ';
-        $selectsql .= 'ON (tu.ecid = vid.ecid) and (tu.videoid = vid.id) ';
+        $selectsql .= 'ON (tu.ecid = vid.ecid) and (tu.videoid = vid.videoid) ';
         $selectsql .= 'WHERE tu.ecid = ? ';
         $selectsql .= 'GROUP BY vid.id, vid.name ';
         $params = ['ecid' => $formdata->ecid];

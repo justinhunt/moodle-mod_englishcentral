@@ -124,7 +124,7 @@ class userattempts extends basereport {
 
         $selectsql = 'SELECT tu.*, vid.name as videoname FROM {' . constants::M_ATTEMPTSTABLE . '} tu ';
         $selectsql .= 'INNER JOIN {' . constants::M_VIDEOSTABLE . '} vid ';
-        $selectsql .= 'ON (tu.ecid = vid.ecid) AND (tu.videoid = vid.id) ';
+        $selectsql .= 'ON (tu.ecid = vid.ecid) AND (tu.videoid = vid.videoid) ';
         $selectsql .= 'WHERE tu.ecid =? AND tu.userid = ?';
         $params = ['ecid' => $formdata->ecid, 'userid' => $formdata->userid];
 

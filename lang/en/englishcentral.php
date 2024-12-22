@@ -288,7 +288,6 @@ $string['points'] = 'Points';
 $string['reattempt'] = 'Try Again';
 $string['reports'] = 'Reports';
 $string['reporttitle'] = 'Report Title {$a}';
-$string['returntoreports'] = 'Return to reports';
 $string['selectanother'] = 'Back to Course';
 $string['sessionactivetime'] = 'Session active time';
 $string['sessiongrade'] = 'Session grade';
@@ -391,7 +390,7 @@ $string['developertools'] = "Developer Tools";
 $string['reportsmenutoptext'] = "Review attempts on Poodll EnglishCentral activities using the reports below.";
 $string['showingattempt'] = 'Showing attempt for: {$a}';
 $string['basicreport'] = 'Basic Report';
-$string['returntoreports'] = 'Return to Reports';
+$string['returntoreports'] = 'Return to Reports Menu';
 $string['returntogradinghome'] = 'Return to Grading Top';
 $string['exportexcel'] = 'Export to CSV';
 

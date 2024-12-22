@@ -1985,5 +1985,8 @@ body.poodll-ec-embed #page {
   .mod_ec_returntoreports {
     margin: auto;
     display: block;
-    width: 120px;
+    font-weight: bold;
+    width: 200px;
+    padding: 10px;
+    background-color: lightgrey;
   }
