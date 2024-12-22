@@ -66,7 +66,7 @@ class userattempts extends basereport {
                     if (!empty($record->detailsjson) && utils::is_json($record->detailsjson)) {
                         $details = json_decode($record->detailsjson);
                         if (isset($details->thumbnailURL)) {
-                            $ret .= \html_writer::img($details->thumbnailURL, '$record->videoname');
+                            $ret .= '<br/>' . \html_writer::img($details->thumbnailURL, '$record->videoname');
                         }
                     }
                 } else {
