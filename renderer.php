@@ -85,12 +85,12 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
                     $icon = html_writer::link($this->ec->get_view_url(), $icon);
                     // Tabs.php uses the $currenttab var.
                     $currenttab = 'view';
-                } else if (strpos($this->page->url, $this->ec->get_report_url()) === 0) {
+                } else if (strpos($this->page->url, $this->ec->get_report_url(false)) === 0) {
                     $icon = $this->pix_icon('i/report', 'reports', 'moodle', ['class' => 'icon']);
                     $icon = html_writer::link($this->ec->get_report_url(), $icon);
                     // Tabs.php uses the $currenttab var.
                     $currenttab = 'reports';
-                } else if (strpos($this->page->url, $this->ec->get_developertools_url()) === 0) {
+                } else if (strpos($this->page->url, $this->ec->get_developertools_url(false)) === 0) {
                     $icon = $this->pix_icon('i/settings', 'developertools', constants::M_COMPONENT, ['class' => 'icon']);
                     $icon = html_writer::link($this->ec->get_developertools_url(), $icon);
                     // Tabs.php uses the $currenttab var.
