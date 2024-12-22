@@ -29,7 +29,7 @@ use mod_englishcentral\utils;
 class attempts extends basereport {
 
     protected $report = "attempts";
-    protected $fields = ['username', 'total_p', 'watch', 'learn', 'speak', 'chat' ,  'firstattempt'];
+    protected $fields = ['username', 'total_p', 'watch', 'learn', 'speak', 'chat' , 'firstattempt'];
     protected $headingdata = null;
     protected $qcache = [];
     protected $ucache = [];
@@ -56,6 +56,13 @@ class attempts extends basereport {
             case 'firstattempt':
                 $ret = date("Y-m-d H:i:s", $record->firstattempt);
                 break;
+
+            case 'chat':
+                if (get_config(constants::M_COMPONENT, 'chatmode_enabled')) {
+                    $ret = $record->chat;
+                } else {
+                    $ret = '-';
+                }
 
             default:
                 if (property_exists($record, $field)) {
@@ -107,12 +114,16 @@ class attempts extends basereport {
         $goals['total'] = $goals['watch'] + $goals['learn'] + $goals['speak'] + $goals['chat'];
 
         // Now lets build our SQL.
-        $selectsql = 'SELECT tu.userid , SUM(watchcomplete) + SUM(learncount) + 
-                        SUM(speakcount) + SUM(chatcount) AS total,'.
-          'SUM(watchcomplete) AS watch,'.
-          'SUM(learncount) AS learn,'.
-          'SUM(speakcount) AS speak,'.
-          'SUM(chatcount) AS chat,' .
+        // We use COALESCE because the chatcount could contain nulls, and if ALL fields are NULL postgresql SUM returns null
+        // The other fields may not need COALESCE but, just in case, we added it to them too
+        $selectsql = 'SELECT tu.userid , SUM(COALESCE(watchcomplete, 0)) + ' .
+          'SUM(COALESCE(learncount, 0)) + ' .
+          'SUM(COALESCE(speakcount, 0)) + ' .
+          'SUM(COALESCE(chatcount, 0)) AS total,'.
+          'SUM(COALESCE(watchcomplete, 0)) AS watch,'.
+          'SUM(COALESCE(learncount, 0)) AS learn,'.
+          'SUM(COALESCE(speakcount, 0)) AS speak,'.
+          'SUM(COALESCE(chatcount, 0)) AS chat,' .
           'COUNT(id) AS attemptcount, ' .
           'MIN(timecreated) AS firstattempt ' .
           ' FROM {' . constants::M_ATTEMPTSTABLE . '} tu ';
@@ -156,4 +167,5 @@ class attempts extends basereport {
         }
         return true;
     }
+
 }

@@ -33,6 +33,13 @@ class courseattempts extends basereport {
                 }
                 break;
 
+            case 'chat':
+                if (get_config(constants::M_COMPONENT, 'chatmode_enabled')) {
+                    $ret = $record->chat;
+                } else {
+                    $ret = '-';
+                }
+
             default:
                 if (property_exists($record, $field)) {
                     $ret = $record->{$field};
@@ -64,12 +71,15 @@ class courseattempts extends basereport {
         $allparams = [];
 
         // Now lets build our SQL.
-        $selectsql = 'SELECT tu.userid , COUNT(DISTINCT(ec.id)) AS activities, SUM(watchcomplete) + SUM(learncount) + 
-                        SUM(speakcount) + SUM(chatcount) AS total,'.
-          'SUM(watchcomplete) AS watch,'.
-          'SUM(learncount) AS learn,'.
-          'SUM(speakcount) AS speak,'.
-          'SUM(chatcount) AS chat ' .
+        $selectsql = 'SELECT tu.userid , COUNT(DISTINCT(ec.id)) AS activities,' .
+          'SUM(COALESCE(watchcomplete, 0)) + ' .
+          'SUM(COALESCE(learncount, 0)) + ' .
+          'SUM(COALESCE(speakcount, 0)) + ' .
+          'SUM(COALESCE(chatcount, 0)) AS total,'.
+          'SUM(COALESCE(watchcomplete, 0)) AS watch,'.
+          'SUM(COALESCE(learncount, 0)) AS learn,'.
+          'SUM(COALESCE(speakcount, 0)) AS speak,'.
+          'SUM(COALESCE(chatcount, 0)) AS chat '  .
           'FROM {' . constants::M_ATTEMPTSTABLE . '} tu ' .
           'INNER JOIN {' . constants::M_TABLE . '} ec ' .
           'ON ec.id = tu.ecid ';

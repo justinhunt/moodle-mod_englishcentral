@@ -86,7 +86,7 @@ switch ($action){
         $completeattempts = $DB->get_records(constants::M_ATTEMPTSTABLE,
             ['ecid' => $moduleinstance->id, 'watchcomplete' => 1, 'learncomplete' => 1, 'speakcomplete' => 1, 'chatcomplete' => 1],
                 'timecompleted DESC', '*', 0, 1);
-           $videos = $DB->get_fieldset(constants::M_VIDEOSTABLE, 'id', ['ecid' => $moduleinstance->id]);
+        $videos = $DB->get_fieldset(constants::M_VIDEOSTABLE, 'videoid', ['ecid' => $moduleinstance->id]);
 
         if(!$completeattempts) {
                echo $renderer->header(get_string('developertools', constants::M_COMPONENT));

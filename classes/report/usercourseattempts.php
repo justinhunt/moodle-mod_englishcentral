@@ -39,6 +39,13 @@ class usercourseattempts extends basereport {
                     $ret = $record->attemptcount;
                     break;
 
+            case 'chat':
+                if (get_config(constants::M_COMPONENT, 'chatmode_enabled')) {
+                    $ret = $record->chat;
+                } else {
+                    $ret = '-';
+                }
+
             case 'firstattempt':
                 $ret = date("Y-m-d H:i:s", $record->firstattempt);
                 break;
@@ -76,14 +83,15 @@ class usercourseattempts extends basereport {
         $this->headingdata->userid = $formdata->userid;
         $emptydata = [];
 
-       
         // Now lets build our SQL.
-        $selectsql = 'SELECT tu.ecid , SUM(watchcomplete) + SUM(learncount) + 
-                        SUM(speakcount) + SUM(chatcount) AS total,'.
-          'SUM(watchcomplete) AS watch,'.
-          'SUM(learncount) AS learn,'.
-          'SUM(speakcount) AS speak,'.
-          'SUM(chatcount) AS chat,' .
+        $selectsql = 'SELECT tu.ecid , SUM(COALESCE(watchcomplete, 0)) + ' .
+          'SUM(COALESCE(learncount, 0)) + ' .
+          'SUM(COALESCE(speakcount, 0)) + ' .
+          'SUM(COALESCE(chatcount, 0)) AS total,'.
+          'SUM(COALESCE(watchcomplete, 0)) AS watch,'.
+          'SUM(COALESCE(learncount, 0)) AS learn,'.
+          'SUM(COALESCE(speakcount, 0)) AS speak,'.
+          'SUM(COALESCE(chatcount, 0)) AS chat,' .
           'MIN(tu.timecreated) AS firstattempt, ' .
           'ec.name, ' .
           'ec.watchgoal, ' .

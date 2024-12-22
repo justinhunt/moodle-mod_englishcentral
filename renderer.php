@@ -1206,16 +1206,18 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
     public function developerpage($cmid,$moduleid){
         $items = [];
         //Update gradebook
-        $items[]= "<div>Update all grades in gradebook for this activity. Maybe useful if you changed goals.</div>";
+        $items[]= get_string('updateallgrades_details',constants::M_COMPONENT);
         $gradesbtn= new \single_button(
             new \moodle_url(constants::M_URL . '/developer.php', array('action' => 'updategrades', 'id' => $cmid, 'n' => $moduleid)),
-            "Update All Grades", 'get');
+            get_string('updateallgrades',constants::M_COMPONENT), 'get');
+        $gradesbtn->add_confirm_action(get_string('updategradesconfirm', constants::M_COMPONENT));   
         $items[]=$this->render($gradesbtn);
         $items[]='<br/><br/>';
-        $items[]= "<div>Generate random attempts from the last attempt in the table, 1 for each enrolled user</div>";
+        $items[]= get_string('generateattemptdata_details',constants::M_COMPONENT);
         $gendatabtn= new \single_button(
             new \moodle_url(constants::M_URL . '/developer.php', array('action' => 'generatedata', 'id' => $cmid, 'n' => $moduleid)),
-            "Generate Attempt Data", 'get');
+            get_string('generateattemptdata',constants::M_COMPONENT), 'get');
+        $gendatabtn->add_confirm_action(get_string('generateattemptsconfirm', constants::M_COMPONENT));
         $items[]=$this->render($gendatabtn);
         return $items;
     }

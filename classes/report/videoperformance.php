@@ -9,6 +9,7 @@
 namespace mod_englishcentral\report;
 
 use mod_englishcentral\constants;
+use mod_englishcentral\utils;
 
 
 class videoperformance extends basereport {
@@ -30,6 +31,12 @@ class videoperformance extends basereport {
 
             case 'videoname':
                 $ret = $record->videoname;
+                if (!empty($record->detailsjson) && utils::is_json($record->detailsjson)) {
+                    $details = json_decode($record->detailsjson);
+                    if (isset($details->thumbnailURL)) {
+                        $ret .= '<br/>' . \html_writer::img($details->thumbnailURL, '$record->videoname');
+                    }
+                }
                 break;
 
             case 'totalwatches':
@@ -45,8 +52,11 @@ class videoperformance extends basereport {
                     break;
 
             case 'averagechat':
-                $ret = $record->averagechat;
-                break;
+                if (get_config(constants::M_COMPONENT, 'chatmode_enabled')) {
+                    $ret = $record->averagechat;
+                } else {
+                    $ret = '-';
+                }
 
             default:
                 if (property_exists($record, $field)) {
@@ -81,10 +91,10 @@ class videoperformance extends basereport {
         $this->rawdata = [];
         $emptydata = [];
 
-        $selectsql = 'SELECT vid.videoid as videoid, vid.name as videoname , COUNT(watchcomplete) as totalwatches,'.
-        'ROUND(AVG(learncount),1) AS averagelearn,'.
-        'ROUND(AVG(speakcount),1) AS averagespeak,'.
-        'ROUND(AVG(chatcount),1) AS averagechat ' .
+        $selectsql = 'SELECT vid.videoid as videoid, vid.name as videoname, vid.detailsjson, COUNT(watchcomplete) as totalwatches,'.
+        'ROUND(AVG(COALESCE(learncount, 0)),1) AS averagelearn,'.
+        'ROUND(AVG(COALESCE(speakcount, 0)),1) AS averagespeak,'.
+        'ROUND(AVG(COALESCE(chatcount, 0)),1) AS averagechat ' .
         ' FROM {' . constants::M_ATTEMPTSTABLE . '} tu ';
 
         $selectsql .= 'INNER JOIN {' . constants::M_VIDEOSTABLE . '} vid ';

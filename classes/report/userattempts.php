@@ -59,12 +59,22 @@ class userattempts extends basereport {
                 break;
 
             case 'videoname':
-                if ($withlinks) {
+                if ($withlinks && !empty($record->videoname)) {
                     $link = new \moodle_url(constants::M_URL . '/reports.php',
                             ['format' => 'html', 'report' => 'videoperformance', 'id' => $this->cm->id, 'videoid' => $record->videoid]);
                     $ret = \html_writer::link($link, $record->videoname);
+                    if (!empty($record->detailsjson) && utils::is_json($record->detailsjson)) {
+                        $details = json_decode($record->detailsjson);
+                        if (isset($details->thumbnailURL)) {
+                            $ret .= \html_writer::img($details->thumbnailURL, '$record->videoname');
+                        }
+                    }
                 } else {
-                    $ret = $record->videoname;
+                    if (empty($record->videoname)) {
+                        $ret = get_string('deletedvideo', constants::M_COMPONENT);
+                    } else {
+                        $ret = $record->videoname;
+                    }
                 }
                 break;
 
@@ -81,7 +91,11 @@ class userattempts extends basereport {
                 break;
 
             case 'chat':
-                $ret = $record->chatcount;
+                if (get_config(constants::M_COMPONENT, 'chatmode_enabled')) {
+                    $ret = $record->chatcount;
+                } else {
+                    $ret = '-';
+                }
                 break;
 
             case 'activetime':
@@ -122,8 +136,8 @@ class userattempts extends basereport {
         $this->rawdata = [];
         $emptydata = [];
 
-        $selectsql = 'SELECT tu.*, vid.name as videoname FROM {' . constants::M_ATTEMPTSTABLE . '} tu ';
-        $selectsql .= 'INNER JOIN {' . constants::M_VIDEOSTABLE . '} vid ';
+        $selectsql = 'SELECT tu.*, vid.name as videoname, vid.detailsjson FROM {' . constants::M_ATTEMPTSTABLE . '} tu ';
+        $selectsql .= 'LEFT OUTER JOIN {' . constants::M_VIDEOSTABLE . '} vid ';
         $selectsql .= 'ON (tu.ecid = vid.ecid) AND (tu.videoid = vid.videoid) ';
         $selectsql .= 'WHERE tu.ecid =? AND tu.userid = ?';
         $params = ['ecid' => $formdata->ecid, 'userid' => $formdata->userid];
