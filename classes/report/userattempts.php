@@ -29,7 +29,7 @@ use mod_englishcentral\utils;
 class userattempts extends basereport {
 
     protected $report = "userattempts";
-    protected $fields = ['videoid', 'videoname', 'learn', 'speak', 'chat', 'activetime', 'totaltime', 'timecreated', 'timecompleted'];
+    protected $fields = ['videoid', 'videoname', 'learn', 'speak', 'chat', 'timecreated'];
     protected $headingdata = null;
     protected $qcache = [];
     protected $ucache = [];
