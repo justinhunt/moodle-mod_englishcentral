@@ -91,7 +91,8 @@ class userattempts extends basereport {
                 break;
 
             case 'chat':
-                if (get_config(constants::M_COMPONENT, 'chatmode_enabled')) {
+                if (get_config(constants::M_COMPONENT, 'chatmode_enabled') ||
+                intval($record->chatcount) > 0) {
                     $ret = $record->chatcount;
                 } else {
                     $ret = '-';

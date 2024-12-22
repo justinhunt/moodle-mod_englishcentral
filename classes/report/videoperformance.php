@@ -52,11 +52,13 @@ class videoperformance extends basereport {
                     break;
 
             case 'averagechat':
-                if (get_config(constants::M_COMPONENT, 'chatmode_enabled')) {
+                if (get_config(constants::M_COMPONENT, 'chatmode_enabled') ||
+                    intval($record->averagechat) > 0) {
                     $ret = $record->averagechat;
                 } else {
                     $ret = '-';
                 }
+                break;
 
             default:
                 if (property_exists($record, $field)) {

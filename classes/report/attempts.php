@@ -58,11 +58,13 @@ class attempts extends basereport {
                 break;
 
             case 'chat':
-                if (get_config(constants::M_COMPONENT, 'chatmode_enabled')) {
+                if (get_config(constants::M_COMPONENT, 'chatmode_enabled') ||
+                    intval($record->chat) > 0) {
                     $ret = $record->chat;
                 } else {
                     $ret = '-';
                 }
+                break;
 
             default:
                 if (property_exists($record, $field)) {
