@@ -54,7 +54,7 @@ $PAGE->set_url(constants::M_URL . '/developer.php',
 require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
 
-require_capability('mod/englishcentral:viewreports', $modulecontext);
+require_capability('mod/englishcentral:viewdevelopertools', $modulecontext);
 
 // Get the admin settings.
 $config = get_config(constants::M_COMPONENT);

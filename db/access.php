@@ -106,7 +106,7 @@ $capabilities = [
 
         'mod/englishcentral:viewdevelopertools' => [
             'captype' => 'write',
-            'contextlevel' => CONTEXT_COURSE
+            'contextlevel' => CONTEXT_COURSE,
         ],
 
         'mod/englishcentral:submit' => [
