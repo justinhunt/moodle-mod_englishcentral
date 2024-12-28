@@ -16,7 +16,7 @@ class videoperformance extends basereport {
 
     protected $report = "videoperformance";
     protected $fields = ['videoid', 'videoname', 'totalwatches', 'averagelearn', 'averagespeak', 'averagechat'];
-    protected $headingdata = null;
+    protected $formdata = null;
     protected $qcache = array();
     protected $ucache = array();
 
@@ -71,7 +71,7 @@ class videoperformance extends basereport {
     }
 
     public function fetch_formatted_heading() {
-        $record = $this->headingdata;
+        $record = $this->formdata;
         $ret = '';
         if (!$record) {
             return $ret;
@@ -81,14 +81,39 @@ class videoperformance extends basereport {
         return get_string('videoperformanceheading', constants::M_COMPONENT, $ec->name);
     }
 
-  
+    public function fetch_chart($renderer, $showdatasource = true) {
+
+        $records = $this->rawdata;
+
+        //no paging in a donut chart
+        /*
+        if($paging){
+            $startrecord = ($paging->perpage * $paging->pageno) + 1;
+            $endrecord = $startrecord + $paging->perpage - 1;
+        }
+        */
+        // Build the series data.
+        $videoseries = [];
+        $videonames = [];
+        foreach ($records as $record) {
+            $videoseries[] = $record->totalwatches;
+            $videonames[] = $record->videoname;
+        }
+
+        // Display the chart
+        $chart = new \core\chart_pie();
+        $chart->set_doughnut(true); // Calling set_doughnut(true) we display the chart as a doughnut.
+        $chart->add_series( new \core\chart_series('My series title', $videoseries));
+        $chart->set_labels($videonames);
+        $thechart = $renderer->render_chart($chart, $showdatasource);
+        return $thechart;
+    }
 
     public function process_raw_data($formdata) {
         global $DB, $USER;
 
-        // heading data
-        $this->headingdata = new \stdClass();
-        $this->headingdata->ecid = $formdata->ecid;
+        // Save form data for later.
+        $this->formdata = $formdata;
 
         $this->rawdata = [];
         $emptydata = [];
@@ -102,11 +127,23 @@ class videoperformance extends basereport {
         $selectsql .= 'INNER JOIN {' . constants::M_VIDEOSTABLE . '} vid ';
         $selectsql .= 'ON (tu.ecid = vid.ecid) and (tu.videoid = vid.videoid) ';
         $selectsql .= 'WHERE tu.ecid = ? ';
+        $allparams = ['ecid' => $formdata->ecid];
+
+        // Days limit WHERE condition.
+        if ($formdata->dayslimit > 0) {
+            // Calculate the unix timestamp X days ago.
+            // 86400 = 24 hours * 60 minutes * 60 seconds.
+            $dayslimit = time() - ($formdata->dayslimit * 86400);
+            $dayslimitcondition = " AND timecreated >= ?";
+            $selectsql .= $dayslimitcondition;
+            $allparams['dayslimit'] = $dayslimit;
+        }
+
+        // GROUP BY .
         $selectsql .= 'GROUP BY vid.id, vid.name ';
-        $params = ['ecid' => $formdata->ecid];
 
         // Run the SQL.
-        $alldata = $DB->get_records_sql($selectsql, $params);
+        $alldata = $DB->get_records_sql($selectsql, $allparams);
 
         if ($alldata) {
             foreach ($alldata as $thedata) {

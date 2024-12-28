@@ -30,12 +30,12 @@ class userattempts extends basereport {
 
     protected $report = "userattempts";
     protected $fields = ['videoid', 'videoname', 'learn', 'speak', 'chat', 'timecreated'];
-    protected $headingdata = null;
+    protected $formdata = null;
     protected $qcache = [];
     protected $ucache = [];
 
     public function fetch_formatted_heading() {
-        $record = $this->headingdata;
+        $record = $this->formdata;
         $ret = '';
         if (!$record) {
             return $ret;
@@ -61,7 +61,8 @@ class userattempts extends basereport {
             case 'videoname':
                 if ($withlinks && !empty($record->videoname)) {
                     $link = new \moodle_url(constants::M_URL . '/reports.php',
-                            ['format' => 'html', 'report' => 'videoperformance', 'id' => $this->cm->id, 'videoid' => $record->videoid]);
+                            ['format' => $this->formdata->format, 'report' => 'videoperformance',
+                            'id' => $this->cm->id, 'videoid' => $record->videoid, 'dayslimit' => $this->formdata->dayslimit]);
                     $ret = \html_writer::link($link, $record->videoname);
                     if (!empty($record->detailsjson) && utils::is_json($record->detailsjson)) {
                         $details = json_decode($record->detailsjson);
@@ -126,13 +127,54 @@ class userattempts extends basereport {
 
     } //end of function
 
+    public function fetch_chart($renderer, $showdatasource = true) {
+
+        $records = $this->rawdata;
+        // Build the series data.
+        $learnseries = [];
+        $speakseries = [];
+        $chatseries = [];
+        $videonames = [];
+        foreach ($records as $record) {
+            $learnseries[] = $record->learncount;
+            $speakseries[] = $record->speakcount;
+            $chatseries[] = $record->chatcount;
+            if (empty($record->videoname)) {
+                $videonames[] = get_string('deletedvideo', constants::M_COMPONENT);
+            } else {
+                $videonames[] = $record->videoname;
+            }
+        }
+
+        // Display the chart.
+        $chart = new \core\chart_bar();
+        $chart->set_horizontal(true);
+        $chart->set_stacked(true);
+        $chart->add_series(new \core\chart_series(
+            get_string('learn', constants::M_COMPONENT),
+             $learnseries));
+        $chart->add_series(new \core\chart_series(
+            get_string('speak', constants::M_COMPONENT),
+             $speakseries));
+        if (get_config(constants::M_COMPONENT, 'chatmode_enabled')){
+            $chart->add_series(new \core\chart_series(
+                get_string('chat', constants::M_COMPONENT),
+                $chatseries));
+        }
+        $chart->set_labels($videonames);
+        $thechart = $renderer->render_chart($chart, $showdatasource);
+        // We set a height of 40px per "bar.".
+        $chartheight = max([count($videonames) * 40, 450]);
+        return '<div class="mod_ec_chartcontainer" style="height: ' .
+            $chartheight . 'px">' .
+            $thechart . '</div>';
+    }
+
     public function process_raw_data($formdata) {
         global $DB;
 
-        // heading data
-        $this->headingdata = new \stdClass();
-        $this->headingdata->userid = $formdata->userid;
-        $this->headingdata->ecid = $formdata->ecid;
+        // Save form data for later.
+        $this->formdata = $formdata;
 
         $this->rawdata = [];
         $emptydata = [];
@@ -141,10 +183,20 @@ class userattempts extends basereport {
         $selectsql .= 'LEFT OUTER JOIN {' . constants::M_VIDEOSTABLE . '} vid ';
         $selectsql .= 'ON (tu.ecid = vid.ecid) AND (tu.videoid = vid.videoid) ';
         $selectsql .= 'WHERE tu.ecid =? AND tu.userid = ?';
-        $params = ['ecid' => $formdata->ecid, 'userid' => $formdata->userid];
+        $allparams = ['ecid' => $formdata->ecid, 'userid' => $formdata->userid];
+
+        // Days limit WHERE condition.
+        if ($formdata->dayslimit > 0) {
+            // Calculate the unix timestamp X days ago.
+            // 86400 = 24 hours * 60 minutes * 60 seconds.
+            $dayslimit = time() - ($formdata->dayslimit * 86400);
+            $dayslimitcondition = " AND timecreated >= ?";
+            $selectsql .= $dayslimitcondition;
+            $allparams['dayslimit'] = $dayslimit;
+        }
 
         // Run the SQL.
-        $alldata = $DB->get_records_sql($selectsql, $params);
+        $alldata = $DB->get_records_sql($selectsql, $allparams);
 
         if ($alldata) {
             foreach ($alldata as $thedata) {

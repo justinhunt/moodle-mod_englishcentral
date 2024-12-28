@@ -28,8 +28,10 @@ use mod_englishcentral\utils;
 
 class report_renderer extends \plugin_renderer_base {
 
-    public function render_reportmenu($moduleinstance, $cm) {
+    public function render_reportmenu($moduleinstance, $cm, $dayslimit, $format) {
         $reports = [];
+        $theurl = new \moodle_url(constants::M_URL . '/reports.php',
+        ['id' => $cm->id, 'n' => $moduleinstance->id, 'dayslimit' => $dayslimit, 'format' => $format]);
 /*
         $basic = new \single_button(
                 new \moodle_url(constants::M_URL . '/reports.php',
@@ -38,30 +40,30 @@ class report_renderer extends \plugin_renderer_base {
         $reports[] = ['button' => $this->render($basic),
         'text' => get_string('attemptssummary_explanation', constants::M_COMPONENT)];
 */
+        $theurl->param('report', 'attemptssummary');
         $graphicalattempts = new \single_button(
-            new \moodle_url(constants::M_URL . '/reports.php',
-                    ['report' => 'attempts', 'id' => $cm->id, 'n' => $moduleinstance->id,'format' => 'graphical']),
-            get_string('attemptsreport', constants::M_COMPONENT), 'get');
+            $theurl,
+            get_string('attemptssummaryreport', constants::M_COMPONENT), 'get');
         $reports[] = ['button' => $this->render($graphicalattempts),
-        'text' => get_string('graphicalattempts_explanation', constants::M_COMPONENT)];
+        'text' => get_string('attemptssummaryreport_explanation', constants::M_COMPONENT)];
 
+        $theurl->param('report', 'attempts');
         $attempts = new \single_button(
-                new \moodle_url(constants::M_URL . '/reports.php',
-                        ['report' => 'attempts', 'id' => $cm->id, 'n' => $moduleinstance->id]),
+                $theurl,
                 get_string('attemptsreport', constants::M_COMPONENT), 'get');
         $reports[] = ['button' => $this->render($attempts),
             'text' => get_string('attempts_explanation', constants::M_COMPONENT)];
 
+        $theurl->param('report', 'videoperformance');
         $videoperformance = new \single_button(
-            new \moodle_url(constants::M_URL . '/reports.php',
-                ['report' => 'videoperformance', 'id' => $cm->id, 'n' => $moduleinstance->id]),
+            $theurl,
             get_string('videoperformancereport', constants::M_COMPONENT), 'get');
         $reports[] = ['button' => $this->render($videoperformance),
             'text' => get_string('videoperformance_explanation', constants::M_COMPONENT)];
 
+        $theurl->param('report', 'courseattempts');
         $courseattempts = new \single_button(
-            new \moodle_url(constants::M_URL . '/reports.php',
-                ['report' => 'courseattempts', 'id' => $cm->id, 'n' => $moduleinstance->id]),
+            $theurl,
             get_string('courseattemptsreport', constants::M_COMPONENT), 'get');
         $reports[] = ['button' => $this->render($courseattempts),
             'text' => get_string('courseattempts_explanation', constants::M_COMPONENT)];
@@ -86,7 +88,7 @@ class report_renderer extends \plugin_renderer_base {
         return $ret;
     }
 
-    public function render_empty_section_html($sectiontitle) {
+    public function render_empty_section_html() {
         global $CFG;
         return $this->output->heading(get_string('nodataavailable', constants::M_COMPONENT), 3);
     }
@@ -117,7 +119,7 @@ class report_renderer extends \plugin_renderer_base {
         return \html_writer::div($this->render($excel), constants::M_CLASS . '_actionbuttons');
     }
 
-    public function render_section_csv($sectiontitle, $report, $head, $rows, $fields) {
+    public function render_report_csv($sectiontitle, $report, $head, $rows, $fields) {
 
         // Use the sectiontitle as the file name. Clean it and change any non-filename characters to '_'.
         $name = clean_param($sectiontitle, PARAM_FILE);
@@ -147,21 +149,10 @@ class report_renderer extends \plugin_renderer_base {
         exit();
     }
 
-    public function render_section_graph($sectiontitle, $sectiondescription, $report, $head, $rows, $fields) {
+    public function render_report_tabular($report, $head, $rows, $fields) {
         global $CFG;
         if (empty($rows)) {
-            return $this->render_empty_section_html($sectiontitle);
-        }
-
-        $html = '';
-        return $html;
-
-    }
-
-    public function render_section_html($sectiontitle, $sectiondescription, $report, $head, $rows, $fields) {
-        global $CFG;
-        if (empty($rows)) {
-            return $this->render_empty_section_html($sectiontitle);
+            return $this->render_empty_section_html();
         }
 
         // set up our table and head attributes
@@ -190,9 +181,8 @@ class report_renderer extends \plugin_renderer_base {
 
             $htmltable->data[] = $htr;
         }
-        $html = $this->output->heading($sectiontitle, 4);
-        $html .= $this->output->heading($sectiondescription, 5);
-        $html .= \html_writer::table($htmltable);
+
+        $html = \html_writer::table($htmltable);
 
         // if datatables set up datatables
         if(constants::M_USE_DATATABLES) {
@@ -226,9 +216,9 @@ class report_renderer extends \plugin_renderer_base {
     }
 
     function show_reports_footer($moduleinstance, $cm, $formdata, $showreport) {
-        // print's a popup link to your custom page
+        // a return to reports top link
         $link = new \moodle_url(constants::M_URL . '/reports.php',
-                ['report' => 'menu', 'id' => $cm->id, 'n' => $moduleinstance->id]);
+                ['report' => 'menu', 'id' => $cm->id, 'n' => $moduleinstance->id, 'dayslimit' => $formdata->dayslimit, 'format' => $formdata->format]);
         $ret = \html_writer::link($link, get_string('returntoreports', constants::M_COMPONENT),['class'=>'mod_ec_returntoreports']);
         $ret .= $this->render_exportbuttons_html($cm, $formdata, $showreport);
         return $ret;
@@ -239,6 +229,55 @@ class report_renderer extends \plugin_renderer_base {
         $selector = new \single_select($url, 'perpage', $options, $paging->perpage);
         $selector->set_label(get_string('attemptsperpage', constants::M_COMPONENT));
         return $this->render($selector);
+    }
+
+    function show_user_report_options($url, $currentdayslimit, $currentformat) {
+        $dayslimitselector = $this->fetch_dayslimit_selector($url, $currentdayslimit);
+        $formatselector = $this->fetch_format_selector($url, $currentformat);
+        return \html_writer::div($formatselector . $dayslimitselector  , 'mod_ec_user_report_opts float-right');
+    }
+
+    function fetch_dayslimit_selector($url, $currentselection) {
+        $options = ['0' => get_string('nodayslimit', constants::M_COMPONENT),
+            '7' => get_string('xdayslimit', constants::M_COMPONENT, 7),
+            '14' => get_string('xdayslimit', constants::M_COMPONENT, 14),
+            '30' => get_string('xdayslimit', constants::M_COMPONENT, 30),
+            '90' => get_string('xdayslimit', constants::M_COMPONENT, 90),
+            '180' => get_string('xdayslimit', constants::M_COMPONENT, 180),
+            '365' => get_string('xdayslimit', constants::M_COMPONENT, 365)];
+        $theurl = clone $url;
+        $theurl->remove_params('dayslimit');
+        $selector = new \single_select($theurl, 'dayslimit', $options, $currentselection);
+        $widget = $this->render($selector);
+        return $widget;
+    }
+
+    function fetch_format_selector($url, $currentselection) {
+        $params = [];
+        $theurl = clone $url;
+
+        $theurl->param('format', 'tabular');
+        $params['tableurl'] = $theurl->out();
+
+        $theurl->param('format', 'graphical');
+        $params['charturl'] = $theurl->out();
+
+        $theurl->param('format', 'combined');
+        $params['combiurl'] = $theurl->out();
+
+        switch($currentselection){
+            case "tabular":
+                $params['istable'] = true;
+                break;
+            case "graphical":
+                $params['ischart'] = true;
+                break;
+            case "combined":
+            default:
+                $params['iscombi'] = true; break;
+        }
+
+        return  $this->render_from_template('mod_englishcentral/reportformatselector', $params);
     }
 
     /**
@@ -254,14 +293,6 @@ class report_renderer extends \plugin_renderer_base {
         // add paging params to url (NOT pageno)
         $baseurl->params(['perpage' => $paging->perpage, 'sort' => $paging->sort]);
         return $this->output->paging_bar($totalcount, $paging->pageno, $paging->perpage, $baseurl, $pagevar);
-    }
-
-    function show_grading_footer($moduleinstance, $cm, $mode) {
-
-        // takes you back to home
-        $link = new \moodle_url(constants::M_URL . '/grading.php', ['id' => $cm->id, 'n' => $moduleinstance->id]);
-        $ret = \html_writer::link($link, get_string('returntogradinghome', constants::M_COMPONENT));
-        return $ret;
     }
 
     function show_export_buttons($cm, $formdata, $showreport) {

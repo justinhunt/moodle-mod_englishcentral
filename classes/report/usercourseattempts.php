@@ -16,12 +16,13 @@ class usercourseattempts extends basereport {
     protected $report = "usercourseattempts";
 
     protected $fields = ['name', 'total_p', 'watch', 'learn', 'speak', 'chat' ,  'firstattempt'];
-    protected $headingdata = null;
+    protected $formdata = null;
     protected $qcache = [];
     protected $ucache = [];
 
     public function fetch_formatted_field($field, $record, $withlinks) {
         global $DB, $CFG, $OUTPUT;
+
         switch ($field) {
 
             case 'name':
@@ -29,23 +30,60 @@ class usercourseattempts extends basereport {
                 $ret = $record->name;
                 if ($withlinks) {
                         $link = new \moodle_url(constants::M_URL . '/reports.php',
-                                ['format' => 'html', 'report' => 'userattempts', 'id' => $this->cm->id, 'userid' => $this->headingdata->userid]);
+                                ['format' => $this->formdata->format, 'report' => 'userattempts',
+                                 'id' => $this->cm->id, 'userid' => $this->formdata->userid]);
                         $ret = \html_writer::link($link, $ret);
                 }
                 break;
 
-            // Not necessary here . Since Watch = the same details  
+            // Not necessary here . Since Watch = the same details.
             case 'attempts':
                     $ret = $record->attemptcount;
                     break;
 
+            case 'watch':
+                $watchgoal = intval($record->watchgoal);
+                if ($watchgoal > 0) {
+                    $ret = $record->watch . '/' . $watchgoal;
+                } else {
+                    $ret = $record->watch;
+                }
+                break;
+
+            case 'learn':
+                $learngoal = intval($record->learngoal);
+                if ($learngoal > 0) {
+                    $ret = $record->learn . '/' . $learngoal;
+                } else {
+                    $ret = $record->learn;
+                }
+                break;
+
+            case 'speak':
+                $speakgoal = intval($record->speakgoal);
+                if ($speakgoal > 0) {
+                    $ret = $record->speak . '/' . $speakgoal;
+                } else {
+                    $ret = $record->speak;
+                }
+                break;
+
             case 'chat':
                 if (get_config(constants::M_COMPONENT, 'chatmode_enabled') ||
                     intval($record->chat) > 0) {
-                    $ret = $record->chat;
+                        $chatgoal = intval($record->chatgoal);
+                        if ($chatgoal > 0) {
+                            $ret = $record->chat . '/' . $chatgoal;
+                        } else {
+                            $ret = $record->chat;
+                        }
                 } else {
                     $ret = '-';
                 }
+                break;
+
+            case 'total_p':
+                $ret = $record->total_p . "% (" . $record->total .")";
                 break;
 
             case 'firstattempt':
@@ -63,7 +101,7 @@ class usercourseattempts extends basereport {
     }
 
     public function fetch_formatted_heading() {
-        $record = $this->headingdata;
+        $record = $this->formdata;
         $ret = '';
         if (!$record) {
             return $ret;
@@ -76,13 +114,55 @@ class usercourseattempts extends basereport {
         return get_string('usercourseattemptsheading', constants::M_COMPONENT, $a);
     }
 
+    public function fetch_chart($renderer, $showdatasource = true) {
+
+        $records = $this->rawdata;
+        // Build the series data.
+        $watchseries = [];
+        $learnseries = [];
+        $speakseries = [];
+        $chatseries = [];
+        $activitynames = [];
+        foreach ($records as $record) {
+            $watchseries[] = $record->watch;
+            $learnseries[] = $record->learn;
+            $speakseries[] = $record->speak;
+            $chatseries[] = $record->chat;
+            $activitynames[] = $record->name;
+        }
+
+        // Display the chart.
+        $chart = new \core\chart_bar();
+        $chart->set_horizontal(true);
+        $chart->add_series(new \core\chart_series(
+            get_string('watch', constants::M_COMPONENT),
+             $watchseries));
+        $chart->add_series(new \core\chart_series(
+            get_string('learn', constants::M_COMPONENT),
+             $learnseries));
+        $chart->add_series(new \core\chart_series(
+            get_string('speak', constants::M_COMPONENT),
+             $speakseries));
+        if (get_config(constants::M_COMPONENT, 'chatmode_enabled')) {
+            $chart->add_series(new \core\chart_series(
+                get_string('chat', constants::M_COMPONENT),
+                $chatseries));
+        }
+        $chart->set_labels($activitynames);
+        $thechart = $renderer->render_chart($chart, $showdatasource);
+        // We set a height of 40px per "bar." but not less than 450px
+        $chartheight = max([count($activitynames) * 40, 450]);
+        return '<div class="mod_ec_chartcontainer" style="height: ' .
+            $chartheight . 'px">' .
+            $thechart . '</div>';
+    }
+
     public function process_raw_data($formdata) {
         global $DB, $USER;
 
-        // heading data
-        $this->headingdata = new \stdClass();
-        $this->headingdata->course = $formdata->course;
-        $this->headingdata->userid = $formdata->userid;
+        // Save form data for later.
+        $this->formdata = $formdata;
+
         $emptydata = [];
 
         // Now lets build our SQL.
@@ -106,6 +186,16 @@ class usercourseattempts extends basereport {
 
         $alldatasql = $selectsql . " WHERE ec.course = ? AND tu.userid = ? ";
         $allparams = ['course' => $formdata->course, 'userid' => $formdata->userid];
+
+        // Days limit WHERE condition.
+        if ($formdata->dayslimit > 0) {
+            // Calculate the unix timestamp X days ago.
+            // 86400 = 24 hours * 60 minutes * 60 seconds.
+            $dayslimit = time() - ($formdata->dayslimit * 86400);
+            $dayslimitcondition = " AND timecreated >= ?";
+            $alldatasql .= $dayslimitcondition;
+            $allparams['dayslimit'] = $dayslimit;
+        }
 
         // Add a 'group by' clause to SQL
         $alldatasql .= "GROUP BY tu.ecid";
@@ -135,8 +225,6 @@ class usercourseattempts extends basereport {
                 foreach ($goals as $goalfield => $goalvalue) {
                     $thedata->{$goalfield . '_p'} = $goalvalue > 0 ? round($thedata->{$goalfield} / $goalvalue * 100 , 0) : '-';
                     if ($thedata->{$goalfield . '_p'} > 100) {$thedata->{$goalfield . '_p'} = 100;}
-                    $thedata->{$goalfield . '_p'} .= "% (" .$thedata->{$goalfield}.")";
-                    $thedata->{$goalfield} = $thedata->{$goalfield} . '/' . $goalvalue;
                 }
                 $this->rawdata[] = $thedata;
             }

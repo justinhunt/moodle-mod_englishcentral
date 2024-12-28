@@ -15,7 +15,7 @@ class courseattempts extends basereport {
     protected $report = "courseattempts";
 
     protected $fields = ['username', 'activities', 'total', 'watch', 'learn', 'speak', 'chat'];
-    protected $headingdata = null;
+    protected $formdata = null;
     protected $qcache = [];
     protected $ucache = [];
 
@@ -28,7 +28,8 @@ class courseattempts extends basereport {
                 $ret = fullname($user);
                 if ($withlinks) {
                         $link = new \moodle_url(constants::M_URL . '/reports.php',
-                                ['format' => 'html', 'report' => 'usercourseattempts', 'id' => $this->cm->id, 'userid' => $record->userid]);
+                                ['format' => $this->formdata->format, 'report' => 'usercourseattempts',
+                                'id' => $this->cm->id, 'userid' => $record->userid, 'dayslimit' => $this->formdata->dayslimit]);
                         $ret = \html_writer::link($link, $ret);
                 }
                 break;
@@ -53,7 +54,7 @@ class courseattempts extends basereport {
     }
 
     public function fetch_formatted_heading() {
-        $record = $this->headingdata;
+        $record = $this->formdata;
         $ret = '';
         if (!$record) {
             return $ret;
@@ -63,12 +64,39 @@ class courseattempts extends basereport {
 
     }
 
+    public function fetch_chart($renderer, $showdatasource = true) {
+
+        $records = $this->rawdata;
+        // Build the series data.
+        $watchseries = [];
+        $usernames = [];
+        foreach ($records as $record) {
+            $watchseries[] = $record->watch;
+            $user = $this->fetch_cache('user', $record->userid);
+            $usernames[] = fullname($user) . " ($record->watch)";
+        }
+
+        // Display the chart.
+        $chart = new \core\chart_bar();
+        $chart->set_horizontal(true);
+        $chart->add_series(new \core\chart_series(
+            get_string('watch', constants::M_COMPONENT),
+             $watchseries));
+        $chart->set_labels($usernames);
+        $thechart = $renderer->render_chart($chart, $showdatasource);
+        // We set a height of 40px per "bar.".
+        $chartheight = max([count($usernames) * 40, 450]);
+        return '<div class="mod_ec_chartcontainer" style="height: ' .
+            $chartheight . 'px">' .
+            $thechart . '</div>';
+    }
+
     public function process_raw_data($formdata) {
         global $DB, $USER;
 
-        // heading data
-        $this->headingdata = new \stdClass();
-        $this->headingdata->course = $formdata->course;
+        // Save form data for later.
+        $this->formdata = $formdata;
+ 
         $emptydata = [];
         $allparams = [];
 
@@ -99,6 +127,16 @@ class courseattempts extends basereport {
         } else {
             $alldatasql = $selectsql . " WHERE ec.course = ?";
             $allparams['course'] = $formdata->course;
+        }
+
+        // Days limit WHERE condition.
+        if ($formdata->dayslimit > 0) {
+            // Calculate the unix timestamp X days ago.
+            // 86400 = 24 hours * 60 minutes * 60 seconds.
+            $dayslimit = time() - ($formdata->dayslimit * 86400);
+            $dayslimitcondition = " AND timecreated >= ?";
+            $alldatasql .= $dayslimitcondition;
+            $allparams['dayslimit'] = $dayslimit;
         }
 
         // Add a 'group by' clause to SQL

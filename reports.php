@@ -30,10 +30,10 @@ use mod_englishcentral\utils;
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n = optional_param('n', 0, PARAM_INT);  // englishcentral instance ID
-$format = optional_param('format', 'html', PARAM_TEXT); // export format csv or html
+$format = optional_param('format', 'combined', PARAM_TEXT); // export format csv/tabular/graphical/combined
 $showreport = optional_param('report', 'menu', PARAM_TEXT); // report type
 $userid = optional_param('userid', 0, PARAM_INT); // user id
-$attemptid = optional_param('attemptid', 0, PARAM_INT); // attempt id
+$dayslimit = optional_param('dayslimit', 0, PARAM_INT); // no. of days data to show
 
 // paging details
 $paging = new stdClass();
@@ -54,7 +54,8 @@ if ($id) {
 }
 
 $PAGE->set_url(constants::M_URL . '/reports.php',
-        ['id' => $cm->id, 'report' => $showreport, 'format' => $format, 'userid' => $userid, 'attemptid' => $attemptid]);
+        ['id' => $cm->id, 'report' => $showreport, 'format' => $format,
+             'userid' => $userid, 'dayslimit' => $dayslimit]);
 require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
 
@@ -67,7 +68,7 @@ $config = get_config(constants::M_COMPONENT);
 if (constants::M_USE_DATATABLES) {
     $paging = false;
 } else if ($paging->perpage == -1) {
-    $paging->perpage = $config->attemptsperpage;
+    $paging->perpage = 20; //$config->attemptsperpage;
 }
 
 
@@ -110,7 +111,8 @@ switch ($showreport) {
     // not a true report, separate implementation in renderer
     case 'menu':
         echo $renderer->header(get_string('reports', constants::M_COMPONENT));
-        echo $reportrenderer->render_reportmenu($moduleinstance, $cm);
+        echo $reportrenderer->show_user_report_options($PAGE->url, $dayslimit, $format);
+        echo $reportrenderer->render_reportmenu($moduleinstance, $cm, $dayslimit, $format);
         // Finish the page
         echo $renderer->footer();
         return;
@@ -122,12 +124,16 @@ switch ($showreport) {
         $formdata = new stdClass();
         break;
 
+    case 'attemptssummary':
+        $format = 'graphical';
     case 'attempts':
         $report = new \mod_englishcentral\report\attempts($cm);
         $formdata = new stdClass();
         $formdata->ecid = $moduleinstance->id;
         $formdata->modulecontextid = $modulecontext->id;
         $formdata->groupmenu = true;
+        $formdata->dayslimit = $dayslimit;
+        $formdata->format = $format;
         break;
 
     case 'userattempts':
@@ -136,6 +142,8 @@ switch ($showreport) {
         $formdata->ecid = $moduleinstance->id;
         $formdata->userid = $userid;
         $formdata->modulecontextid = $modulecontext->id;
+        $formdata->dayslimit = $dayslimit;
+        $formdata->format = $format;
         break;
 
     case 'videoperformance':
@@ -144,6 +152,8 @@ switch ($showreport) {
         $formdata->ecid = $moduleinstance->id;
         $formdata->courseid = $moduleinstance->course;
         $formdata->modulecontextid = $modulecontext->id;
+        $formdata->dayslimit = $dayslimit;
+        $formdata->format = $format;
         break;
 
     case 'courseattempts':
@@ -152,6 +162,8 @@ switch ($showreport) {
         $formdata->course = $moduleinstance->course;
         $formdata->modulecontextid = $modulecontext->id;
         $formdata->groupmenu = true;
+        $formdata->dayslimit = $dayslimit;
+        $formdata->format = $format;
         break;
 
     case 'usercourseattempts':
@@ -160,15 +172,8 @@ switch ($showreport) {
         $formdata->course = $moduleinstance->course;
         $formdata->modulecontextid = $modulecontext->id;
         $formdata->userid = $userid;
-        break;
-
-    case 'grading':
-        $report = new \mod_englishcentral\report\grading($cm);
-        echo $renderer->render_hiddenaudioplayer();
-        $formdata = new stdClass();
-        $formdata->ecid = $moduleinstance->id;
-        $formdata->modulecontextid = $modulecontext->id;
-        $formdata->groupmenu = true;
+        $formdata->dayslimit = $dayslimit;
+        $formdata->format = $format;
         break;
 
     default:
@@ -182,21 +187,21 @@ switch ($showreport) {
 1) load the class
 2) call report->process_raw_data
 3) call $rows=report->fetch_formatted_records($withlinks=true(html) false(print/excel))
-5) call $reportrenderer->render_section_html($sectiontitle, $report->name, $report->get_head, $rows, $report->fields);
+5) call $reportrenderer->render_report_tabular($sectiontitle, $report->name, $report->get_head, $rows, $report->fields);
 */
 
 
 $groupmenu = '';
-if(isset($formdata->groupmenu)){
-    // fetch groupmode/menu/id for this activity
+if (isset($formdata->groupmenu)) {
+    // Fetch groupmode/menu/id for this activity.
     if ($groupmode = groups_get_activity_groupmode($cm)) {
         $groupmenu = groups_print_activity_menu($cm, $PAGE->url, true);
         $groupmenu .= ' ';
         $formdata->groupid = groups_get_activity_group($cm);
-    }else{
+    } else {
         $formdata->groupid  = 0;
     }
-}else{
+} else {
     $formdata->groupid  = 0;
 }
 
@@ -207,54 +212,77 @@ $reportdescription = $report->fetch_formatted_description();
 switch ($format) {
     case 'csv':
         $reportrows = $report->fetch_formatted_rows(false);
-        $reportrenderer->render_section_csv($reportheading, $report->fetch_name(), $report->fetch_head(), $reportrows,
+        $reportrenderer->render_report_csv($reportheading, $report->fetch_name(), $report->fetch_head(), $reportrows,
                 $report->fetch_fields());
         exit;
 
     case 'graphical':
         // Hosting the original graphical report here. We need to hack it up a bit. TO DO .. integrate this properly
         // NB it handles username sorting better than Datatables .. TO DO .. do this in datatables.
-        if ($showreport == 'attempts') {
+        if ($showreport == 'attemptssummary') {
             $PAGE->requires->js_call_amd("$ec->plugin/report", 'init');
             echo $renderer->header(get_string('reports', constants::M_COMPONENT));
+            $dayslimitselector = $reportrenderer->fetch_dayslimit_selector($PAGE->url, $dayslimit);
+            echo \html_writer::div($dayslimitselector , 'mod_ec_user_report_opts float-right');
             echo $extraheader;
             // Standard graphical attempts report already has groups.
             // echo $groupmenu;
             // We need to house it in a div of id: page-mod-englishcentral-report for the original CSS to apply.
-            $progressreport = $renderer->show_progress_report();
+            $progressreport = $renderer->show_progress_report($dayslimit);
             echo \html_writer::div($progressreport, 'page-mod-englishcentral-report', ['id' => 'page-mod-englishcentral-report']);
         } else {
             echo $renderer->header(get_string('reports', constants::M_COMPONENT));
+            echo $reportrenderer->show_user_report_options($PAGE->url, $dayslimit, $format);
             echo $extraheader;
             echo $groupmenu;
-            echo $reportrenderer->render_section_graph($reportheading, $reportdescription, $report->fetch_name(), $report->fetch_head(), $reportrows,
-                    $report->fetch_fields());
+            echo $reportrenderer->heading($reportheading, 4, 'clearfix');
+            echo $reportrenderer->heading($reportdescription, 5);
+            echo $report->fetch_chart($reportrenderer, true);
         }
         echo $reportrenderer->show_reports_footer($moduleinstance, $cm, $formdata, $showreport);
         echo $renderer->footer();
         break;
 
+    case 'tabular':
+    case 'combined':
     default:
 
         $reportrows = $report->fetch_formatted_rows(true, $paging);
         $allrowscount = $report->fetch_all_rows_count();
-        if(constants::M_USE_DATATABLES){
+        if (constants::M_USE_DATATABLES) {
 
             // css must be required before header sent out
             $PAGE->requires->css( new \moodle_url('https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css'));
             echo $renderer->header(get_string('reports', constants::M_COMPONENT));
+            echo $reportrenderer->show_user_report_options($PAGE->url, $dayslimit, $format);
             echo $extraheader;
             echo $groupmenu;
-            echo $reportrenderer->render_section_html($reportheading, $reportdescription, $report->fetch_name(), $report->fetch_head(), $reportrows,
+            echo $reportrenderer->heading($reportheading, 4, 'clearfix');
+            echo $reportrenderer->heading($reportdescription, 5);
+            // First the chart.
+            if ($format == 'combined') {
+                echo $report->fetch_chart($reportrenderer, false);
+            }
+
+            // Then the table.
+            echo $reportrenderer->render_report_tabular( $report->fetch_name(), $report->fetch_head(), $reportrows,
                 $report->fetch_fields());
 
-        }else {
+        } else {
             $pagingbar = $reportrenderer->show_paging_bar($allrowscount, $paging, $PAGE->url);
             echo $renderer->header(get_string('reports', constants::M_COMPONENT));
+            echo $reportrenderer->show_user_report_options($PAGE->url, $dayslimit, $format);
             echo $extraheader;
             echo $groupmenu;
+            echo $reportrenderer->heading($reportheading, 4, 'clearfix');
+            echo $reportrenderer->heading($reportdescription, 5);
             echo $pagingbar;
-            echo $reportrenderer->render_section_html($reportheading, $reportdescription, $report->fetch_name(), $report->fetch_head(), $reportrows,
+            // First the chart.
+            if ($format == 'combined') {
+                echo $report->fetch_chart($reportrenderer, false);
+            }
+            // Then the table.
+            echo $reportrenderer->render_report_tabular( $report->fetch_name(), $report->fetch_head(), $reportrows,
                 $report->fetch_fields());
             echo $pagingbar;
         }

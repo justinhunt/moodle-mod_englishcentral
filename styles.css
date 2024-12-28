@@ -1990,3 +1990,9 @@ body.poodll-ec-embed #page {
     padding: 10px;
     background-color: lightgrey;
   }
+  .mod_ec_chartcontainer .chart-area .chart-image, .mod_ec_chartcontainer .chart-area {
+    min-height: 100%;
+  }
+  .mod_ec_chartcontainer .chart-area {
+    height: 100%;
+  }

@@ -709,7 +709,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         return html_writer::tag('div', $image.$removeIcon.$removeText.$help, array('class' => 'videoicon '.$type.'video' . $hidden));
     }
 
-    public function show_progress_report() {
+    public function show_progress_report($dayslimit=0) {
         global $DB, $CFG;
         $output = '';
 
@@ -741,6 +741,17 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         $from   = '{englishcentral_attempts}';
         $where  = 'ecid = ?';
         $params = array($this->ec->id);
+
+        // Days limit WHERE condition.
+        if ($dayslimit > 0) {
+            // Calculate the unix timestamp X days ago.
+            // 86400 = 24 hours * 60 minutes * 60 seconds.
+            $dayslimitinseconds = time() - ($dayslimit * 86400);
+            $dayslimitcondition = " AND timecreated >= ?";
+            $where .= $dayslimitcondition;
+            $params['dayslimit'] = $dayslimitinseconds;
+        }
+
 		if ($groupid) {
 			$where .= ' AND userid IN (SELECT gm.userid FROM {groups_members} gm WHERE gm.groupid = ?)';
 			$params[] = $groupid;
