@@ -29,7 +29,7 @@ use mod_englishcentral\utils;
 class attempts extends basereport {
 
     protected $report = "attempts";
-    protected $fields = ['username', 'total_p', 'watch', 'learn', 'speak', 'chat' , 'firstattempt'];
+    protected $fields = ['firstname', 'lastname', 'total_p', 'watch', 'learn', 'speak', 'chat' , 'firstattempt'];
     protected $formdata = null;
     protected $qcache = [];
     protected $ucache = [];
@@ -51,6 +51,26 @@ class attempts extends basereport {
                         $ret = \html_writer::link($link, $ret);
                 }
                 break;
+
+                case 'firstname':
+                case 'lastname':
+                    $user = $this->fetch_cache('user', $record->userid);
+                    if ($withlinks) {
+                        $link = new \moodle_url(
+                            constants::M_URL . '/reports.php',
+                            [
+                                'format' => $this->formdata->format,
+                                'report' => 'userattempts',
+                                'id' => $this->cm->id,
+                                'userid' => $record->userid,
+                                'dayslimit' => $this->formdata->dayslimit,
+                            ]
+                        );
+                        $ret = \html_writer::link($link, $user->{$field});
+                    } else {
+                        $ret = $user->{$field};
+                    }
+                    break;
 
             // Not necessary here . Since Watch = the same details  
             case 'attempts':
@@ -192,7 +212,7 @@ class attempts extends basereport {
           'SUM(COALESCE(learncount, 0)) AS learn,'.
           'SUM(COALESCE(speakcount, 0)) AS speak,'.
           'SUM(COALESCE(chatcount, 0)) AS chat,' .
-          'COUNT(id) AS attemptcount, ' .
+          'COUNT(tu.id) AS attemptcount, ' .
           'MIN(timecreated) AS firstattempt ' .
           ' FROM {' . constants::M_ATTEMPTSTABLE . '} tu ';
 

@@ -60,6 +60,8 @@ class attemptssummary extends basereport
                         ]
                     );
                     $ret = \html_writer::link($link, $record->{$field});
+                } else {
+                    $ret = $record->{$field};
                 }
                 break;
 

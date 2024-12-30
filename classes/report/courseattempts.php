@@ -14,7 +14,7 @@ class courseattempts extends basereport {
 
     protected $report = "courseattempts";
 
-    protected $fields = ['username', 'activities', 'total', 'watch', 'learn', 'speak', 'chat'];
+    protected $fields = ['firstname', 'lastname', 'activities', 'total', 'watch', 'learn', 'speak', 'chat'];
     protected $formdata = null;
     protected $qcache = [];
     protected $ucache = [];
@@ -31,6 +31,19 @@ class courseattempts extends basereport {
                                 ['format' => $this->formdata->format, 'report' => 'usercourseattempts',
                                 'id' => $this->cm->id, 'userid' => $record->userid, 'dayslimit' => $this->formdata->dayslimit]);
                         $ret = \html_writer::link($link, $ret);
+                }
+                break;
+
+            case 'firstname':
+            case 'lastname':
+                $user = $this->fetch_cache('user', $record->userid);
+                if ($withlinks) {
+                    $link = new \moodle_url(constants::M_URL . '/reports.php',
+                            ['format' => $this->formdata->format, 'report' => 'usercourseattempts',
+                            'id' => $this->cm->id, 'userid' => $record->userid, 'dayslimit' => $this->formdata->dayslimit]);
+                    $ret = \html_writer::link($link, $user->{$field});
+                } else {
+                    $ret = $user->{$field};
                 }
                 break;
 
