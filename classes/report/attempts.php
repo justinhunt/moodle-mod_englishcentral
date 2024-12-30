@@ -122,7 +122,7 @@ class attempts extends basereport {
             $percentstring = $record->total_p . '%';
             $percentstring = str_pad($percentstring,
                 4,
-                '_',
+                ' ', // doesn't work
                 STR_PAD_LEFT);
             $usernames[] = fullname($user) . ' ' . $percentstring;
         }
