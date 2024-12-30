@@ -230,7 +230,6 @@ switch ($format) {
         echo $groupmenu;
         echo $reportrenderer->heading($reportheading, 4, 'clearfix');
         echo $reportrenderer->heading($reportdescription, 5);
-        $CFG->chart_colorset = ['#ceb9df', '#a9dbef', '#f7c1a1', '#d3e9af'];
         echo $report->fetch_chart($reportrenderer, true);
         echo $reportrenderer->show_reports_footer($moduleinstance, $cm, $formdata, $showreport);
         echo $renderer->footer();

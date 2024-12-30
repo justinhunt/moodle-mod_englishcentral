@@ -95,13 +95,6 @@ class videoperformance extends basereport {
         global $CFG;
         $records = $this->rawdata;
 
-        //no paging in a donut chart
-        /*
-        if($paging){
-            $startrecord = ($paging->perpage * $paging->pageno) + 1;
-            $endrecord = $startrecord + $paging->perpage - 1;
-        }
-        */
         // Build the series data.
         $videoseries = [];
         $videonames = [];

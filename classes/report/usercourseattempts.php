@@ -136,6 +136,12 @@ class usercourseattempts extends basereport {
         $chart = new \core\chart_bar();
         $chart->set_horizontal(false);
         $chart->set_stacked(false);
+        $yaxis = $chart->get_yaxis(0, true);
+        $yaxis = $chart->get_yaxis(1, true);
+        $yaxis->set_stepsize(10);
+        $yaxis->set_min(0);
+        $yaxis->set_max(100);
+
         $chart->add_series(new \core\chart_series(
             get_string('watch', constants::M_COMPONENT),
              $watchseries));
