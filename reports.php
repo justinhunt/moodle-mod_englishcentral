@@ -224,7 +224,8 @@ switch ($format) {
         exit;
 
     case 'graphical':
-        $CFG->chart_colorset = ['#ceb9df', '#a9dbef', '#f7c1a1', '#d3e9af', '#a7d2e8', '#e3b9d9', '#f2d7a4', '#c7d9a3'];
+        // its too unprdictable to set these colors
+       // $CFG->chart_colorset = ['#ceb9df', '#a9dbef', '#f7c1a1', '#d3e9af', '#a7d2e8', '#e3b9d9', '#f2d7a4', '#c7d9a3'];
         echo $renderer->header(get_string('reports', constants::M_COMPONENT));
         echo $reportrenderer->show_user_report_options($PAGE->url, $dayslimit, $format);
         echo $extraheader;
