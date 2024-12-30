@@ -158,7 +158,7 @@ class usercourseattempts extends basereport {
         $chart->set_labels($activitynames);
 
         $thechart = $renderer->render_chart($chart, $showdatasource);
-        return '<div class="mod_ec_chartcontainer">' .
+        return '<div class="mod_ec_chartcontainer chart_usercourseattempts">' .
             $thechart . '</div>';
     }
 

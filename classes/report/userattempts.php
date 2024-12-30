@@ -173,7 +173,7 @@ class userattempts extends basereport {
         }
         $chart->set_labels($videonames);
         $thechart = $renderer->render_chart($chart, $showdatasource);
-        return '<div class="mod_ec_chartcontainer">' .
+        return '<div class="mod_ec_chartcontainer chart_userattempts">' .
             $thechart . '</div>';
     }
 

@@ -86,7 +86,7 @@ class courseattempts extends basereport {
         $thechart = $renderer->render_chart($chart, $showdatasource);
         // We set a height of 40px per "bar.".
         $chartheight = max([count($usernames) * 40, 450]);
-        return '<div class="mod_ec_chartcontainer" style="height: ' .
+        return '<div class="mod_ec_chartcontainer chart_courseattempts" style="height: ' .
             $chartheight . 'px">' .
             $thechart . '</div>';
     }
