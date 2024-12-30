@@ -29,7 +29,7 @@ use mod_englishcentral\utils;
 class userattempts extends basereport {
 
     protected $report = "userattempts";
-    protected $fields = ['videoid', 'videoname', 'learn', 'speak', 'chat', 'timecreated'];
+    protected $fields = ['videoid', 'videoname', 'difficulty', 'learn', 'speak', 'chat', 'timecreated'];
     protected $formdata = null;
     protected $qcache = [];
     protected $ucache = [];
@@ -79,6 +79,16 @@ class userattempts extends basereport {
                 }
                 break;
 
+            case 'difficulty':
+                    $ret = '-';
+                    if (!empty($record->detailsjson) && utils::is_json($record->detailsjson)) {
+                        $details = json_decode($record->detailsjson);
+                        if (isset($details->difficulty)) {
+                            $ret = $details->difficulty;
+                        }
+                    }
+                    break;
+
             case 'watch':
                 $ret = $record->watchcount;
                 break;
@@ -92,7 +102,7 @@ class userattempts extends basereport {
                 break;
 
             case 'chat':
-                if (get_config(constants::M_COMPONENT, 'chatmode_enabled') ||
+                if (get_config(constants::M_COMPONENT, 'chatmode') ||
                 intval($record->chatcount) > 0) {
                     $ret = $record->chatcount;
                 } else {
@@ -128,6 +138,8 @@ class userattempts extends basereport {
     } //end of function
 
     public function fetch_chart($renderer, $showdatasource = true) {
+        global $CFG;
+        $CFG->chart_colorset = ['#ceb9df', '#a9dbef', '#f7c1a1', '#d3e9af'];
 
         $records = $this->rawdata;
         // Build the series data.
@@ -148,15 +160,15 @@ class userattempts extends basereport {
 
         // Display the chart.
         $chart = new \core\chart_bar();
-        $chart->set_horizontal(true);
-        $chart->set_stacked(true);
+        $chart->set_horizontal(false);
+        $chart->set_stacked(false);
         $chart->add_series(new \core\chart_series(
             get_string('learn', constants::M_COMPONENT),
              $learnseries));
         $chart->add_series(new \core\chart_series(
             get_string('speak', constants::M_COMPONENT),
              $speakseries));
-        if (get_config(constants::M_COMPONENT, 'chatmode_enabled')){
+        if (get_config(constants::M_COMPONENT, 'chatmode')){
             $chart->add_series(new \core\chart_series(
                 get_string('chat', constants::M_COMPONENT),
                 $chatseries));

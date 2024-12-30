@@ -35,7 +35,7 @@ class courseattempts extends basereport {
                 break;
 
             case 'chat':
-                if (get_config(constants::M_COMPONENT, 'chatmode_enabled') ||
+                if (get_config(constants::M_COMPONENT, 'chatmode') ||
                     intval($record->chat) > 0) {
                     $ret = $record->chat;
                 } else {
@@ -65,7 +65,8 @@ class courseattempts extends basereport {
     }
 
     public function fetch_chart($renderer, $showdatasource = true) {
-
+        global $CFG;
+        $CFG->chart_colorset = ['#ceb9df', '#a9dbef', '#f7c1a1', '#d3e9af'];
         $records = $this->rawdata;
         // Build the series data.
         $watchseries = [];
@@ -134,7 +135,7 @@ class courseattempts extends basereport {
             // Calculate the unix timestamp X days ago.
             // 86400 = 24 hours * 60 minutes * 60 seconds.
             $dayslimit = time() - ($formdata->dayslimit * 86400);
-            $dayslimitcondition = " AND timecreated >= ?";
+            $dayslimitcondition = " AND tu.timecreated >= ?";
             $alldatasql .= $dayslimitcondition;
             $allparams['dayslimit'] = $dayslimit;
         }

@@ -15,7 +15,7 @@ class usercourseattempts extends basereport {
 
     protected $report = "usercourseattempts";
 
-    protected $fields = ['name', 'total_p', 'watch', 'learn', 'speak', 'chat' ,  'firstattempt'];
+    protected $fields = ['activityname', 'total_p', 'watch', 'learn', 'speak', 'chat' ,  'firstattempt'];
     protected $formdata = null;
     protected $qcache = [];
     protected $ucache = [];
@@ -25,7 +25,7 @@ class usercourseattempts extends basereport {
 
         switch ($field) {
 
-            case 'name':
+            case 'activityname':
                 $ec = $this->fetch_cache(constants::M_TABLE, $record->ecid);
                 $ret = $record->name;
                 if ($withlinks) {
@@ -69,7 +69,7 @@ class usercourseattempts extends basereport {
                 break;
 
             case 'chat':
-                if (get_config(constants::M_COMPONENT, 'chatmode_enabled') ||
+                if (get_config(constants::M_COMPONENT, 'chatmode') ||
                     intval($record->chat) > 0) {
                         $chatgoal = intval($record->chatgoal);
                         if ($chatgoal > 0) {
@@ -115,7 +115,8 @@ class usercourseattempts extends basereport {
     }
 
     public function fetch_chart($renderer, $showdatasource = true) {
-
+        global $CFG;
+        $CFG->chart_colorset = ['#ceb9df', '#a9dbef', '#f7c1a1', '#d3e9af'];
         $records = $this->rawdata;
         // Build the series data.
         $watchseries = [];
@@ -124,16 +125,17 @@ class usercourseattempts extends basereport {
         $chatseries = [];
         $activitynames = [];
         foreach ($records as $record) {
-            $watchseries[] = $record->watch;
-            $learnseries[] = $record->learn;
-            $speakseries[] = $record->speak;
-            $chatseries[] = $record->chat;
+            $watchseries[] = $record->watch_p;
+            $learnseries[] = $record->learn_p;
+            $speakseries[] = $record->speak_p;
+            $chatseries[] = $record->chat_p;
             $activitynames[] = $record->name;
         }
 
         // Display the chart.
         $chart = new \core\chart_bar();
-        $chart->set_horizontal(true);
+        $chart->set_horizontal(false);
+        $chart->set_stacked(false);
         $chart->add_series(new \core\chart_series(
             get_string('watch', constants::M_COMPONENT),
              $watchseries));
@@ -143,12 +145,13 @@ class usercourseattempts extends basereport {
         $chart->add_series(new \core\chart_series(
             get_string('speak', constants::M_COMPONENT),
              $speakseries));
-        if (get_config(constants::M_COMPONENT, 'chatmode_enabled')) {
+        if (get_config(constants::M_COMPONENT, 'chatmode')) {
             $chart->add_series(new \core\chart_series(
                 get_string('chat', constants::M_COMPONENT),
                 $chatseries));
         }
         $chart->set_labels($activitynames);
+
         $thechart = $renderer->render_chart($chart, $showdatasource);
         // We set a height of 40px per "bar." but not less than 450px
         $chartheight = max([count($activitynames) * 40, 450]);
@@ -192,7 +195,7 @@ class usercourseattempts extends basereport {
             // Calculate the unix timestamp X days ago.
             // 86400 = 24 hours * 60 minutes * 60 seconds.
             $dayslimit = time() - ($formdata->dayslimit * 86400);
-            $dayslimitcondition = " AND timecreated >= ?";
+            $dayslimitcondition = " AND tu.timecreated >= ?";
             $alldatasql .= $dayslimitcondition;
             $allparams['dayslimit'] = $dayslimit;
         }
@@ -221,11 +224,19 @@ class usercourseattempts extends basereport {
                 $goals['total'] = $goals['watch'] + $goals['learn'] + $goals['speak'] + $goals['chat'];
 
                 // Add a percentage field for each pointfield and add the goal to the display
-                //eg learn = 5 becomes learn = 6/8  learn_p = 75%(6)
+                //eg learn = 6 becomes learn = 6/8  learn_p = 75%
+                $totalpoints = 0;
                 foreach ($goals as $goalfield => $goalvalue) {
-                    $thedata->{$goalfield . '_p'} = $goalvalue > 0 ? round($thedata->{$goalfield} / $goalvalue * 100 , 0) : '-';
-                    if ($thedata->{$goalfield . '_p'} > 100) {$thedata->{$goalfield . '_p'} = 100;}
+                    if ($goalfield == 'total') { continue; }
+                    $pointsvalue = $thedata->{$goalfield};
+                    // We need to adjust the pointvalue so its not higher than goalvalue (eg they spoke 6 lines, but goal was 2).
+                    if ($pointsvalue > $goalvalue && $goalvalue > 0) {$pointsvalue = $goalvalue;}
+                    $thedata->{$goalfield . '_p'} = $goalvalue > 0 ? round($pointsvalue / $goalvalue * 100 , 0) : '-';
+                    // We recalc the total, using the goal adjusted points value
+                    $totalpoints += $pointsvalue;
                 }
+                $thedata->total = $totalpoints;
+                $thedata->total_p = $goals['total'] > 0 ? round($totalpoints / $goals['total'] * 100 , 0) : '-';
                 $this->rawdata[] = $thedata;
             }
         } else {

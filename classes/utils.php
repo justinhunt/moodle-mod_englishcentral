@@ -210,6 +210,12 @@ class utils {
         }
     }
 
+    public static function fetch_options_reportstable() {
+        $options = array(constants::M_USE_DATATABLES => get_string("reporttableajax", constants::M_COMPONENT),
+            constants::M_USE_PAGEDTABLES => get_string("reporttablepaged", constants::M_COMPONENT));
+        return $options;
+    }
+
     public static function add_video($ecid, $videoid) {
             global $DB;
 

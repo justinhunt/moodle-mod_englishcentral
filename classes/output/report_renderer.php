@@ -185,7 +185,8 @@ class report_renderer extends \plugin_renderer_base {
         $html = \html_writer::table($htmltable);
 
         // if datatables set up datatables
-        if(constants::M_USE_DATATABLES) {
+        $config = get_config(constants::M_COMPONENT);
+        if($config->reportstable == constants::M_USE_DATATABLES) {
             $dtlang = [];
             $dtlang['search'] = get_string('datatables_search', constants::M_COMPONENT);
             $dtlang['emptyTable'] = get_string('datatables_emptytable', constants::M_COMPONENT);

@@ -15,7 +15,7 @@ use mod_englishcentral\utils;
 class videoperformance extends basereport {
 
     protected $report = "videoperformance";
-    protected $fields = ['videoid', 'videoname', 'totalwatches', 'averagelearn', 'averagespeak', 'averagechat'];
+    protected $fields = ['videoid', 'videoname', 'difficulty', 'totalwatches', 'averagelearn', 'averagespeak', 'averagechat'];
     protected $formdata = null;
     protected $qcache = array();
     protected $ucache = array();
@@ -39,6 +39,16 @@ class videoperformance extends basereport {
                 }
                 break;
 
+            case 'difficulty':
+                $ret = '-';
+                if (!empty($record->detailsjson) && utils::is_json($record->detailsjson)) {
+                    $details = json_decode($record->detailsjson);
+                    if (isset($details->difficulty)) {
+                        $ret = $details->difficulty;
+                    }
+                }
+                break;
+
             case 'totalwatches':
                 $ret = $record->totalwatches;
                 break;
@@ -52,7 +62,7 @@ class videoperformance extends basereport {
                     break;
 
             case 'averagechat':
-                if (get_config(constants::M_COMPONENT, 'chatmode_enabled') ||
+                if (get_config(constants::M_COMPONENT, 'chatmode') ||
                     intval($record->averagechat) > 0) {
                     $ret = $record->averagechat;
                 } else {
@@ -82,7 +92,8 @@ class videoperformance extends basereport {
     }
 
     public function fetch_chart($renderer, $showdatasource = true) {
-
+        global $CFG;
+        $CFG->chart_colorset = ['#ceb9df', '#a9dbef', '#f7c1a1', '#d3e9af'];
         $records = $this->rawdata;
 
         //no paging in a donut chart

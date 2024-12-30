@@ -73,9 +73,10 @@ class attempts extends basereport {
                 break;
 
             case 'chat':
-                if (get_config(constants::M_COMPONENT, 'chatmode_enabled') ||
+                if (get_config(constants::M_COMPONENT, 'chatmode') ||
                     intval($record->chat) > 0) {
-                    $ret = $record->chat;
+                    $goalvalue = $this->goals[$field];
+                    $ret = $record->chat . '/' . $goalvalue;
                 } else {
                     $ret = '-';
                 }
@@ -102,6 +103,8 @@ class attempts extends basereport {
     }
 
     public function fetch_chart($renderer, $showdatasource = true) {
+        global $CFG;
+        $CFG->chart_colorset = ['#ceb9df', '#a9dbef', '#f7c1a1', '#d3e9af'];
 
         $records = $this->rawdata;
         // Build the series data.
@@ -137,7 +140,7 @@ class attempts extends basereport {
         $chart->add_series(new \core\chart_series(
             get_string('speak', constants::M_COMPONENT),
              $speakseries));
-        if (get_config(constants::M_COMPONENT, 'chatmode_enabled')) {
+        if (get_config(constants::M_COMPONENT, 'chatmode')) {
             $chart->add_series(new \core\chart_series(
                 get_string('chat', constants::M_COMPONENT),
                 $chatseries));
@@ -229,11 +232,21 @@ class attempts extends basereport {
         if ($alldata) {
             foreach ($alldata as $thedata) {
                  // Add a percentage field for each pointfield
-                //eg learn = 5 becomes learn = 6/8  learn_p = 75%(6)
+                 // eg learn = 6 becomes learn = 6/8  learn_p = 75%
+                 // We also recalculate the 'total'
+                $totalpoints = 0;
                 foreach ($goals as $goalfield => $goalvalue) {
-                    $thedata->{$goalfield . '_p'} = $goalvalue > 0 ? round($thedata->{$goalfield} / $goalvalue * 100 , 0) : '-';
-                    if ($thedata->{$goalfield . '_p'} > 100) {$thedata->{$goalfield . '_p'} = 100;}
+                    if ($goalfield == 'total') { continue; }
+                    $pointsvalue = $thedata->{$goalfield};
+                    // We need to adjust the pointvalue so its not higher than goalvalue (eg they spoke 6 lines, but goal was 2).
+                    if ($pointsvalue > $goalvalue && $goalvalue > 0) {$pointsvalue = $goalvalue;}
+                    // If no goal was set  ... we do not calc a percentage.
+                    $thedata->{$goalfield . '_p'} = $goalvalue > 0 ? round($pointsvalue / $goalvalue * 100 , 0) : '-';
+                    // We recalc the total, using the goal adjusted points value
+                    $totalpoints += $pointsvalue;
                 }
+                $thedata->total = $totalpoints;
+                $thedata->total_p = $goals['total'] > 0 ? round($totalpoints / $goals['total'] * 100 , 0) : '-';
                 $this->rawdata[] = $thedata;
             }
         } else {

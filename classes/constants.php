@@ -25,6 +25,7 @@ namespace mod_englishcentral;
     const M_PLUGINSETTINGS ='/admin/settings.php?section=modsettingenglishcentral';
     const M_PROGRESSDIALS_TOP=1;
     const M_PROGRESSDIALS_BOTTOM=0;
-    const M_USE_DATATABLES = true;
+    const M_USE_DATATABLES = 0;
+    const M_USE_PAGEDTABLES = 1;
 
 }

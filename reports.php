@@ -65,7 +65,7 @@ require_capability('mod/englishcentral:viewreports', $modulecontext);
 $config = get_config(constants::M_COMPONENT);
 
 // set per page according to admin setting
-if (constants::M_USE_DATATABLES) {
+if ($config->reportstable == constants::M_USE_DATATABLES) {
     $paging = false;
 } else if ($paging->perpage == -1) {
     $paging->perpage = 20; //$config->attemptsperpage;
@@ -125,7 +125,15 @@ switch ($showreport) {
         break;
 
     case 'attemptssummary':
-        $format = 'graphical';
+        $report = new \mod_englishcentral\report\attemptssummary($cm);
+        $formdata = new stdClass();
+        $formdata->ecid = $moduleinstance->id;
+        $formdata->modulecontextid = $modulecontext->id;
+        $formdata->groupmenu = true;
+        $formdata->dayslimit = $dayslimit;
+        $formdata->format = $format;
+        break;
+
     case 'attempts':
         $report = new \mod_englishcentral\report\attempts($cm);
         $formdata = new stdClass();
@@ -190,7 +198,6 @@ switch ($showreport) {
 5) call $reportrenderer->render_report_tabular($sectiontitle, $report->name, $report->get_head, $rows, $report->fields);
 */
 
-
 $groupmenu = '';
 if (isset($formdata->groupmenu)) {
     // Fetch groupmode/menu/id for this activity.
@@ -217,28 +224,14 @@ switch ($format) {
         exit;
 
     case 'graphical':
-        // Hosting the original graphical report here. We need to hack it up a bit. TO DO .. integrate this properly
-        // NB it handles username sorting better than Datatables .. TO DO .. do this in datatables.
-        if ($showreport == 'attemptssummary') {
-            $PAGE->requires->js_call_amd("$ec->plugin/report", 'init');
-            echo $renderer->header(get_string('reports', constants::M_COMPONENT));
-            $dayslimitselector = $reportrenderer->fetch_dayslimit_selector($PAGE->url, $dayslimit);
-            echo \html_writer::div($dayslimitselector , 'mod_ec_user_report_opts float-right');
-            echo $extraheader;
-            // Standard graphical attempts report already has groups.
-            // echo $groupmenu;
-            // We need to house it in a div of id: page-mod-englishcentral-report for the original CSS to apply.
-            $progressreport = $renderer->show_progress_report($dayslimit);
-            echo \html_writer::div($progressreport, 'page-mod-englishcentral-report', ['id' => 'page-mod-englishcentral-report']);
-        } else {
-            echo $renderer->header(get_string('reports', constants::M_COMPONENT));
-            echo $reportrenderer->show_user_report_options($PAGE->url, $dayslimit, $format);
-            echo $extraheader;
-            echo $groupmenu;
-            echo $reportrenderer->heading($reportheading, 4, 'clearfix');
-            echo $reportrenderer->heading($reportdescription, 5);
-            echo $report->fetch_chart($reportrenderer, true);
-        }
+        echo $renderer->header(get_string('reports', constants::M_COMPONENT));
+        echo $reportrenderer->show_user_report_options($PAGE->url, $dayslimit, $format);
+        echo $extraheader;
+        echo $groupmenu;
+        echo $reportrenderer->heading($reportheading, 4, 'clearfix');
+        echo $reportrenderer->heading($reportdescription, 5);
+        $CFG->chart_colorset = ['#ceb9df', '#a9dbef', '#f7c1a1', '#d3e9af'];
+        echo $report->fetch_chart($reportrenderer, true);
         echo $reportrenderer->show_reports_footer($moduleinstance, $cm, $formdata, $showreport);
         echo $renderer->footer();
         break;
@@ -249,7 +242,7 @@ switch ($format) {
 
         $reportrows = $report->fetch_formatted_rows(true, $paging);
         $allrowscount = $report->fetch_all_rows_count();
-        if (constants::M_USE_DATATABLES) {
+        if ($config->reportstable == constants::M_USE_DATATABLES) {
 
             // css must be required before header sent out
             $PAGE->requires->css( new \moodle_url('https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css'));
@@ -261,6 +254,7 @@ switch ($format) {
             echo $reportrenderer->heading($reportdescription, 5);
             // First the chart.
             if ($format == 'combined') {
+                $CFG->chart_colorset = ['#a9dbef', '#f7c1a1', '#d3e9af', '#ceb9df'];
                 echo $report->fetch_chart($reportrenderer, false);
             }
 
@@ -276,12 +270,12 @@ switch ($format) {
             echo $groupmenu;
             echo $reportrenderer->heading($reportheading, 4, 'clearfix');
             echo $reportrenderer->heading($reportdescription, 5);
-            echo $pagingbar;
             // First the chart.
             if ($format == 'combined') {
                 echo $report->fetch_chart($reportrenderer, false);
             }
             // Then the table.
+            echo $pagingbar;
             echo $reportrenderer->render_report_tabular( $report->fetch_name(), $report->fetch_head(), $reportrows,
                 $report->fetch_fields());
             echo $pagingbar;
