@@ -1,6 +1,9 @@
 ========================================
 Change log for mod_englishcentral
 ========================================
+2024-12-30 (48)
+- reports improvements
+ 
 2024-12-20 (47)
 - Added more reports
 
