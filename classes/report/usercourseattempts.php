@@ -153,10 +153,7 @@ class usercourseattempts extends basereport {
         $chart->set_labels($activitynames);
 
         $thechart = $renderer->render_chart($chart, $showdatasource);
-        // We set a height of 40px per "bar." but not less than 450px
-        $chartheight = max([count($activitynames) * 40, 450]);
-        return '<div class="mod_ec_chartcontainer" style="height: ' .
-            $chartheight . 'px">' .
+        return '<div class="mod_ec_chartcontainer">' .
             $thechart . '</div>';
     }
 

@@ -175,10 +175,7 @@ class userattempts extends basereport {
         }
         $chart->set_labels($videonames);
         $thechart = $renderer->render_chart($chart, $showdatasource);
-        // We set a height of 40px per "bar.".
-        $chartheight = max([count($videonames) * 40, 450]);
-        return '<div class="mod_ec_chartcontainer" style="height: ' .
-            $chartheight . 'px">' .
+        return '<div class="mod_ec_chartcontainer">' .
             $thechart . '</div>';
     }
 
