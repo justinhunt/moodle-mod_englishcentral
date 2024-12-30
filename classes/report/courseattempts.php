@@ -66,7 +66,6 @@ class courseattempts extends basereport {
 
     public function fetch_chart($renderer, $showdatasource = true) {
         global $CFG;
-        $CFG->chart_colorset = ['#ceb9df', '#a9dbef', '#f7c1a1', '#d3e9af'];
         $records = $this->rawdata;
         // Build the series data.
         $watchseries = [];
