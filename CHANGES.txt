@@ -1,6 +1,9 @@
 ========================================
 Change log for mod_englishcentral
 ========================================
+2025-02-14 (49)
+- Fixed bug which could throw errors on some competion condition settings
+
 2024-12-30 (48)
 - reports improvements
  
