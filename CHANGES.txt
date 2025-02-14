@@ -1,6 +1,21 @@
 ========================================
 Change log for mod_englishcentral
 ========================================
+2024-12-30 (48)
+- reports improvements
+ 
+2024-12-20 (47)
+- Added more reports
+
+2024-12-19 (46)
+- Fixed up issues with grades not appearing and reports tab not showing
+
+2024-11-15 (45)
+- Better behaviour when first video is added to an EC activity
+
+2024-10-07 (44)
+- Changes for PHP 8.3 and 8.2
+
 2024-09-07 (43)
 - Fix for broken reports link on tabs
 

@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -42,6 +41,62 @@ defined('MOODLE_INTERNAL') || die();
 class activity {
 
     /**
+     * @var string The type of the plugin.
+     */
+    public $plugintype;
+
+    /**
+     * @var string The name of the plugin.
+     */
+    public $pluginname;
+
+    /**
+     * @var object The plugin instance.
+     */
+    public $plugin;
+
+    /**
+     * @var object The course module.
+     */
+    public $cm;
+
+    /**
+     * @var object The course instance.
+     */
+    public $course;
+
+    /**
+     * @var object The context instance.
+     */
+    public $context;
+
+    /**
+     * @var int The timestamp.
+     */
+    public $time;
+
+    /**
+     * @var bool Whether the activity is available.
+     */
+    public $available;
+
+    /**
+     * @var bool Whether the activity is viewable.
+     */
+    public $viewable;
+
+    /**
+     * @var array The configuration settings.
+     */
+    public $config;
+
+    /**
+     * @var object The English Central instance.
+     */
+    public $ecinstance;
+
+
+    /**
      * construct English Central activity instance
      */
     function __construct($instance=null, $cm=null, $course=null, $context=null) {
@@ -52,9 +107,7 @@ class activity {
         $this->plugin = $this->plugintype.'_'.$this->pluginname;
 
         if ($instance) {
-            foreach ($instance as $field => $value) {
-                $this->$field = $value;
-            }
+            $this->ecinstance = $instance;
         }
 
         if ($cm) {
@@ -103,6 +156,22 @@ class activity {
     }
 
     /**
+     * Magic method to get properties.
+     *
+     * @param string $name The name of the property.
+     * @return mixed The value of the property or null if not found.
+     */
+    public function __get($name) {
+        if (property_exists($this, $name)) {
+            return $this->$name;
+        } else if (property_exists($this->ecinstance, $name)) {
+            return $this->ecinstance->$name;
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Creates a new EnglishCentral activity
      *
      * @param stdclass $instance a row from the reader table
@@ -110,7 +179,7 @@ class activity {
      * @param stdclass $course a row from the course table
      * @return reader the new reader object
      */
-    static public function create($instance=null, $cm=null, $course=null, $context=null) {
+    public static function create($instance=null, $cm=null, $course=null, $context=null) {
         return new activity($instance, $cm, $course, $context);
     }
 
@@ -175,15 +244,19 @@ class activity {
     // URLs API
     ////////////////////////////////////////////////////////////////////////////////
 
-    public function get_report_url($escaped=null, $params=array()) {
-        return $this->url('report.php', $escaped, $params);
+    public function get_report_url($escaped=null, $params=[]) {
+        return $this->url('reports.php', $escaped, $params);
     }
 
-    public function get_view_url($escaped=null, $params=array()) {
+    public function get_developertools_url($escaped=null, $params=[]) {
+        return $this->url('developer.php', $escaped, $params);
+    }
+
+    public function get_view_url($escaped=null, $params=[]) {
         return $this->url('view.php', $escaped, $params);
     }
 
-    public function get_viewajax_url($escaped=null, $params=array()) {
+    public function get_viewajax_url($escaped=null, $params=[]) {
         return $this->url('view.ajax.php', $escaped, $params);
     }
 
@@ -210,11 +283,11 @@ class activity {
 
             default:
                 return 'https://www.englishcentral.com/videodetails';
-                // 'https://www.englishcentral.com/videodetails?setLanguage='.$lang;
+            // 'https://www.englishcentral.com/videodetails?setLanguage='.$lang;
         }
     }
 
-    public function url($filepath, $escaped=null, $params=array()) {
+    public function url($filepath, $escaped=null, $params=[]) {
         if (isset($this->cm)) {
             $params['id'] = $this->cm->id;
         }
@@ -240,12 +313,12 @@ class activity {
 
     public function get_videoids() {
         global $DB;
-        return $DB->get_records_menu('englishcentral_videos', array('ecid' => $this->id), 'sortorder', 'id,videoid');
+        return $DB->get_records_menu('englishcentral_videos', ['ecid' => $this->id], 'sortorder', 'id,videoid');
     }
 
     public function get_accountid() {
         global $DB, $USER;
-        return $DB->get_field('englishcentral_accountids', 'accountid', array('userid' => $USER->id));
+        return $DB->get_field('englishcentral_accountids', 'accountid', ['userid' => $USER->id]);
     }
 
     public function get_accountids($groupid=0) {
@@ -261,7 +334,7 @@ class activity {
     public function get_userids($groupid=0) {
         global $DB;
         $mode = $this->get_groupmode();
-        if ($mode==NOGROUPS || $mode==VISIBLEGROUPS || has_capability('moodle/site:accessallgroups', $this->context)) {
+        if ($mode == NOGROUPS || $mode == VISIBLEGROUPS || has_capability('moodle/site:accessallgroups', $this->context)) {
             $users = get_enrolled_users($this->context, 'mod/englishcentral:view', $groupid, 'u.id', 'id');
             if (empty($users)) {
                 return false;
@@ -270,7 +343,7 @@ class activity {
         } else {
             if ($groupid) {
                 $select = 'groupid = ?';
-                $params = array($groupid);
+                $params = [$groupid];
             } else {
                 $groups = groups_get_user_groups($course->id);
                 if (empty($groups)) {
@@ -303,15 +376,15 @@ class activity {
 
     public function get_progress() {
         global $DB, $USER;
-        $progress = (object)array(
-            'watch' => 0,
-            'learn' => 0,
-            'speak' => 0,
-            'chat' => 0,
-        );
+        $progress = (object)[
+        'watch' => 0,
+        'learn' => 0,
+        'speak' => 0,
+        'chat' => 0,
+        ];
         $table = 'englishcentral_attempts';
-        $params = array('ecid' => $this->id,
-                        'userid' => $USER->id);
+        $params = ['ecid' => $this->id,
+                    'userid' => $USER->id];
         if ($attempts = $DB->get_records($table, $params)) {
             foreach ($attempts as $attempt) {
                 $progress->watch += $attempt->watchcomplete;
@@ -328,9 +401,9 @@ class activity {
 
         // extract/create $attempt
         $table = 'englishcentral_attempts';
-        $params = array('ecid' => $this->id,
-                        'userid' => $USER->id,
-                        'videoid' => $dialog->dialogID);
+        $params = ['ecid' => $this->id,
+                    'userid' => $USER->id,
+                    'videoid' => $dialog->dialogID];
         if ($attempt = $DB->get_record($table, $params)) {
             // $USER has attempted this video before
         } else {
@@ -351,15 +424,15 @@ class activity {
         }
 
         // trigger progress update event
-        $event = \mod_englishcentral\event\progress_updated::create(array(
-            'context' => $this->context,
-            'objectid' => $attempt->id,
-            'other' => array('ecid' => $this->id)
-        ));
+        $event = \mod_englishcentral\event\progress_updated::create([
+        'context' => $this->context,
+        'objectid' => $attempt->id,
+        'other' => ['ecid' => $this->id],
+        ]);
         $event->add_record_snapshot($table, $attempt);
         $event->trigger();
 
-        englishcentral_update_grades($this, $USER->id);
+        englishcentral_update_grades($this->ecinstance, $USER->id);
         // Update completion state.
         $completion = new \completion_info($this->course);
         if ($completion->is_enabled($this->cm) && ($this->completiongoals)) {
@@ -378,54 +451,53 @@ class activity {
     public function extract_progress($dialog, $attempt) {
 
         // initialize totals for goals
-        $progress = array(
-            'dialogID' => $dialog->dialogID,
+        $progress = [
+        'dialogID' => $dialog->dialogID,
 
-            'watchcomplete' => 0,
-            'watchtotal'    => 0,
-            'watchcount'    => 0,
-            'watchlineids'  => array(), // dialogLineID's of lines watched,
+        'watchcomplete' => 0,
+        'watchtotal'    => 0,
+        'watchcount'    => 0,
+        'watchlineids'  => [], // dialogLineID's of lines watched,
 
-            'learncomplete' => 0,
-            'learntotal'    => 0,
-            'learncount'    => 0,
-            'learnwordids'  => array(), // wordHeadID's of words learned,
+        'learncomplete' => 0,
+        'learntotal'    => 0,
+        'learncount'    => 0,
+        'learnwordids'  => [], // wordHeadID's of words learned,
 
-            'speakcomplete' => 0,
-            'speaktotal'    => 0,
-            'speakcount'    => 0,
-            'speaklineids'  => array(), // dialogLineID's of lines spoken,
+        'speakcomplete' => 0,
+        'speaktotal'    => 0,
+        'speakcount'    => 0,
+        'speaklineids'  => [], // dialogLineID's of lines spoken,
 
-            'chatcomplete' => 0,
-            'chattotal'    => 0,
-            'chatcount'    => 0,
-            'chatquestionids'  => array(), // chatQuestionID's of chat questions discussed,
+        'chatcomplete' => 0,
+        'chattotal'    => 0,
+        'chatcount'    => 0,
+        'chatquestionids'  => [], // chatQuestionID's of chat questions discussed,
 
-            'totalpoints'   => 0,
+        'totalpoints'   => 0,
 
-            // this info is no longer available
-            'activetime'    => 0,
-            'totaltime'     => 0,
-            'sessionScore'  => 0,
-            'sessionGrade'  => '', // A-F
-        );
+        // this info is no longer available
+        'activetime'    => 0,
+        'totaltime'     => 0,
+        'sessionScore'  => 0,
+        'sessionGrade'  => '', // A-F
+        ];
 
         if (isset($dialog->hash)) {
-           $progress['hash'] = $dialog->hash;
+            $progress['hash'] = $dialog->hash;
         }
         if (isset($dialog->totalPoints)) {
-           $progress['totalpoints']  = $dialog->totalPoints;
+            $progress['totalpoints']  = $dialog->totalPoints;
         }
 
         // populate the $progress array with values earned hitherto
-        $names = array('watchlineids', 'learnwordids', 'speaklineids', 'discussquestion');
+        $names = ['watchlineids', 'learnwordids', 'speaklineids', 'discussquestion'];
         foreach ($names as $names) {
             if (isset($attempt->$names) && $attempt->$names) {
                 $progress[$names] = explode(',', $attempt->$names);
                 $progress[$names] = array_fill_keys($progress[$names], 1);
             }
         }
-
 
         if (empty($dialog->activities)) {
             return $progress;
@@ -445,7 +517,7 @@ class activity {
             switch ($activity->activityTypeID) {
 
                 case \mod_englishcentral\auth::ACTIVITYTYPE_WATCH: // =9
-                case \mod_englishcentral\auth::ACTIVITYTYPE_WATCHCOMPREHENSIONCHOICE: //=40
+                case \mod_englishcentral\auth::ACTIVITYTYPE_WATCHCOMPREHENSIONCHOICE: // =40
                     $progress['watchcomplete'] = (empty($activity->completed) ? 0 : 1);
                     foreach ($activity->watchedDialogLines as $line) {
                         $progress['watchlineids'][$line->dialogLineID] = 1;
@@ -494,9 +566,9 @@ class activity {
 
     public function get_attempts_fields($addvideoid=true) {
         $fields = 'watchcount,watchcomplete,'.
-                  'learncount,learncomplete,'.
-                  'speakcount,speakcomplete,'.
-                  'chatcount,chatcomplete';
+              'learncount,learncomplete,'.
+              'speakcount,speakcomplete,'.
+              'chatcount,chatcomplete';
         if ($addvideoid) {
             $fields = "videoid,$fields";
         }
@@ -505,8 +577,8 @@ class activity {
 
     public function get_attempts($videoid=0) {
         global $DB, $USER;
-        $params = array('ecid' => $this->id,
-                        'userid' => $USER->id);
+        $params = ['ecid' => $this->id,
+                    'userid' => $USER->id];
         if ($videoid) {
             $params['videoid'] = $videoid;
         }
@@ -514,7 +586,7 @@ class activity {
         if ($attempts = $DB->get_records('englishcentral_attempts', $params, 'id', $fields)) {
             return $attempts;
         } else {
-            return array();
+            return [];
         }
     }
 }

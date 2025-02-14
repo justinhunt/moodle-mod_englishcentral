@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -29,7 +28,7 @@
 require_once('../../config.php');
 require_once($CFG->dirroot.'/mod/englishcentral/lib.php');
 
-use \mod_englishcentral\constants;
+use mod_englishcentral\constants;
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID
 $ecid = optional_param('ecid', 0, PARAM_INT);  // englishcentral instance ID
@@ -37,11 +36,11 @@ $mode = optional_param('mode', '', PARAM_ALPHA);
 
 if ($id) {
     $cm = get_coursemodule_from_id('englishcentral', $id, 0, false, MUST_EXIST);
-    $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
-    $instance = $DB->get_record('englishcentral', array('id' => $cm->instance), '*', MUST_EXIST);
-} elseif ($ecid) {
-    $instance = $DB->get_record('englishcentral', array('id' => $ecid), '*', MUST_EXIST);
-    $course = $DB->get_record('course', array('id' => $instance->course), '*', MUST_EXIST);
+    $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
+    $instance = $DB->get_record('englishcentral', ['id' => $cm->instance], '*', MUST_EXIST);
+} else if ($ecid) {
+    $instance = $DB->get_record('englishcentral', ['id' => $ecid], '*', MUST_EXIST);
+    $course = $DB->get_record('course', ['id' => $instance->course], '*', MUST_EXIST);
     $cm = get_coursemodule_from_instance('englishcentral', $instance->id, $course->id, false, MUST_EXIST);
 } else {
     error('You must specify a course_module ID or an instance ID');
@@ -51,17 +50,17 @@ require_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 
 // Trigger report viewed event.
-$event = \mod_englishcentral\event\report_viewed::create(array(
+$event = \mod_englishcentral\event\report_viewed::create([
     'context' => $context,
-    'other' => array('ecid' => $instance->id, 'mode' => $mode)
-));
+    'other' => ['ecid' => $instance->id, 'mode' => $mode],
+]);
 $event->add_record_snapshot('course', $course);
 $event->add_record_snapshot('course_modules', $cm);
 $event->add_record_snapshot('englishcentral', $instance);
 $event->trigger();
 
 /// Set up the page header
-$params = array('id' => $cm->id);
+$params = ['id' => $cm->id];
 if ($mode) {
     $params['mode'] = $mode;
 }
@@ -69,9 +68,9 @@ $PAGE->set_url('/mod/englishcentral/report.php', $params);
 $PAGE->set_context($context);
 
 $config = get_config(constants::M_COMPONENT);
-if($config->enablesetuptab){
+if ($config->enablesetuptab) {
     $PAGE->set_pagelayout('popup');
-}else{
+} else {
     $PAGE->set_pagelayout('report');
 }
 
@@ -84,6 +83,6 @@ $PAGE->requires->js_call_amd("$ec->plugin/report", 'init');
 $renderer = $PAGE->get_renderer($ec->plugin);
 $renderer->attach_activity_and_auth($ec, $auth);
 
-echo $renderer->header(get_string('report'),'report');
+echo $renderer->header(get_string('report'));
 echo $renderer->show_progress_report();
 echo $renderer->footer();

@@ -25,6 +25,7 @@
  */
 
 use mod_englishcentral\constants;
+use mod_englishcentral\utils;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -99,6 +100,15 @@ if ($ADMIN->fulltree) {
     $default = false;
     $settings->add(new admin_setting_configcheckbox(constants::M_COMPONENT . "/$name",
         $label, $details, $default));
+
+    // Reports Table
+    $name = 'reportstable';
+    $label = get_string($name, constants::M_COMPONENT);
+    $details = get_string($name . '_details', constants::M_COMPONENT);
+    $default = constants::M_USE_DATATABLES;
+    $options = utils::fetch_options_reportstable();
+    $settings->add(new admin_setting_configselect(constants::M_COMPONENT . "/$name",
+        $label, $details, $default, $options));
 
     $name = 'advancedsection';
     $label = get_string($name, $plugin);

@@ -1964,3 +1964,35 @@ body.poodll-ec-embed #page {
 #page-mod-englishcentral-view .activity-topics {
     display: flex;
  }
+
+ .englishcentral_reportsmenu_box {
+    text-align: center;
+    display: flex;
+  }
+  
+  .englishcentral_reportsmenu_item {
+    width: 250px;
+    margin: 10px;
+    border: 1px solid grey;
+    padding: 8px;
+    margin-right: 20px;
+  }
+  
+  .englishcentral_reportsmenu_itembutton button{
+    width: 200px;
+    height: 60px;
+  }
+  .mod_ec_returntoreports {
+    margin: auto;
+    display: block;
+    font-weight: bold;
+    width: 200px;
+    padding: 10px;
+    background-color: lightgrey;
+  }
+  .mod_ec_chartcontainer .chart-area .chart-image, .mod_ec_chartcontainer .chart-area {
+    min-height: 100%;
+  }
+  .mod_ec_chartcontainer .chart-area {
+    height: 100%;
+  }

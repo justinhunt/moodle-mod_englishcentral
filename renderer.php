@@ -59,7 +59,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
      * @param string $extrapagetitle String to append to the page title.
      * @return string
      */
-    public function header($extrapagetitle=null,$hidetabs=false) {
+    public function header($extrapagetitle=null, $hidetabs=false) {
         global $CFG;
 
         if (isset($this->ec->id)) {
@@ -74,35 +74,46 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
 
         $output = $this->output->header();
 
-        if (isset($this->ec->id)) {
+        if (isset($this->ec->ecinstance)) {
             if ((has_capability('mod/englishcentral:manage', $this->ec->context) ||
-                    has_capability('mod/englishcentral:viewreports', $this->ec->context)) &&
+                    has_capability('mod/englishcentral:viewreports', $this->ec->context) ||
+                    has_capability('mod/englishcentral:viewdevelopertools', $this->ec->context)) &&
                     !$hidetabs) {
 
-                //set up tabs
-                $moduleinstance =$this->ec;
+                if ($this->page->url == $this->ec->get_view_url()) {
+                    $icon = $this->pix_icon('i/preview', 'view', 'moodle', ['class' => 'icon']);
+                    $icon = html_writer::link($this->ec->get_view_url(), $icon);
+                    // Tabs.php uses the $currenttab var.
+                    $currenttab = 'view';
+                } else if (strpos($this->page->url, $this->ec->get_report_url(false)) === 0) {
+                    $icon = $this->pix_icon('i/report', 'reports', 'moodle', ['class' => 'icon']);
+                    $icon = html_writer::link($this->ec->get_report_url(), $icon);
+                    // Tabs.php uses the $currenttab var.
+                    $currenttab = 'reports';
+                } else if (strpos($this->page->url, $this->ec->get_developertools_url(false)) === 0) {
+                    $icon = $this->pix_icon('i/settings', 'developertools', constants::M_COMPONENT, ['class' => 'icon']);
+                    $icon = html_writer::link($this->ec->get_developertools_url(), $icon);
+                    // Tabs.php uses the $currenttab var.
+                    $currenttab = 'developer';
+                } else {
+                    $icon = '';
+                }
+
+                // Set up tabs.
+                $moduleinstance = $this->ec;
                 ob_start();
                 include($CFG->dirroot.'/mod/englishcentral/tabs.php');
                 $output .= ob_get_contents();
                 ob_end_clean();
-
-                if ($this->page->url == $this->ec->get_view_url()) {
-                    $icon = $this->pix_icon('i/report', 'report', 'moodle', array('class'=>'icon'));
-                    $icon = html_writer::link($this->ec->get_report_url(), $icon);
-                } else if ($this->page->url == $this->ec->get_report_url()) {
-                    $icon = $this->pix_icon('i/preview', 'view', 'moodle', array('class'=>'icon'));
-                    $icon = html_writer::link($this->ec->get_view_url(), $icon);
-                } else {
-                    $icon = '';
-                }
+ 
                 //dont show the heading in an iframe, it will be outside this anyway
-                if(!$this->ec->foriframe && $CFG->version<4.0) {
+                if (!$this->ec->foriframe && $CFG->version < 4.0) {
                     $help = $this->help_icon('overview', $this->ec->plugin);
                     $output .= $this->heading($activityname.$help.$icon);
                 }
 
             } else {
-                if(!$this->ec->foriframe && $CFG->version<4.0) {
+                if (!$this->ec->foriframe && $CFG->version < 4.0) {
                     $output .= $this->output->heading($activityname);
                 }
             }
@@ -537,7 +548,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
                 $connection_available = false;
             }
         } else {
-            $output .= html_writer::tag('p', $this->ec->get_string('novideos'));
+            $output .= html_writer::tag('p', $this->ec->get_string('novideos'),['class'=>'ec-novideos-label']);
         }
 
 		if (has_capability('mod/englishcentral:manage', $this->ec->context) ) {
@@ -698,7 +709,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         return html_writer::tag('div', $image.$removeIcon.$removeText.$help, array('class' => 'videoicon '.$type.'video' . $hidden));
     }
 
-    public function show_progress_report() {
+    public function show_progress_report($dayslimit=0) {
         global $DB, $CFG;
         $output = '';
 
@@ -730,6 +741,17 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         $from   = '{englishcentral_attempts}';
         $where  = 'ecid = ?';
         $params = array($this->ec->id);
+
+        // Days limit WHERE condition.
+        if ($dayslimit > 0) {
+            // Calculate the unix timestamp X days ago.
+            // 86400 = 24 hours * 60 minutes * 60 seconds.
+            $dayslimitinseconds = time() - ($dayslimit * 86400);
+            $dayslimitcondition = " AND timecreated >= ?";
+            $where .= $dayslimitcondition;
+            $params['dayslimit'] = $dayslimitinseconds;
+        }
+
 		if ($groupid) {
 			$where .= ' AND userid IN (SELECT gm.userid FROM {groups_members} gm WHERE gm.groupid = ?)';
 			$params[] = $groupid;
@@ -820,9 +842,9 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
         foreach ($items as $userid => $item) {
             $item->total = (min($goals->watch, $item->watch) +
                             min($goals->learn, $item->learn) +
-                            min($goals->speak, $item->learn) +
+                            min($goals->speak, $item->speak) +
                             min($goals->chat, $item->chat));
-            if ($goals->total==0) {
+            if ($goals->total == 0) {
                 $item->percent = '';
             } else {
                 $item->percent = round(100 * min(1, $item->total / $goals->total)).'%';
@@ -830,7 +852,7 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
             $items[$userid] = $item;
         }
 
-        if ($this->sort=='percent') {
+        if ($this->sort == 'percent') {
             uasort($items, array($this, 'uasort_percent'));
         }
 
@@ -1187,6 +1209,28 @@ class mod_englishcentral_renderer extends plugin_renderer_base {
             $data['display']='';
         }
         return $this->render_from_template('mod_englishcentral/showplayer', $data);
+    }
+
+    /*
+    * Developer tools for generating random data etc
+    */
+    public function developerpage($cmid,$moduleid){
+        $items = [];
+        //Update gradebook
+        $items[]= get_string('updateallgrades_details',constants::M_COMPONENT);
+        $gradesbtn= new \single_button(
+            new \moodle_url(constants::M_URL . '/developer.php', array('action' => 'updategrades', 'id' => $cmid, 'n' => $moduleid)),
+            get_string('updateallgrades',constants::M_COMPONENT), 'get');
+        $gradesbtn->add_confirm_action(get_string('updategradesconfirm', constants::M_COMPONENT));   
+        $items[]=$this->render($gradesbtn);
+        $items[]='<br/><br/>';
+        $items[]= get_string('generateattemptdata_details',constants::M_COMPONENT);
+        $gendatabtn= new \single_button(
+            new \moodle_url(constants::M_URL . '/developer.php', array('action' => 'generatedata', 'id' => $cmid, 'n' => $moduleid)),
+            get_string('generateattemptdata',constants::M_COMPONENT), 'get');
+        $gendatabtn->add_confirm_action(get_string('generateattemptsconfirm', constants::M_COMPONENT));
+        $items[]=$this->render($gendatabtn);
+        return $items;
     }
 
 }

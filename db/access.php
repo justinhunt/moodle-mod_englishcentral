@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -47,71 +46,76 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$capabilities = array(
+$capabilities = [
 
-    'mod/englishcentral:addinstance' => array(
-            'riskbitmask' => RISK_XSS,
-            'captype' => 'write',
-            'contextlevel' => CONTEXT_COURSE,
-            'archetypes' => array(
-                    'editingteacher' => CAP_ALLOW,
-                    'manager' => CAP_ALLOW
-            ),
-            'clonepermissionsfrom' => 'moodle/course:manageactivities'
-    ),
-    
-    'mod/englishcentral:manageattempts' => array(
-            'riskbitmask' => RISK_PERSONAL,
-            'captype' => 'write',
-            'contextlevel' => CONTEXT_COURSE,
-            'archetypes' => array(
-                    'editingteacher' => CAP_ALLOW,
-                    'manager' => CAP_ALLOW
-            ),
-            'clonepermissionsfrom' => 'moodle/course:manageactivities'
-    ),
-
-    'mod/englishcentral:manage' => array(
-            'riskbitmask' => RISK_PERSONAL,
-            'captype' => 'write',
-            'contextlevel' => CONTEXT_COURSE,
-            'archetypes' => array(
-                    'editingteacher' => CAP_ALLOW,
-                    'manager' => CAP_ALLOW
-            ),
-            'clonepermissionsfrom' => 'moodle/course:manageactivities'
-    ),
-
-    'mod/englishcentral:viewreports' => array(
+        'mod/englishcentral:addinstance' => [
+                'riskbitmask' => RISK_XSS,
                 'captype' => 'write',
                 'contextlevel' => CONTEXT_COURSE,
-                'archetypes' => array(
+                'archetypes' => [
+                        'editingteacher' => CAP_ALLOW,
+                        'manager' => CAP_ALLOW,
+                ],
+                'clonepermissionsfrom' => 'moodle/course:manageactivities',
+        ],
+
+        'mod/englishcentral:manageattempts' => [
+                'riskbitmask' => RISK_PERSONAL,
+                'captype' => 'write',
+                'contextlevel' => CONTEXT_COURSE,
+                'archetypes' => [
+                        'editingteacher' => CAP_ALLOW,
+                        'manager' => CAP_ALLOW,
+                ],
+                'clonepermissionsfrom' => 'moodle/course:manageactivities',
+        ],
+
+        'mod/englishcentral:manage' => [
+                'riskbitmask' => RISK_PERSONAL,
+                'captype' => 'write',
+                'contextlevel' => CONTEXT_COURSE,
+                'archetypes' => [
+                        'editingteacher' => CAP_ALLOW,
+                        'manager' => CAP_ALLOW,
+                ],
+                'clonepermissionsfrom' => 'moodle/course:manageactivities',
+        ],
+
+        'mod/englishcentral:viewreports' => [
+                'captype' => 'write',
+                'contextlevel' => CONTEXT_COURSE,
+                'archetypes' => [
                         'teacher' => CAP_ALLOW,
                         'editingteacher' => CAP_ALLOW,
-                        'manager' => CAP_ALLOW
-                ),
-                'clonepermissionsfrom' => 'moodle/grade:viewall'
-    ),
-    
-    'mod/englishcentral:view' => array(
-        'captype' => 'read',
-        'contextlevel' => CONTEXT_MODULE,
-        'legacy' => array(
-            'guest' => CAP_ALLOW,
-            'student' => CAP_ALLOW,
-            'teacher' => CAP_ALLOW,
-            'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        )
-    ),
+                        'manager' => CAP_ALLOW,
+                ],
+                'clonepermissionsfrom' => 'moodle/grade:viewall',
+        ],
 
-    'mod/englishcentral:submit' => array(
-        'riskbitmask' => RISK_SPAM,
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_MODULE,
-        'legacy' => array(
-            'student' => CAP_ALLOW
-        )
-    ),
-);
+        'mod/englishcentral:view' => [
+                'captype' => 'read',
+                'contextlevel' => CONTEXT_MODULE,
+                'legacy' => [
+                        'guest' => CAP_ALLOW,
+                        'student' => CAP_ALLOW,
+                        'teacher' => CAP_ALLOW,
+                        'editingteacher' => CAP_ALLOW,
+                        'manager' => CAP_ALLOW,
+                ],
+        ],
+
+        'mod/englishcentral:viewdevelopertools' => [
+            'captype' => 'write',
+            'contextlevel' => CONTEXT_COURSE,
+        ],
+
+        'mod/englishcentral:submit' => [
+                'riskbitmask' => RISK_SPAM,
+                'captype' => 'write',
+                'contextlevel' => CONTEXT_MODULE,
+                'legacy' => [
+                        'student' => CAP_ALLOW,
+                ],
+        ],
+];
 

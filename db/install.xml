@@ -57,6 +57,8 @@
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="ecid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="videoid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="id of video on englishcentral.com"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="videoname" SEQUENCE="false" COMMENT="Title of this EC video"/>
+        <FIELD NAME="detailsjson" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="JSON video details object"/>
         <FIELD NAME="visible" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="flag to denote if this video is visible (1) or not (0)"/>
         <FIELD NAME="sortorder" TYPE="int" LENGTH="6" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="the sortorder of this video within the current EC activity"/>
       </FIELDS>
