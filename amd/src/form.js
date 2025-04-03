@@ -68,17 +68,13 @@ define(["jquery"], function($) {
         // [Watch] + [Learn] + [Speak] + [Chat] = [Study goals]
         var goals = document.querySelector("#id_goals");
         if (goals) {
-            if (goals.querySelector("form-group") === null) {
+            if (goals.querySelector(".form-group") === null) {
                 var s = '[id^=fgroup_id][id$=group]';
                 goals.querySelectorAll(s).forEach(function(fgroup){
                     if (fgroup.id.indexOf("_error_") > 0) {
                         return;
                     }
-                    fgroup.classList.add("d-inline-block");
-                    fgroup.classList.add("rounded");
-                    fgroup.classList.add("px-2");
-                    fgroup.classList.add("pb-2");
-                    fgroup.classList.add("mx-0");
+                    fgroup.classList.add("d-inline-block", "rounded", "px-2", "pb-2", "mx-0");
                     // The "form-group" selector seems to have been deprecated
                     // and replaced by "mb-3" in the "Classic" and "Boost" themes.
                     fgroup.querySelectorAll(".mb-3.fitem").forEach(function(fitem){
@@ -92,11 +88,7 @@ define(["jquery"], function($) {
                     fgroup.classList.add("d-inline-block");
                 });
                 goals.querySelectorAll(".row").forEach(function(row){
-                    row.classList.remove("row");
-                    row.classList.add("rounded");
-                    row.classList.add("px-2");
-                    row.classList.add("mb-2");
-                    row.classList.add("align-top");
+                    row.classList.remove("row", "rounded", "px-2", "mb-2", "align-top");
                     row.style.minHeight = "80px";
                 });
             }
