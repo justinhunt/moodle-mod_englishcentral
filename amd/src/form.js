@@ -88,7 +88,8 @@ define(["jquery"], function($) {
                     fgroup.classList.add("d-inline-block");
                 });
                 goals.querySelectorAll(".row").forEach(function(row){
-                    row.classList.remove("row", "rounded", "px-2", "mb-2", "align-top");
+                    row.classList.remove("row");
+                    row.classlist.add("rounded", "px-2", "mb-2", "align-top");
                     row.style.minHeight = "80px";
                 });
             }
