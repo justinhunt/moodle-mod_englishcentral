@@ -418,16 +418,13 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
                     // TODO: remove use of LOG in production sites.
                     LOG.debug(data);
                     switch (data.eventType) {
+
                         // Starting events.
                         case "StartActivityWatch":
                         case "StartActivityLearn":
                         case "StartActivitySpeak":
                         case "StartDiscussion":
                             return false;
-                        case "CompleteActivityWatch":
-                        case "LearnedWord":
-                        case "DialogLineSpeak":
-                            break;
 
                         case "DialogLineWatch":
                             var thumbframe = ".thumb-frame[data-url$=" + data.dialogID + "]";
@@ -438,26 +435,26 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
 
                          // Intermittent events.
                         case "TypedWord":
-                            case "StudiedWord":
-                            case "DiscussionQuestionDraft":
-                            case "DiscussionQuestionAnswer":
-                                return false;
-    
-                            // Final step before completion events.
-                            case "DialogLineSpeak":
-                            case "LearnedWord":
-                                break;
-    
-                            // Completion events.
-                            case "CompleteActivityWatch":
-                            case "CompleteActivityLearn":
-                            case "CompleteActivitySpeak":
-                            case "CompleteDiscussion":
-                                break;
-    
-                            default:
-                                // Oops - an unexpected value
-                                break;
+                        case "StudiedWord":
+                        case "DiscussionQuestionDraft":
+                        case "DiscussionQuestionAnswer":
+                            return false;
+
+                        // Final step before completion events.
+                        case "DialogLineSpeak":
+                        case "LearnedWord":
+                            break;
+
+                        // Completion events.
+                        case "CompleteActivityWatch":
+                        case "CompleteActivityLearn":
+                        case "CompleteActivitySpeak":
+                        case "CompleteDiscussion":
+                            break;
+
+                        default:
+                            // Oops - an unexpected value
+                            break;
                     }
 
                     // AJAX call to send the data.dialogID to the Moodle server
@@ -659,7 +656,7 @@ define(["jquery", "js/jquery-ui.js", "core/log", "core/str", "mod_englishcentral
                 "success": function (info) {
                     VIEW.format_results(info);
                 },
-                "error" : function (e) {
+                "error" : function () {
                     var html = VIEW.format_noresult();
                     $(".search-results").html(html);
                 }
