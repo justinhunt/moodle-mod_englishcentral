@@ -89,7 +89,7 @@ define(["jquery"], function($) {
                 });
                 goals.querySelectorAll(".row").forEach(function(row){
                     row.classList.remove("row");
-                    row.classlist.add("rounded", "px-2", "mb-2", "align-top");
+                    row.classList.add("rounded", "px-2", "mb-2", "align-top");
                     row.style.minHeight = "80px";
                 });
             }
