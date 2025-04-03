@@ -2,6 +2,9 @@
 Change log for mod_englishcentral
 ========================================
 2025-02-14 (49)
+2025-04-03 (43)
+ - fix discrepencies between DB field settings and install.xml
+
 2025-04-03 (40)
  - mod_englshcentral fix display of goals on the settings page in Moodle >= 4.5
 

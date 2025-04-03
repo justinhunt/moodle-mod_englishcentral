@@ -43,7 +43,6 @@ defined('MOODLE_INTERNAL') || die();
  */
 function xmldb_englishcentral_upgrade($oldversion) {
     global $CFG, $DB;
-
     $dbman = $DB->get_manager();
 
     $newversion = 2015031501;
@@ -63,6 +62,7 @@ function xmldb_englishcentral_upgrade($oldversion) {
 
     $newversion = 2018012403;
     if ($oldversion < $newversion) {
+        require_once($CFG->dirroot.'/mod/englishcentral/db/upgradelib.php');
 
         // =============================================
         // create USERIDS table
@@ -268,6 +268,7 @@ function xmldb_englishcentral_upgrade($oldversion) {
 
     $newversion = 2018021020;
     if ($oldversion < $newversion) {
+        require_once($CFG->dirroot.'/mod/englishcentral/db/upgradelib.php');
 
         // =============================================
         // create ACCOUNTIDS table
@@ -347,6 +348,7 @@ function xmldb_englishcentral_upgrade($oldversion) {
 
     $newversion = 2018022532;
     if ($oldversion < $newversion) {
+        require_once($CFG->dirroot.'/mod/englishcentral/db/upgradelib.php');
 
         // Define table englishcentral_attempts to be created.
         $table = new xmldb_table('englishcentral_attempts');
@@ -681,6 +683,8 @@ function xmldb_englishcentral_upgrade($oldversion) {
 
     $newversion = 2023111237;
     if ($oldversion < $newversion) {
+        require_once($CFG->dirroot.'/mod/englishcentral/db/upgradelib.php');
+
         // Add auth table.
         $table = new xmldb_table('englishcentral_auth');
 
@@ -764,87 +768,13 @@ function xmldb_englishcentral_upgrade($oldversion) {
         }
         upgrade_mod_savepoint(true, $newversion, 'englishcentral');
     }
+
+    $newversion = 2025040342;
+    if ($oldversion < $newversion) {
+        require_once($CFG->dirroot.'/mod/englishcentral/db/upgradelib.php');
+        xmldb_englishcentral_check_structure($dbman);
+        upgrade_mod_savepoint(true, $newversion, 'englishcentral');
+    }
+
     return true;
-}
-
-function xmldb_englishcentral_replace_table($dbman, $table, $fields, $oldname) {
-    global $DB;
-
-    $table_exists = $dbman->table_exists($table);
-    xmldb_englishcentral_create_table($dbman, $table);
-
-    if ($dbman->table_exists($oldname)) {
-        if ($records = $DB->get_records($oldname)) {
-            foreach ($records as $record) {
-                if ($table_exists && $DB->record_exists($table->getName(), array('id' => $record->id))) {
-                    continue; // record has already been transferred
-                }
-                foreach ($fields as $oldfield => $newfield) {
-                    $record->$newfield = $record->$oldfield;
-                    unset($record->$oldfield);
-                }
-                $DB->insert_record($table->getName(), $record);
-            }
-        }
-        $dbman->drop_table(new xmldb_table($oldname));
-    }
-}
-
-function xmldb_englishcentral_create_table($dbman, $table, $fields=array()) {
-    global $DB;
-    if ($dbman->table_exists($table)) {
-
-        // remove all existing indexes and keys (except PRIMARY key)
-        $indexes = $DB->get_indexes($table->getName());
-        foreach ($indexes as $indexname => $index) {
-            if ($indexname=='primary') {
-                continue;
-            }
-            if (isset($index['unique']) && $index['unique']) {
-                $type = XMLDB_INDEX_UNIQUE;
-            } else {
-                $type = XMLDB_INDEX_NOTUNIQUE;
-            }
-            $index = new xmldb_index($indexname, $type, $index['columns']);
-            $dbman->drop_index($table, $index);
-        }
-
-        // add/change fields
-        $previous = ''; // name of previous field in DB
-        foreach ($table->getFields() as $field) {
-            if ($previous) {
-                $field->setPrevious($previous);
-            }
-            $newname = $field->getName();
-            $oldname = array_search($newname, $fields);
-            if ($oldname && $dbman->field_exists($table, $oldname)) {
-                $field->setName($oldname);
-                $dbman->rename_field($table, $field, $newname);
-                $field->setName($newname);
-            }
-            if ($dbman->field_exists($table, $field)) {
-                $dbman->change_field_type($table, $field);
-            } else {
-                $dbman->add_field($table, $field);
-            }
-            $previous = $field->getName();
-        }
-
-        // (re)add indexes
-        foreach ($table->getIndexes() as $index) {
-            if ($index->getName()=='primary') {
-                continue;
-            }
-            $dbman->add_index($table, $index);
-        }
-        foreach ($table->getKeys() as $index) {
-            if ($index->getName()=='primary') {
-                continue;
-            }
-            $index = new xmldb_index($index->getName(), $index->getType(), $index->getFields());
-            $dbman->add_index($table, $index);
-        }
-    } else {
-        $dbman->create_table($table);
-    }
 }
