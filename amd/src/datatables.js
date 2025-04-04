@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 define(['jquery', 'core/log', 'https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js'], function ($, log, datatables) {
     "use strict"; // jshint ;_;
 
