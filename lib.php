@@ -86,7 +86,7 @@ function englishcentral_supports($feature) {
  * @param mod_englishcentral_mod_form $mform
  * @return int The id of the newly inserted englishcentral record
  */
-function englishcentral_add_instance(stdClass $formdata, mod_englishcentral_mod_form $mform = null) {
+function englishcentral_add_instance(stdClass $formdata, ?mod_englishcentral_mod_form $mform = null) {
     return englishcentral_process_formdata($formdata, $mform);
 }
 
@@ -101,7 +101,7 @@ function englishcentral_add_instance(stdClass $formdata, mod_englishcentral_mod_
  * @param mod_englishcentral_mod_form $mform
  * @return boolean Success/Fail
  */
-function englishcentral_update_instance(stdClass $data, mod_englishcentral_mod_form $mform = null) {
+function englishcentral_update_instance(stdClass $data,?mod_englishcentral_mod_form $mform = null) {
     return englishcentral_process_formdata($data, $mform);
 }
 
@@ -111,7 +111,7 @@ function englishcentral_update_instance(stdClass $data, mod_englishcentral_mod_f
  * @param stdClass $data recently submitted formdata
  * @return boolean Success/Failure
  */
-function englishcentral_process_formdata(stdClass $data, mod_englishcentral_mod_form $mform = null) {
+function englishcentral_process_formdata(stdClass $data,?mod_englishcentral_mod_form $mform = null) {
     global $DB;
 
     // add/update record in main EC table
@@ -637,7 +637,7 @@ function englishcentral_extend_navigation(navigation_node $navref, stdclass $cou
  * @param settings_navigation $settingsnav {@link settings_navigation}
  * @param navigation_node $englishcentralnode {@link navigation_node}
  */
-function englishcentral_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $englishcentralnode=null) {
+function englishcentral_extend_settings_navigation(settings_navigation $settingsnav, ?navigation_node $englishcentralnode = null) {
 }
 
 /**
