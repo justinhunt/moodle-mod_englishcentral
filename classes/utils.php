@@ -29,6 +29,14 @@ use mod_englishcentral\constants;
 
 class utils {
 
+    public static function get_cloud_poodll_server() {
+        $conf = get_config(constants::M_COMPONENT);
+        if (isset($conf->cloudpoodllserver) && !empty($conf->cloudpoodllserver)) {
+            return 'https://' . $conf->cloudpoodllserver;
+        } else {
+            return 'https://' . constants::M_DEFAULT_CLOUDPOODLL;
+        }
+    }
     public static function add_mform_elements($mform, $instance, $cm, $course, $context, $setuptab=false) {
         global $CFG, $PAGE;
 

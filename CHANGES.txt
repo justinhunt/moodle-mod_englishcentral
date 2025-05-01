@@ -1,6 +1,8 @@
 ========================================
 Change log for mod_englishcentral
 ========================================
+2025-05-01 (45)
+　    - Fix for not properly counted student progress
 2025-04-18 (44)
 　    - Fix for PHP8.4
 2025-02-14 (49)

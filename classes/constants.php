@@ -14,6 +14,7 @@ namespace mod_englishcentral;
     {
     //component name, db tables, things that define app
     const M_COMPONENT='mod_englishcentral';
+    const M_DEFAULT_CLOUDPOODLL = "cloud.poodll.com";
     const M_TABLE='englishcentral';
     const M_ATTEMPTSTABLE='englishcentral_attempts';
     const M_VIDEOSTABLE='englishcentral_videos';
