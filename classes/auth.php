@@ -99,9 +99,8 @@ class auth {
         if (empty($ec->config)) {
             $this->config = new \stdClass();
         }
-
         $this->ec = $ec;
-        $this->set_mimichat($ec);
+
 
         // Specify names of EC config fields.
         $fields = array('poodllapiuser',
@@ -134,6 +133,9 @@ class auth {
                 $this->$field = $ec->config->$field;
             }
         }
+
+        //set mimi chat enabled or disabled
+        $this->set_mimichat($ec);
 
         if ($this->get_sdk_mode() == self::SDK_MODE_DEVELOPMENT) {
             $this->domain = 'qaenglishcentral.com';
