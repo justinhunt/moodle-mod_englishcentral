@@ -491,63 +491,62 @@ class activity {
         }
 
         // populate the $progress array with values earned hitherto
-        $names = ['watchlineids', 'learnwordids', 'speaklineids', 'discussquestion'];
-        foreach ($names as $names) {
-            if (isset($attempt->$names) && $attempt->$names) {
-                $progress[$names] = explode(',', $attempt->$names);
-                $progress[$names] = array_fill_keys($progress[$names], 1);
+        $names = ['watchlineids', 'learnwordids', 'speaklineids', 'chatquestionids'];
+        foreach ($names as $thename) {
+            if (isset($attempt->$thename) && $attempt->$thename) {
+                $progress[$thename] = explode(',', $attempt->$thename);
+                $progress[$thename] = array_fill_keys($progress[$thename], 1);
             }
         }
 
-        if (empty($dialog->activities)) {
-            return $progress;
-        }
+        //Dialog activities should not be empty, but oddly occasionally it is, so we try to fallback gradefully without killing it for students
+        if (!empty($dialog->activities)) {
+            foreach ($dialog->activities as $activity) {
 
-        foreach($dialog->activities as $activity) {
+                // activityType     : watchActivity / speakActivity
+                // activityID       : 208814
+                // activityTypeID   : (see below)
+                // activityPoints   : 10
+                // activityProgress : 1
+                // completed        : 1
+                // grade            : A (speakActivity only ?)
 
-            // activityType     : watchActivity / speakActivity
-            // activityID       : 208814
-            // activityTypeID   : (see below)
-            // activityPoints   : 10
-            // activityProgress : 1
-            // completed        : 1
-            // grade            : A (speakActivity only ?)
+                // extract DB fields
+                switch ($activity->activityTypeID) {
 
-            // extract DB fields
-            switch ($activity->activityTypeID) {
+                    case \mod_englishcentral\auth::ACTIVITYTYPE_WATCH: // =9
+                    case \mod_englishcentral\auth::ACTIVITYTYPE_WATCHCOMPREHENSIONCHOICE: // =40
+                        $progress['watchcomplete'] = (empty($activity->completed) ? 0 : 1);
+                        foreach ($activity->watchedDialogLines as $line) {
+                            $progress['watchlineids'][$line->dialogLineID] = 1;
+                        }
+                        break;
 
-                case \mod_englishcentral\auth::ACTIVITYTYPE_WATCH: // =9
-                case \mod_englishcentral\auth::ACTIVITYTYPE_WATCHCOMPREHENSIONCHOICE: // =40
-                    $progress['watchcomplete'] = (empty($activity->completed) ? 0 : 1);
-                    foreach ($activity->watchedDialogLines as $line) {
-                        $progress['watchlineids'][$line->dialogLineID] = 1;
-                    }
-                    break;
-
-                case \mod_englishcentral\auth::ACTIVITYTYPE_LEARN: // =10
-                    $progress['learncomplete'] = (empty($activity->completed) ? 0 : 1);
-                    foreach ($activity->learnedDialogLines as $line) {
-                        foreach($line->learnedWords as $word) {
-                            if ($word->completed) {
-                                $progress['learnwordids'][$word->wordHeadID] = 1;
+                    case \mod_englishcentral\auth::ACTIVITYTYPE_LEARN: // =10
+                        $progress['learncomplete'] = (empty($activity->completed) ? 0 : 1);
+                        foreach ($activity->learnedDialogLines as $line) {
+                            foreach ($line->learnedWords as $word) {
+                                if ($word->completed) {
+                                    $progress['learnwordids'][$word->wordHeadID] = 1;
+                                }
                             }
                         }
-                    }
-                    break;
+                        break;
 
-                case \mod_englishcentral\auth::ACTIVITYTYPE_SPEAK: // =11
-                    $progress['speakcomplete'] = (empty($activity->completed) ? 0 : 1);
-                    foreach ($activity->spokenDialogLines as $line) {
-                        $progress['speaklineids'][$line->dialogLineID] = 1;
-                    }
-                    break;
+                    case \mod_englishcentral\auth::ACTIVITYTYPE_SPEAK: // =11
+                        $progress['speakcomplete'] = (empty($activity->completed) ? 0 : 1);
+                        foreach ($activity->spokenDialogLines as $line) {
+                            $progress['speaklineids'][$line->dialogLineID] = 1;
+                        }
+                        break;
 
-                case \mod_englishcentral\auth::ACTIVITYTYPE_CHAT: // =55
-                    $progress['chatcomplete'] = (empty($activity->completed) ? 0 : 1);
-                    foreach ($activity->submittedQuestionIds as $questionid) {
-                        $progress['chatquestionids'][$questionid] = 1;
-                    }
-                    break;
+                    case \mod_englishcentral\auth::ACTIVITYTYPE_CHAT: // =55
+                        $progress['chatcomplete'] = (empty($activity->completed) ? 0 : 1);
+                        foreach ($activity->submittedQuestionIds as $questionid) {
+                            $progress['chatquestionids'][$questionid] = 1;
+                        }
+                        break;
+                }
             }
         }
 

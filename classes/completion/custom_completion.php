@@ -60,8 +60,8 @@ class custom_completion extends activity_custom_completion {
                 'itemtype'     => 'mod',
                 'itemmodule'   => 'englishcentral',
                 'iteminstance' => $this->cm->instance);
-            if ($grade_item = grade_item::fetch($params)) {
-                $grades = grade_grade::fetch_users_grades($grade_item, array($userid), false);
+            if ($grade_item = \grade_item::fetch($params)) {
+                $grades = \grade_grade::fetch_users_grades($grade_item, array($userid), false);
                 if (isset($grades[$userid])) {
                     $grade = $grades[$userid];
                 }

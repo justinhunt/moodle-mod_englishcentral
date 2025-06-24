@@ -68,22 +68,44 @@ define(["jquery"], function($) {
         // [Watch] + [Learn] + [Speak] + [Chat] = [Study goals]
         var goals = document.querySelector("#id_goals");
         if (goals) {
-            var selectors = ["form-group", "row", "col-md-3", "d-flex", "col-md-9", "align-items-start", "align-self-start"];
+            if (goals.querySelector(".form-group") === null) {
+                var s = '[id^=fgroup_id][id$=group]';
+                goals.querySelectorAll(s).forEach(function(fgroup){
+                    if (fgroup.id.indexOf("_error_") > 0) {
+                        return;
+                    }
+                    fgroup.classList.add("d-inline-block", "rounded", "px-2", "pb-2", "mx-0");
+                    // The "form-group" selector seems to have been deprecated
+                    // and replaced by "mb-3" in the "Classic" and "Boost" themes.
+                    fgroup.querySelectorAll(".mb-3.fitem").forEach(function(fitem){
+                        fitem.classList.remove("mb-3");
+                        fitem.classList.add("d-inline-block");
+                    });
+                });
+            } else {
+                goals.querySelectorAll(".form-group").forEach(function(fgroup){
+                    fgroup.classList.remove("form-group");
+                    fgroup.classList.add("d-inline-block");
+                });
+                goals.querySelectorAll(".row").forEach(function(row){
+                    row.classList.remove("row");
+                    row.classList.add("rounded", "px-2", "mb-2", "align-top");
+                    row.style.minHeight = "80px";
+                });
+            }
+
+            // Remove all the sexy, flexy selectors.
+            var selectors = [
+                "col-md-3", "col-md-9", "d-flex",
+                "align-items-start", "align-self-start",
+            ];
             selectors.forEach(function(s){
                 goals.querySelectorAll("." + s).forEach(function(elm){
                     elm.classList.remove(s);
-                    if (s == "form-group") {
-                        elm.classList.add("d-inline-block");
-                    }
-                    if (s == "row") {
-                        elm.classList.add("rounded");
-                        elm.classList.add("px-2");
-                        elm.classList.add("mb-2");
-                        elm.classList.add("align-top");
-                        elm.style.minHeight = "80px";
-                    }
                 });
             });
+
+            // Embolden all the label text
             goals.querySelectorAll(".col-form-label").forEach(function(elm){
                 for (var i=0; i < elm.children.length; i++) {
                     var child = elm.children[i];

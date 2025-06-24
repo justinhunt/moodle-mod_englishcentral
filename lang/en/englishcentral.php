@@ -503,3 +503,6 @@ $string['reportstable_details'] = "Ajax tables are faster to use and can sort da
 $string['reporttableajax'] = "Ajax Tables";
 $string['reporttablepaged'] = "Paged Tables";
 $string['difficulty'] = "Video Level";
+$string['cloudpoodllserver'] = 'Cloud Poodll Server';
+$string['cloudpoodllserver_details'] = 'The server to use for Cloud Poodll. Only change this if Poodll has provided a different one.';
+
