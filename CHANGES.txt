@@ -1,6 +1,8 @@
 ========================================
 Change log for mod_englishcentral
 ========================================
+2025-06-24 (46)
+    - Fix for bug that prevented disabling of chat
 2025-05-01 (45)
 　    - Fix for not properly counted student progress
 2025-04-18 (44)
